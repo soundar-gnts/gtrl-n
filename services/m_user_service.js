@@ -1,80 +1,63 @@
+/**
+ * File Name	:	m_user_service.js
+ * Description	:	To write Business Logic For User.
+ * Author		:	Haris K.A.
+ * Date			:	October 03, 2015
+ * 
+ * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
+ * All rights reserved.   
+ *
+ * This software is the confidential and proprietary information 
+ * of GNTS Technologies Pvt. Ltd.
+ * 
+ * Version       Date           	Modified By             Remarks
+ * 
+ * 
+ */
+
 var User = require('../models/m_user.js');
 var Customer = require('../models/m_customer.js');
 
-exports.signup = function(req, res){
-	User.findOne({ where : {login_id : req.param('email')}})
-	.then(function(err, user){
-		if(err){
-			console.log(err);
-			res.send(err);
-		} else if(!user){
-			console.log(user);
-			res.send(user);
-		} else{
-			user.login_id	= req.param('email'),
-			user.user_name	= req.param('firstname')+' '+req.param('lastname'),
-			user.login_pwd	= req.param('password'),
-			user.company_id	= req.param('companyid')
-			
-		}
-			
-	});
-	Customer.create({
-		cus_first_name	: req.param('firstname'),
-		cus_last_name	: req.param('lastname'),
-		email_id		: req.param('email'),
-		mobile_no		: req.param('mobile'),
-		company_id		: req.param('companyid')
-	})
-	.then(function(err, user){
-		if(err){
-			console.log(err);
-			res.send(err);
-		}
-		else{
-			console.log(user);
-			res.send(user);
-		}
-	})
-};
-exports.getAllCustomer = function(req, res){
-	Customer.findAll().then(function(err, customers) {
-		if(err)
-			res.send(err);
-		else
-			res.send(customers);
-	})
+//generate OTP
+function generateOTP(){
+	return(Math.random().toString().substr(2,4));
 }
-exports.getCustomer = function(req, res){
-	Customer.findById(req.param('id'), function(err, customer){
-		if(err)
-			res.send(err);
-		else
-			res.send(customer);
-	});
-};
 
-exports.editCustomer = function(req, res){
-	Customer.findById(req.param('id'), function(err, customer){
-		if(err)
-			res.send(err);
-		else{
-			customer.name	= req.param('name') || customer.name;
-			customer.address= req.param('address') || customer.address;
-			customer.email	= req.param('email') || customer.email;
-			customer.phone	= req.param('phone') || customer.phone;
-			customer.save();
-			res.send('Edit Success');
+//user signup
+exports.signup = function(req, res){
+	User.findOne({where : {login_idd : req.param('email')}})
+	.then(function(user){
+		if(!user){
+			var otp=generateOTP();
+			User.create({
+				login_id		: req.param('email'),
+				user_name		: req.param('firstname')+' '+req.param('lastname'),
+				login_pwd		: req.param('password'),
+				company_id		: req.param('companyid'),
+				otp_code		: otp,
+				last_updated_dt	: new Date(),
+			    last_updated_by	: req.param('firstname')+' '+req.param('lastname')
+			}).error(function(err){
+				res.send(err);
+			});
+			Customer.create({
+				cus_first_name	: req.param('firstname'),
+				cus_last_name	: req.param('lastname'),
+				email_id		: req.param('email'),
+				mobile_no		: req.param('mobile'),
+				company_id		: req.param('companyid'),
+				last_updated_dt	: new Date(),
+			    last_updated_by	: req.param('firstname')+' '+req.param('lastname')
+			}).error(function(err){
+				res.send(err);
+			})
+			res.send('Successfully Registered.');
+		} else{
+			res.send('Email already exist.');
 		}
-			
+	})
+	.error(function(err){
+		res.send(err);
 	});
-};
+}
 
-exports.deleteCustomer = function(req, res){
-	Customer.findById(req.param('id'), function(err, customer){
-		if(err)
-			res.send(err);
-		else
-			res.send(customer);
-	});
-};
