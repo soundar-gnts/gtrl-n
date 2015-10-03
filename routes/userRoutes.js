@@ -19,5 +19,5 @@ var m_user_service = require('../services/m_user_service.js');
 
 module.exports = function(app, server){
 	app.post('/signup', m_user_service.signup);
-	
+	app.post('/login', m_user_service.login);
 }

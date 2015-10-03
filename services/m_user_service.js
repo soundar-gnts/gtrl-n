@@ -11,7 +11,7 @@
  * of GNTS Technologies Pvt. Ltd.
  * 
  * Version       Date           	Modified By             Remarks
- * 
+ * 0.1         October 03, 2015      Saranya G
  * 
  */
 
@@ -60,4 +60,22 @@ exports.signup = function(req, res){
 		res.send(err);
 	});
 }
+
+
+//user Login
+exports.login = function(req, res){
+	User.findOne({where : {login_id : req.param('email'),login_pwd : req.param('password'),company_id : req.param('companyid')
+		}})
+		.then(function(user){
+			if(!user){
+				res.send('Invalid');
+			} else{
+				res.send('success');
+			}
+		})
+		.error(function(err){
+			res.send(err);
+		});
+	}
+
 
