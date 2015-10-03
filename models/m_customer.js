@@ -1,3 +1,20 @@
+/**
+ * File Name	:	m_customer.js
+ * Description	:	To write Model Object For Customer.
+ * Author		:	Haris K.A.
+ * Date			:	October 03, 2015
+ * 
+ * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
+ * All rights reserved.   
+ *
+ * This software is the confidential and proprietary information 
+ * of GNTS Technologies Pvt. Ltd.
+ * 
+ * Version       Date           	Modified By             Remarks
+ * 
+ * 
+ */
+
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
 var Customer = model.define('m_customer', {

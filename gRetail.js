@@ -1,11 +1,22 @@
-
 /**
- * Module dependencies.
+ * File Name	:	gRetail.js
+ * Description	:	Configuration file.
+ * Author		:	Haris K.A.
+ * Date			:	October 03, 2015
+ * 
+ * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
+ * All rights reserved.   
+ *
+ * This software is the confidential and proprietary information 
+ * of GNTS Technologies Pvt. Ltd.
+ * 
+ * Version       Date           	Modified By             Remarks
+ * 
+ * 
  */
 
 var express = require('express')
   , routes = require('./routes')
-  , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
   , bodyParser = require('body-parser');
@@ -32,8 +43,6 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/users', user.list);
-
 require('./routes/userRoutes.js')(app, server);
 
 server.listen(app.get('port'), function(){
