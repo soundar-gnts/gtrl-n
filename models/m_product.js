@@ -33,7 +33,7 @@ var product = model.define('m_product', {
 	brand_id 		: dataTypes.INTEGER,
 	max_discount 	: dataTypes.INTEGER,
 	min_stock_lvl 	: dataTypes.INTEGER,
-	max_Stock_lvl 	: dataTypes.INTEGER,
+	max_stock_lvl 	: dataTypes.INTEGER,
 	prod_cat_lvl1 	: dataTypes.INTEGER,
 	prod_cat_lvl2 	: dataTypes.INTEGER,
 	prod_cat_lvl3 	: dataTypes.INTEGER,
