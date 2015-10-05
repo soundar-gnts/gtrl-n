@@ -15,8 +15,8 @@
  * 
  */
 
-var User = require('../models/m_user.js');
-var Customer = require('../models/m_customer.js');
+var User = require('../models/user.js');
+var Customer = require('../models/customer.js');
 
 //generate OTP
 function generateOTP(){

@@ -9,6 +9,8 @@
     "express"			: "3.2.6",
     "ejs"				: "*",
     "body-parser" 		: "*",
-    "sequelize" 		: "*"
+    "sequelize" 		: "*",
+    "winston"			: "*",
+    "fs"				: "*"
   }
 }
