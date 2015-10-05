@@ -2,7 +2,7 @@
  * File Name	:	state.js
  * Description	:	To create schema for state.
  * Author		:	Saranya G
- * Date			:	Oct 03 2015
+ * Date			:	Oct 05 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
  * All rights reserved.   
@@ -11,27 +11,28 @@
  * of GNTS Technologies Pvt. Ltd. 
  * 
  * Version       Date           	Modified By             Remarks
-   	        
+ *      	        
  */
 
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
-var State = model.define('m_state', {
+var City = model.define('m_city', {
 	
-	state_id			: {
+	city_id			: {
 		type: dataTypes.INTEGER,
 	    primaryKey: true,
 	    autoIncrement: true
 	    },
 	
-	state_name		: dataTypes.STRING,
+	city_name		: dataTypes.STRING,
+	state_id        : dataTypes.INTEGER,
 	status		    : dataTypes.STRING,
 	last_updated_dt	: dataTypes.DATE,
 	last_updated_by	: dataTypes.STRING,
 
 },{
 	timestamps: false,
-	 freezeTableName: true,
-	tableName: 'm_state'
+	freezeTableName: true,
+	tableName: 'm_city'
 });
-module.exports = State;
+module.exports = City;

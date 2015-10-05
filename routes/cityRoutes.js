@@ -1,8 +1,8 @@
 /**
- * File Name	:	userRoutes.js
+ * File Name	:	cityRoutes.js
  * Description	:	To write Routing middlewares For User.
- * Author		:	Haris K.A.
- * Date			:	October 03, 2015
+ * Author		:	Saranya G
+ * Date			:	October 05, 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
  * All rights reserved.   
@@ -15,10 +15,11 @@
  * 
  */
 
-var m_user_service = require('../services/m_user_service.js');
+var cityService= require('../services/cityService.js');
 
 module.exports = function(app, server){
-	app.post('/signup', m_user_service.signup);
-	app.post('/login', m_user_service.login);
+	app.get('/citylist', cityService.cityList);
+	app.post('/savecity', cityService.saveCity);
+	app.post('/saveorupdateCity', cityService.saveOrUpdateCity);
 }
 

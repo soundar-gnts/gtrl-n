@@ -21,5 +21,5 @@ module.exports = {
 	username	: 'root',
 	password	: 'gnts2014',
 	name		: 'gretail',
-	enableSequelizeLog : true
+    enableSequelizeLog : true
 };

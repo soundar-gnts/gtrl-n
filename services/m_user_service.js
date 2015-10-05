@@ -62,20 +62,25 @@ exports.signup = function(req, res){
 }
 
 
-//user Login
+//User Login
 exports.login = function(req, res){
-	User.findOne({where : {login_id : req.param('email'),login_pwd : req.param('password'),company_id : req.param('companyid')
+
+	User.findOne({attributes:['user_id','user_name','session_id']},{where : {login_id : req.param('loginId'),login_pwd : req.param('loginPwd'),company_id : req.param('companyId')
 		}})
 		.then(function(user){
 			if(!user){
-				res.send('Invalid');
-			} else{
-				res.send('success');
+				res.send('Invalid Username and Password');
+			} else{			
+				if(user.status=="Verification")
+				{
+				res.send('OTP Verifiction is Pending');
+				}
+		
+				res.send('success',user);
 			}
 		})
 		.error(function(err){
 			res.send(err);
 		});
 	}
-
 
