@@ -96,7 +96,10 @@ exports.saveCity = function(req, res){
  
 })
 }*/
-exports.saveOrUpdateCity = function(req, res){
+
+//Update City Details
+
+exports.updateCity = function(req, res){
 	city.update({ status: 'Active' },{ where: { city_name: req.param('cityname')}} )
 	.then(function(affectedRows) {
 		res.send('Successfully Updated.');

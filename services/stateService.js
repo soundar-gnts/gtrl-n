@@ -62,4 +62,14 @@ exports.saveState = function(req, res){
 	});
 }
 
+//Update State Details
 
+exports.updateState = function(req, res){
+	state.update({ status: 'Active' },{ where: { state_name: req.param('statename')}} )
+	.then(function(affectedRows) {
+		res.send('Successfully Updated.');
+		state.findAll().then(function(tasks) {
+                     console.log(affectedRows) // the 'programming' tasks will both have a status of 'inactive'
+                   })
+                 })
+}  
