@@ -17,7 +17,7 @@
 
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
-var Company = model.define('m_user', {
+var Company = model.define('m_company', {
 	
 	company_id			: {
 		type: dataTypes.INTEGER,
@@ -25,21 +25,22 @@ var Company = model.define('m_user', {
 	    autoIncrement: true
 	    },
 	    company_name		: dataTypes.STRING,
-	    address			: dataTypes.STRING,
-	    pincode		: dataTypes.STRING,
+	    address			    : dataTypes.STRING,
+	    pincode		        : dataTypes.STRING,
 	    landline_no			: dataTypes.STRING,
-	    mobile_no		: dataTypes.STRING,
-	    fax_no		: dataTypes.STRING,
-	    email_id		: dataTypes.STRING,
+	    mobile_no	     	: dataTypes.STRING,
+	    fax_no		   		: dataTypes.STRING,
+	    email_id			: dataTypes.STRING,
 	    contact_person		: dataTypes.STRING,
-	    contact_no		: dataTypes.STRING,
-	    remarks		: dataTypes.STRING,
-	    status		: dataTypes.STRING,
-	    last_updated_dt: dataTypes.DATE,
+	    contact_no			: dataTypes.STRING,
+	    remarks				: dataTypes.STRING,
+	    status				: dataTypes.STRING,
+	    last_updated_dt		: dataTypes.DATE,
+	    last_updated_by		: dataTypes.STRING,
 	    
-	    company_id		: dataTypes.INTEGER,
-	    state_id        : dataTypes.INTEGER,
-	    city_id		: dataTypes.INTEGER,
+	    
+	    state_id         	: dataTypes.INTEGER,
+	    city_id				: dataTypes.INTEGER,
 
 	    
 },{

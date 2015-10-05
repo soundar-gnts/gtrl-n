@@ -21,7 +21,7 @@ var express = require('express')
   , path = require('path')
   , bodyParser = require('body-parser');
 
-var app = express();
+var app = express(); 
 var server = http.createServer(app)
 
 // all environments
@@ -44,6 +44,9 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 require('./routes/userRoutes.js')(app, server);
+require('./routes/CompanyRoutes.js')(app, server);
+require('./routes/ManufacturerRoutes.js')(app, server);
+require('./routes/BrandRoutes.js')(app, server);
 
 server.listen(app.get('port'), function(){
 	  console.log('Express server listening on port ' + app.get('port'));
