@@ -1,6 +1,6 @@
 /**
  * @Filename	:	productRoutes.js
- * @Description	:	To write Routing middlewares For m_product_image table.
+ * @Description	:	To write Routing middlewares For product related table.
  * @Author		:	SOUNDAR C
  * @Date		:	October 05, 2015
  * 
