@@ -1,5 +1,5 @@
 /**
- * File Name	:	cityRoutes.js
+ * File Name	:	voucherRoutes.js
  * Description	:	To write Routing middlewares For User.
  * Author		:	Saranya G
  * Date			:	October 05, 2015
@@ -10,16 +10,16 @@
  * This software is the confidential and proprietary information 
  * of GNTS Technologies Pvt. Ltd.
  * 
- *  Version       Date           	Modified By             Remarks
+ * Version       Date           	Modified By             Remarks
  * 
  * 
  */
 
-var cityService = require('../services/cityService.js');
+var m_voucher_service= require('../services/m_voucher_service.js');
 
 module.exports = function(app, server){
-	app.get('/citylist', cityService.cityList);
-	app.post('/savecity', cityService.saveCity);
-	app.post('/updatecity', cityService.updateCity);
+	app.get('/getvoucherlist', m_voucher_service.voucherList);
+	app.post('/saveorupdatevoucher', m_voucher_service.saveOrUpdateVoucher);
+	
 }
 

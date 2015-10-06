@@ -68,7 +68,9 @@ exports.saveCity = function(req, res){
 		if(!result){
 		
 			city.create({				
-				city_name		: req.param('cityname'),		
+			
+				city_name		: req.param('cityname'),
+				state_id		: req.param('stateid'),
 				status    		: req.param('status'),	
 				last_updated_dt	: new Date(),
 		        last_updated_by	: "Saranya"
@@ -86,25 +88,31 @@ exports.saveCity = function(req, res){
 		res.send(err);
 	});
 }
-/*exports.saveOrUpdateCity = function(req, res){
-	city.findOrCreate({where: {city_name: req.param('cityname')}, defaults: {status: 'Inactive'}})
-.spread(function(user, created) {
- console.log(user.get({
-    plain: true
-  }))
-  console.log(created)
- 
-})
-}*/
 
 //Update City Details
 
 exports.updateCity = function(req, res){
-	city.update({ status: 'Active' },{ where: { city_name: req.param('cityname')}} )
+	city.update({
+		city_name: req.param('cityname'),
+		state_id : req.param('stateid'),
+		status: req.param('status'),
+		last_updated_dt: new Date(),
+		last_updated_by: "Saranya" },
+		{ where: { city_id: req.param('cityid')}} )
 	.then(function(affectedRows) {
-		res.send('Successfully Updated.');
+	
                 	 city.findAll().then(function(tasks) {
-                     console.log(affectedRows) // the 'programming' tasks will both have a status of 'inactive'
+                			
+                         console.log(affectedRows) 
+                			if(affectedRows==1)
+                			{
+                			res.send('Successfully Updated.');
+                			}
+                			else
+                				{
+                				res.send('No records');
+                				}
+                	
                    })
                  })
-}       
+} 

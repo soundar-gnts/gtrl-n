@@ -65,11 +65,27 @@ exports.saveState = function(req, res){
 //Update State Details
 
 exports.updateState = function(req, res){
-	state.update({ status: 'Active' },{ where: { state_name: req.param('statename')}} )
+	state.update({
+	
+		state_name : req.param('statename'),
+		status: req.param('status'),
+		last_updated_dt: new Date(),
+		last_updated_by: "Saranya" },
+		{ where: { state_id: req.param('stateid')}} )
 	.then(function(affectedRows) {
-		res.send('Successfully Updated.');
+	
 		state.findAll().then(function(tasks) {
-                     console.log(affectedRows) // the 'programming' tasks will both have a status of 'inactive'
+                			
+                         console.log(affectedRows) 
+                			if(affectedRows==1)
+                			{
+                			res.send('Successfully Updated.');
+                			}
+                			else
+                				{
+                				res.send('No records');
+                				}
+                	
                    })
                  })
-}  
+} 
