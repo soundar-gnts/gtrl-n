@@ -51,6 +51,10 @@ require('./routes/BrandRoutes.js')(app, server);
 require('./routes/productRoutes.js')(app, server);
 //require('./routes/productCategoryRoutes.js')(app, server);
 require('./routes/voucherRoutes.js')(app, server);
+require('./routes/EmployeeRoutes.js')(app, server);
+require('./routes/SerialNoGenRoutes.js')(app, server);
+require('./routes/TxnstypeRoutes.js')(app, server);
+
 server.listen(app.get('port'), function(){
 	  console.log('Express server listening on port ' + app.get('port'));
 });
