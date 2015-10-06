@@ -18,7 +18,30 @@ var brand = require('../models/m_brand.js');
 
 // To Brand full LIST
 exports.getBrandDetails = function(req, res) {
-	brand.findAll({ where :{ company_id:req.param('companyid')}}).then(function(err, result) {
+	var condition = null;
+	var companyId=req.param("companyid");
+	var brandName=req.param("brandname");
+	var status=req.param("status");
+	if(companyId!=null){
+		condition ="company_id="+companyId;
+		}
+	
+	if(status!=null){
+		if(condition === null){
+			condition="status='"+status+"'";
+		}else {
+			condition=condition+" and status='"+status+"'";
+		}
+	}
+	if(brandName!=null){
+		if(condition === null){
+			condition="brand_name='"+brandName+"'";
+		}else {
+			condition=condition+" and brand_name='"+brandName+"'";
+		}
+		
+	}
+	brand.findAll({where : [condition]}).then(function(err, result) {
 		if(err)
 			res.send(err);
 		else
