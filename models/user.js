@@ -49,7 +49,9 @@ var User = model.define('m_user', {
 	data_region_id	: dataTypes.INTEGER,
 	data_store_id	: dataTypes.INTEGER,
 	txn_region_id	: dataTypes.INTEGER,
-	txn_store_id	: dataTypes.INTEGER
+	txn_store_id	: dataTypes.INTEGER,
+	employee_id		: dataTypes.INTEGER,
+	cust_id			: dataTypes.INTEGER
 },{
 	timestamps: false,
 	 freezeTableName: true,
