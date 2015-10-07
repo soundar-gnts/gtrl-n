@@ -17,11 +17,45 @@ var slnogen = require('../models/m_slno_gen.js');
 
 // To get full Serial No Generation List
 exports.getSlnoGenDetails = function(req, res) {
-	slnogen.findAll({
-		where : {
-			company_id : req.param('companyid')
+	var condition = "";
+	var slnoid=req.param("slnoid");
+	var companyid=req.param("companyid");
+	var storeid=req.param("storeid");
+	var refkey=req.param("refkey");
+	var status=req.param("status");
+	if(slnoid!=null){
+		condition ="slno_id="+slnoid;
+	}
+	if(companyid!=null){
+		if(condition === ""){
+			condition="company_id='"+companyid+"'";
+		}else {
+			condition=condition+" and company_id='"+companyid+"'";
 		}
-	}).then(function(err, result) {
+	}
+	if(storeid!=null){
+		if(condition === ""){
+			condition="store_id='"+storeid+"'";
+		}else {
+			condition=condition+" and store_id='"+storeid+"'";
+		}
+	}
+	if(refkey!=null){
+		if(condition === ""){
+			condition="ref_key like '"+refkey+"'";
+		}else {
+			condition=condition+" and ref_key like '"+refkey+"'";
+		}
+	}
+	if(status!=null){
+		if(condition === ""){
+			condition="status='"+status+"'";
+		}else {
+			condition=condition+" and status='"+status+"'";
+		}
+	}
+	
+	slnogen.findAll({where : [condition]}).then(function(err, result) {
 		if (err)
 			res.send(err);
 		else
@@ -34,7 +68,7 @@ exports.getSlnoGenDetails = function(req, res) {
 
 // To Save Serial No Generation
 exports.saveSlnoGen = function(req, res) {
-	slnogen.create({
+	slnogen.upsert({
 		slno_id				: req.param("slnoid"),
 		company_id 			: req.param("companyid"),
 		slno_gen_level 		: req.param("slnogenlevel"),
@@ -55,7 +89,7 @@ exports.saveSlnoGen = function(req, res) {
 		if (err) {
 			res.send(err);
 		} else {
-			res.send('Successfully Added.');
+			res.send('Successfully Saved.');
 		}
 	});
 		

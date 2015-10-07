@@ -17,7 +17,7 @@
 var m_product_service = require('../services/m_product_service.js');
 module.exports = function(app, server) {
 	app.post('/saveproduct', m_product_service.saveproduct);
-	app.post('/getallproducts', m_product_service.getAllProducts);
+	app.post('/getproductslist', m_product_service.getProductsList);
 	app.post('/getproductspec', m_product_service.getProductSpec);
 	app.post('/getproductimages', m_product_service.getProductImages);
 	app.post('/getproductbrands', m_product_service.getProductBrands);

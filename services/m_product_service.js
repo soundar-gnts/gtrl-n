@@ -63,7 +63,7 @@ exports.saveproduct = function(req, res) {
 	})
 	.then(function(p){
 		for(var i=0;i<req.param('prodspeclist').length;i++){
-			productspec.create({
+			productspec.upsert({
 				prod_spec_id 	: req.param('prodspeclist')[i].prodspecid,
 				prod_id 		: p.prod_id,
 				spec_name 		: req.param('prodspeclist')[i].specname,
@@ -78,7 +78,7 @@ exports.saveproduct = function(req, res) {
 		}
 		
 		for(var i=0;i<req.param('prodimagelist').length;i++){
-			productimage.create({
+			productimage.upsert({
 				product_image_id 	: req.param('prodimagelist')[i].productimageid,
 				prod_id 			: p.prod_id,
 				company_id 			: req.param('prodimagelist')[i].companyid,
@@ -96,7 +96,7 @@ exports.saveproduct = function(req, res) {
 		
 		
 		for(var i=0;i<req.param('prodbrandlist').length;i++){
-			productbrand.create({
+			productbrand.upsert({
 				prod_brand_id 		: req.param('prodbrandlist')[i].prodbrandid,
 				prod_id 			: p.prod_id,
 				brand_id 			: req.param('prodbrandlist')[i].brandid,
@@ -120,8 +120,72 @@ exports.saveproduct = function(req, res) {
 }
 
 //To get product full list
-exports.getAllProducts=function(req,res){
-	product.findAll({where : {company_id:req.param('companyid')}}).then(function(err,result){
+exports.getProductsList=function(req,res){
+	var condition = "";
+	var companyid=req.param("companyid");
+	var prodid=req.param("prodid");
+	var prodcode=req.param("prodcode");
+	var prodname=req.param("prodname");
+	var manufgid=req.param("manufgid");
+	var brandid=req.param("brandid");
+	var prodcatid=req.param("prodcatid");
+	var status=req.param("status");
+	
+	
+	if(companyid!=null){
+		condition ="company_id="+companyid;
+	}
+	if(prodid!=null){
+		if(condition === ""){
+			condition="prod_id='"+prodid+"'";
+		}else {
+			condition=condition+" and prod_id='"+prodid+"'";
+		}
+	}
+	if(prodcode!=null){
+		if(condition === ""){
+			condition="prod_code like '%"+prodcode+"%'";
+		}else {
+			condition=condition+" and prod_code like '%"+prodcode+"%'";
+		}
+	}
+	if(prodname!=null){
+		if(condition === ""){
+			condition="prod_name like '%"+prodname+"%'";
+		}else {
+			condition=condition+" and prod_name like '%"+prodname+"%'";
+		}
+	}
+	if(manufgid!=null){
+		if(condition === ""){
+			condition="manufg_id='"+manufgid+"'";
+		}else {
+			condition=condition+" and manufg_id='"+manufgid+"'";
+		}
+	}
+	if(brandid!=null){
+		if(condition === ""){
+			condition="brand_id='"+brandid+"'";
+		}else {
+			condition=condition+" and brand_id='"+brandid+"'";
+		}
+	}
+	if(prodcatid!=null){
+		if(condition === ""){
+			condition="prod_cat_id='"+prodcatid+"'";
+		}else {
+			condition=condition+" and prod_cat_id='"+prodcatid+"'";
+		}
+	}
+	if(status!=null){
+		if(condition === ""){
+			condition="status='"+status+"'";
+		}else {
+			condition=condition+" and status='"+status+"'";
+		}
+	}
+	
+	product.findAll({where : [condition]}).then(function(err,result){
 		if(err){
 			res.send(err);
 		}else{
@@ -133,7 +197,36 @@ exports.getAllProducts=function(req,res){
 
 //For get product specification list
 exports.getProductSpec=function(req,res){
-	productspec.findAll({where : {prod_id:req.param('prodid')}}).then(function(err,result){
+	var condition = "";
+	var prodspecid=req.param("prodspecid");
+	var prodid=req.param("prodid");
+	var specname=req.param("specname");
+	var status=req.param("status");
+	if(prodspecid!=null){
+		condition ="prod_spec_id="+prodspecid;
+	}
+	if(prodid!=null){
+		if(condition === ""){
+			condition="prod_id='"+prodid+"'";
+		}else {
+			condition=condition+" and prod_id='"+prodid+"'";
+		}
+	}
+	if(status!=null){
+		if(condition === ""){
+			condition="status='"+status+"'";
+		}else {
+			condition=condition+" and status='"+status+"'";
+		}
+	}
+	if(specname!=null){
+		if(condition === ""){
+			condition="spec_name like '%"+specname+"%'";
+		}else {
+			condition=condition+" and spec_name like '%"+specname+"%'";
+		}
+	}
+	productspec.findAll({where : [condition]}).then(function(err,result){
 		if(err){
 			res.send(err);
 		}else{
@@ -144,7 +237,44 @@ exports.getProductSpec=function(req,res){
 }
 //for get products images
 exports.getProductImages=function(req,res){
-	productimage.findAll({where : {prod_id:req.param('prodid')}}).then(function(err,result){
+	var condition = "";
+	var productimageid=req.param("productimageid");
+	var prodid=req.param("prodid");
+	var companyid=req.param("companyid");
+	var storeid=req.param("storeid");
+	var status=req.param("status");
+	if(productimageid!=null){
+		condition ="product_image_id="+productimageid;
+	}
+	if(prodid!=null){
+		if(condition === ""){
+			condition="prod_id='"+prodid+"'";
+		}else {
+			condition=condition+" and prod_id='"+prodid+"'";
+		}
+	}
+	if(companyid!=null){
+		if(condition === ""){
+			condition="company_id='"+companyid+"'";
+		}else {
+			condition=condition+" and company_id='"+companyid+"'";
+		}
+	}
+	if(storeid!=null){
+		if(condition === ""){
+			condition="store_id='"+storeid+"'";
+		}else {
+			condition=condition+" and store_id='"+storeid+"'";
+		}
+	}
+	if(status!=null){
+		if(condition === ""){
+			condition="status='"+status+"'";
+		}else {
+			condition=condition+" and status='"+status+"'";
+		}
+	}
+	productimage.findAll({where : [condition]}).then(function(err,result){
 		if(err){
 			res.send(err);
 		}else{
@@ -156,7 +286,45 @@ exports.getProductImages=function(req,res){
 
 //for get products images
 exports.getProductBrands=function(req,res){
-	productbrand.findAll({where : {prod_id:req.param('prodid')}}).then(function(err,result){
+	var condition = "";
+	var prodbrandid=req.param("prodbrandid");
+	var prodid=req.param("prodid");
+	var companyid=req.param("companyid");
+	var brandid=req.param("brandid");
+	var status=req.param("status");
+	if(prodbrandid!=null){
+		condition ="prod_brand_id="+prodbrandid;
+	}
+	if(prodid!=null){
+		if(condition === ""){
+			condition="prod_id='"+prodid+"'";
+		}else {
+			condition=condition+" and prod_id='"+prodid+"'";
+		}
+	}
+	if(companyid!=null){
+		if(condition === ""){
+			condition="company_id='"+companyid+"'";
+		}else {
+			condition=condition+" and company_id='"+companyid+"'";
+		}
+	}
+	if(brandid!=null){
+		if(condition === ""){
+			condition="brand_id='"+brandid+"'";
+		}else {
+			condition=condition+" and brand_id='"+brandid+"'";
+		}
+	}
+	if(status!=null){
+		if(condition === ""){
+			condition="status='"+status+"'";
+		}else {
+			condition=condition+" and status='"+status+"'";
+		}
+	}
+	
+	productbrand.findAll({where : [condition]}).then(function(err,result){
 		if(err){
 			res.send(err);
 		}else{
