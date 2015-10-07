@@ -10,13 +10,13 @@
  * Technologies Pvt. Ltd.
  * 
  * Version 			Date 		Modified By 		Remarks
- * 
+ *	0.1			7-10-2015		Arun Jeyaraj R		change method type for getcompanydetails
  * 
  */
 
 var m_company_service = require('../services/m_company_service.js');
 
 module.exports = function(app, server){
-	app.get('/getcompanydetails', m_company_service.getcompanyDetails);
+	app.post('/getcompanydetails', m_company_service.getcompanyDetails);
 	app.post('/savecompanydetails', m_company_service.saveCompanyDetails);
 }

@@ -10,7 +10,7 @@
  * Technologies Pvt. Ltd.
  * 
  * Version 			Date 		Modified By 		Remarks
- * 
+ *	0.1			7-10-2015		Arun Jeyaraj R		changes in getList and Save method   
  * 
  */
 
@@ -18,13 +18,72 @@ var manufac = require('../models/m_manufacturer.js');
 
 // To get full Manufacturer List
 exports.getmanufactDetails = function(req, res) {
-	manufac.findAll({ where :{ company_id:req.param('companyid')}}).then(function(err, result) {
+	var conditionQuery = "";
+	var manufgId=req.param("manufgid");
+	var manufgName=req.param("manufgname");
+	var status=req.param("status");
+	var companyId=req.param("companyid");
+	var stateId=req.param("stateid");
+	var cityId=req.param("cityid");
+	var manufgCode=req.param("manufgcode");
+
+	if(manufgId!=null){
+		conditionQuery ="manufg_id="+manufgId;
+		}
+	if(companyId!=null){
+		if(conditionQuery === ""){
+			conditionQuery ="company_id="+companyId;
+		}else {
+			conditionQuery=conditionQuery+" and company_id="+companyId;
+		}	
+		}
+	
+	if(status!=null){
+		if(conditionQuery === ""){
+			conditionQuery="status='"+status+"'";
+		}else {
+			conditionQuery=conditionQuery+" and status='"+status+"'";
+		}
+	}
+	if(manufgName!=null){
+		if(conditionQuery === ""){
+			conditionQuery="manufg_name='"+manufgName+"'";
+		}else {
+			conditionQuery=conditionQuery+" and manufg_name like '%"+manufgName+"%'";
+		}
+		
+	}
+	if(manufgCode!=null){
+		if(conditionQuery === ""){
+			conditionQuery="manufg_code='"+manufgCode+"'";
+		}else {
+			conditionQuery=conditionQuery+" and manufg_code like '%"+manufgCode+"%'";
+		}
+	}
+	if(stateId!=null){
+		if(conditionQuery === ""){
+			conditionQuery ="state_id="+stateId;
+		}else {
+			conditionQuery=conditionQuery+" and state_id="+stateId;
+		}	
+		}
+	
+	if(cityId!=null){
+		if(conditionQuery === ""){
+			conditionQuery ="city_id="+cityId;
+		}else {
+			conditionQuery=conditionQuery+" and city_id="+cityId;
+		}	
+		}
+	
+	manufac.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]}).then(function(err, result) {
 		if(err)
 			res.send(err);
 		else
 			res.send(result);
-	})
+	});
 	}
+
 
 
 
@@ -32,9 +91,10 @@ exports.getmanufactDetails = function(req, res) {
 //To Save Manufacturer List
 
 exports.saveManufacDetails = function(req,res){
-	manufac.create
+	manufac.upsert
 	({
-					office_type :req.param("officetype"), 
+				manufg_id   :req.param("manufgid"),
+				office_type :req.param("officetype"), 
 				manufg_code :req.param("manufgcode"),
 				manufg_name 	   :req.param("manufgname"),
 				address :req.param("address"),
@@ -53,13 +113,12 @@ exports.saveManufacDetails = function(req,res){
 				company_id :req.param("companyid"),
 				last_updated_dt:req.param("updateddate"),
 				last_updated_by:req.param("updatedby"),
-			}).then(function(err,result){
-				if(err){
-				res.send(err);}else{
-					res.send('Successfully Added.');
-				}
-			});
-		
+	}).error(function(err){
+		res.send(err);
+	});
+	if(req.param("manufgid")===null){
+	res.send('Successfully Added.');}else{
+		res.send('Successfully Updated.');
+	}
 }
-
 

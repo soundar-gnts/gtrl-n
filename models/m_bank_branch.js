@@ -1,7 +1,7 @@
 /**
  * @Filename	:	m_bank_branch.js
  * @Description	:	To write Model Object for m_bank_branch table.
- * @Author		:	Arun
+ * @Author		:	Arun Jeyaraj R
  * @Date		:	October 06, 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
