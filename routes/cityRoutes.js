@@ -15,11 +15,12 @@
  * 
  */
 
-var cityService = require('../services/cityService.js');
+var cityService = require('../services/m_city_service.js');
 
 module.exports = function(app, server){
-	app.get('/citylist', cityService.cityList);
-	app.post('/savecity', cityService.saveCity);
-	app.post('/updatecity', cityService.updateCity);
+	
+	app.post('/getcitylist', cityService.getCityList);
+	app.post('/saveorupdatecity', cityService.saveOrUpdateCity);
+	
 }
 

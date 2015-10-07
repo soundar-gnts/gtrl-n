@@ -55,6 +55,8 @@ require('./routes/EmployeeRoutes.js')(app, server);
 require('./routes/SerialNoGenRoutes.js')(app, server);
 require('./routes/TxnstypeRoutes.js')(app, server);
 require('./routes/BankRoutes.js')(app, server);
+require('./routes/cardTypeRoutes.js')(app, server);
+require('./routes/voucherRoutes.js')(app, server);
 
 server.listen(app.get('port'), function(){
 	  console.log('Express server listening on port ' + app.get('port'));

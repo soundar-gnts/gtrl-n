@@ -15,25 +15,28 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var cardType = model.define('m_card_type', {
-
-	card_type_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
-	},
-	company_id 			: dataTypes.INTEGER,	
-	card_type 			: dataTypes.STRING,	
-	service_charge		: dataTypes.INTEGER,
-	status 				: dataTypes.STRING,
-	last_updated_dt 	: dataTypes.DATE,
-	last_updated_by 	: dataTypes.STRING
-
-}, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 'm_card_type'
-});
-module.exports = cardType;
+	var model = require('../config/sequelize.js');
+	var dataTypes = require('sequelize');
+	var cardType = model.define('m_card_type', {
+	
+		card_type_id : {
+			
+			type			: dataTypes.INTEGER,
+			primaryKey 		: true,
+			autoIncrement 	: true
+		},
+		
+		company_id 			: dataTypes.INTEGER,	
+		card_type 			: dataTypes.STRING,	
+		service_charge		: dataTypes.INTEGER,
+		status 				: dataTypes.STRING,
+		last_updated_dt 	: dataTypes.DATE,
+		last_updated_by 	: dataTypes.STRING
+	
+	}, {
+		
+		timestamps			 : false,
+		freezeTableName 	 : true,
+		tableName 			 : 'm_card_type'
+	});
+	module.exports = cardType;

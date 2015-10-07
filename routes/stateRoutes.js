@@ -15,12 +15,12 @@
  * 
  */
 
-var stateService= require('../services/stateService.js');
+var stateService= require('../services/m_state_service.js');
 
 module.exports = function(app, server){
-	app.get('/statelist', stateService.stateList);
-	app.post('/savestatedetails', stateService.saveState);
-	app.post('/updatestate', stateService.updateState);
+	
+	app.post('/getstatelist', stateService.getStateList);	
+	app.post('/saveorupdatestate', stateService.saveOrUpdateState);
 	
 }
 
