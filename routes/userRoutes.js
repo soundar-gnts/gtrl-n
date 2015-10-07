@@ -18,7 +18,13 @@
 var m_user_service = require('../services/m_user_service.js');
 
 module.exports = function(app, server){
-	app.post('/signup', m_user_service.signup);
-	app.post('/login', m_user_service.login);
+	app.post('/signup', 	m_user_service.signup);
+	app.post('/login', 		m_user_service.login);
+	app.post('/getalluser',	m_user_service.getAllUser);
+	//app.post('/getallc',	m_user_service.getAllCustomer);
+	app.post('/getuser', 	m_user_service.getOneUser);
+	app.post('/statususer', m_user_service.inactiveOrActiveUser);
+	app.post('/edituser', 	m_user_service.signup);
+	//app.post('/deleteuser',m_user_service.deleteUser);
 }
 

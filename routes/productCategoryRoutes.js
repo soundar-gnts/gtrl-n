@@ -15,15 +15,14 @@
  * 
  */
 
-var productCategoryService = require('../services/productCategoryService.js');
+var productCategoryService = require('../services/m_prod_category_service.js');
 
 module.exports = function(app, server){
-	app.post('/addProductCategory', 		productCategoryService.saveOrUpdateproductCategory);
-	app.post('/getAllProductCategory', 		productCategoryService.getAllProductCategory);
-	app.post('/getProductCategory', 		productCategoryService.getOneProductCategory);
-	app.post('/deleteProductCat', 			productCategoryService.deleteProductCategory);
-	app.post('/getSubProductCategory', 		productCategoryService.getSubProductCategory);
-	app.post('/getLevelProductCategory', 	productCategoryService.getLevelProductCategory);
-	app.post('/statusProdCategory', 		productCategoryService.inactiveOrActiveProductCat);
-	
+	app.post('/addproductcategory', 		productCategoryService.saveOrUpdateproductCategory);
+	app.post('/getallproductcategory', 		productCategoryService.getAllProductCategory);
+	app.post('/getproductcategory', 		productCategoryService.getOneProductCategory);
+	app.post('/getsubproductcategory', 		productCategoryService.getSubProductCategory);
+	app.post('/getlevelproductcategory', 	productCategoryService.getLevelProductCategory);
+	app.post('/statusprodcategory', 		productCategoryService.inactiveOrActiveProductCat);
+	//app.post('/deleteproductcategory', 		productCategoryService.deleteProductCategory);
 }

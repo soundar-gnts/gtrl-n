@@ -17,6 +17,7 @@
 
 var model 			= require('../config/sequelize.js');
 var dataTypes 		= require('sequelize');
+
 var ProductCategory = model.define('m_prod_category', {
 	
 	Prod_cat_id			: {
@@ -41,4 +42,5 @@ var ProductCategory = model.define('m_prod_category', {
 	 freezeTableName: true,
 	tableName: 'm_prod_category'
 });
+
 module.exports = ProductCategory;

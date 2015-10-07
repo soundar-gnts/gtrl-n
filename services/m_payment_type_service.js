@@ -1,5 +1,5 @@
 /**
- * File Name	:	paymentTypeService.js
+ * File Name	:	m_payment_type_service.js
  * Description	:	To write Business Logic For Product Category.
  * Author		:	Haris K.A.
  * Date			:	October 06, 2015
@@ -16,7 +16,7 @@
  */
 
 var log = require('../config/logger').logger;
-var PaymentType = require('../models/paymentType.js');
+var PaymentType = require('../models/m_payment_type.js');
 var response = {
 		status	: Boolean,
 		message : String
@@ -24,45 +24,61 @@ var response = {
 
 //insert or update Payment type
 exports.saveOrUpdatePymentType = function(req, res){
-	PaymentType.findOrCreate({where : {pymt_type_id : req.param('id')},
-		defaults : {
-			company_id		: req.param('companyid'),
-		    pymt_type_name	: req.param('name'),
-		    status			: req.param('status'),
-			last_updated_dt	: new Date(),
-			last_updated_by	: req.param('updatedby')
-		}
-	}).spread(function(type, created){
-		if(created){
+	PaymentType.upsert({
+		pymt_type_id	: req.param('pymttypeid'),
+		company_id		: req.param('companyid'),
+	    pymt_type_name	: req.param('pymttypename'),
+	    status			: req.param('status'),
+		last_updated_dt	: new Date(),
+		last_updated_by	: req.param('lastupdatedby')
+	}).then(function(data){
+		if(data){
 			log.info('Successfully Inserted.');
 			response.message = 'Successfully Inserted.';
 			response.status  = true;
 			res.send(response);
 		} else{
-			type.company_id		= req.param('companyid');
-			type.pymt_type_name	= req.param('name');
-			type.status			= req.param('status');
-			type.last_updated_dt= new Date();
-			type.last_updated_by= req.param('updatedby');
-			type.save();
 			log.info('Successfully Editted.');
 			response.message = 'Successfully Editted.';
 			response.status  = true;
 			res.send(response);
-			
 		}
+		
 	}).error(function(err){
 		log.error(err);
 		response.message = err;
 		response.status  = false;
 		res.send(response);
-	})
+	});
 }
 
 
 //get all Payment type
 exports.getAllPymentType = function(req, res){
-	PaymentType.findAll()
+	
+	var condition 	= "";
+	var companyId 	= req.param('companyid');
+	var status		= req.param('status');
+	var paymentName = req.param('pymttypename');
+	
+	if(companyId != null)
+		condition = "company_id="+companyId;
+	
+	if(status!=null)
+		if(condition === "")
+			condition = "status='"+status+"'";
+	
+		else
+			condition = condition+" and status='"+status+"'";
+	
+	if(paymentName!=null)
+		if(condition === null)
+			condition = "pymt_type_name='"+paymentName+"'";
+	
+		else
+			condition = condition+" and pymt_type_name='"+paymentName+"'";
+	
+	PaymentType.findAll({where : [condition]})
 		.then(function(type){
 			if(type.length == 0){
 				log.info('Empty payment type List.');
@@ -86,7 +102,7 @@ exports.getAllPymentType = function(req, res){
 
 // get one Payment type
 exports.getOnePymentType = function(req, res){
-	PaymentType.findOne({where : {pymt_type_id : req.param('id')}})
+	PaymentType.findOne({where : {pymt_type_id : req.param('pymttypeid')}})
 		.then(function(type){
 			if(!type){
 				log.info('');
@@ -110,7 +126,7 @@ exports.getOnePymentType = function(req, res){
 
 //change status of Payment type
 exports.inactiveOrActivePymentType = function(req, res){
-	PaymentType.findOne({where : {pymt_type_id : req.param('id')}})
+	PaymentType.findOne({where : {pymt_type_id : req.param('pymttypeid')}})
 		.then(function(type){
 			if(!type){
 				log.info('Empty Payment type List.');
@@ -140,7 +156,7 @@ exports.inactiveOrActivePymentType = function(req, res){
 
 //delete Payment type
 exports.deletePymentType = function(req, res){
-	PaymentType.findOne({where : {pymt_type_id : req.param('id')}})
+	PaymentType.findOne({where : {pymt_type_id : req.param('pymttypeid')}})
 		.then(function(type){
 			if(!type){
 				log.info('Empty Payment type List.');

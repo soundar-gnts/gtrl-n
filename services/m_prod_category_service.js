@@ -19,7 +19,7 @@ var log = require('../config/logger').logger;
 var fs = require("fs");
 var imageUploadService = require('../services/imageUploadService.js')
 var config = require('../config/config.js');
-var Category = require('../models/productCategory.js');
+var Category = require('../models/m_prod_category.js');
 var response = {
 		status	: Boolean,
 		message : String
@@ -27,28 +27,29 @@ var response = {
 
 //insert product category
 exports.saveOrUpdateproductCategory = function(req, res){
-	Category.findOne({where : {Prod_cat_id : req.param('id')}})
+	
+	Category.findOne({where : {Prod_cat_id : req.param('Prodcatid')}})
 	.then(function(category){
 		if(!category){
 			
 			Category.create({
-				prod_cat_name	: req.param('name'),
-			    parent_id		: req.param('parantid'),
+				prod_cat_name	: req.param('prodcatname'),
+			    parent_id		: req.param('parentid'),
 			    company_id		: req.param('companyid'),
 			    level_no		: req.param('levelno'),
 			    last_level		: req.param('lastlevel'),
 			    status			: req.param('status'),
 				last_updated_dt	: new Date(),
-				last_updated_by	: req.param('updatedby'),
-				sales_count		: req.param('count'),
+				last_updated_by	: req.param('lastupdatedby'),
+				sales_count		: req.param('salescount'),
 				refer_parid		: req.param('referparid')
 				
 			})
 			.then(function(c){
 				var file1 = config.CATEGORYIMAGEFOLDER + "/"+c.Prod_cat_id+".jpeg";
 				var file2 = config.CATEGORYIMAGEFOLDER + "/"+'bg'+c.Prod_cat_id+".jpeg";
-				imageUploadService.imageUpload(req.files.file1.path, file1);
-				imageUploadService.imageUpload(req.files.file2.path, file2);
+				imageUploadService.imageUpload(req.files.img.path, file1);
+				imageUploadService.imageUpload(req.files.bgimg.path, file2);
 				c.prod_cat_image = config.SERVER+'/'+file1;
 				c.prod_cat_bgimage = config.SERVER+'/'+file2;
 				c.save().then(function(a){
@@ -67,15 +68,23 @@ exports.saveOrUpdateproductCategory = function(req, res){
 			});
 			
 		} else{
-			category.prod_cat_name		= req.param('name'),
-			category.parent_id			= req.param('parantid'),
+			var file1 = config.CATEGORYIMAGEFOLDER + "/"+req.param('Prodcatid')+".jpeg";
+			var file2 = config.CATEGORYIMAGEFOLDER + "/"+'bg'+req.param('Prodcatid')+".jpeg";
+			imageUploadService.imageUpload(req.files.img.path, file1);
+			imageUploadService.imageUpload(req.files.bgimg.path, file2);
+			
+			category.prod_cat_image 	= config.SERVER+'/'+file1;
+			category.prod_cat_bgimage 	= config.SERVER+'/'+file2;
+			
+			category.prod_cat_name		= req.param('prodcatname'),
+			category.parent_id			= req.param('parentid'),
 			category.company_id			= req.param('companyid'),
 			category.level_no			= req.param('levelno'),
 			category.last_level			= req.param('lastlevel'),
 			category.status				= req.param('status'),
 			category.last_updated_dt	= new Date(),
-			category.last_updated_by	= req.param('updatedby'),
-			category.sales_count		= req.param('count'),
+			category.last_updated_by	= req.param('lastupdatedby'),
+			category.sales_count		= req.param('salescount'),
 			category.refer_parid		= req.param('referparid')
 			category.save();
 			log.info('Successfully Editted.');
@@ -93,10 +102,32 @@ exports.saveOrUpdateproductCategory = function(req, res){
 	});
 }
 
-
 //get all product category
 exports.getAllProductCategory = function(req, res){
-	Category.findAll()
+
+	var condition 		= "";
+	var companyId 		= req.param('companyid');
+	var status			= req.param('status');
+	var productCatName 	= req.param('prodcatname');
+	
+	if(companyId != null)
+		condition = "company_id="+companyId;
+	
+	if(status!=null)
+		if(condition === "")
+			condition = "status='"+status+"'";
+	
+		else
+			condition = condition+" and status='"+status+"'";
+	
+	if(productCatName!=null)
+		if(condition === null)
+			condition = "prod_cat_name='"+productCatName+"'";
+	
+		else
+			condition = condition+" and prod_cat_name='"+productCatName+"'";
+	
+	Category.findAll({where : [condition]})
 		.then(function(categories){
 			if(categories.length == 0){
 				log.info('Empty Category List.');
@@ -120,7 +151,7 @@ exports.getAllProductCategory = function(req, res){
 
 // get one product category
 exports.getOneProductCategory = function(req, res){
-	Category.findOne({where : {Prod_cat_id : req.param('id')}})
+	Category.findOne({where : {Prod_cat_id : req.param('Prodcatid')}})
 		.then(function(category){
 			if(!category){
 				log.info('Empty Category List.');
@@ -144,7 +175,7 @@ exports.getOneProductCategory = function(req, res){
 
 //get sub category
 exports.getSubProductCategory = function(req, res){
-	Category.findAll({where : {parent_id : req.param('id')}})
+	Category.findAll({where : {parent_id : req.param('parentid')}})
 		.then(function(category){
 			if(category.length == 0){
 				log.info('Empty Category List.');
@@ -168,7 +199,7 @@ exports.getSubProductCategory = function(req, res){
 
 //get sub category
 exports.getLevelProductCategory = function(req, res){
-	Category.findAll({where : {level_no : req.param('level')}})
+	Category.findAll({where : {company_id : req.param('companyid'), level_no : req.param('levelno')}})
 		.then(function(category){
 			if(category.length == 0){
 				log.info('Empty Category List.');
@@ -192,7 +223,7 @@ exports.getLevelProductCategory = function(req, res){
 
 //delete product category
 exports.deleteProductCategory = function(req, res){
-	Category.findOne({where : {Prod_cat_id : req.param('id')}})
+	Category.findOne({where : {Prod_cat_id : req.param('Prodcatid')}})
 		.then(function(category){
 			if(!category){
 				log.info('Empty Category List.');
@@ -204,7 +235,7 @@ exports.deleteProductCategory = function(req, res){
 				.then(function(cat){
 					log.info('Deleted Successfully.');
 					response.message = 'Deleted Successfully.';
-					response.status  = false;
+					response.status  = true;
 					res.send(response);
 				});
 			}
@@ -219,7 +250,7 @@ exports.deleteProductCategory = function(req, res){
 
 //change status of Product Category
 exports.inactiveOrActiveProductCat = function(req, res){
-	Category.findOne({where : {Prod_cat_id : req.param('id')}})
+	Category.findOne({where : {Prod_cat_id : req.param('Prodcatid')}})
 		.then(function(cat){
 			if(!cat){
 				log.info('Empty Category List.');

@@ -15,13 +15,13 @@
  * 
  */
 
-var paymentTypeService = require('../services/paymentTypeService.js');
+var paymentTypeService = require('../services/m_payment_type_service.js');
 
 module.exports = function(app, server){
-	app.post('/addPaymentType', 	paymentTypeService.saveOrUpdatePymentType);
-	app.post('/getAllPaymentType', 	paymentTypeService.getAllPymentType);
-	app.post('/getPaymentType', 	paymentTypeService.getOnePymentType);
-	app.post('/deletePymentType', 	paymentTypeService.deletePymentType);
-	app.post('/statusPymentType', 	paymentTypeService.inactiveOrActivePymentType);
+	app.post('/addpaymenttype', 	paymentTypeService.saveOrUpdatePymentType);
+	app.post('/getallpaymenttype', 	paymentTypeService.getAllPymentType);
+	app.post('/getpaymenttype', 	paymentTypeService.getOnePymentType);
+	app.post('/deletepaymenttype', 	paymentTypeService.deletePymentType);
+	app.post('/statuspymenttype', 	paymentTypeService.inactiveOrActivePymentType);
 	app.post('/demo', 	paymentTypeService.demo);
 }

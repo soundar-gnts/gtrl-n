@@ -17,6 +17,7 @@
 var model = require('../config/sequelize.js');
 var Company = require('../models/m_company.js');
 var dataTypes = require('sequelize');
+
 var PaymentType = model.define('m_payment_type', {
 	
 	pymt_type_id			: {
@@ -35,5 +36,6 @@ var PaymentType = model.define('m_payment_type', {
 	 freezeTableName: true,
 	tableName: 'm_payment_type'
 });
+
 PaymentType.belongsTo(Company, {foreignKey: 'company_id'})
 module.exports = PaymentType;
