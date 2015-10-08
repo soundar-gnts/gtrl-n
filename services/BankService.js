@@ -167,20 +167,20 @@ exports.getBankBranchDetails = function(req, res) {
 
 exports.saveBankDetails = function(req,res){
 
-	 bank.upsert({
+	 bank.create({
 		 		bank_id    :req.param("bankid"),
 				bank_code  :req.param("bankcode"),
 				bank_name  :req.param("bankname"), 
 				company_id :req.param("companyid"),
 				status 	   :req.param("status"),
 				last_updated_dt:req.param("updateddate"),
-				last_updated_by:req.param("updatedby")} ).then(function(err){
+				last_updated_by:req.param("updatedby")} ).then(function(p){
 					
 	
 			for(var i=0;i<req.param('bankbranchlist').length;i++){
-	bankBranch.upsert({
+	bankBranch.create({
 		branch_id   :req.param("bankbranchlist")[i].branchid,
-		bank_id   :req.param("bankbranchlist")[i].bankid,
+		bank_id   :p.bank_id,
 		branch_code :req.param("bankbranchlist")[i].branchcode,
 		branch_name :req.param("bankbranchlist")[i].branchname, 
 		company_id :req.param("bankbranchlist")[i].companyid,
