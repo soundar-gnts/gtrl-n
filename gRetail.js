@@ -43,20 +43,20 @@ if ('development' == app.get('env')) {
 }
 app.get('/', routes.index);
 require('./routes/userRoutes.js')(app, server);
-require('./routes/stateRoutes.js')(app, server);
-require('./routes/cityRoutes.js')(app, server);
+require('./routes/StateRoutes.js')(app, server);
+require('./routes/CityRoutes.js')(app, server);
 require('./routes/CompanyRoutes.js')(app, server);
 require('./routes/ManufacturerRoutes.js')(app, server);
 require('./routes/BrandRoutes.js')(app, server);
 require('./routes/productRoutes.js')(app, server);
 //require('./routes/productCategoryRoutes.js')(app, server);
-require('./routes/voucherRoutes.js')(app, server);
 require('./routes/EmployeeRoutes.js')(app, server);
 require('./routes/SerialNoGenRoutes.js')(app, server);
 require('./routes/TxnstypeRoutes.js')(app, server);
 require('./routes/BankRoutes.js')(app, server);
-require('./routes/cardTypeRoutes.js')(app, server);
-require('./routes/voucherRoutes.js')(app, server);
+require('./routes/CardTypeRoutes.js')(app, server);
+require('./routes/VoucherRoutes.js')(app, server);
+require('./routes/StoreRoutes.js')(app, server);
 require('./routes/CcyRoutes.js')(app, server);
 require('./routes/DesignationRoutes.js')(app, server);
 

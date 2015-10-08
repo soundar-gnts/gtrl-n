@@ -15,7 +15,12 @@
  */
 
 var state = require('../models/State.js');
-
+var log = require('../config/logger').logger;
+var response = {
+		status	: Boolean,
+		message : String,
+		data	: String
+};
 
 //SaveOrUpdate State Details
 
@@ -27,19 +32,28 @@ var state = require('../models/State.js');
 			last_updated_dt		: new Date(),
 			last_updated_by		: req.param('lastupdatedby') 
 			})
-			.error(function(err){
-				res.send(err);
+			.then(function(data){
+				if(data){
+					log.info('State saved successfully.');
+					response.message = 'State saved successfully.';
+					response.status  = true;
+					res.send(response);
+				}
+				else{
+					log.info('State Updated successfully.');
+					response.message = 'State Updated successfully.';
+					response.status  = true;
+					res.send(response);
+				}
+				
+			}).error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= 'Internal error.';
+				response.data  		= err;
+				res.send(response);
 			});
-		console.log(req.param('stateid'));
-		if( req.param('stateid') == null)
-			{
-			res.send("Inserted Successfully ");
-			}
-		else
-			{
-			res.send("Updated Successfully");
-			}
-	} 
+	}; 
 
 //State full LIST
 
@@ -49,18 +63,18 @@ var state = require('../models/State.js');
 		var stateName	= req.param("statename");
 		var status		= req.param("status");
 		
-		if(stateId!=null){
+		if(stateId!==null){
 			condition ="state_id="+stateId;
 			}
 		
-		if(status!=null){
+		if(status!==null){
 			if(condition === ""){
 				condition="status='"+status+"'";
 			}else {
 				condition=condition+" and status='"+status+"'";
 			}
 		}
-		if(stateName!=null){
+		if(stateName!==null){
 			if(condition === ""){
 				condition="state_name='"+stateName+"'";
 			}else {
@@ -68,11 +82,29 @@ var state = require('../models/State.js');
 			}
 			
 		}
-		state.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]}).then(function(err, result) {
-			if(err)
-				res.send(err);
-			else
-				res.send(result);
-		});
-		}
+		state.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		  .then(function(statelist){
+				if(statelist.length === 0){
+					
+					log.info('No data found.');
+					response.message = 'No data found.';
+					response.status  = false;
+					res.send(response);
+				} else{
+					
+					log.info('About '+statelist.length+' results.');
+					response.status  	= true;
+					response.message 	= 'About '+statelist.length+' results.';
+					response.data 		= statelist;
+					res.send(response);
+				}
+			})
+			.error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= 'Internal error.';
+				response.data  		= err;
+				res.send(response);
+			});
+		};
 

@@ -20,7 +20,7 @@ var storeService= require('../services/StoreService.js');
 module.exports = function(app, server){
 	app.post('/getstorelist', storeService.getStoreList);
 	app.post('/getstoreregionlist', storeService.getStoreRegionList);
-	//app.post('/saveorupdatevoucher', m_voucher_service.saveOrUpdateVoucher);
+	app.post('/saveorupdatestore', storeService.saveOrUpdateStore);
 	
 }
 

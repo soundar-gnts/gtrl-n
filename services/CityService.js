@@ -14,13 +14,19 @@
  * 
  */
 
+var log = require('../config/logger').logger;
 var city = require('../models/City.js');
+var response = {
+		status	: Boolean,
+		message : String,
+		data	: String
+};
 	
 
 //SaveOrUpdate City Details
 
 	exports.saveOrUpdateCity = function(req, res){
-		city.create({
+		city.upsert({
 			
 			city_id			: req.param('cityid'),
 			city_name		: req.param('cityname'),
@@ -29,20 +35,28 @@ var city = require('../models/City.js');
 			last_updated_dt	: new Date(),
 	        last_updated_by	: req.param('lastupdatedby')
 			})
-			
-			.error(function(err){
-				res.send(err);
+			.then(function(data){
+				if(data){
+					log.info('City saved successfully.');
+					response.message = 'City saved successfully.';
+					response.status  = true;
+					res.send(response);
+				}
+				else{
+					log.info('City Updated successfully.');
+					response.message = 'City Updated successfully.';
+					response.status  = true;
+					res.send(response);
+				}
+				
+			}).error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= 'Internal error.';
+				response.data  		= err;
+				res.send(response);
 			});
-		
-			if(req.param('cityid') == null)
-			{
-			res.send("Inserted Successfully ");
-			}
-			else
-			{
-			res.send("Updated Successfully");
-			}
-	} 
+	}; 
 
 	//City Full LIST
 
@@ -54,10 +68,10 @@ var city = require('../models/City.js');
 		var status		= req.param("status");
 		var stateId		= req.param("stateid");
 		
-		if(cityId!=null){
+		if(cityId!==null){
 			condition ="city_id="+cityId;
 			}
-		if(stateId!=null){
+		if(stateId!==null){
 			if(condition === ""){
 				condition="state_id ='"+stateId+"'";
 			}else {
@@ -65,7 +79,7 @@ var city = require('../models/City.js');
 			}
 		}
 		
-		if(status!=null){
+		if(status!==null){
 			if(condition === ""){
 				condition="status='"+status+"'";
 			}else {
@@ -73,7 +87,7 @@ var city = require('../models/City.js');
 			}
 		}
 		
-		if(cityName!=null){
+		if(cityName!==null){
 			if(condition === ""){
 				condition="city_name like '%"+cityName+"%'";
 			}else {
@@ -82,10 +96,28 @@ var city = require('../models/City.js');
 			
 		}
 
-		  city.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]}).then(function(err, result) {
-		        if(err)
-		            res.send(err);
-		        else
-		            res.send(result);
-		    }); 
-		}
+		  city.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		  .then(function(citylist){
+				if(citylist.length === 0){
+					
+					log.info('No data found.');
+					response.message = 'No data found.';
+					response.status  = false;
+					res.send(response);
+				} else{
+					
+					log.info('About '+citylist.length+' results.');
+					response.status  	= true;
+					response.message 	= 'About '+citylist.length+' results.';
+					response.data 		= citylist;
+					res.send(response);
+				}
+			})
+			.error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= 'Internal error.';
+				response.data  		= err;
+				res.send(response);
+			});
+		};

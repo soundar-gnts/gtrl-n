@@ -22,5 +22,5 @@
 		app.post('/saveorupdatecardtype', cardTypeService.saveOrUpdateCardType);
 		app.post('/getcardtypelist', cardTypeService.getCardTypeList);
 		
-	}
+	};
 

@@ -22,5 +22,5 @@ module.exports = function(app, server){
 	app.post('/getcitylist', cityService.getCityList);
 	app.post('/saveorupdatecity', cityService.saveOrUpdateCity);
 	
-}
+};
 

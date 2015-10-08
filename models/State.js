@@ -1,5 +1,5 @@
 /**
- * File Name	:	m_state.js
+ * File Name	:	State.js
  * Description	:	To create schema for state.
  * Author		:	Saranya G
  * Date			:	Oct 03 2015

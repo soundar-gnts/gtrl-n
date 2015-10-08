@@ -21,17 +21,15 @@ var voucherType = require('../models/VoucherType.js');
 
 	exports.saveOrUpdateVoucher = function(req, res){
 		
-		voucherType.upsert(function(doc){
-			doc={
-		
+		voucherType.upsert(
+			{
 			voucher_type_id			: req.param('vouchertypeid'),
 			company_id				: req.param('companyid'),
 			voucher_type_name		: req.param('vouchertypename'),
 			status    				: req.param('status'),
-			last_updated_dt			: new Date(),
-	        last_updated_by			: req.param('lastupdatedby')}
-	       
-			console.log(doc);
+			last_updated_dt			: req.param('lastupdateddt'),
+	        last_updated_by			: req.param('lastupdatedby')
+	
 			})
 
 				.then(function(v){
