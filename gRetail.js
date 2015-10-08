@@ -48,7 +48,7 @@ require('./routes/CityRoutes.js')(app, server);
 require('./routes/CompanyRoutes.js')(app, server);
 require('./routes/ManufacturerRoutes.js')(app, server);
 require('./routes/BrandRoutes.js')(app, server);
-require('./routes/productRoutes.js')(app, server);
+require('./routes/ProductRoutes.js')(app, server);
 //require('./routes/productCategoryRoutes.js')(app, server);
 require('./routes/EmployeeRoutes.js')(app, server);
 require('./routes/SerialNoGenRoutes.js')(app, server);
@@ -59,6 +59,8 @@ require('./routes/VoucherRoutes.js')(app, server);
 require('./routes/StoreRoutes.js')(app, server);
 require('./routes/CcyRoutes.js')(app, server);
 require('./routes/DesignationRoutes.js')(app, server);
+require('./routes/CustomerRoutes.js')(app, server);
+
 
 server.listen(app.get('port'), function(){
 	  console.log('Express server listening on port ' + app.get('port'));
