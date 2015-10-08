@@ -17,7 +17,7 @@
 
 var log = require('../config/logger').logger;
 var User = require('../models/user.js');
-var Customer = require('../models/customer.js');
+var Customer = require('../models/Customer.js');
 var response = {
 		status	: Boolean,
 		message : String

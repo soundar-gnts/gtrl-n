@@ -1,5 +1,5 @@
 /**
- * @Filename	:	m_slno_gen.js
+ * @Filename	:	SlnoGen.js
  * @Description	:	To write Model Object for m_slno_gen table.
  * @Author		:	SOUNDAR C
  * @Date		:	October 06, 2015

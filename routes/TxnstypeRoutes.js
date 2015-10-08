@@ -14,9 +14,9 @@
  * 
  * 
  */
-var m_txns_type_service = require('../services/m_txns_type_service.js');
+var txnsTypeService = require('../services/TxnsTypeService.js');
 module.exports = function(app, server) {
-	app.post('/gettxnstypedetails', m_txns_type_service.getTxnsTypeDetails);
-	app.post('/savetxnstype', m_txns_type_service.saveTxnsType);
+	app.post('/gettxnstypedetails', txnsTypeService.getTxnsTypeDetails);
+	app.post('/savetxnstype', txnsTypeService.saveTxnsType);
 }
 

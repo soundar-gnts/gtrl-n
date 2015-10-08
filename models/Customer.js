@@ -1,5 +1,5 @@
 /**
- * File Name	:	customer.js
+ * File Name	:	Customer.js
  * Description	:	To write Model Object For Customer.
  * Author		:	Haris K.A.
  * Date			:	October 03, 2015

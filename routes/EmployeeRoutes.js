@@ -14,9 +14,9 @@
  * 
  * 
  */
-var m_employee_service = require('../services/m_employee_service.js');
+var employeeService = require('../services/EmployeeService.js');
 module.exports = function(app, server) {
-	app.post('/getemployeedetails', m_employee_service.getEmployeeDetails);
-	app.post('/saveemployee', m_employee_service.saveEmployee);
+	app.post('/getemployeedetails', employeeService.getEmployeeDetails);
+	app.post('/saveemployee', employeeService.saveEmployee);
 }
 

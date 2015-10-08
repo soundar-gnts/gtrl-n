@@ -1,8 +1,8 @@
 /**
- * @Filename	:	m_txns_type.js
- * @Description	:	To write Model Object for m_txns_type table.
+ * @Filename	:	ProdBrand.js
+ * @Description	:	To write Model Object for m_prod_brand table.
  * @Author		:	SOUNDAR C
- * @Date		:	October 06, 2015
+ * @Date		:	October 05, 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
  * All rights reserved.   
@@ -17,16 +17,16 @@
 
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
-var txnstype = model.define('m_txns_type', {
+var productbrand = model.define('m_prod_brand', {
 
-	trans_type_id : {
+	prod_brand_id : {
 		type : dataTypes.INTEGER,
 		primaryKey : true,
 		autoIncrement : true
 	},
+	prod_id				: dataTypes.INTEGER,
+	brand_id 			: dataTypes.INTEGER,
 	company_id 			: dataTypes.INTEGER,
-	trans_type_name 	: dataTypes.STRING,
-	cr_dr 				: dataTypes.STRING,
 	status 				: dataTypes.STRING,
 	last_updated_dt 	: dataTypes.DATE,
 	last_updated_by 	: dataTypes.STRING
@@ -34,6 +34,6 @@ var txnstype = model.define('m_txns_type', {
 }, {
 	timestamps : false,
 	freezeTableName : true,
-	tableName : 'm_txns_type'
+	tableName : 'm_prod_brand'
 });
-module.exports = txnstype;
+module.exports = productbrand;

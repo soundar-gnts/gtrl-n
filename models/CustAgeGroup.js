@@ -1,5 +1,5 @@
 /**
- * @Filename	:	m_cust_age_group.js
+ * @Filename	:	CustAgeGroup.js
  * @Description	:	To write Model Object for m_cust_age_group table.
  * @Author		:	SOUNDAR C
  * @Date		:	October 07, 2015

@@ -13,7 +13,7 @@
  * 
  * 
  */
-var slnogen = require('../models/m_slno_gen.js');
+var slnogen = require('../models/SlnoGen.js');
 
 // To get full Serial No Generation List
 exports.getSlnoGenDetails = function(req, res) {

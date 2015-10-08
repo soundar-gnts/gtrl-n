@@ -1,5 +1,5 @@
 /**
- * @Filename 		: m_txns_type_service.js 
+ * @Filename 		: TxnsTypeService.js 
  * @Description 	: To write Business Logic for transaction type. 
  * @Author 			: SOUNDAR C 
  * @Date 			: October 03, 2015
@@ -13,7 +13,7 @@
  * 
  * 
  */
-var txnstype = require('../models/m_txns_type.js');
+var txnstype = require('../models/TxnsType.js');
 
 // To get full Transaction Type List
 exports.getTxnsTypeDetails = function(req, res) {

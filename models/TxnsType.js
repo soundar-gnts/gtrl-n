@@ -1,8 +1,8 @@
 /**
- * @Filename	:	m_product_spec.js
- * @Description	:	To write Model Object for m_product_spec table.
+ * @Filename	:	TxnsType.js
+ * @Description	:	To write Model Object for m_txns_type table.
  * @Author		:	SOUNDAR C
- * @Date		:	October 05, 2015
+ * @Date		:	October 06, 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
  * All rights reserved.   
@@ -17,24 +17,23 @@
 
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
-var productspec = model.define('m_product_spec', {
+var txnstype = model.define('m_txns_type', {
 
-	prod_spec_id : {
+	trans_type_id : {
 		type : dataTypes.INTEGER,
 		primaryKey : true,
 		autoIncrement : true
 	},
-
-	prod_id 		: dataTypes.INTEGER,
-	spec_name 		: dataTypes.STRING,
-	spec_value 		: dataTypes.STRING,
-	status 			: dataTypes.STRING,
-	last_updated_dt : dataTypes.DATE,
-	last_updated_by : dataTypes.STRING
+	company_id 			: dataTypes.INTEGER,
+	trans_type_name 	: dataTypes.STRING,
+	cr_dr 				: dataTypes.STRING,
+	status 				: dataTypes.STRING,
+	last_updated_dt 	: dataTypes.DATE,
+	last_updated_by 	: dataTypes.STRING
 
 }, {
 	timestamps : false,
 	freezeTableName : true,
-	tableName : 'm_product_spec'
+	tableName : 'm_txns_type'
 });
-module.exports = productspec;
+module.exports = txnstype;

@@ -1,5 +1,5 @@
 /**
- * @Filename	:	m_product.js
+ * @Filename	:	Product.js
  * @Description	:	To write Model Object for m_product table.
  * @Author		:	SOUNDAR C
  * @Date		:	October 03, 2015

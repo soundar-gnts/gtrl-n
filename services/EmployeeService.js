@@ -13,7 +13,7 @@
  * 
  * 
  */
-var employee = require('../models/m_employee.js');
+var employee = require('../models/Employee.js');
 var user = require('../models/user.js');
 
 // To get full Employee List

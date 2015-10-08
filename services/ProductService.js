@@ -1,5 +1,5 @@
 /**
- * @Filename 		: m_product_service.js 
+ * @Filename 		: ProductService.js 
  * @Description 	: To write Business Logic for product. 
  * @Author 			: SOUNDAR C 
  * @Date 			: October 03, 2015
@@ -14,13 +14,13 @@
  * 
  */
 
-var product = require('../models/m_product.js');
-var productspec = require('../models/m_product_spec.js');
-var productimage = require('../models/m_product_image.js');
-var productbrand = require('../models/m_prod_brand.js');
+var product = require('../models/Product.js');
+var productspec = require('../models/ProductSpec.js');
+var productimage = require('../models/ProductImage.js');
+var productbrand = require('../models/ProdBrand.js');
 
 // To save product details
-exports.saveproduct = function(req, res) {
+exports.saveProduct = function(req, res) {
 	product.create({
 		prod_id			: req.param('prodid'),
 		company_id		: req.param('companyid'),

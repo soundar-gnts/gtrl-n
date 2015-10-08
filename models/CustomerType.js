@@ -1,5 +1,5 @@
 /**
- * @Filename	:	m_customer_type.js
+ * @Filename	:	CustomerType.js
  * @Description	:	To write Model Object for m_customer_type table.
  * @Author		:	SOUNDAR C
  * @Date		:	October 07, 2015

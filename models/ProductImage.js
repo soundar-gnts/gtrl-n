@@ -1,8 +1,8 @@
 /**
- * @Filename	:	m_employee.js
- * @Description	:	To write Model Object for m_employee table.
+ * @Filename	:	ProductImage.js
+ * @Description	:	To write Model Object for m_product_image table.
  * @Author		:	SOUNDAR C
- * @Date		:	October 06, 2015
+ * @Date		:	October 05, 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
  * All rights reserved.   
@@ -17,32 +17,26 @@
 
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
-var employee = model.define('m_employee', {
+var productimage = model.define('m_product_image', {
 
-	employee_id : {
+	product_image_id : {
 		type : dataTypes.INTEGER,
 		primaryKey : true,
 		autoIncrement : true
 	},
 
+	prod_id 			: dataTypes.INTEGER,
 	company_id 			: dataTypes.INTEGER,
-	employee_code 		: dataTypes.STRING,
-	first_name 			: dataTypes.STRING,
-	last_name 			: dataTypes.STRING,
-	primary_phone 		: dataTypes.STRING,
-	dob 				: dataTypes.DATE,
-	gender 				: dataTypes.STRING,
-	department 			: dataTypes.STRING,
 	store_id 			: dataTypes.INTEGER,
-	rm_employee_id 		: dataTypes.INTEGER,
-	user_id 			: dataTypes.INTEGER,
+	product_image 		: dataTypes.STRING,
 	status 				: dataTypes.STRING,
-	last_updated_dt 	: dataTypes.DATE,
-	last_updated_by 	: dataTypes.STRING
+	lastupdated_by 		: dataTypes.STRING,
+	lastupdated_date 	: dataTypes.DATE,
+	//prod_cat_id 		: dataTypes.INTEGER
 
 }, {
 	timestamps : false,
 	freezeTableName : true,
-	tableName : 'm_employee'
+	tableName : 'm_product_image'
 });
-module.exports = employee;
+module.exports = productimage;

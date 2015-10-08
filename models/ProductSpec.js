@@ -1,6 +1,6 @@
 /**
- * @Filename	:	m_product_image.js
- * @Description	:	To write Model Object for m_product_image table.
+ * @Filename	:	ProductSpec.js
+ * @Description	:	To write Model Object for m_product_spec table.
  * @Author		:	SOUNDAR C
  * @Date		:	October 05, 2015
  * 
@@ -17,26 +17,24 @@
 
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
-var productimage = model.define('m_product_image', {
+var productspec = model.define('m_product_spec', {
 
-	product_image_id : {
+	prod_spec_id : {
 		type : dataTypes.INTEGER,
 		primaryKey : true,
 		autoIncrement : true
 	},
 
-	prod_id 			: dataTypes.INTEGER,
-	company_id 			: dataTypes.INTEGER,
-	store_id 			: dataTypes.INTEGER,
-	product_image 		: dataTypes.STRING,
-	status 				: dataTypes.STRING,
-	lastupdated_by 		: dataTypes.STRING,
-	lastupdated_date 	: dataTypes.DATE,
-	//prod_cat_id 		: dataTypes.INTEGER
+	prod_id 		: dataTypes.INTEGER,
+	spec_name 		: dataTypes.STRING,
+	spec_value 		: dataTypes.STRING,
+	status 			: dataTypes.STRING,
+	last_updated_dt : dataTypes.DATE,
+	last_updated_by : dataTypes.STRING
 
 }, {
 	timestamps : false,
 	freezeTableName : true,
-	tableName : 'm_product_image'
+	tableName : 'm_product_spec'
 });
-module.exports = productimage;
+module.exports = productspec;
