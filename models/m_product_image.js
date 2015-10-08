@@ -32,7 +32,7 @@ var productimage = model.define('m_product_image', {
 	status 				: dataTypes.STRING,
 	lastupdated_by 		: dataTypes.STRING,
 	lastupdated_date 	: dataTypes.DATE,
-	prod_cat_id 		: dataTypes.INTEGER
+	//prod_cat_id 		: dataTypes.INTEGER
 
 }, {
 	timestamps : false,

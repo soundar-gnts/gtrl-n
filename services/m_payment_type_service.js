@@ -34,12 +34,12 @@ exports.saveOrUpdatePymentType = function(req, res){
 	}).then(function(data){
 		if(data){
 			log.info('Successfully Inserted.');
-			response.message = 'Successfully Inserted.';
+			response.message = 'Payment Type Saved Successfully.';
 			response.status  = true;
 			res.send(response);
 		} else{
 			log.info('Successfully Editted.');
-			response.message = 'Successfully Editted.';
+			response.message = 'Payment Type Updated Successfully.';
 			response.status  = true;
 			res.send(response);
 		}

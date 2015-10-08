@@ -87,7 +87,7 @@ exports.saveproduct = function(req, res) {
 				status 				: req.param('prodimagelist')[i].status,
 				lastupdated_by 		: req.param('prodimagelist')[i].lastupdatedby,
 				lastupdated_date	: req.param('prodimagelist')[i].lastupdateddate,
-				prod_cat_id			: req.param('prodimagelist')[i].prodcatid
+				//prod_cat_id			: req.param('prodimagelist')[i].prodcatid
 				
 			}).error(function(err) {
 				res.send(err);
@@ -170,13 +170,13 @@ exports.getProductsList=function(req,res){
 			condition=condition+" and brand_id='"+brandid+"'";
 		}
 	}
-	if(prodcatid!=null){
+	/*if(prodcatid!=null){
 		if(condition === ""){
 			condition="prod_cat_id='"+prodcatid+"'";
 		}else {
 			condition=condition+" and prod_cat_id='"+prodcatid+"'";
 		}
-	}
+	}*/
 	if(status!=null){
 		if(condition === ""){
 			condition="status='"+status+"'";

@@ -1,5 +1,5 @@
 /**
- * File Name	:	m_company.js
+ * File Name	:	Company.js
  * Description	:	To write Model Object For Company.
  * Author		:	Haris K.A.
  * Date			:	October 03, 2015

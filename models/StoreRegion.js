@@ -1,5 +1,5 @@
 /**
- * @Filename	:	m_store_region.js
+ * @Filename	:	StoreRegion.js
  * @Description	:	To write Model Object for m_store_region table.
  * @Author		:	Saranya G
  * @Date		:	October 06, 2015

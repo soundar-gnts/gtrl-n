@@ -14,9 +14,9 @@
  * 
  */
 
-var m_brand_service = require('../services/m_brand_service.js');
+var brandservice = require('../services/BrandService.js');
 
 module.exports = function(app, server){
-	app.post('/getbranddetails', m_brand_service.getBrandDetails);
-	app.post('/savebranddetails', m_brand_service.saveBrandDetails);
+	app.post('/getbranddetails', brandservice.getBrandDetails);
+	app.post('/savebranddetails', brandservice.saveBrandDetails);
 }

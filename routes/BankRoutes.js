@@ -14,11 +14,10 @@
  * 
  */
 
-var m_bank_service = require('../services/m_bank_service.js');
+var bankservice = require('../services/BankService.js');
 
 module.exports = function(app, server){
-	app.post('/getbankdetails', m_bank_service.getBankDetails);
-app.post('/getbankbranchdetails', m_bank_service.getBankBranchDetails);
-
-	app.post('/savebankdetails', m_bank_service.saveBankDetails);
+	app.post('/getbankdetails', bankservice.getBankDetails);
+	app.post('/getbankbranchdetails', bankservice.getBankBranchDetails);
+	app.post('/savebankdetails', bankservice.saveBankDetails);
 }

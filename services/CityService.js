@@ -1,5 +1,5 @@
 /**
- * File Name	:	m_city_service.js
+ * File Name	:	CityService.js
  * Description	:	To write Business Logic For User.
  * Author		:	Saranya G
  * Date			:	October 05, 2015
@@ -14,13 +14,13 @@
  * 
  */
 
-var city = require('../models/m_city.js');
+var city = require('../models/City.js');
 	
 
 //SaveOrUpdate City Details
 
 	exports.saveOrUpdateCity = function(req, res){
-		city.upsert({
+		city.create({
 			
 			city_id			: req.param('cityid'),
 			city_name		: req.param('cityname'),

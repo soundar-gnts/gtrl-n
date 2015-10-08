@@ -14,7 +14,7 @@
  * 
  */
 
-var manufac = require('../models/m_manufacturer.js');
+var manufac = require('../models/Manufacturer.js');
 
 // To get full Manufacturer List
 exports.getmanufactDetails = function(req, res) {

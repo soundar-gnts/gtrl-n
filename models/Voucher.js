@@ -1,5 +1,5 @@
 /**
- * @Filename	:	m_voucher.js
+ * @Filename	:	Voucher.js
  * @Description	:	To write Model Object for m_voucher table.
  * @Author		:	Saranya G
  * @Date		:	October 06, 2015

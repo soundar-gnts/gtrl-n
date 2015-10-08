@@ -85,7 +85,7 @@ exports.getEmployeeDetails = function(req, res) {
 
 // To Save Employee
 exports.saveEmployee= function(req, res) {
-	employee.create({
+	employee.upsert({
 		employee_id			: req.param("employeeid"),
 		company_id			: req.param("companyid"),
 		employee_code 		: req.param("employeecode"),
@@ -103,7 +103,7 @@ exports.saveEmployee= function(req, res) {
 		last_updated_by 	: req.param("lastupdatedby")
 	})
 	.then(function(p) {
-		user.create({
+		user.upsert({
 			login_id		: p.first_name,
 			user_name		: p.first_name+' '+p.last_name,
 			login_pwd		: 'user',

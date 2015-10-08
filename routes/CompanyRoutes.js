@@ -14,9 +14,9 @@
  * 
  */
 
-var m_company_service = require('../services/m_company_service.js');
+var companyservice = require('../services/CompanyService.js');
 
 module.exports = function(app, server){
-	app.post('/getcompanydetails', m_company_service.getcompanyDetails);
-	app.post('/savecompanydetails', m_company_service.saveCompanyDetails);
+	app.post('/getcompanydetails', companyservice.getcompanyDetails);
+	app.post('/savecompanydetails', companyservice.saveCompanyDetails);
 }

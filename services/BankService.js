@@ -1,5 +1,5 @@
 /**
- * @Filename 		: m_bank_service.js 
+ * @Filename 		: BankService.js 
  * @Description 	: To write Business Logic for Bank. 
  * @Author 			: Arun Jeyaraj R
  * @Date 			: October 05, 2015
@@ -14,8 +14,8 @@
  * 
  */
 
-var bank = require('../models/m_bank.js');
-var bankBranch = require('../models/m_bank_branch.js');
+var bank = require('../models/Bank.js');
+var bankBranch = require('../models/BankBranch.js');
 
 // To Get Bank full LIST
 exports.getBankDetails = function(req, res) {
@@ -174,7 +174,7 @@ exports.saveBankDetails = function(req,res){
 				company_id :req.param("companyid"),
 				status 	   :req.param("status"),
 				last_updated_dt:req.param("updateddate"),
-				last_updated_by:req.param("updatedby")} ).then(function(err){
+				last_updated_by:req.param("updatedby")} ).then(function(err,a,b){
 					
 	
 			for(var i=0;i<req.param('bankbranchlist').length;i++){

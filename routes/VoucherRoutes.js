@@ -15,7 +15,7 @@
  * 
  */
 
-var m_voucher_service= require('../services/m_voucher_service.js');
+var m_voucher_service= require('../services/VoucherService.js');
 
 module.exports = function(app, server){
 	app.post('/getvoucherlist', m_voucher_service.getVoucherList);

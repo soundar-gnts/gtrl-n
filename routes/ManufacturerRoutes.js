@@ -14,9 +14,9 @@
  * 
  */
 
-var m_manufacturer_service = require('../services/m_manufacturer_service.js');
+var manufacturerservice = require('../services/ManufacturerService.js');
 
 module.exports = function(app, server){
-	app.post('/getmanufactdetails', m_manufacturer_service.getmanufactDetails);
-	app.post('/savemanufacdetails', m_manufacturer_service.saveManufacDetails);
+	app.post('/getmanufactdetails', manufacturerservice.getmanufactDetails);
+	app.post('/savemanufacdetails', manufacturerservice.saveManufacDetails);
 }

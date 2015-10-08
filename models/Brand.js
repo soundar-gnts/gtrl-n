@@ -1,5 +1,5 @@
 /**
- * File Name	:	m_brand.js
+ * File Name	:	Brand.js
  * Description	:	To write Model Object For Brand.
  * Author		:	Arun Jeyaraj R
  * Date			:	October 05, 2015

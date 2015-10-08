@@ -14,7 +14,7 @@
  * 
  */
 
-var brand = require('../models/m_brand.js');
+var brand = require('../models/Brand.js');
 
 // To Brand full LIST
 exports.getBrandDetails = function(req, res) {

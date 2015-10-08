@@ -1,5 +1,5 @@
 /**
- * File Name	:	m_voucher_service.js
+ * File Name	:	VoucherService.js
  * Description	:	To write Business Logic For User.
  * Author		:	Saranya G
  * Date			:	October 06, 2015
@@ -14,8 +14,8 @@
  * 
  */
 
-var voucher 	= require('../models/m_voucher.js');
-var voucherType = require('../models/m_voucher_type.js');
+var voucher 	= require('../models/Voucher.js');
+var voucherType = require('../models/VoucherType.js');
 
 //SaveOrUpdate Voucher and VoucherType Details
 

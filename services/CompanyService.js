@@ -14,7 +14,7 @@
  * 
  */
 
-var company = require('../models/m_company.js');
+var company = require('../models/Company.js');
 
 // To Company full LIST
 exports.getcompanyDetails = function(req, res) {

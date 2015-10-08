@@ -1,5 +1,5 @@
 /**
- * File Name	:	m_state_service.js
+ * File Name	:	StateService.js
  * Description	:	To write Business Logic For User.
  * Author		:	Saranya G
  * Date			:	October 05, 2015
@@ -14,7 +14,7 @@
  *  0.1  	October 07, 2015         Saranya G
  */
 
-var state = require('../models/m_state.js');
+var state = require('../models/State.js');
 
 
 //SaveOrUpdate State Details

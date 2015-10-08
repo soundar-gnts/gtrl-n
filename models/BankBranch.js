@@ -1,5 +1,5 @@
 /**
- * @Filename	:	m_bank_branch.js
+ * @Filename	:	BankBranch.js
  * @Description	:	To write Model Object for m_bank_branch table.
  * @Author		:	Arun Jeyaraj R
  * @Date		:	October 06, 2015

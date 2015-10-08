@@ -1,5 +1,5 @@
 /**
- * File Name	:	m_card_type_service.js
+ * File Name	:	CardTypeService.js
  * Description	:	To write Business Logic For User.
  * Author		:	Saranya G
  * Date			:	October 07, 2015
@@ -14,7 +14,7 @@
  * 
  */
 
-var cardtype = require('../models/m_card_type.js');
+var cardtype = require('../models/CardType.js');
 
 
 //SaveOrUpdate Cardtype Details

@@ -1,5 +1,5 @@
 /**
- * File Name	:	cardTypeRoutes.js
+ * File Name	:	CardTypeRoutes.js
  * Description	:	To write Routing middlewares For Cardtype.
  * Author		:	Saranya G
  * Date			:	October 07, 2015
@@ -15,7 +15,7 @@
  * 
  */
 
-	var cardTypeService = require('../services/m_card_type.service.js');
+	var cardTypeService = require('../services/CardTypeService.js');
 	
 	module.exports = function(app, server){
 				

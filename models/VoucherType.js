@@ -1,6 +1,6 @@
 /**
- * @Filename	:	m_card_type.js
- * @Description	:	To write Model Object for m_card_type table.
+ * @Filename	:	VoucherType.js
+ * @Description	:	To write Model Object for m_voucher_type table.
  * @Author		:	Saranya G
  * @Date		:	October 06, 2015
  * 
@@ -17,26 +17,22 @@
 
 	var model = require('../config/sequelize.js');
 	var dataTypes = require('sequelize');
-	var cardType = model.define('m_card_type', {
+	var voucherType = model.define('m_voucher_type', {
 	
-		card_type_id : {
-			
-			type			: dataTypes.INTEGER,
-			primaryKey 		: true,
-			autoIncrement 	: true
+		voucher_type_id : {
+			type : dataTypes.INTEGER,
+			primaryKey : true,
+			autoIncrement : true
 		},
-		
 		company_id 			: dataTypes.INTEGER,	
-		card_type 			: dataTypes.STRING,	
-		service_charge		: dataTypes.INTEGER,
+		voucher_type_name 	: dataTypes.STRING,	
 		status 				: dataTypes.STRING,
 		last_updated_dt 	: dataTypes.DATE,
 		last_updated_by 	: dataTypes.STRING
 	
 	}, {
-		
-		timestamps			 : false,
-		freezeTableName 	 : true,
-		tableName 			 : 'm_card_type'
+		timestamps : false,
+		freezeTableName : true,
+		tableName : 'm_voucher_type'
 	});
-	module.exports = cardType;
+	module.exports = voucherType;

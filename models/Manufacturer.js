@@ -1,5 +1,5 @@
 /**
- * File Name	:	m_manufacturer.js
+ * File Name	:	Manufacturer.js
  * Description	:	To write Model Object For Manufacturer.
  * Author		:	Arun Jeyaraj R
  * Date			:	October 05, 2015

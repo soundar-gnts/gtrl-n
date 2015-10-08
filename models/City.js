@@ -1,5 +1,5 @@
 /**
- * File Name	:	m_city.js
+ * File Name	:	City.js
  * Description	:	To create schema for state.
  * Author		:	Saranya G
  * Date			:	Oct 05 2015

@@ -1,5 +1,5 @@
 /**
- * File Name	:	cityRoutes.js
+ * File Name	:	StateRoutes.js
  * Description	:	To write Routing middlewares For User.
  * Author		:	Saranya G
  * Date			:	October 05, 2015
@@ -10,17 +10,17 @@
  * This software is the confidential and proprietary information 
  * of GNTS Technologies Pvt. Ltd.
  * 
- *  Version       Date           	Modified By             Remarks
+ * Version       Date           	Modified By             Remarks
  * 
  * 
  */
 
-var cityService = require('../services/m_city_service.js');
+var stateService= require('../services/StateService.js');
 
 module.exports = function(app, server){
 	
-	app.post('/getcitylist', cityService.getCityList);
-	app.post('/saveorupdatecity', cityService.saveOrUpdateCity);
+	app.post('/getstatelist', stateService.getStateList);	
+	app.post('/saveorupdatestate', stateService.saveOrUpdateState);
 	
 }
 

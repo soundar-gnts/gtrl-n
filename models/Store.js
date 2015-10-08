@@ -1,5 +1,5 @@
 /**
- * @Filename	:	m_store.js
+ * @Filename	:	Store.js
  * @Description	:	To write Model Object for m_store table.
  * @Author		:	Saranya G
  * @Date		:	October 06, 2015
