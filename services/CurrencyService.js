@@ -1,5 +1,5 @@
 /**
- * @Filename 		: m_ccy_service.js 
+ * @Filename 		: CurrencyService.js 
  * @Description 	: To write Business Logic for Currency. 
  * @Author 			: Arun Jeyaraj R
  * @Date 			: October 05, 2015
@@ -14,7 +14,7 @@
  * 
  */
 
-var ccy = require('../models/m_ccy.js');
+var ccy = require('../models/Currency.js');
 
 // To Get Bank full LIST
 exports.getCcyDetails = function(req, res) {
@@ -77,12 +77,11 @@ exports.saveCcyDetails = function(req,res){
 				status 	   :req.param("status"),
 				last_updated_dt:req.param("updateddate"),
 				last_updated_by:req.param("updatedby")} ).then(function(err){
-						if(req.param("ccyid")=== undefined){
-						res.send("Added Succesfully");}else{
-							res.send("Updated Succesfully");
+						if(err){
+						res.send("Currency Added Succesfully");}else{
+							res.send("Currency Updated Succesfully");
 						}
 					
 				})
 }
 					
-	

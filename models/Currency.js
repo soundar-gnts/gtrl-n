@@ -1,6 +1,6 @@
 /**
- * @Filename	:	m_ccy
- * @Description	:	To write Model Object for m_ccy table.
+ * @Filename	:	Currency.js
+ * @Description	:	To write Model Object for Currency table.
  * @Author		:	Arun Jeyaraj R
  * @Date		:	October 08, 2015
  * 

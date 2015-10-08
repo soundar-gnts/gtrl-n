@@ -14,7 +14,7 @@
  * 
  */
 
-var m_designation_service = require('../services/m_designation_service.js');
+var m_designation_service = require('../services/DesignationService.js');
 
 module.exports = function(app, server){
 	app.post('/getdesigndetails', m_designation_service.getDesignDetails);

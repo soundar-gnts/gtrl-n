@@ -14,7 +14,7 @@
  * 
  */
 
-var m_ccy_service = require('../services/m_ccy_service.js');
+var m_ccy_service = require('../services/CurrencyService.js');
 
 module.exports = function(app, server){
 	app.post('/getccydetails', m_ccy_service.getCcyDetails);

@@ -1,5 +1,5 @@
 /**
- * @Filename 		: m_company_service.js 
+ * @Filename 		: CompanyService.js 
  * @Description 	: To write Business Logic for Company. 
  * @Author 			: Arun Jeyaraj R
  * @Date 			: October 05, 2015
@@ -96,14 +96,12 @@ exports.saveCompanyDetails = function(req,res){
 		city_id :req.param("cityid"),
 		last_updated_dt:req.param("updateddate"),
 		last_updated_by:req.param("updatedby"),
-	}).error(function(err){
-		res.send(err);
-	});	
-	if(req.param("companyid")==undefined){
-		res.send('Successfully Added.'); 
-		}else{
-			res.send('Successfully Updated.'); 
-
-	}
+	}).then(function(err){
+		if(err){
+			res.send("Company Added Succesfully");}else{
+				res.send("Company Updated Succesfully");
+			}
+		
+	})
 }
-
+		

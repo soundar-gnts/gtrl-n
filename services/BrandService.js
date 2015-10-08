@@ -1,5 +1,5 @@
 /**
- * @Filename 		: m_brand_service.js 
+ * @Filename 		: BrandService.js 
  * @Description 	: To write Business Logic for Company. 
  * @Author 			: Arun Jeyaraj R
  * @Date 			: October 05, 2015
@@ -67,12 +67,12 @@ exports.saveBrandDetails = function(req,res){
 		status 	   :req.param("status"),
 		last_updated_dt:req.param("updateddate"),
 		last_updated_by:req.param("updatedby"),
-	}).error(function(err){
-		res.send(err);
-	});
-	if(req.param("brandid")===null){
-	res.send('Successfully Added.');}else{
-		res.send('Successfully Updated.');
-	}
+	}).then(function(err){
+		if(err){
+			res.send("Brand Added Succesfully");}else{
+				res.send("Brand Updated Succesfully");
+			}
+		
+	})
 }
-
+		

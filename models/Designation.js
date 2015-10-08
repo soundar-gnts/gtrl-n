@@ -1,6 +1,6 @@
 /**
- * @Filename	:	m_designation
- * @Description	:	To write Model Object for m_designation table.
+ * @Filename	:	Designation.js
+ * @Description	:	To write Model Object for Designation table.
  * @Author		:	Arun Jeyaraj R
  * @Date		:	October 08, 2015
  * 
@@ -19,19 +19,18 @@ var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
 var designation = model.define('m_designation', {
 
-	DESIGNATION_ID : {
+	designation_id : {
 		type : dataTypes.INTEGER,
 		primaryKey : true,
 		autoIncrement : true
 	},
 	company_id 			: dataTypes.INTEGER,	
-	DESIGNATION_NAME 			: dataTypes.STRING,
+	designation_name 			: dataTypes.STRING,
 	status 				: dataTypes.STRING,
 	last_updated_dt 	: dataTypes.DATE,
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	timestamps : false,
 	freezeTableName : true,
 	tableName : 'm_designation'
 });

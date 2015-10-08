@@ -42,7 +42,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 app.get('/', routes.index);
-//require('./routes/userRoutes.js')(app, server);
+require('./routes/userRoutes.js')(app, server);
 require('./routes/stateRoutes.js')(app, server);
 require('./routes/cityRoutes.js')(app, server);
 require('./routes/CompanyRoutes.js')(app, server);

@@ -113,12 +113,12 @@ exports.saveManufacDetails = function(req,res){
 				company_id :req.param("companyid"),
 				last_updated_dt:req.param("updateddate"),
 				last_updated_by:req.param("updatedby"),
-	}).error(function(err){
-		res.send(err);
-	});
-	if(req.param("manufgid")===null){
-	res.send('Successfully Added.');}else{
-		res.send('Successfully Updated.');
-	}
+	}).then(function(err){
+		if(err){
+			res.send("Manufacturer Added Succesfully");}else{
+				res.send("Manufacturer Updated Succesfully");
+			}
+		
+	})
 }
-
+		

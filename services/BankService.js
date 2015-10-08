@@ -174,7 +174,7 @@ exports.saveBankDetails = function(req,res){
 				company_id :req.param("companyid"),
 				status 	   :req.param("status"),
 				last_updated_dt:req.param("updateddate"),
-				last_updated_by:req.param("updatedby")} ).then(function(err,a,b){
+				last_updated_by:req.param("updatedby")} ).then(function(err){
 					
 	
 			for(var i=0;i<req.param('bankbranchlist').length;i++){
