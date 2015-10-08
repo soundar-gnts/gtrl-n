@@ -42,7 +42,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 app.get('/', routes.index);
-require('./routes/userRoutes.js')(app, server);
+//require('./routes/userRoutes.js')(app, server);
 require('./routes/stateRoutes.js')(app, server);
 require('./routes/cityRoutes.js')(app, server);
 require('./routes/CompanyRoutes.js')(app, server);
@@ -57,6 +57,8 @@ require('./routes/TxnstypeRoutes.js')(app, server);
 require('./routes/BankRoutes.js')(app, server);
 require('./routes/cardTypeRoutes.js')(app, server);
 require('./routes/voucherRoutes.js')(app, server);
+require('./routes/CcyRoutes.js')(app, server);
+require('./routes/DesignationRoutes.js')(app, server);
 
 server.listen(app.get('port'), function(){
 	  console.log('Express server listening on port ' + app.get('port'));
