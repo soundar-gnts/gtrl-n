@@ -1,5 +1,5 @@
 /**
- * File Name	:	uomRoutes.js
+ * File Name	:	UomRoutes.js
  * Description	:	To write Routing middlewares For Uom.
  * Author		:	Haris K.A.
  * Date			:	October 07, 2015
@@ -15,11 +15,11 @@
  * 
  */
 
-var paymentTypeService = require('../services/m_uom_service.js');
+var paymentTypeService = require('../services/UomService.js');
 
 module.exports = function(app, server){
-	app.post('/adduom', 	paymentTypeService.saveOrUpdateUom);
-	app.post('/getalluom', 	paymentTypeService.getAllUom);
-	app.post('/getuom', 	paymentTypeService.getOneUom);
-	//app.post('/deleteuom', 	paymentTypeService.deleteUom);
+	
+	app.post('/saveuomdetails', paymentTypeService.saveOrUpdateUom);
+	app.post('/getuomdetails', 	paymentTypeService.getUom);
+	
 }

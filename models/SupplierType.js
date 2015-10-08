@@ -1,6 +1,6 @@
 /**
- * @Filename	:	m_supp_acct_type.js
- * @Description	:	To write Model Object for supplier account type.
+ * @Filename	:	SupplierType.js
+ * @Description	:	To write Model Object for supplier type.
  * @Author		:	Haris K.A.
  * @Date		:	October 07, 2015
  * 
@@ -17,14 +17,14 @@
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
 
-var supplierAcType = model.define('m_supp_acct_type', {
+var supplierType = model.define('m_supplier_type', {
 
-	supp_acct_id : {
-		type			: dataTypes.INTEGER,
-		primaryKey		: true,
+	supp_type_id : {
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
 		autoIncrement	: true
 	},
-	supp_acct_name	: dataTypes.STRING,
+	supp_type_name	: dataTypes.STRING,
 	company_id 		: dataTypes.INTEGER,	
 	status 			: dataTypes.STRING,
 	last_updated_dt	: dataTypes.DATE,
@@ -33,7 +33,7 @@ var supplierAcType = model.define('m_supp_acct_type', {
 }, {
 	timestamps : false,
 	freezeTableName : true,
-	tableName : 'm_supp_acct_type'
+	tableName : 'm_supplier_type'
 });
 
-module.exports = supplierAcType;
+module.exports = supplierType;

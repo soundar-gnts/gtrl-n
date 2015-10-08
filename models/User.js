@@ -1,5 +1,5 @@
 /**
- * File Name	:	user.js
+ * File Name	:	User.js
  * Description	:	To write Model Object For User.
  * Author		:	Haris K.A.
  * Date			:	October 03, 2015

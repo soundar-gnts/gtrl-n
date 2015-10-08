@@ -1,6 +1,6 @@
 /**
- * @Filename	:	m_supplier_type.js
- * @Description	:	To write Model Object for supplier type.
+ * @Filename	:	Uom.js
+ * @Description	:	To write Model Object for Unit of Messure.
  * @Author		:	Haris K.A.
  * @Date		:	October 07, 2015
  * 
@@ -17,14 +17,14 @@
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
 
-var supplierType = model.define('m_supplier_type', {
+var uom = model.define('m_uom', {
 
-	supp_type_id : {
-		type 			: dataTypes.INTEGER,
-		primaryKey 		: true,
-		autoIncrement	: true
+	uom_id : {
+		type : dataTypes.INTEGER,
+		primaryKey : true,
+		autoIncrement : true
 	},
-	supp_type_name	: dataTypes.STRING,
+	uom_name		: dataTypes.STRING,
 	company_id 		: dataTypes.INTEGER,	
 	status 			: dataTypes.STRING,
 	last_updated_dt	: dataTypes.DATE,
@@ -33,7 +33,7 @@ var supplierType = model.define('m_supplier_type', {
 }, {
 	timestamps : false,
 	freezeTableName : true,
-	tableName : 'm_supplier_type'
+	tableName : 'm_uom'
 });
 
-module.exports = supplierType;
+module.exports = uom;

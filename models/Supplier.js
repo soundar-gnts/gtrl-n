@@ -1,5 +1,5 @@
 /**
- * @Filename	:	m_supplier.js
+ * @Filename	:	Supplier.js
  * @Description	:	To write Model Object for Supplier.
  * @Author		:	Haris K.A.
  * @Date		:	October 07, 2015

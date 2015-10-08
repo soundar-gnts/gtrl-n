@@ -1,5 +1,5 @@
 /**
- * File Name	:	paymentType.js
+ * File Name	:	PaymentType.js
  * Description	:	To write Model Object For Payment type.
  * Author		:	Haris K.A.
  * Date			:	October 06, 2015

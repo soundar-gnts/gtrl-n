@@ -42,6 +42,17 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 app.get('/', routes.index);
+//hari
+require('./routes/UserRoutes.js')(app, server);
+require('./routes/ProductCategoryRoutes.js')(app, server);
+require('./routes/PaymentTypeRoutes.js')(app, server);
+require('./routes/TaxRoutes.js')(app, server);
+require('./routes/UomRoutes.js')(app, server);
+require('./routes/SupplierAccountTypeRoutes.js')(app, server);
+require('./routes/SupplierTypeRoutes.js')(app, server);
+require('./routes/SupplierRoutes.js')(app, server);
+require('./routes/UserGroupRoutes.js')(app, server);
+
 require('./routes/userRoutes.js')(app, server);
 require('./routes/StateRoutes.js')(app, server);
 require('./routes/CityRoutes.js')(app, server);

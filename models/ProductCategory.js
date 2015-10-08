@@ -1,5 +1,5 @@
 /**
- * File Name	:	productCategory.js
+ * File Name	:	ProductCategory.js
  * Description	:	To write Model Object For User.
  * Author		:	Haris K.A.
  * Date			:	October 03, 2015
@@ -20,7 +20,7 @@ var dataTypes 		= require('sequelize');
 
 var ProductCategory = model.define('m_prod_category', {
 	
-	Prod_cat_id			: {
+	prod_cat_id			: {
 		type			: dataTypes.INTEGER,
 	    primaryKey		: true,
 	    autoIncrement	: true

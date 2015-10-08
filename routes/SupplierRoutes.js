@@ -1,5 +1,5 @@
 /**
- * File Name	:	supplierRoutes.js
+ * File Name	:	SupplierRoutes.js
  * Description	:	To write Routing middlewares For Supplier.
  * Author		:	Haris K.A.
  * Date			:	October 07, 2015
@@ -15,11 +15,11 @@
  * 
  */
 
-var supplierService = require('../services/m_supplier_service.js');
+var supplierService = require('../services/SupplierService.js');
 
 module.exports = function(app, server){
-	app.post('/addsupplier', 		supplierService.saveOrUpdateSupplier);
-	app.post('/getallsupplier', 	supplierService.getAllSupplier);
-	app.post('/getsupplier', 		supplierService.getOneSupplier);
-	//app.post('/deletesupplier', 	supplierService.deleteUom);
+	
+	app.post('/savesupplierdetails',supplierService.saveOrUpdateSupplierDetails);
+	app.post('/getsupplierdetails', supplierService.getSupplier);
+	
 }

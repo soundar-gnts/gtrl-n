@@ -1,5 +1,5 @@
 /**
- * File Name	:	taxRoutes.js
+ * File Name	:	TaxRoutes.js
  * Description	:	To write Routing middlewares For Tax.
  * Author		:	Haris K.A.
  * Date			:	October 07, 2015
@@ -15,11 +15,11 @@
  * 
  */
 
-var paymentTypeService = require('../services/m_tax_service.js');
+var paymentTypeService = require('../services/TaxService.js');
 
 module.exports = function(app, server){
-	app.post('/addtax', 	paymentTypeService.saveOrUpdateTax);
-	app.post('/getalltax', 	paymentTypeService.getAllTax);
-	app.post('/gettax', 	paymentTypeService.getOneTax);
-	//app.post('/deletetax', 	paymentTypeService.deleteTax);
+	
+	app.post('/savetaxdetails', paymentTypeService.saveOrUpdateTax);
+	app.post('/gettaxdetails', 	paymentTypeService.getTax);
+	
 }

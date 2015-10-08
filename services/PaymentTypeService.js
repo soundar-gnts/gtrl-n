@@ -1,6 +1,6 @@
 /**
- * File Name	:	m_payment_type_service.js
- * Description	:	To write Business Logic For Product Category.
+ * File Name	:	PaymentTypeervice.js
+ * Description	:	To write Business Logic For Payment Type.
  * Author		:	Haris K.A.
  * Date			:	October 06, 2015
  * 
@@ -16,7 +16,7 @@
  */
 
 var log = require('../config/logger').logger;
-var PaymentType = require('../models/PaymentType.js');
+var paymentType = require('../models/PaymentType.js');
 var response = {
 		status	: Boolean,
 		message : String,
@@ -25,7 +25,7 @@ var response = {
 
 //insert or update Payment type
 exports.saveOrUpdatePymentType = function(req, res){
-	PaymentType.upsert({
+	paymentType.upsert({
 		pymt_type_id	: req.param('pymttypeid'),
 		company_id		: req.param('companyid'),
 	    pymt_type_name	: req.param('pymttypename'),
@@ -88,7 +88,7 @@ exports.getPymentType = function(req, res){
 		else
 			condition = condition+" and pymt_type_name='"+paymentName+"'";
 	
-	PaymentType.findAll({where : [condition]})
+	paymentType.findAll({where : [condition]})
 		.then(function(type){
 			if(type.length == 0){
 				log.info('Did not match any documents.');

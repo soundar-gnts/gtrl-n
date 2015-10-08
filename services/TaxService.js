@@ -1,5 +1,5 @@
 /**
- * File Name	:	m_tax_service.js
+ * File Name	:	TaxService.js
  * Description	:	To write Business Logic For Tax.
  * Author		:	Haris K.A.
  * Date			:	October 07, 2015
@@ -16,15 +16,16 @@
  */
 
 var log = require('../config/logger').logger;
-var Tax = require('../models/m_tax.js');
+var tax = require('../models/Tax.js');
 var response = {
 		status	: Boolean,
-		message : String
+		message : String,
+		data	: String
 }
 
 //insert or update Tax
 exports.saveOrUpdateTax = function(req, res){
-	Tax.upsert({
+	tax.upsert({
 		tax_id			: req.param('taxid'),
 		tax_name		: req.param('taxname'),
 		company_id 		: req.param('companyid'),
@@ -43,30 +44,32 @@ exports.saveOrUpdateTax = function(req, res){
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
-			log.info('Successfully Inserted.');
-			response.message = 'Successfully Inserted.';
+			log.info('Tax saved successfully.');
+			response.message = 'Tax saved successfully.';
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info('Successfully Editted.');
-			response.message = 'Successfully Editted.';
+			log.info('Tax editted successfully.');
+			response.message = 'Tax editted successfully.';
 			response.status  = true;
 			res.send(response);
 		}
 		
 	}).error(function(err){
 		log.error(err);
-		response.message = err;
-		response.status  = false;
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
 		res.send(response);
 	});
 }
 
 
 //get all Tax
-exports.getAllTax = function(req, res){
+exports.getTax = function(req, res){
 
 	var condition 	= "";
+	var taxId 	= req.param('taxid');
 	var companyId 	= req.param('companyid');
 	var status		= req.param('status');
 	var taxName 	= req.param('taxname');
@@ -74,6 +77,12 @@ exports.getAllTax = function(req, res){
 	
 	if(companyId != null)
 		condition = "company_id="+companyId;
+	
+	if(taxId!=null)
+		if(condition === "")
+			condition = "tax_id='"+taxId+"'";
+		else
+			condition = condition+" and tax_id='"+taxId+"'";
 	
 	if(status!=null)
 		if(condition === "")
@@ -96,75 +105,26 @@ exports.getAllTax = function(req, res){
 		else
 			condition = condition+" and state_id='"+stateId+"'";
 	
-	Tax.findAll({where : [condition]})
+	tax.findAll({where : [condition]})
 		.then(function(tax){
-			if(tax.length == 0){
-				log.info('Empty Tax List.');
-				response.message = 'Empty Tax List.';
+			if(taxs.length == 0){
+				log.info('Did not match any documents.');
+				response.message = 'Did not match any documents.';
 				response.status  = false;
 				res.send(response);
 			} else{
-				log.info('Tax List Exist');
-				response.message = tax;
-				response.status  = true;
+				log.info('About '+taxs.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+taxs.length+' results.';
+				response.data 		= taxs;
 				res.send(response);
 			}
 		})
 		.error(function(err){
 			log.error(err);
-			response.message = err;
-			response.status  = false;
-			res.send(response);
-		});
-}
-
-// get one Tax
-exports.getOneTax = function(req, res){
-	Tax.findOne({where : {tax_id : req.param('taxid')}})
-		.then(function(tax){
-			if(!tax){
-				log.info('Empty Tax List.');
-				response.message = 'Empty Tax List.';
-				response.status  = false;
-				res.send(response);
-			} else{
-				log.info('Tax Exist.');
-				response.message = tax;
-				response.status  = true;
-				res.send(response);
-			}
-		})
-		.error(function(err){
-			log.error(err);
-			response.message = err;
-			response.status  = false;
-			res.send(response);
-		});
-}
-
-//delete Tax
-exports.deleteTax = function(req, res){
-	Tax.findOne({where : {tax_id : req.param('taxid')}})
-		.then(function(tax){
-			if(!tax){
-				log.info('Empty Tax List.');
-				response.message = 'Empty Tax List.';
-				response.status  = false;
-				res.send(response);
-			} else{
-				tax.destroy()
-				.then(function(cat){
-					log.info('Deleted Successfully.');
-					response.message = 'Deleted Successfully.';
-					response.status  = true;
-					res.send(response);
-				});
-			}
-		})
-		.error(function(err){
-			log.error(err);
-			response.message = err;
-			response.status  = false;
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
 			res.send(response);
 		});
 }

@@ -1,8 +1,8 @@
 /**
- * @Filename	:	m_tax.js
- * @Description	:	To write Model Object for m_tax.
+ * @Filename	:	UserGroup.js
+ * @Description	:	To write Model Object for User Group.
  * @Author		:	Haris K.A.
- * @Date		:	October 07, 2015
+ * @Date		:	October 08, 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
  * All rights reserved.   
@@ -17,25 +17,15 @@
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
 
-var tax = model.define('m_tax', {
+var userGroup = model.define('m_user_group', {
 
-	tax_id : {
+	group_id : {
 		type : dataTypes.INTEGER,
 		primaryKey : true,
 		autoIncrement : true
 	},
-	tax_name		: dataTypes.STRING,
+	group_name		: dataTypes.STRING,
 	company_id 		: dataTypes.INTEGER,	
-	state_id		: dataTypes.INTEGER,
-	cst				: dataTypes.INTEGER,
-	lst				: dataTypes.INTEGER,
-	surcharge		: dataTypes.INTEGER,
-	tax_on_mrp		: dataTypes.INTEGER,
-	tax_symbol		: dataTypes.STRING,
-	service_tax		: dataTypes.INTEGER,
-	mrp_inclusive	: dataTypes.INTEGER,
-	for_sales_yn	: dataTypes.STRING,
-	for_purchase_yn	: dataTypes.STRING,
 	status 			: dataTypes.STRING,
 	last_updated_dt	: dataTypes.DATE,
 	last_updated_by	: dataTypes.STRING
@@ -43,7 +33,7 @@ var tax = model.define('m_tax', {
 }, {
 	timestamps : false,
 	freezeTableName : true,
-	tableName : 'm_tax'
+	tableName : 'm_user_group'
 });
 
-module.exports = tax;
+module.exports = userGroup;
