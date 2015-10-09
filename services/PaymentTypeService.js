@@ -16,6 +16,7 @@
  */
 
 var log = require('../config/logger').logger;
+var appMsg			= require('../config/Message.js');
 var paymentType = require('../models/PaymentType.js');
 var response = {
 		status	: Boolean,
@@ -30,7 +31,7 @@ exports.saveOrUpdatePymentType = function(req, res){
 		company_id		: req.param('companyid'),
 	    pymt_type_name	: req.param('pymttypename'),
 	    status			: req.param('status'),
-		last_updated_dt	: new Date(),
+		last_updated_dt	: req.param("lastupdateddt"),
 		last_updated_by	: req.param('lastupdatedby')
 	}).then(function(data){
 		if(data){
@@ -91,8 +92,8 @@ exports.getPymentType = function(req, res){
 	paymentType.findAll({where : [condition]})
 		.then(function(type){
 			if(type.length == 0){
-				log.info('Did not match any documents.');
-				response.message = 'Did not match any documents.';
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{

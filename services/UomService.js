@@ -16,6 +16,7 @@
  */
 
 var log = require('../config/logger').logger;
+var appMsg			= require('../config/Message.js');
 var uom = require('../models/Uom.js');
 var response = {
 		status	: Boolean,
@@ -30,7 +31,7 @@ exports.saveOrUpdateUom = function(req, res){
 		uom_name		: req.param('uomname'),
 		company_id 		: req.param('companyid'),
 		status 			: req.param('status'),
-		last_updated_dt	: new Date(),
+		last_updated_dt	: req.param("lastupdateddt"),
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
@@ -89,10 +90,10 @@ exports.getUom = function(req, res){
 			condition = condition+" and uom_name='"+uomName+"'";
 	
 	uom.findAll({where : [condition]})
-		.then(function(uom){
+		.then(function(uoms){
 			if(uoms.length == 0){
-				log.info('Did not match any documents.');
-				response.message = 'Did not match any documents.';
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{

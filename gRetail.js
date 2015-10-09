@@ -52,6 +52,8 @@ require('./routes/SupplierAccountTypeRoutes.js')(app, server);
 require('./routes/SupplierTypeRoutes.js')(app, server);
 require('./routes/SupplierRoutes.js')(app, server);
 require('./routes/UserGroupRoutes.js')(app, server);
+require('./routes/UserAccessTreeRoutes.js')(app, server);
+require('./routes/ScreenTreeRoutes.js')(app, server);
 
 require('./routes/StateRoutes.js')(app, server);
 require('./routes/CityRoutes.js')(app, server);

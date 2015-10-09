@@ -16,6 +16,7 @@
  */
 
 var log = require('../config/logger').logger;
+var appMsg			= require('../config/Message.js');
 var fs = require("fs");
 var imageUploadService = require('../services/imageUploadService.js')
 var config = require('../config/config.js');
@@ -40,7 +41,7 @@ exports.saveOrUpdateproductCategory = function(req, res){
 			    level_no		: req.param('levelno'),
 			    last_level		: req.param('lastlevel'),
 			    status			: req.param('status'),
-				last_updated_dt	: new Date(),
+				last_updated_dt	: req.param("lastupdateddt"),
 				last_updated_by	: req.param('lastupdatedby'),
 				sales_count		: req.param('salescount'),
 				refer_parid		: req.param('referparid')
@@ -157,8 +158,8 @@ exports.getProductCategory = function(req, res){
 	category.findAll({where : [condition]})
 		.then(function(categories){
 			if(categories.length == 0){
-				log.info('Did not match any documents.');
-				response.message = 'Did not match any documents.';
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{

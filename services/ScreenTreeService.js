@@ -1,6 +1,6 @@
 /**
- * File Name	:	SupplierTypeService.js
- * Description	:	To write Business Logic For Supplier Type.
+ * File Name	:	ScreenTreeService.js
+ * Description	:	To write Business Logic For Screen tree.
  * Author		:	Haris K.A.
  * Date			:	October 07, 2015
  * 
@@ -17,31 +17,33 @@
 
 var log = require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
-var supplierType = require('../models/SupplierType.js');
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-}
+var screenTree = require('../models/ScreenTree.js');
 
-//insert or update Tax
-exports.saveOrUpdateSupplierType = function(req, res){
-	supplierType.upsert({
-		supp_type_id	: req.param('supptypeid'),
-		supp_type_name	: req.param('supptypename'),
-		company_id 		: req.param('companyid'),
+
+//insert or update Uom
+exports.saveOrUpdateScreenTree = function(req, res){
+	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	screenTree.upsert({
+		screen_id		: req.param('screenid'),
+		screen_name		: req.param('screenname'),
 		status 			: req.param('status'),
 		last_updated_dt	: req.param("lastupdateddt"),
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
-			log.info('Supplier type saved successfully.');
-			response.message = 'Supplier type saved successfully.';
+			log.info('Screen tree saved successfully.');
+			response.message = 'Screen tree saved successfully.';
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info('Supplier type editted successfully.');
-			response.message = 'Supplier type editted successfully.';
+			log.info('Screen tree editted successfully.');
+			response.message = 'Screen tree editted successfully.';
 			response.status  = true;
 			res.send(response);
 		}
@@ -56,24 +58,24 @@ exports.saveOrUpdateSupplierType = function(req, res){
 }
 
 
-//get all Tax
-exports.getSupplierType = function(req, res){
+//get all Uom
+exports.getScreenTree = function(req, res){
+	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
 
 	var condition 	= "";
-	var suppTypeId 	= req.param('supptypeid');
-	var companyId 	= req.param('companyid');
+	var screenId 	= req.param('screenid');
 	var status		= req.param('status');
-	var name 		= req.param('supptypename');
+	var screeName 	= req.param('screenname');
 	
-	if(companyId != null)
-		condition = "company_id="+companyId;
-	
-	if(suppTypeId!=null)
+	if(screenId!=null)
 		if(condition === "")
-			condition = "supp_type_id='"+suppTypeId+"'";
+			condition = "screen_id='"+screenId+"'";
 	
-		else
-			condition = condition+" and supp_type_id='"+suppTypeId+"'";
 	
 	if(status!=null)
 		if(condition === "")
@@ -82,25 +84,25 @@ exports.getSupplierType = function(req, res){
 		else
 			condition = condition+" and status='"+status+"'";
 	
-	if(name!=null)
-		if(condition === null)
-			condition = "supp_type_name='"+name+"'";
+	if(screeName!=null)
+		if(condition === "")
+			condition = "screen_name='"+screeName+"'";
 	
 		else
-			condition = condition+" and supp_type_name='"+name+"'";
+			condition = condition+" and screen_name='"+screeName+"'";
 	
-	supplierType.findAll({where : [condition]})
-		.then(function(supType){
-			if(supType.length == 0){
+	screenTree.findAll({where : [condition]})
+		.then(function(screenTrees){
+			if(screenTrees.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{
-				log.info('About '+supType.length+' results.');
+				log.info('About '+screenTrees.length+' results.');
 				response.status  	= true;
-				response.message 	= 'About '+supType.length+' results.';
-				response.data 		= supType;
+				response.message 	= 'About '+screenTrees.length+' results.';
+				response.data 		= screenTrees;
 				res.send(response);
 			}
 		})

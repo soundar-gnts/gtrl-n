@@ -16,6 +16,7 @@
  */
 
 var log = require('../config/logger').logger;
+var appMsg			= require('../config/Message.js');
 var supplier = require('../models/Supplier.js');
 var response = {
 		status	: Boolean,
@@ -43,7 +44,7 @@ exports.saveOrUpdateSupplierDetails = function(req, res){
 		cst_no			: req.param('cstno'),
 		tin_no			: req.param('tinno'),
 		status 			: req.param('status'),
-		last_updated_dt	: new Date(),
+		last_updated_dt	: req.param("lastupdateddt"),
 		last_updated_by	: req.param('lastupdatedby'),
 	
 		company_id 		: req.param('companyid'),
@@ -80,10 +81,10 @@ exports.saveOrUpdateSupplierDetails = function(req, res){
 exports.getSupplier = function(req, res){
 
 	var condition 	= "";
-	var supId 		= req.param('companyid');
+	var supId 		= req.param('supplierid');
 	var companyId 	= req.param('companyid');
 	var status		= req.param('status');
-	var supNname	= req.param('suppliername');
+	var supName	= req.param('suppliername');
 	
 	if(companyId != null)
 		condition = "company_id="+companyId;
@@ -112,8 +113,8 @@ exports.getSupplier = function(req, res){
 	supplier.findAll({where : [condition]})
 		.then(function(suppliers){
 			if(suppliers.length == 0){
-				log.info('Did not match any documents.');
-				response.message = 'Did not match any documents.';
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{

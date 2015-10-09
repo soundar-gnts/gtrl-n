@@ -16,6 +16,7 @@
  */
 
 var log = require('../config/logger').logger;
+var appMsg			= require('../config/Message.js');
 var tax = require('../models/Tax.js');
 var response = {
 		status	: Boolean,
@@ -40,7 +41,7 @@ exports.saveOrUpdateTax = function(req, res){
 		for_sales_yn	: req.param('forsalesyn'),
 		for_purchase_yn	: req.param('forpurchaseyn'),
 		status 			: req.param('status'),
-		last_updated_dt	: new Date(),
+		last_updated_dt	: req.param("lastupdateddt"),
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
@@ -106,10 +107,10 @@ exports.getTax = function(req, res){
 			condition = condition+" and state_id='"+stateId+"'";
 	
 	tax.findAll({where : [condition]})
-		.then(function(tax){
+		.then(function(taxs){
 			if(taxs.length == 0){
-				log.info('Did not match any documents.');
-				response.message = 'Did not match any documents.';
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{

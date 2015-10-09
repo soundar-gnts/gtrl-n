@@ -16,6 +16,7 @@
  */
 
 var log = require('../config/logger').logger;
+var appMsg			= require('../config/Message.js');
 var userGroup = require('../models/UserGroup.js');
 var user = require('../models/User.js');
 var response = {
@@ -31,7 +32,7 @@ exports.saveOrUpdateUserGroup = function(req, res){
 			group_name		: req.param('groupname'),
 			company_id 		: req.param('companyid'),
 			status 			: req.param('status'),
-			last_updated_dt	: new Date(),
+			last_updated_dt	: req.param("lastupdateddt"),
 			last_updated_by	: req.param('lastupdatedby'),
 		}
 	userGroup.findOne({where : {group_id : req.param('groupid')}})
@@ -161,8 +162,8 @@ exports.getUserGroup = function(req, res){
 	userGroup.findAll({where : [condition]})
 		.then(function(groups){
 			if(groups.length == 0){
-				log.info('Did not match any documents.');
-				response.message = 'Did not match any documents.';
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{

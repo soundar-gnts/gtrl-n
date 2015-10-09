@@ -15,11 +15,11 @@
  * 
  */
 
-var paymentTypeService = require('../services/UomService.js');
+var uomService = require('../services/UomService.js');
 
 module.exports = function(app, server){
 	
-	app.post('/saveuomdetails', paymentTypeService.saveOrUpdateUom);
-	app.post('/getuomdetails', 	paymentTypeService.getUom);
+	app.post('/saveuomdetails', uomService.saveOrUpdateUom);
+	app.post('/getuomdetails', 	uomService.getUom);
 	
 }

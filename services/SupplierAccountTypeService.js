@@ -16,6 +16,7 @@
  */
 
 var log = require('../config/logger').logger;
+var appMsg			= require('../config/Message.js');
 var suppAccType = require('../models/SupplierAccountType.js');
 var response = {
 		status	: Boolean,
@@ -30,7 +31,7 @@ exports.saveOrUpdateSupplierAccountType = function(req, res){
 		supp_acct_name	: req.param('suppacctname'),
 		company_id 		: req.param('companyid'),
 		status 			: req.param('status'),
-		last_updated_dt	: new Date(),
+		last_updated_dt	: req.param("lastupdateddt"),
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
@@ -91,8 +92,8 @@ exports.getSupplierAccountType = function(req, res){
 	suppAccType.findAll({where : [condition]})
 		.then(function(supAccType){
 			if(supAccType.length == 0){
-				log.info('Did not match any documents.');
-				response.message = 'Did not match any documents.';
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{
