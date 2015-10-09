@@ -14,7 +14,7 @@
  * 
  */
 var employee = require('../models/Employee.js');
-var user = require('../models/user.js');
+var user = require('../models/User.js');
 
 // To get full Employee List
 exports.getEmployeeDetails = function(req, res) {
