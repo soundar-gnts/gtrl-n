@@ -16,7 +16,12 @@
 
 var voucher 	= require('../models/Voucher.js');
 var voucherType = require('../models/VoucherType.js');
-
+var log = require('../config/logger').logger;
+var response = {
+		status	: Boolean,
+		message : String,
+		data	: String
+};
 //SaveOrUpdate Voucher and VoucherType Details
 
 	exports.saveOrUpdateVoucher = function(req, res){
@@ -29,11 +34,10 @@ var voucherType = require('../models/VoucherType.js');
 			status    				: req.param('status'),
 			last_updated_dt			: req.param('lastupdateddt'),
 	        last_updated_by			: req.param('lastupdatedby')
-	
-			})
-
-				.then(function(v){
-			console.log(v)
+	   
+			})			
+			.then(function(v){
+		
 					for(var i=0;i<req.param('voucherlist').length;i++){
 						
 						voucher.upsert({
@@ -117,13 +121,31 @@ var voucherType = require('../models/VoucherType.js');
 			
 		}
 			
-		voucher.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]}).then(function(err, result) {
-			if(err)
-				res.send(err);
-			else
-				res.send(result);
+		voucher.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		.then(function(voucherlist){
+			if(voucherlist.length === 0){
+				
+				log.info('No data found.');
+				response.message = 'No data found.';
+				response.status  = false;
+				res.send(response);
+			} else{
+				
+				log.info('About '+voucherlist.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+voucherlist.length+' results.';
+				response.data 		= voucherlist;
+				res.send(response);
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
 		});
-		}
+	};
 // Voucher Type LIST
 
 	exports.getVoucherTypeList = function(req, res) {
@@ -164,12 +186,101 @@ var voucherType = require('../models/VoucherType.js');
 			
 		}
 			
-		voucherType.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]}).then(function(err, result) {
-			if(err)
-				res.send(err);
-			else
-				res.send(result);
+		voucherType.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		.then(function(vouchertypelist){
+			if(vouchertypelist.length === 0){
+				
+				log.info('No data found.');
+				response.message = 'No data found.';
+				response.status  = false;
+				res.send(response);
+			} else{
+				
+				log.info('About '+vouchertypelist.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+vouchertypelist.length+' results.';
+				response.data 		= vouchertypelist;
+				res.send(response);
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
 		});
-		}
-
-
+	};
+	
+	/*exports.saveOrUpdateUserGroup = function(req, res){
+	    var uGroup = {
+	            group_id        : req.param('groupid'),
+	            group_name        : req.param('groupname'),
+	            company_id         : req.param('companyid'),
+	            status             : req.param('status'),
+	            last_updated_dt    : new Date(),
+	            last_updated_by    : req.param('lastupdatedby'),
+	        }
+	    userGroup.findOne({where : {group_id : req.param('groupid')}})
+	    .then(function(group){
+	        if(!group){
+	            userGroup.create(uGroup)
+	            .then(function(g){
+	                for(var i = 0; i < req.param('empids').length; i++){
+	                    user.findOne({where : {employee_id : req.param('empids')[i].empid}})
+	                    .then(function(usr){
+	                        usr.group_id = g.group_id;
+	                        usr.save();
+	                    })
+	                }
+	                log.info('User group saved successfully.');
+	                response.message = 'User group saved successfully.';
+	                response.status  = true;
+	                res.send(response);
+	            })
+	            .error(function(err){
+	                log.error(err);
+	                response.status      = false;
+	                response.message     = 'Internal error.';
+	                response.data          = err;
+	                res.send(response);
+	            });
+	        } else{
+	            userGroup.upsert(uGroup)
+	            .then(function(g){
+	                user.find({where : {group_id : req.param('groupid')}})
+	                .then(function(users){
+	                    for(var i = 0; i < users.length; i++){
+	                        var flag = false;
+	                        for(var j = 0; j < req.param('empids').length; j++){
+	                            if(users[i].employee_id == req.param('empids')[j].empid)
+	                                flag = true;
+	                        }
+	                        if(!flag){
+	                            users[i].group_id = 0;
+	                            users[i].save();
+	                        }
+	                       
+	                    }
+	                    log.info('User group editted successfully.');
+	                    response.message = 'User group editted successfully.';
+	                    response.status  = true;
+	                    res.send(response);
+	                   
+	                }).error(function(err){
+	                    log.error(err);
+	                    response.status      = false;
+	                    response.message     = 'Internal error.';
+	                    response.data          = err;
+	                    res.send(response);
+	                });
+	            })
+	        }
+	    }).error(function(err){
+	        log.error(err);
+	        response.status      = false;
+	        response.message     = 'Internal error.';
+	        response.data          = err;
+	        res.send(response);
+	    });
+	}*/

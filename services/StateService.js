@@ -22,7 +22,7 @@ var response = {
 		data	: String
 };
 
-//SaveOrUpdate State Details
+/*//SaveOrUpdate State Details
 
 	exports.saveOrUpdateState = function(req, res){
 		state.upsert({
@@ -34,7 +34,7 @@ var response = {
 			})
 			.then(function(data){
 				if(data){
-					log.info('State saved successfully.');
+					log.info('State Saved successfully.');
 					response.message = 'State saved successfully.';
 					response.status  = true;
 					res.send(response);
@@ -53,7 +53,7 @@ var response = {
 				response.data  		= err;
 				res.send(response);
 			});
-	}; 
+	}; */
 
 //State full LIST
 
@@ -63,18 +63,18 @@ var response = {
 		var stateName	= req.param("statename");
 		var status		= req.param("status");
 		
-		if(stateId!==null){
+		if(stateId!=null){
 			condition ="state_id="+stateId;
 			}
 		
-		if(status!==null){
+		if(status!=null){
 			if(condition === ""){
 				condition="status='"+status+"'";
 			}else {
 				condition=condition+" and status='"+status+"'";
 			}
 		}
-		if(stateName!==null){
+		if(stateName!=null){
 			if(condition === ""){
 				condition="state_name='"+stateName+"'";
 			}else {
@@ -107,4 +107,9 @@ var response = {
 				res.send(response);
 			});
 		};
-
+		
+		exports.saveOrUpdateState = function(req, res){
+		state.update({$set: { state_name : req.param('statename') , state_id	: req.param('stateid') }},
+				
+				{ upsert: true });
+		}

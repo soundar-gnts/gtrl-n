@@ -1,5 +1,5 @@
 /**
- * @Filename	:	m_account_type.js
+ * @Filename	:	AccountType.js
  * @Description	:	To write Model Object for m_account_type table.
  * @Author		:	Saranya G
  * @Date		:	October 06, 2015

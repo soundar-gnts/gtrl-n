@@ -16,7 +16,12 @@
 
 var store 	= require('../models/Store.js');
 var storeRegion = require('../models/StoreRegion.js');
-
+var log = require('../config/logger').logger;
+var response = {
+		status	: Boolean,
+		message : String,
+		data	: String
+};
 
 //Store LIST
 
@@ -122,14 +127,32 @@ var storeRegion = require('../models/StoreRegion.js');
 				conditionQuery=conditionQuery+" and stk_recv_store_id="+stkRecvStoreId;
 			}	
 			}
-		store.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]}).then(function(err, result) {
-			if(err)
-				res.send(err);
-			else
-				res.send(result);
+		store.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]})
+		.then(function(storelist){
+			if(storelist.length === 0){
+				
+				log.info('No data found.');
+				response.message = 'No data found.';
+				response.status  = false;			
+				res.send(response);
+			} else{
+				
+				log.info('About '+storelist.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+storelist.length+' results.';
+				response.data 		= storelist;
+				res.send(response);
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
 		});
-		}
-// Voucher Type LIST
+	};
+// Store region List
 
 	exports.getStoreRegionList = function(req, res) {
 		
@@ -167,13 +190,31 @@ var storeRegion = require('../models/StoreRegion.js');
 			
 		}
 			
-		storeRegion.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]}).then(function(err, result) {
-			if(err)
-				res.send(err);
-			else
-				res.send(result);
+		storeRegion.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		.then(function(regionlist){
+			if(regionlist.length === 0){
+				
+				log.info('No data found.');
+				response.message = 'No data found.';
+				response.status  = false;
+				res.send(response);
+			} else{
+				
+				log.info('About '+regionlist.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+regionlist.length+' results.';
+				response.data 		= regionlist;
+				res.send(response);
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
 		});
-		}
+	};
 	
 //SaveOrUpdate Store and StoreRegion Details
 

@@ -37,7 +37,7 @@ var response = {
 			})
 			.then(function(data){
 				if(data){
-					log.info('Card Type saved successfully.');
+					log.info('Card Type Saved successfully.');
 					response.message = 'Card Type saved successfully.';
 					response.status  = true;
 					res.send(response);
@@ -68,18 +68,18 @@ var response = {
 		var cardType		= req.param("cardtype");
 		var status			= req.param("status");
 		
-		if(companyId!==null){
+		if(companyId!=null){
 			condition ="company_id="+companyId;
 			}
 		
-		if(status!==null){
+		if(status!=null){
 			if(condition === ""){
 				condition="status='"+status+"'";
 			}else {
 				condition=condition+" and status='"+status+"'";
 			}
 		}
-		if(cardTypeId!==null){
+		if(cardTypeId!=null){
 			if(condition === ""){
 				condition="card_type_id='"+cardTypeId+"'";
 			}else {
@@ -87,7 +87,7 @@ var response = {
 			}
 			
 		}
-		if(cardType!==null){
+		if(cardType!=null){
 			if(condition === ""){
 				condition="card_type like '%"+cardType+"%'";
 			}else {

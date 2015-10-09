@@ -14,8 +14,8 @@
  * 
  */
 
-var log = require('../config/logger').logger;
 var city = require('../models/City.js');
+var log = require('../config/logger').logger;
 var response = {
 		status	: Boolean,
 		message : String,
@@ -38,7 +38,7 @@ var response = {
 			.then(function(data){
 				if(data){
 					log.info('City saved successfully.');
-					response.message = 'City saved successfully.';
+					response.message = 'City Saved successfully.';
 					response.status  = true;
 					res.send(response);
 				}
@@ -68,10 +68,10 @@ var response = {
 		var status		= req.param("status");
 		var stateId		= req.param("stateid");
 		
-		if(cityId!==null){
+		if(cityId!=null){
 			condition ="city_id="+cityId;
 			}
-		if(stateId!==null){
+		if(stateId!=null){
 			if(condition === ""){
 				condition="state_id ='"+stateId+"'";
 			}else {
@@ -79,7 +79,7 @@ var response = {
 			}
 		}
 		
-		if(status!==null){
+		if(status!=null){
 			if(condition === ""){
 				condition="status='"+status+"'";
 			}else {
@@ -87,7 +87,7 @@ var response = {
 			}
 		}
 		
-		if(cityName!==null){
+		if(cityName!=null){
 			if(condition === ""){
 				condition="city_name like '%"+cityName+"%'";
 			}else {
