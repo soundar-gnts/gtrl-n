@@ -1,8 +1,8 @@
 /**
- * @Filename 		: TxnsTypeService.js 
- * @Description 	: To write Business Logic for transaction type. 
+ * @Filename 		: ProductSerialCodesService.js
+ * @Description 	: To write Business Logic for t_account_payables. 
  * @Author 			: SOUNDAR C 
- * @Date 			: October 03, 2015
+ * @Date 			: October 08, 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. All rights reserved.
  * 
@@ -13,7 +13,7 @@
  * 
  * 
  */
-var txnstype = require('../models/TxnsType.js');
+var productserialcodes = require('../models/ProductSerialCodes.js');
 var log = require('../config/logger').logger;
 var response = {
 		status	: Boolean,
@@ -21,15 +21,18 @@ var response = {
 		data	: String
 };
 
-// To get full Transaction Type List
-exports.getTxnsTypeDetails = function(req, res) {
+// To get Product Serial Codes List based on user param
+exports.getProductSerialCodesDetails = function(req, res) {
 	var condition = "";
-	var transtypeid=req.param("transtypeid");
+	var serialrefno=req.param("serialrefno");
 	var companyid=req.param("companyid");
-	var transtypename=req.param("transtypename");
+	var grnid=req.param("grnid");
+	var productid=req.param("productid");
+	var storeid=req.param("storeid");
+	var batchid=req.param("batchid");
 	var status=req.param("status");
-	if(transtypeid!=null){
-		condition ="trans_type_id="+transtypeid;
+	if(serialrefno!=null){
+		condition ="serial_refno="+serialrefno;
 	}
 	if(companyid!=null){
 		if(condition === ""){
@@ -38,11 +41,32 @@ exports.getTxnsTypeDetails = function(req, res) {
 			condition=condition+" and company_id='"+companyid+"'";
 		}
 	}
-	if(transtypename!=null){
+	if(grnid!=null){
 		if(condition === ""){
-			condition="trans_type_name like '%"+transtypename+"%'";
+			condition="grn_id='"+grnid+"'";
 		}else {
-			condition=condition+" and trans_type_name like '%"+transtypename+"%'";
+			condition=condition+" and grn_id='"+grnid+"'";
+		}
+	}
+	if(productid!=null){
+		if(condition === ""){
+			condition="product_id='"+productid+"'";
+		}else {
+			condition=condition+" and product_id='"+productid+"'";
+		}
+	}
+	if(storeid!=null){
+		if(condition === ""){
+			condition="store_id='"+storeid+"'";
+		}else {
+			condition=condition+" and store_id='"+storeid+"'";
+		}
+	}
+	if(batchid!=null){
+		if(condition === ""){
+			condition="batch_id='"+batchid+"'";
+		}else {
+			condition=condition+" and batch_id='"+batchid+"'";
 		}
 	}
 	if(status!=null){
@@ -53,9 +77,8 @@ exports.getTxnsTypeDetails = function(req, res) {
 		}
 	}
 	
-	txnstype.findAll({where : [condition]}).then(function(result) {
+	productserialcodes.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			
 			log.info('No data found.');
 			response.message = 'No data found.';
 			response.status  = false;
@@ -81,27 +104,33 @@ exports.getTxnsTypeDetails = function(req, res) {
 
 
 
-// To Save Transaction Type
-exports.saveTxnsType = function(req, res) {
-	txnstype.upsert({
-		trans_type_id		: req.param("transtypeid"),
-		company_id 			: req.param("companyid"),
-		trans_type_name		: req.param("transtypename"),
-		cr_dr				: req.param("crdr"),
-		status				: req.param("status"),
-		last_updated_dt 	: req.param("lastupdateddt"),
-		last_updated_by 	: req.param("lastupdatedby")
+// To Save/Update Product Serial Codes Details
+exports.saveProductSerialCodes = function(req, res) {
+	productserialcodes.upsert({
+		serial_refno			: req.param("serialrefno"),
+		company_id 				: req.param("companyid"),
+		grn_id 					: req.param("grnid"),
+		product_id 				: req.param("productid"),
+		store_id 				: req.param("storeid"),
+		batch_id 				: req.param("batchid"),
+		ean_serialno 			: req.param("eanserialno"),
+		store_serialno 			: req.param("storeserialno"),
+		status 					: req.param("status"),
+		print_status 			: req.param("printstatus")
+		
 	}).then(function(data){
 		if(data){
 			log.info('Saved Successfully.');
 			response.message = 'Saved Successfully.';
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		else{
 			log.info('Updated Successfully.');
 			response.message = 'Updated Successfully.';
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		

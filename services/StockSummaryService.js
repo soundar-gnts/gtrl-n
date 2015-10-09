@@ -1,8 +1,8 @@
 /**
- * @Filename 		: TxnsTypeService.js 
- * @Description 	: To write Business Logic for transaction type. 
+ * @Filename 		: StockSummaryService.js
+ * @Description 	: To write Business Logic for Stock Ledger. 
  * @Author 			: SOUNDAR C 
- * @Date 			: October 03, 2015
+ * @Date 			: October 09, 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. All rights reserved.
  * 
@@ -13,7 +13,7 @@
  * 
  * 
  */
-var txnstype = require('../models/TxnsType.js');
+var stocksummary = require('../models/StockSummary.js');
 var log = require('../config/logger').logger;
 var response = {
 		status	: Boolean,
@@ -21,15 +21,16 @@ var response = {
 		data	: String
 };
 
-// To get full Transaction Type List
-exports.getTxnsTypeDetails = function(req, res) {
+// To get Stock Summary List based on user param
+exports.getStockSummaryDetails = function(req, res) {
 	var condition = "";
-	var transtypeid=req.param("transtypeid");
+	var stockid=req.param("stockid");
 	var companyid=req.param("companyid");
-	var transtypename=req.param("transtypename");
-	var status=req.param("status");
-	if(transtypeid!=null){
-		condition ="trans_type_id="+transtypeid;
+	var productid=req.param("productid");
+	var storeid=req.param("storeid");
+	var batchno=req.param("batchno");
+	if(stockid!=null){
+		condition ="stock_id="+stockid;
 	}
 	if(companyid!=null){
 		if(condition === ""){
@@ -38,24 +39,31 @@ exports.getTxnsTypeDetails = function(req, res) {
 			condition=condition+" and company_id='"+companyid+"'";
 		}
 	}
-	if(transtypename!=null){
+	if(productid!=null){
 		if(condition === ""){
-			condition="trans_type_name like '%"+transtypename+"%'";
+			condition="product_id='"+productid+"'";
 		}else {
-			condition=condition+" and trans_type_name like '%"+transtypename+"%'";
+			condition=condition+" and product_id='"+productid+"'";
 		}
 	}
-	if(status!=null){
+	if(storeid!=null){
 		if(condition === ""){
-			condition="status='"+status+"'";
+			condition="store_id='"+storeid+"'";
 		}else {
-			condition=condition+" and status='"+status+"'";
+			condition=condition+" and store_id='"+storeid+"'";
 		}
 	}
 	
-	txnstype.findAll({where : [condition]}).then(function(result) {
+	if(batchno!=null){
+		if(condition === ""){
+			condition="batch_no='"+batchno+"'";
+		}else {
+			condition=condition+" and batch_no='"+batchno+"'";
+		}
+	}
+	
+	stocksummary.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			
 			log.info('No data found.');
 			response.message = 'No data found.';
 			response.status  = false;
@@ -81,27 +89,31 @@ exports.getTxnsTypeDetails = function(req, res) {
 
 
 
-// To Save Transaction Type
-exports.saveTxnsType = function(req, res) {
-	txnstype.upsert({
-		trans_type_id		: req.param("transtypeid"),
-		company_id 			: req.param("companyid"),
-		trans_type_name		: req.param("transtypename"),
-		cr_dr				: req.param("crdr"),
-		status				: req.param("status"),
-		last_updated_dt 	: req.param("lastupdateddt"),
-		last_updated_by 	: req.param("lastupdatedby")
+// To Save/Update Stock Summary Details
+exports.saveStockSummary = function(req, res) {
+	stocksummary.upsert({
+		stock_id					: req.param("stockid"),
+		product_id 					: req.param("productid"),
+		company_id 					: req.param("companyid"),
+		store_id 					: req.param("storeid"),
+		batch_no 					: req.param("batchno"),
+		curr_stock 					: req.param("currstock"),
+		last_sold_dt 				: req.param("lastsolddt"),
+		last_sold_qty 				: req.param("lastsoldqty")
+		
 	}).then(function(data){
 		if(data){
 			log.info('Saved Successfully.');
 			response.message = 'Saved Successfully.';
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		else{
 			log.info('Updated Successfully.');
 			response.message = 'Updated Successfully.';
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		
@@ -114,5 +126,3 @@ exports.saveTxnsType = function(req, res) {
 	});
 		
 }
-
-

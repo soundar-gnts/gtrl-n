@@ -1,8 +1,8 @@
 /**
- * @Filename 		: SlnoGenService.js 
- * @Description 	: To write Business Logic for m_slno_gen. 
+ * @Filename 		: StockLedgerService.js
+ * @Description 	: To write Business Logic for Stock Ledger. 
  * @Author 			: SOUNDAR C 
- * @Date 			: October 03, 2015
+ * @Date 			: October 09, 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. All rights reserved.
  * 
@@ -13,7 +13,7 @@
  * 
  * 
  */
-var slnogen = require('../models/SlnoGen.js');
+var stockledger = require('../models/StockLedger.js');
 var log = require('../config/logger').logger;
 var response = {
 		status	: Boolean,
@@ -21,22 +21,30 @@ var response = {
 		data	: String
 };
 
-// To get full Serial No Generation List
-exports.getSlnoGenDetails = function(req, res) {
+// To get StockLedger List based on user param
+exports.getStockLedgerDetails = function(req, res) {
 	var condition = "";
-	var slnoid=req.param("slnoid");
+	var stockledid=req.param("stockledid");
 	var companyid=req.param("companyid");
+	var productid=req.param("productid");
 	var storeid=req.param("storeid");
-	var refkey=req.param("refkey");
-	var status=req.param("status");
-	if(slnoid!=null){
-		condition ="slno_id="+slnoid;
+	var batchno=req.param("batchno");
+	var islatest=req.param("islatest");
+	if(stockledid!=null){
+		condition ="stock_ledid="+stockledid;
 	}
 	if(companyid!=null){
 		if(condition === ""){
 			condition="company_id='"+companyid+"'";
 		}else {
 			condition=condition+" and company_id='"+companyid+"'";
+		}
+	}
+	if(productid!=null){
+		if(condition === ""){
+			condition="product_id='"+productid+"'";
+		}else {
+			condition=condition+" and product_id='"+productid+"'";
 		}
 	}
 	if(storeid!=null){
@@ -46,24 +54,25 @@ exports.getSlnoGenDetails = function(req, res) {
 			condition=condition+" and store_id='"+storeid+"'";
 		}
 	}
-	if(refkey!=null){
+	
+	if(batchno!=null){
 		if(condition === ""){
-			condition="ref_key like '"+refkey+"'";
+			condition="batch_no='"+batchno+"'";
 		}else {
-			condition=condition+" and ref_key like '"+refkey+"'";
-		}
-	}
-	if(status!=null){
-		if(condition === ""){
-			condition="status='"+status+"'";
-		}else {
-			condition=condition+" and status='"+status+"'";
+			condition=condition+" and batch_no='"+batchno+"'";
 		}
 	}
 	
-	slnogen.findAll({where : [condition]}).then(function(result) {
+	if(islatest!=null){
+		if(condition === ""){
+			condition="is_latest='"+islatest+"'";
+		}else {
+			condition=condition+" and is_latest='"+islatest+"'";
+		}
+	}
+	
+	stockledger.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			
 			log.info('No data found.');
 			response.message = 'No data found.';
 			response.status  = false;
@@ -89,36 +98,38 @@ exports.getSlnoGenDetails = function(req, res) {
 
 
 
-// To Save Serial No Generation
-exports.saveSlnoGen = function(req, res) {
-	slnogen.upsert({
-		slno_id				: req.param("slnoid"),
-		company_id 			: req.param("companyid"),
-		slno_gen_level 		: req.param("slnogenlevel"),
-		store_id 			: req.param("storeid"),
-		ref_key 			: req.param("refkey"),
-		key_desc 			: req.param("keydesc"),
-		autogen_yn 			: req.param("autogenyn"),
-		prefix_key 			: req.param("prefixkey"),
-		prefix_cncat 		: req.param("prefixcncat"),
-		suffix_key 			: req.param("suffixkey"),
-		suffix_cncat 		: req.param("suffixcncat"),
-		curr_seqno 			: req.param("currseqno"),
-		last_seqno 			: req.param("lastseqno"),
-		status 				: req.param("status"),
-		last_updated_dt 	: req.param("lastupdateddt"),
-		last_updated_by 	: req.param("lastupdatedby")
+// To Save/Update Stock Ledger Details
+exports.saveStockLedger = function(req, res) {
+	stockledger.upsert({
+		stock_ledid					: req.param("stockledid"),
+		ledger_date 				: req.param("ledgerdate"),
+		product_id 					: req.param("productid"),
+		company_id 					: req.param("companyid"),
+		store_id 					: req.param("storeid"),
+		batch_no 					: req.param("batchno"),
+		open_qty 					: req.param("openqty"),
+		in_qty 						: req.param("inqty"),
+		out_qty 					: req.param("outqty"),
+		close_qty 					: req.param("closeqty"),
+		uom_id 						: req.param("uomid"),
+		is_latest 					: req.param("islatest"),
+		ref_no 						: req.param("refno"),
+		ref_date 					: req.param("refdate"),
+		ref_remarks 				: req.param("refremarks")
+		
 	}).then(function(data){
 		if(data){
 			log.info('Saved Successfully.');
 			response.message = 'Saved Successfully.';
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		else{
 			log.info('Updated Successfully.');
 			response.message = 'Updated Successfully.';
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		
@@ -131,5 +142,3 @@ exports.saveSlnoGen = function(req, res) {
 	});
 		
 }
-
-

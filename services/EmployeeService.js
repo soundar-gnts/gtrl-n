@@ -1,6 +1,6 @@
 /**
- * @Filename 		: m_employee_service.js 
- * @Description 	: To write Business Logic for employee. 
+ * @Filename 		: EmployeeService.js 
+ * @Description 	: To write Business Logic for Employee. 
  * @Author 			: SOUNDAR C 
  * @Date 			: October 03, 2015
  * 
@@ -15,6 +15,12 @@
  */
 var employee = require('../models/Employee.js');
 var user = require('../models/User.js');
+var log = require('../config/logger').logger;
+var response = {
+		status	: Boolean,
+		message : String,
+		data	: String
+};
 
 // To get full Employee List
 exports.getEmployeeDetails = function(req, res) {
@@ -72,12 +78,29 @@ exports.getEmployeeDetails = function(req, res) {
 		}
 	}
 	
-	employee.findAll({where : [condition]}).then(function(err, result) {
-		if (err)
-			res.send(err);
-		else
-			res.send(result);
-	})
+	employee.findAll({where : [condition]}).then(function(result) {
+		if(result.length === 0){
+			
+			log.info('No data found.');
+			response.message = 'No data found.';
+			response.status  = false;
+			response.data	 = "";
+			res.send(response);
+		} else{
+			
+			log.info('About '+result.length+' results.');
+			response.status  	= true;
+			response.message 	= 'About '+result.length+' results.';
+			response.data 		= result;
+			res.send(response);
+		}
+	}).error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
 }
 
 
@@ -85,7 +108,7 @@ exports.getEmployeeDetails = function(req, res) {
 
 // To Save Employee
 exports.saveEmployee= function(req, res) {
-	employee.upsert({
+	employee.create({
 		employee_id			: req.param("employeeid"),
 		company_id			: req.param("companyid"),
 		employee_code 		: req.param("employeecode"),
@@ -116,11 +139,27 @@ exports.saveEmployee= function(req, res) {
 			
 		});
 		
-	})
-	.error(function(err) {
-		res.send(err);
-	});;
-	res.send('Successfully Saved.');
+	}).then(function(data){
+		if(data){
+			log.info('Saved Successfully.');
+			response.message = 'Saved Successfully.';
+			response.status  = true;
+			res.send(response);
+		}
+		else{
+			log.info('Updated Successfully.');
+			response.message = 'Updated Successfully.';
+			response.status  = true;
+			res.send(response);
+		}
+		
+	}).error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
 }
 
 

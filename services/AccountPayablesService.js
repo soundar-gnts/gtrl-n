@@ -1,8 +1,8 @@
 /**
- * @Filename 		: TxnsTypeService.js 
- * @Description 	: To write Business Logic for transaction type. 
+ * @Filename 		: AccountPayablesService.js
+ * @Description 	: To write Business Logic for t_account_payables. 
  * @Author 			: SOUNDAR C 
- * @Date 			: October 03, 2015
+ * @Date 			: October 08, 2015
  * 
  * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. All rights reserved.
  * 
@@ -13,7 +13,7 @@
  * 
  * 
  */
-var txnstype = require('../models/TxnsType.js');
+var accountpayables = require('../models/AccountPayables.js');
 var log = require('../config/logger').logger;
 var response = {
 		status	: Boolean,
@@ -21,15 +21,16 @@ var response = {
 		data	: String
 };
 
-// To get full Transaction Type List
-exports.getTxnsTypeDetails = function(req, res) {
+// To get Account Payables List based on user param
+exports.getAccountPayablesDetails = function(req, res) {
 	var condition = "";
-	var transtypeid=req.param("transtypeid");
+	var accpaybleid=req.param("accpaybleid");
 	var companyid=req.param("companyid");
-	var transtypename=req.param("transtypename");
+	var storeid=req.param("storeid");
+	var billno=req.param("billno");
 	var status=req.param("status");
-	if(transtypeid!=null){
-		condition ="trans_type_id="+transtypeid;
+	if(accpaybleid!=null){
+		condition ="accpayble_id="+accpaybleid;
 	}
 	if(companyid!=null){
 		if(condition === ""){
@@ -38,11 +39,18 @@ exports.getTxnsTypeDetails = function(req, res) {
 			condition=condition+" and company_id='"+companyid+"'";
 		}
 	}
-	if(transtypename!=null){
+	if(storeid!=null){
 		if(condition === ""){
-			condition="trans_type_name like '%"+transtypename+"%'";
+			condition="store_id='"+storeid+"'";
 		}else {
-			condition=condition+" and trans_type_name like '%"+transtypename+"%'";
+			condition=condition+" and store_id='"+storeid+"'";
+		}
+	}
+	if(billno!=null){
+		if(condition === ""){
+			condition="bill_no like '%"+billno+"%'";
+		}else {
+			condition=condition+" and bill_no like '%"+billno+"%'";
 		}
 	}
 	if(status!=null){
@@ -53,9 +61,8 @@ exports.getTxnsTypeDetails = function(req, res) {
 		}
 	}
 	
-	txnstype.findAll({where : [condition]}).then(function(result) {
+	accountpayables.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			
 			log.info('No data found.');
 			response.message = 'No data found.';
 			response.status  = false;
@@ -81,27 +88,40 @@ exports.getTxnsTypeDetails = function(req, res) {
 
 
 
-// To Save Transaction Type
-exports.saveTxnsType = function(req, res) {
-	txnstype.upsert({
-		trans_type_id		: req.param("transtypeid"),
-		company_id 			: req.param("companyid"),
-		trans_type_name		: req.param("transtypename"),
-		cr_dr				: req.param("crdr"),
-		status				: req.param("status"),
-		last_updated_dt 	: req.param("lastupdateddt"),
-		last_updated_by 	: req.param("lastupdatedby")
+// To Save Save/Update AccountPayables Details
+exports.saveAccountPayables = function(req, res) {
+	accountpayables.upsert({
+		accpayble_id			: req.param("accpaybleid"),
+		company_id 				: req.param("companyid"),
+		store_id 				: req.param("storeid"),
+		entry_date 				: req.param("entrydate"),
+		account_id 				: req.param("accountid"),
+		bill_no 				: req.param("billno"),
+		bill_date 				: req.param("billdate"),
+		grn_no 					: req.param("grnno"),
+		invoice_amount 			: req.param("invoiceamount"),
+		paid_amount 			: req.param("paidamount"),
+		balance_amount 			: req.param("balanceamount"),
+		remarks 				: req.param("remarks"),
+		prepared_by 			: req.param("preparedby"),
+		actioned_by 			: req.param("actionedby"),
+		status 					: req.param("status"),
+		last_updated_dt 		: req.param("lastupdateddt"),
+		last_updated_by 		: req.param("lastupdatedby")
+		
 	}).then(function(data){
 		if(data){
 			log.info('Saved Successfully.');
 			response.message = 'Saved Successfully.';
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		else{
 			log.info('Updated Successfully.');
 			response.message = 'Updated Successfully.';
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		

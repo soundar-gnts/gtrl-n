@@ -14,6 +14,12 @@
  * 
  */
 var customer = require('../models/Customer.js');
+var log = require('../config/logger').logger;
+var response = {
+		status	: Boolean,
+		message : String,
+		data	: String
+};
 
 // To get Customer List based on user param
 exports.getCustomerDetails = function(req, res) {
@@ -87,12 +93,29 @@ exports.getCustomerDetails = function(req, res) {
 		}
 	}
 	
-	customer.findAll({where : [condition]}).then(function(err, result) {
-		if (err)
-			res.send(err);
-		else
-			res.send(result);
-	})
+	customer.findAll({where : [condition]}).then(function(result) {
+		if(result.length === 0){
+			
+			log.info('No data found.');
+			response.message = 'No data found.';
+			response.status  = false;
+			response.data	 = "";
+			res.send(response);
+		} else{
+			
+			log.info('About '+result.length+' results.');
+			response.status  	= true;
+			response.message 	= 'About '+result.length+' results.';
+			response.data 		= result;
+			res.send(response);
+		}
+	}).error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
 }
 
 
@@ -126,12 +149,26 @@ exports.saveCustomer = function(req, res) {
 		state_id 			: req.param("stateid"),
 		city_id 			: req.param("cityid")
 		
-	}).then(function(err, result) {
-		if (err) {
-			res.send(err);
-		} else {
-			res.send('Successfully Saved.');
+	}).then(function(data){
+		if(data){
+			log.info('Saved Successfully.');
+			response.message = 'Saved Successfully.';
+			response.status  = true;
+			res.send(response);
 		}
+		else{
+			log.info('Updated Successfully.');
+			response.message = 'Updated Successfully.';
+			response.status  = true;
+			res.send(response);
+		}
+		
+	}).error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
 	});
 		
 }
