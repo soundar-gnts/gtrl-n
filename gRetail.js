@@ -53,7 +53,6 @@ require('./routes/SupplierTypeRoutes.js')(app, server);
 require('./routes/SupplierRoutes.js')(app, server);
 require('./routes/UserGroupRoutes.js')(app, server);
 
-require('./routes/userRoutes.js')(app, server);
 require('./routes/StateRoutes.js')(app, server);
 require('./routes/CityRoutes.js')(app, server);
 require('./routes/CompanyRoutes.js')(app, server);

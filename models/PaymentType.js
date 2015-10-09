@@ -15,7 +15,7 @@
  */
 
 var model = require('../config/sequelize.js');
-var Company = require('../models/m_company.js');
+var Company = require('../models/Company.js');
 var dataTypes = require('sequelize');
 
 var PaymentType = model.define('m_payment_type', {
