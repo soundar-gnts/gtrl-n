@@ -1,6 +1,6 @@
 /**
  * @Filename	:	PurchaseReturnHdr.js
- * @Description	:	To write Model Object for m_product table.
+ * @Description	:	To write Model Object for t_purchase_return_hdr.
  * @Author		:	Saranya G
  * @Date		:	October 09, 2015
  * 
@@ -15,11 +15,12 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var purchaseReturnHdr = model.define('t_purchase_return_hdr', {
+var model 				= require('../config/sequelize.js');
+var dataTypes			= require('sequelize');
+var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 
 	return_id : {
+		
 		type : dataTypes.INTEGER,
 		primaryKey : true,
 		autoIncrement : true

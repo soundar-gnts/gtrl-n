@@ -1,6 +1,6 @@
 /**
  * File Name	:	CityService.js
- * Description	:	To write Business Logic For User.
+ * Description	:	To write Business Logic For City.
  * Author		:	Saranya G
  * Date			:	October 05, 2015
  * 
@@ -14,18 +14,21 @@
  * 
  */
 
-var city = require('../models/City.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
+var city 		= require('../models/City.js');
+var log 		= require('../config/logger').logger;
+var appMsg		= require('../config/Message.js');
+
+var response 	= {
+						status	: Boolean,
+						message : String,
+						data	: String
+					};
 	
 
 //SaveOrUpdate City Details
 
 	exports.saveOrUpdateCity = function(req, res){
+		
 		city.upsert({
 			
 			city_id			: req.param('cityid'),
@@ -34,6 +37,7 @@ var response = {
 			status    		: req.param('status'),	
 			last_updated_dt	: new Date(),
 	        last_updated_by	: req.param('lastupdatedby')
+	        
 			})
 			.then(function(data){
 				if(data){
@@ -101,8 +105,9 @@ var response = {
 				if(citylist.length === 0){
 					
 					log.info('No data found.');
-					response.message = 'No data found.';
+					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
+					response.data 	 = "";
 					res.send(response);
 				} else{
 					

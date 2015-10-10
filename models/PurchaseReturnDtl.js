@@ -1,6 +1,6 @@
 /**
  * @Filename	:	PurchaseReturnDtl.js
- * @Description	:	To write Model Object for m_product table.
+ * @Description	:	To write Model Object for t_purchase_return_dtl.
  * @Author		:	Saranya G
  * @Date		:	October 09, 2015
  * 
@@ -15,15 +15,16 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var purchaseReturnDtl = model.define('t_purchase_return_dtl', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var purchaseReturnDtl	= model.define('t_purchase_return_dtl', {
 
 	return_dtlid : {
 		type : dataTypes.INTEGER,
 		primaryKey : true,
 		autoIncrement : true
 	},
+	
 	return_id			: dataTypes.INTEGER,	
 	product_id 			: dataTypes.INTEGER,
 	return_qty 			: dataTypes.INTEGER,

@@ -1,6 +1,6 @@
 /**
  * File Name	:	CardTypeService.js
- * Description	:	To write Business Logic For User.
+ * Description	:	To write Business Logic For CardType.
  * Author		:	Saranya G
  * Date			:	October 07, 2015
  * 
@@ -14,8 +14,10 @@
  * 
  */
 
-var cardtype = require('../models/CardType.js');
-var log = require('../config/logger').logger;
+var cardtype 	= require('../models/CardType.js');
+var log 		= require('../config/logger').logger;
+var appMsg		= require('../config/Message.js');
+
 var response = {
 		status	: Boolean,
 		message : String,
@@ -101,8 +103,9 @@ var response = {
 			if(cardtypelist.length === 0){
 				
 				log.info('No data found.');
-				response.message = 'No data found.';
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
+				response.data 	 = "";
 				res.send(response);
 			} else{
 				

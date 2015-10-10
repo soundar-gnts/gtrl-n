@@ -15,9 +15,9 @@
  * 
  */
 
-	var model = require('../config/sequelize.js');
-	var dataTypes = require('sequelize');
-	var cardType = model.define('m_card_type', {
+	var model 		 = require('../config/sequelize.js');
+	var dataTypes	 = require('sequelize');
+	var cardType 	 = model.define('m_card_type', {
 	
 		card_type_id : {
 			

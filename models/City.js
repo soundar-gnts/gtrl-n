@@ -1,6 +1,6 @@
 /**
  * File Name	:	City.js
- * Description	:	To create schema for state.
+ * Description	:	To create schema for City.
  * Author		:	Saranya G
  * Date			:	Oct 05 2015
  * 
@@ -14,9 +14,9 @@
  *      	        
  */
 
-	var model = require('../config/sequelize.js');
-	var dataTypes = require('sequelize');
-	var City = model.define('m_city', {
+	var model		 = require('../config/sequelize.js');
+	var dataTypes 	 = require('sequelize');
+	var City         = model.define('m_city', {
 		
 		city_id			: {
 			

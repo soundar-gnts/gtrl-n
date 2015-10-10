@@ -1,6 +1,6 @@
 /**
  * File Name	:	voucherRoutes.js
- * Description	:	To write Routing middlewares For User.
+ * Description	:	To write Routing middlewares For voucherRoutes.
  * Author		:	Saranya G
  * Date			:	October 05, 2015
  * 
@@ -18,6 +18,7 @@
 var voucherService= require('../services/VoucherService.js');
 
 module.exports = function(app, server){
+	
 	app.post('/getvoucherlist', voucherService.getVoucherList);
 	app.post('/getvouchertypelist', voucherService.getVoucherTypeList);
 	app.post('/saveorupdatevoucher', voucherService.saveOrUpdateVoucher);

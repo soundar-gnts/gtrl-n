@@ -1,6 +1,6 @@
 /**
  * File Name	:	StoreService.js
- * Description	:	To write Business Logic For User.
+ * Description	:	To write Business Logic For StoreService.
  * Author		:	Saranya G
  * Date			:	October 08, 2015
  * 
@@ -14,33 +14,35 @@
  * 
  */
 
-var store 	= require('../models/Store.js');
-var storeRegion = require('../models/StoreRegion.js');
-var log = require('../config/logger').logger;
+var store 		     = require('../models/Store.js');
+var storeRegion		 = require('../models/StoreRegion.js');
+var log 			 = require('../config/logger').logger;
+var appMsg			 = require('../config/Message.js');
+
 var response = {
 		status	: Boolean,
 		message : String,
 		data	: String
 };
 
-//Store LIST
+//Store List
 
 	exports.getStoreList = function(req, res) {
 		
 		var conditionQuery 		= "";
 	
-		var storeId 		= req.param("storeid");
-		var companyId 		= req.param("companyid");
-		var storeCode 		= req.param("storecode");
-		var storeName		= req.param("storename");
-		var stateId=req.param("stateid");
-		var cityId=req.param("cityid");
-		var warehouseId=req.param("warehouseid"); 
-		var stkTransRegionId=req.param('stktransregionid');
-		var stkTransStoreId=req.param('stktransstoreid');
-		var stkRecvRegionId=req.param('stkrecvregionid');
-		var stkRecvStoreId=req.param('stkrecvstoreid');
-		var status			= req.param("status");
+		var storeId 			= req.param("storeid");
+		var companyId 			= req.param("companyid");
+		var storeCode 			= req.param("storecode");
+		var storeName			= req.param("storename");
+		var stateId				= req.param("stateid");
+		var cityId				= req.param("cityid");
+		var warehouseId			= req.param("warehouseid"); 
+		var stkTransRegionId	= req.param('stktransregionid');
+		var stkTransStoreId		= req.param('stktransstoreid');
+		var stkRecvRegionId		= req.param('stkrecvregionid');
+		var stkRecvStoreId		= req.param('stkrecvstoreid');
+		var status				= req.param("status");
 		
 		if(companyId!=null){
 			conditionQuery ="company_id="+companyId;
@@ -132,8 +134,9 @@ var response = {
 			if(storelist.length === 0){
 				
 				log.info('No data found.');
-				response.message = 'No data found.';
-				response.status  = false;			
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
+				response.status  = false;	
+				response.data	 = "";
 				res.send(response);
 			} else{
 				
@@ -159,7 +162,7 @@ var response = {
 		var condition 			= "";
 		var regionId 			= req.param("regionid");
 		var companyId 			= req.param("companyid");
-		var regionName 		= req.param("regionname");
+		var regionName 			= req.param("regionname");
 		var status				= req.param("status");
 		
 		if(companyId!=null){
@@ -195,8 +198,9 @@ var response = {
 			if(regionlist.length === 0){
 				
 				log.info('No data found.');
-				response.message = 'No data found.';
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
+				response.data	 = "";
 				res.send(response);
 			} else{
 				

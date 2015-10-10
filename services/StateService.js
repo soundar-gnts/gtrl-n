@@ -1,6 +1,6 @@
 /**
  * File Name	:	StateService.js
- * Description	:	To write Business Logic For User.
+ * Description	:	To write Business Logic For State.
  * Author		:	Saranya G
  * Date			:	October 05, 2015
  * 
@@ -14,23 +14,27 @@
  *  0.1  	October 07, 2015         Saranya G
  */
 
-var state = require('../models/State.js');
-var log = require('../config/logger').logger;
+var state 	= require('../models/State.js');
+var log 	= require('../config/logger').logger;
+var appMsg	= require('../config/Message.js');
+
 var response = {
 		status	: Boolean,
 		message : String,
 		data	: String
 };
 
-/*//SaveOrUpdate State Details
+//SaveOrUpdate State Details
 
 	exports.saveOrUpdateState = function(req, res){
 		state.upsert({
+			
 			state_id			: req.param('stateid'),
 			state_name 			: req.param('statename'),
 			status				: req.param('status'),
 			last_updated_dt		: new Date(),
 			last_updated_by		: req.param('lastupdatedby') 
+			
 			})
 			.then(function(data){
 				if(data){
@@ -53,11 +57,12 @@ var response = {
 				response.data  		= err;
 				res.send(response);
 			});
-	}; */
+	}; 
 
-//State full LIST
+//State full List
 
 	exports.getStateList = function(req, res) {
+		
 		var condition 	= "";
 		var stateId		= req.param("stateid");
 		var stateName	= req.param("statename");
@@ -87,8 +92,9 @@ var response = {
 				if(statelist.length === 0){
 					
 					log.info('No data found.');
-					response.message = 'No data found.';
+					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
+					response.data 	 = "";
 					res.send(response);
 				} else{
 					

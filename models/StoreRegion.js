@@ -15,14 +15,15 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var storeRegion = model.define('m_store_region', {
+var model		 	= require('../config/sequelize.js');
+var dataTypes 		= require('sequelize');
+var storeRegion 	= model.define('m_store_region', {
 
 	region_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+		
+		type		 	: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 	company_id 			: dataTypes.INTEGER,
 	region_name 		: dataTypes.STRING,

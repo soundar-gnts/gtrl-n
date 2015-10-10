@@ -18,9 +18,14 @@
 var storeService= require('../services/StoreService.js');
 
 module.exports = function(app, server){
+	
+	//Store
 	app.post('/getstorelist', storeService.getStoreList);
-	app.post('/getstoreregionlist', storeService.getStoreRegionList);
 	app.post('/saveorupdatestore', storeService.saveOrUpdateStore);
+	
+	//Store region
+	app.post('/getstoreregionlist', storeService.getStoreRegionList);
+	
 	
 }
 

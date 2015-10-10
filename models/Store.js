@@ -15,14 +15,14 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var store = model.define('m_store', {
+var model 		= require('../config/sequelize.js');
+var dataTypes 	= require('sequelize');
+var store 		= model.define('m_store', {
 
 	store_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 
 	company_id 			: dataTypes.INTEGER,

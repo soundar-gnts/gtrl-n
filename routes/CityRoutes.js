@@ -1,6 +1,6 @@
 /**
  * File Name	:	CityRoutes.js
- * Description	:	To write Routing middlewares For User.
+ * Description	:	To write Routing middlewares For CityRoutes.
  * Author		:	Saranya G
  * Date			:	October 05, 2015
  * 

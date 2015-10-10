@@ -1,6 +1,6 @@
 /**
  * File Name	:	VoucherService.js
- * Description	:	To write Business Logic For User.
+ * Description	:	To write Business Logic For Voucher and VoucherType.
  * Author		:	Saranya G
  * Date			:	October 06, 2015
  * 
@@ -14,14 +14,16 @@
  * 
  */
 
-var voucher 	= require('../models/Voucher.js');
-var voucherType = require('../models/VoucherType.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
+var voucher 		= require('../models/Voucher.js');
+var voucherType		= require('../models/VoucherType.js');
+var appMsg			= require('../config/Message.js');
+
+var log 			= require('../config/logger').logger;
+var response 		= {
+						status	: Boolean,
+						message : String,
+						data	: String
+						};
 //SaveOrUpdate Voucher and VoucherType Details
 
 	exports.saveOrUpdateVoucher = function(req, res){
@@ -74,7 +76,7 @@ var response = {
 			}
 	} 
 
-	//Voucher LIST
+	//Voucher List
 
 	exports.getVoucherList = function(req, res) {
 		
@@ -126,9 +128,11 @@ var response = {
 			if(voucherlist.length === 0){
 				
 				log.info('No data found.');
-				response.message = 'No data found.';
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
+				response.data 	 = "";
 				res.send(response);
+				
 			} else{
 				
 				log.info('About '+voucherlist.length+' results.');
@@ -146,7 +150,7 @@ var response = {
 			res.send(response);
 		});
 	};
-// Voucher Type LIST
+// Voucher Type List
 
 	exports.getVoucherTypeList = function(req, res) {
 		
@@ -191,8 +195,9 @@ var response = {
 			if(vouchertypelist.length === 0){
 				
 				log.info('No data found.');
-				response.message = 'No data found.';
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
+				response.data 	 = "";
 				res.send(response);
 			} else{
 				
@@ -212,75 +217,3 @@ var response = {
 		});
 	};
 	
-	/*exports.saveOrUpdateUserGroup = function(req, res){
-	    var uGroup = {
-	            group_id        : req.param('groupid'),
-	            group_name        : req.param('groupname'),
-	            company_id         : req.param('companyid'),
-	            status             : req.param('status'),
-	            last_updated_dt    : new Date(),
-	            last_updated_by    : req.param('lastupdatedby'),
-	        }
-	    userGroup.findOne({where : {group_id : req.param('groupid')}})
-	    .then(function(group){
-	        if(!group){
-	            userGroup.create(uGroup)
-	            .then(function(g){
-	                for(var i = 0; i < req.param('empids').length; i++){
-	                    user.findOne({where : {employee_id : req.param('empids')[i].empid}})
-	                    .then(function(usr){
-	                        usr.group_id = g.group_id;
-	                        usr.save();
-	                    })
-	                }
-	                log.info('User group saved successfully.');
-	                response.message = 'User group saved successfully.';
-	                response.status  = true;
-	                res.send(response);
-	            })
-	            .error(function(err){
-	                log.error(err);
-	                response.status      = false;
-	                response.message     = 'Internal error.';
-	                response.data          = err;
-	                res.send(response);
-	            });
-	        } else{
-	            userGroup.upsert(uGroup)
-	            .then(function(g){
-	                user.find({where : {group_id : req.param('groupid')}})
-	                .then(function(users){
-	                    for(var i = 0; i < users.length; i++){
-	                        var flag = false;
-	                        for(var j = 0; j < req.param('empids').length; j++){
-	                            if(users[i].employee_id == req.param('empids')[j].empid)
-	                                flag = true;
-	                        }
-	                        if(!flag){
-	                            users[i].group_id = 0;
-	                            users[i].save();
-	                        }
-	                       
-	                    }
-	                    log.info('User group editted successfully.');
-	                    response.message = 'User group editted successfully.';
-	                    response.status  = true;
-	                    res.send(response);
-	                   
-	                }).error(function(err){
-	                    log.error(err);
-	                    response.status      = false;
-	                    response.message     = 'Internal error.';
-	                    response.data          = err;
-	                    res.send(response);
-	                });
-	            })
-	        }
-	    }).error(function(err){
-	        log.error(err);
-	        response.status      = false;
-	        response.message     = 'Internal error.';
-	        response.data          = err;
-	        res.send(response);
-	    });
-	}*/

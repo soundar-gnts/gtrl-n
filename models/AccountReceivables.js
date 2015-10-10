@@ -15,14 +15,14 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var accountRecevables = model.define('t_account_receivables', {
+var model 				 = require('../config/sequelize.js');
+var dataTypes			 = require('sequelize');
+var accountRecevables	 = model.define('t_account_receivables', {
 
 	  accrcble_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 	
 	company_id 			: dataTypes.INTEGER,

@@ -15,15 +15,17 @@
  * 
  */
 
-	var model = require('../config/sequelize.js');
-	var dataTypes = require('sequelize');
+	var model 		= require('../config/sequelize.js');
+	var dataTypes   = require('sequelize');
 	var voucherType = model.define('m_voucher_type', {
 	
 		voucher_type_id : {
-			type : dataTypes.INTEGER,
-			primaryKey : true,
-			autoIncrement : true
+			
+			type 			: dataTypes.INTEGER,
+			primaryKey  	: true,
+			autoIncrement	: true
 		},
+		
 		company_id 			: dataTypes.INTEGER,	
 		voucher_type_name 	: dataTypes.STRING,	
 		status 				: dataTypes.STRING,
