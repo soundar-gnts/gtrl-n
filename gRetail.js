@@ -75,6 +75,12 @@ require('./routes/EmployeeRoutes.js')(app, server);
 require('./routes/SerialNoGenRoutes.js')(app, server);
 require('./routes/TxnstypeRoutes.js')(app, server);
 require('./routes/CustomerRoutes.js')(app, server);
+require('./routes/PurchaseRoutes.js')(app, server);
+require('./routes/AccountsRoutes.js')(app, server);
+require('./routes/StockAdjustmentsRoutes.js')(app, server);
+require('./routes/AccountPayablesRoutes.js')(app, server);
+require('./routes/StockLedgerRoutes.js')(app, server);
+require('./routes/StockSummaryRoutes.js')(app, server);
 
 
 

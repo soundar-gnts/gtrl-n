@@ -151,3 +151,31 @@ exports.saveAccounts = function(req, res) {
 	});
 		
 }
+//To Delete Account Detail
+exports.deleteAccountDetails = function(req, res) {
+	if(req.param("accountid")!=null){
+		accounts.destroy({where:{
+		account_id					: req.param("accountid")		
+	}}).then(function(data){
+		if(data){
+			log.info('Deleted Successfully.');
+			response.message = 'Deleted Successfully.';
+			response.status  = true;
+			response.data	 = "";
+			res.send(response);
+		}
+		
+	}).error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
+	}else{
+		response.status  	= false;
+		response.message 	= 'JSON Error - Key Not found';
+		response.data  		= "";
+		res.send(response);
+	}
+}
