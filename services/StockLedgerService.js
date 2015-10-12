@@ -20,6 +20,7 @@ var response = {
 		message : String,
 		data	: String
 };
+var appmsg			= require('../config/Message.js');
 
 // To get StockLedger List based on user param
 exports.getStockLedgerDetails = function(req, res) {
@@ -73,8 +74,8 @@ exports.getStockLedgerDetails = function(req, res) {
 	
 	stockledger.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);

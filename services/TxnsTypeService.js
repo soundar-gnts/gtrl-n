@@ -20,9 +20,10 @@ var response = {
 		message : String,
 		data	: String
 };
-
+var appmsg			= require('../config/Message.js');
 // To get full Transaction Type List
 exports.getTxnsTypeDetails = function(req, res) {
+	var attr 	= "";
 	var condition = "";
 	var transtypeid=req.param("transtypeid");
 	var companyid=req.param("companyid");
@@ -52,12 +53,15 @@ exports.getTxnsTypeDetails = function(req, res) {
 			condition=condition+" and status='"+status+"'";
 		}
 	}
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['trans_type_id','trans_type_name','cr_dr'];
+	}
 	
-	txnstype.findAll({where : [condition]}).then(function(result) {
+	txnstype.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
 			
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);

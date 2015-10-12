@@ -20,6 +20,7 @@ var response = {
 		message : String,
 		data	: String
 };
+var appmsg			= require('../config/Message.js');
 
 // To get Customer Age Group based on user param
 exports.getCustAgeGroupDetails = function(req, res) {
@@ -55,9 +56,8 @@ exports.getCustAgeGroupDetails = function(req, res) {
 	
 	custagegroup.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);

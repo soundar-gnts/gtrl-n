@@ -20,6 +20,7 @@ var response = {
 		message : String,
 		data	: String
 };
+var appmsg			= require('../config/Message.js');
 
 // To get Stock Adjustments List based on user param
 exports.getStockAdjustmentsDetails = function(req, res) {
@@ -28,6 +29,7 @@ exports.getStockAdjustmentsDetails = function(req, res) {
 	var companyid=req.param("companyid");
 	var productid=req.param("productid");
 	var storeid=req.param("storeid");
+	var adjustsymbol=req.param("adjustsymbol");
 	
 	if(adjustid!=null){
 		condition ="adjust_id="+adjustid;
@@ -53,11 +55,18 @@ exports.getStockAdjustmentsDetails = function(req, res) {
 			condition=condition+" and store_id='"+storeid+"'";
 		}
 	}
+	if(adjustsymbol!=null){
+		if(condition === ""){
+			condition="adjust_symbol='"+adjustsymbol+"'";
+		}else {
+			condition=condition+" and adjust_symbol='"+adjustsymbol+"'";
+		}
+	}
 	
 	stockadjustments.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);

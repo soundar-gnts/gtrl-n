@@ -20,9 +20,11 @@ var response = {
 		message : String,
 		data	: String
 };
+var appmsg			= require('../config/Message.js');
 
 // To get Account List based on user param
 exports.getAccountsDetails = function(req, res) {
+	var attr 	= "";
 	var condition = "";
 	var accountid=req.param("accountid");
 	var companyid=req.param("companyid");
@@ -69,11 +71,14 @@ exports.getAccountsDetails = function(req, res) {
 			condition=condition+" and status='"+status+"'";
 		}
 	}
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['account_id','account_group','account_name','current_balance'];
+	}
 	
-	accounts.findAll({where : [condition]}).then(function(result) {
+	accounts.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);

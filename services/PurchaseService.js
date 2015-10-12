@@ -28,13 +28,17 @@ var appmsg			= require('../config/Message.js');
 
 // To get Purchase Header List based on user param
 exports.getPurchaseHdrDetails = function(req, res) {
+	var attr 	= "";
 	var condition = "";
 	var purchaseid=req.param("purchaseid");
 	var companyid=req.param("companyid");
 	var poid=req.param("poid");
 	var storeid=req.param("storeid");
 	var invoiceno=req.param("invoiceno");
+	var batchno=req.param("batchno");
 	var supplierid=req.param("supplierid");
+	var grntype=req.param("grntype");
+	var paymentmode=req.param("paymentmode");
 	var status=req.param("status");
 	if(purchaseid!=null){
 		condition ="purchase_id="+purchaseid;
@@ -68,6 +72,13 @@ exports.getPurchaseHdrDetails = function(req, res) {
 			condition=condition+" and invoice_no='"+invoiceno+"'";
 		}
 	}
+	if(batchno!=null){
+		if(condition === ""){
+			condition="batch_no='"+batchno+"'";
+		}else {
+			condition=condition+" and batch_no='"+batchno+"'";
+		}
+	}
 	
 	if(supplierid!=null){
 		if(condition === ""){
@@ -76,6 +87,21 @@ exports.getPurchaseHdrDetails = function(req, res) {
 			condition=condition+" and supplier_id='"+supplierid+"'";
 		}
 	}
+	if(grntype!=null){
+		if(condition === ""){
+			condition="grn_type='"+grntype+"'";
+		}else {
+			condition=condition+" and grn_type='"+grntype+"'";
+		}
+	}
+	if(paymentmode!=null){
+		if(condition === ""){
+			condition="payment_mode='"+paymentmode+"'";
+		}else {
+			condition=condition+" and payment_mode='"+paymentmode+"'";
+		}
+	}
+	
 	if(status!=null){
 		if(condition === ""){
 			condition="status='"+status+"'";
@@ -83,8 +109,11 @@ exports.getPurchaseHdrDetails = function(req, res) {
 			condition=condition+" and status='"+status+"'";
 		}
 	}
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['purchase_id','po_id','invoice_no','invoice_amount'];
+	}
 	
-	purchasehdr.findAll({where : [condition]}).then(function(result) {
+	purchasehdr.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
 			log.info(appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
@@ -187,6 +216,7 @@ exports.savePurchaseHdrDetails = function(req, res) {
 		
 	}).then(function(p){
 		
+		if(req.param('purchasedtlslist')!=null){
 		for(var i=0;i<req.param('purchasedtlslist').length;i++){
 			purchasedtl.upsert({
 				purchase_dtlid 			: req.param('purchasedtlslist')[i].purchasedtlid,
@@ -208,7 +238,7 @@ exports.savePurchaseHdrDetails = function(req, res) {
 				res.send(err);
 			});
 		}
-		
+		}
 			log.info('Saved Successfully.');
 			response.message = 'Saved Successfully.';
 			response.status  = true;

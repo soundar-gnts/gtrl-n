@@ -24,6 +24,7 @@ var response = {
 
 // To get full Employee List
 exports.getEmployeeDetails = function(req, res) {
+	var attr 	= "";
 	var condition = "";
 	var employeeid=req.param("employeeid");
 	var companyid=req.param("companyid");
@@ -77,8 +78,11 @@ exports.getEmployeeDetails = function(req, res) {
 			condition=condition+" and status='"+status+"'";
 		}
 	}
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['employee_id','employee_code','first_name','last_name'];
+	}
 	
-	employee.findAll({where : [condition]}).then(function(result) {
+	employee.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
 			
 			log.info('No data found.');

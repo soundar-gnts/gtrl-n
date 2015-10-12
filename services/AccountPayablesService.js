@@ -20,13 +20,16 @@ var response = {
 		message : String,
 		data	: String
 };
+var appmsg			= require('../config/Message.js');
 
 // To get Account Payables List based on user param
 exports.getAccountPayablesDetails = function(req, res) {
+	var attr 	= "";
 	var condition = "";
 	var accpaybleid=req.param("accpaybleid");
 	var companyid=req.param("companyid");
 	var storeid=req.param("storeid");
+	var accountid=req.param("accountid");
 	var billno=req.param("billno");
 	var status=req.param("status");
 	if(accpaybleid!=null){
@@ -46,6 +49,13 @@ exports.getAccountPayablesDetails = function(req, res) {
 			condition=condition+" and store_id='"+storeid+"'";
 		}
 	}
+	if(accountid!=null){
+		if(condition === ""){
+			condition="account_id='"+accountid+"'";
+		}else {
+			condition=condition+" and account_id='"+accountid+"'";
+		}
+	}
 	if(billno!=null){
 		if(condition === ""){
 			condition="bill_no like '%"+billno+"%'";
@@ -60,11 +70,14 @@ exports.getAccountPayablesDetails = function(req, res) {
 			condition=condition+" and status='"+status+"'";
 		}
 	}
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['accpayble_id','bill_no','invoice_amount','paid_amount','balance_amount'];
+	}
 	
-	accountpayables.findAll({where : [condition]}).then(function(result) {
+	accountpayables.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);

@@ -142,6 +142,7 @@ exports.saveProduct = function(req, res) {
 
 //To get product full list
 exports.getProductsList=function(req,res){
+	var attr 	= "";
 	var condition = "";
 	var companyid=req.param("companyid");
 	var prodid=req.param("prodid");
@@ -191,13 +192,13 @@ exports.getProductsList=function(req,res){
 			condition=condition+" and brand_id='"+brandid+"'";
 		}
 	}
-	/*if(prodcatid!=null){
+	if(prodcatid!=null){
 		if(condition === ""){
 			condition="prod_cat_id='"+prodcatid+"'";
 		}else {
 			condition=condition+" and prod_cat_id='"+prodcatid+"'";
 		}
-	}*/
+	}
 	if(status!=null){
 		if(condition === ""){
 			condition="status='"+status+"'";
@@ -205,8 +206,10 @@ exports.getProductsList=function(req,res){
 			condition=condition+" and status='"+status+"'";
 		}
 	}
-	
-	product.findAll({where : [condition]}).then(function(result){
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['prod_id','prod_code','prod_name','uom_id'];
+	}
+	product.findAll({where : [condition],attributes: attr}).then(function(result){
 		if(result.length === 0){
 			
 			log.info('No data found.');
