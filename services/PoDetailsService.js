@@ -70,10 +70,13 @@ exports.saveOrUpdatePoDetails = function(req, res){
 //get all Product details
 exports.getPoDetails = function(req, res){
 
+	var attr 	= "";
 	var condition 	= "";
 	var poDetailsId = req.param('podtlid');
 	var poId 	= req.param('poid');
 	var status		= req.param('status');
+	
+	
 	
 	if(poId != null)
 		condition = "po_id="+poId;
@@ -92,8 +95,13 @@ exports.getPoDetails = function(req, res){
 		else
 			condition = condition+" and status='"+status+"'";
 	
+//	if(req.param('isfulllist')==null||req.param('isfulllist')=='P'){
+//		attr=['po_id','po_dtlid']
+//	}
+	
 	poDetail.findAll({
-		where 	: [condition]
+		where 	: [condition],
+		attributes: attr
 		
 	})
 		.then(function(poDetls){

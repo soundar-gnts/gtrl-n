@@ -46,125 +46,81 @@ exports.saveOrUpdatePo = function(req, res){
 			last_updated_dt	: req.param('lastupdateddt'),
 			last_updated_by	: req.param('lastupdatedby')
 	}
-	poHeader.findOne({where : {po_id : req.param('poid')}})
-	.then(function(pOrder){
-		if(!pOrder){
-			poHeader.create(purchaseOrder)
-			.then(function(data){
-				var poHeaderId = data.po_id;
-				log.info(req.param('purchasedetails').length+' Purchase details found.');
-				for(var i = 0; i < req.param('purchasedetails').length; i++){
-					var purchaseDetail = {
-							po_id			: poHeaderId,
-							manufg_id		: req.param('purchasedetails')[i].manufgid,
-							prod_id			: req.param('purchasedetails')[i].prodid,
-							po_qty			: req.param('purchasedetails')[i].poqty,
-							bal_qty			: req.param('purchasedetails')[i].balqty,
-							uom_id			: req.param('purchasedetails')[i].uomid,
-							rate			: req.param('purchasedetails')[i].rate,
-							basic_value		: req.param('purchasedetails')[i].basicvalue,
-							discount_prcnt	: req.param('purchasedetails')[i].discountprcnt,
-							tax_id			: req.param('purchasedetails')[i].taxid,
-							tax_prnct		: req.param('purchasedetails')[i].taxprnct,
-							tax_value		: req.param('purchasedetails')[i].taxvalue,
-							purchase_value	: req.param('purchasedetails')[i].purchasevalue,
-							discount_value	: req.param('purchasedetails')[i].discountvalue
-					}
-					poDetail.create(purchaseDetail)
-					.then(function(data){
-						
-					})
-					.error(function(err){
-						log.error(err);
-						response.status  	= false;
-						response.message 	= 'Internal error.';
-						response.data  		= err;
-						res.send(response);
-					});
-				}
-				log.info('Purchase order saved successfully.');
-				response.message = 'Purchase order saved successfully.';
-				response.status  = true;
-				res.send(response);
-			})
-			.error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= 'Internal error.';
-				response.data  		= err;
-				res.send(response);
-			});
-		} else if(pOrder.status == 'Draft'){
-			poHeader.upsert(purchaseOrder)
-			.then(function(data){
-				
-				poDetail.destroy({where:{po_id : parseInt(req.param('poid'))}})
-				.then(function(d){
-					log.info(d+' Deleted');
-					log.info(req.param('purchasedetails').length+' Purchase details found for edit.');
-					for(var i = 0; i < req.param('purchasedetails').length; i++){
-						var purchaseDetail = {
-								po_id			: req.param('poid'),
-								manufg_id		: req.param('purchasedetails')[i].manufgid,
-								prod_id			: req.param('purchasedetails')[i].prodid,
-								po_qty			: req.param('purchasedetails')[i].poqty,
-								bal_qty			: req.param('purchasedetails')[i].balqty,
-								uom_id			: req.param('purchasedetails')[i].uomid,
-								rate			: req.param('purchasedetails')[i].rate,
-								basic_value		: req.param('purchasedetails')[i].basicvalue,
-								discount_prcnt	: req.param('purchasedetails')[i].discountprcnt,
-								tax_id			: req.param('purchasedetails')[i].taxid,
-								tax_prnct		: req.param('purchasedetails')[i].taxprnct,
-								tax_value		: req.param('purchasedetails')[i].taxvalue,
-								purchase_value	: req.param('purchasedetails')[i].purchasevalue,
-								discount_value	: req.param('purchasedetails')[i].discountvalue
-						}
-						poDetail.upsert(purchaseDetail)
-						.then(function(data){
-							
-						})
-						.error(function(err){
-							log.error(err);
-							response.status  	= false;
-							response.message 	= 'Internal error.';
-							response.data  		= err;
-							res.send(response);
-						});
-					}
-					
-					log.info('Purchase order editted successfully.');
-					response.message = 'Purchase order editted successfully.';
-					response.status  = true;
-					res.send(response);
-				}).error(function(err){
-					log.error(err);
-					response.status  	= false;
-					response.message 	= 'Internal error.';
-					response.data  		= err;
-					res.send(response);
-				});
-			}).error(function(err){
-				log.info('Yes')
-				log.error(err);
-				response.status  	= false;
-				response.message 	= 'Internal error.';
-				response.data  		= err;
-				res.send(response);
-			});
-		} else{
-			log.info('Order is approved you cannot change the details.');
-			response.message = 'Order is approved you cannot change the details.';
-			response.status  = false;
-			res.send(response);
-		}
-	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
-	});
+	var purchaseDetails = [];
+	var detailsLength = 0;
+	if(req.param('purchasedetails') != null)
+		detailsLength = req.param('purchasedetails').length;
 	
+	for(var i = 0; i < detailsLength; i++){
+		var purchaseDetail = {
+				po_id			: req.param('poid'),
+				manufg_id		: req.param('purchasedetails')[i].manufgid,
+				prod_id			: req.param('purchasedetails')[i].prodid,
+				po_qty			: req.param('purchasedetails')[i].poqty,
+				bal_qty			: req.param('purchasedetails')[i].balqty,
+				uom_id			: req.param('purchasedetails')[i].uomid,
+				rate			: req.param('purchasedetails')[i].rate,
+				basic_value		: req.param('purchasedetails')[i].basicvalue,
+				discount_prcnt	: req.param('purchasedetails')[i].discountprcnt,
+				tax_id			: req.param('purchasedetails')[i].taxid,
+				tax_prnct		: req.param('purchasedetails')[i].taxprnct,
+				tax_value		: req.param('purchasedetails')[i].taxvalue,
+				purchase_value	: req.param('purchasedetails')[i].purchasevalue,
+				discount_value	: req.param('purchasedetails')[i].discountvalue
+		}
+		purchaseDetails.push(purchaseDetail);
+	}
+	
+	if(req.param('poid')!=null){
+	
+		poHeader.upsert(purchaseOrder)
+		.then(function(data){
+			log.info(purchaseDetails.length);
+			if(purchaseDetails.length>0){
+				var condition = "po_id='"+req.param('poid')+"'";
+				deletePoDetailsFn(condition);
+			}
+			
+			for(var i = 0; i < purchaseDetails.length; i++){
+				saveOrUpdatePoDetailsFn(purchaseDetails[i]);
+			}
+			log.info('Purchase order editted successfully.');
+			response.message 	= 'Purchase order editted successfully.';
+			response.data  		= req.param('poid');
+			response.status  	= true;
+			res.send(response);
+			
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
+		});
+	} else{
+		
+		poHeader.create(purchaseOrder)
+		.then(function(data){
+			
+			for(var i = 0; i < detailsLength; i++){
+				purchaseDetails[i].po_id = data.po_id;
+				saveOrUpdatePoDetailsFn(purchaseDetails[i]);
+			}
+			log.info('Purchase order saved successfully.');
+			response.message	= 'Purchase order saved successfully.';
+			response.data  		= data.po_id;
+			response.status 	= true;
+			res.send(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
+		});
+	}
 }
 
 
@@ -176,20 +132,32 @@ exports.getPo = function(req, res){
 			data	: String
 	}
 
-	var condition 	= "";
-	var poId 		= req.param('poid');
-	var companyId 	= req.param('companyid');
-	var status		= req.param('status');
+	var fetchAssociation 	= "";
+	var selectedAttributes 	= "";
+	var condition 			= "";
+	var poId 				= req.param('poid');
+	var companyId 			= req.param('companyid');
+	var status				= req.param('status');
+	var storeId				= req.param('storeid');
+	var supplierId			= req.param('supplierid');
+	
+	if(req.param('fetchAssociation')=='yes'){
+		fetchAssociation = [{model : poDetail}]
+	}
+	
+	if(req.param('selectedAttributes')=='yes'){
+		selectedAttributes = ['po_id']
+	}
 	
 	if(companyId != null)
 		condition = "company_id="+companyId;
 	
 	if(poId!=null)
 		if(condition === "")
-			condition = "po_id='"+poId+"'";
+			condition = "t_po_hdr.po_id='"+poId+"'";
 	
 		else
-			condition = condition+" and po_id='"+poId+"'";
+			condition = condition+" and t_po_hdr.po_id='"+poId+"'";
 	
 	if(status!=null)
 		if(condition === "")
@@ -198,9 +166,24 @@ exports.getPo = function(req, res){
 		else
 			condition = condition+" and status='"+status+"'";
 	
+	if(storeId!=null)
+		if(condition === "")
+			condition = "store_id='"+storeId+"'";
+	
+		else
+			condition = condition+" and store_id='"+storeId+"'";
+	
+	if(supplierId!=null)
+		if(condition === "")
+			condition = "supplier_id='"+supplierId+"'";
+	
+		else
+			condition = condition+" and supplier_id='"+supplierId+"'";
+	
 	poHeader.findAll({
-		where	: [condition],
-		include	: {model : poDetail}
+		where				: [condition],
+		include				: fetchAssociation,
+		attributes			: selectedAttributes
 	})
 		.then(function(poDtls){
 			if(poDtls.length == 0){
@@ -226,7 +209,7 @@ exports.getPo = function(req, res){
 }
 
 //Change Purchase order status.
-exports.cahngePoStatus = function(req, res){
+exports.changePoStatus = function(req, res){
 	
 	var response = {
 			status	: Boolean,
@@ -248,5 +231,110 @@ exports.cahngePoStatus = function(req, res){
 		response.message 	= 'Internal error.';
 		response.data  		= err;
 		res.send(response);
+	});
+}
+
+exports.saveOrUpdatePoDetails = function(req, res){
+	
+}
+
+function saveOrUpdatePoDetailsFn(purchaseDetail) {
+	poDetail.upsert(purchaseDetail)
+	.then(function(data){
+		
+	}).error(function(err){
+		log.error(err);
+	});
+}
+
+//get all Product details
+exports.getPoDetails = function(req, res){
+
+	var selectedAttributes 	= "";
+	var condition 			= "";
+	var poDetailsId 		= req.param('podtlid');
+	var poId 				= req.param('poid');
+	var status				= req.param('status');
+	
+	if(req.param('selectedAttributes')=='yes')
+		selectedAttributes=['po_id','po_dtlid']
+	
+	if(poId != null)
+		condition = "po_id="+poId;
+	
+	if(poDetailsId!=null)
+		if(condition === "")
+			condition = "po_dtlid='"+poDetailsId+"'";
+	
+		else
+			condition = condition+" and po_dtlid='"+poDetailsId+"'";
+	
+	if(status!=null)
+		if(condition === "")
+			condition = "status='"+status+"'";
+	
+		else
+			condition = condition+" and status='"+status+"'";
+	
+	
+	poDetail.findAll({
+		where 		: [condition],
+		attributes	: selectedAttributes
+		
+	})
+		.then(function(poDetls){
+			if(poDetls.length == 0){
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
+				response.status  = false;
+				res.send(response);
+			} else{
+				log.info('About '+poDetls.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+poDetls.length+' results.';
+				response.data 		= poDetls;
+				res.send(response);
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
+		});
+}
+
+exports.deletePoDetails = function(req, res){
+	
+}
+	
+	
+function deletePoDetailsFn(condition){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	poDetail.destroy({where : [condition]})
+	.then(function(data){
+		
+		if(data >= '1'){
+			log.info(data+' Products removed.');
+			response.status  	= true;
+			response.message 	= data+' Products removed.';
+		} else{
+			log.info('No Product found.');
+			response.status  	= true;
+			response.message 	= 'No Product found.';
+		}
+		return response;
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		return response;
 	});
 }

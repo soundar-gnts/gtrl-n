@@ -19,8 +19,14 @@ var poService = require('../services/PoService.js');
 
 module.exports = function(app, server){
 	
-	app.post('/savepodetails',		poService.saveOrUpdatePo);
-	app.post('/getpodetails', 		poService.getPo);
-	app.post('/changepostatus', 	poService.cahngePoStatus);
+	//header tables
+	app.post('/savepodetails',			poService.saveOrUpdatePo);
+	app.post('/getpodetails', 			poService.getPo);
+	app.post('/changepostatus', 		poService.changePoStatus);
+	
+	//details tables
+	app.post('/savepodatadetails',		poService.saveOrUpdatePoDetails);
+	app.post('/getpodatadetails', 		poService.getPoDetails);
+	app.post('/deletepodatadetails', 	poService.deletePoDetails);
 	
 }
