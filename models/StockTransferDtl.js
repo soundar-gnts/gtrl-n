@@ -26,7 +26,7 @@ var stockTransferDtl = model.define('t_stock_transfer_dtl', {
 		autoIncrement   : true
 	},
 	
-	company_id 			: dataTypes.INTEGER,	
+	
 	transfer_id 		: dataTypes.INTEGER,
 	product_id 			: dataTypes.INTEGER,
 	batch_no			: dataTypes.STRING,

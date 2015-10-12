@@ -16,19 +16,19 @@
  */
 
 var purchaseReturnService		= require('../services/PurchaseReturnService.js');
-var purchasereturndtlservice		= require('../services/PurchaseReturnDtlService.js');
+var purchasereturndtlservice	= require('../services/PurchaseReturnDtlService.js');
 
 module.exports = function(app, server){
 	
 	//Purchase Return Header
 	
-	app.post('/savepurchasereturnhdr',purchaseReturnService.savePurchaseReturnHdr);
+	app.post('/savepurchasereturndetails',purchaseReturnService.savePurchaseReturnDetails);
 	app.post('/getpurchasereturnhdrlist',purchaseReturnService.getPurchaseReturnHdrList);	
-	app.post('/deletepurchasereturnhdr',purchaseReturnService.deletePurchaseReturnHdr);	
+	app.post('/updatepurchasereturnstatus',purchaseReturnService.updatePurchaseReturnStatus);	
 	
-	//Purchase Return 	Header
+	//Purchase Return Details
 	
-	app.post('/savepurchasereturndtl',purchasereturndtlservice.savePurchaseReturnDtl);
+	app.post('/savePurchasereturndtl',purchasereturndtlservice.savePurchaseReturnDtl);
 	app.post('/getpurchasereturndtl',purchasereturndtlservice.getPurchaseReturnDtl);	
 	app.post('/deletepurchasereturndtl',purchasereturndtlservice.deletePurchaseReturnDtl);	
 

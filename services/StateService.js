@@ -38,18 +38,18 @@ var response = {
 			})
 			.then(function(data){
 				if(data){
-					log.info('State Saved successfully.');
-					response.message = 'State saved successfully.';
+					log.info('Saved successfully.');
+					response.message = 'Saved successfully.';
 					response.status  = true;
-					res.send(response);
+					
 				}
 				else{
 					log.info('State Updated successfully.');
 					response.message = 'State Updated successfully.';
 					response.status  = true;
-					res.send(response);
+					
 				}
-				
+				res.send(response);
 			}).error(function(err){
 				log.error(err);
 				response.status  	= false;
@@ -95,15 +95,16 @@ var response = {
 					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
 					response.data 	 = "";
-					res.send(response);
+					
 				} else{
 					
 					log.info('About '+statelist.length+' results.');
 					response.status  	= true;
 					response.message 	= 'About '+statelist.length+' results.';
 					response.data 		= statelist;
-					res.send(response);
+					
 				}
+				res.send(response);
 			})
 			.error(function(err){
 				log.error(err);

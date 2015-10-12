@@ -137,15 +137,16 @@ var response = {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;	
 				response.data	 = "";
-				res.send(response);
+				
 			} else{
 				
 				log.info('About '+storelist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+storelist.length+' results.';
 				response.data 		= storelist;
-				res.send(response);
+				
 			}
+			res.send(response);
 		})
 		.error(function(err){
 			log.error(err);
@@ -201,15 +202,16 @@ var response = {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data	 = "";
-				res.send(response);
+			
 			} else{
 				
 				log.info('About '+regionlist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+regionlist.length+' results.';
 				response.data 		= regionlist;
-				res.send(response);
+				
 			}
+			res.send(response);
 		})
 		.error(function(err){
 			log.error(err);
@@ -220,13 +222,13 @@ var response = {
 		});
 	};
 	
-//SaveOrUpdate Store and StoreRegion Details
+//SaveOrUpdate StoreRegion Details
 
-	exports.saveOrUpdateStore = function(req, res){
+	exports.saveOrUpdateStoreRegion = function(req, res){
 		
 		storeRegion.upsert({
 		
-			region_id			: req.param('region_id'),
+			region_id			: req.param('regionid'),
 			company_id			: req.param('companyid'),
 			region_name			: req.param('regionname'),
 			all_region_yn 		: req.param('allregionyn'),
@@ -235,68 +237,95 @@ var response = {
 	        last_updated_by		: req.param('lastupdatedby')	       
 		
 			})
-			.then(function(s){
-		
-			for(var i=0;i<req.param('storelist').length;i++){
+			.then(function(data){
+				if(data){
+					log.info('Saved successfully.');
+					response.message = 'Saved successfully.';
+					response.status  = true;
+				
+				}
+				else{
+					log.info('Updated successfully.');
+					response.message = 'Updated successfully.';
+					response.status  = true;
+					
+				}
+				res.send(response);
+				
+			}).error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= 'Internal error.';
+				response.data  		= err;
+				res.send(response);
+			});
+	}; 
+	
+//SaveOrUpdate Store  Details
+
+	exports.saveOrUpdateStore = function(req, res){
+
 						
 						store.upsert({
 							
-							store_id			: req.param('storelist')[i].storeid,
-							company_id			: req.param('storelist')[i].companyid,
-							store_code			: req.param('storelist')[i].storecode,
-							store_name    		: req.param('storelist')[i].storename,
-							address 			: req.param('storelist')[i].address,
-							pincode 	   		: req.param('storelist')[i].pincode,
-							state_id 			: req.param('storelist')[i].stateid, 
-							city_id 			: req.param('storelist')[i].cityid,
-							landline_no 		: req.param('storelist')[i].landlineno,
-							mobile_no 			: req.param('storelist')[i].mobileno,
-							email_id 			: req.param('storelist')[i].emailid, 
-							contact_person		: req.param('storelist')[i].contactperson,		
-							contact_no			: req.param('storelist')[i].contactno,							
-							is_warehouse 		: req.param('storelist')[i].iswarehouse,
-							warehouse_id 	   	: req.param('storelist')[i].warehouseid,
-							store_brand_name 	: req.param('storelist')[i].storebrandname,
-							dl_no 				: req.param('storelist')[i].dlno,
-							cst_no 				: req.param('storelist')[i].cstno,
-							tin_no 				: req.param('storelist')[i].tinno,
-							discount_percent 	: req.param('storelist')[i].discountpercent,
-							servicetax_no		: req.param('storelist')[i].servicetaxno,		
-							door_delivery_yn	: req.param('storelist')[i].door_deliveryyn,
-							
-							stk_check_freq 		: req.param('storelist')[i].stkcheckfreq,
-							stk_check_day		: req.param('storelist')[i].stkcheckday,		
-							stk_check_sms		: req.param('storelist')[i].stkchecksms,								
-							stk_check_email 	: req.param('storelist')[i].stkcheckemail,
-							stk_transfer_yn 	: req.param('storelist')[i].stktransferyn,
-							stk_receive_yn 		: req.param('storelist')[i].stkreceiveyn, 
-							stk_trans_lvl 		: req.param('storelist')[i].stktranslvl,
-							stk_recv_lvl 		: req.param('storelist')[i].stkrecvlvl,
-							stk_trans_region_id : req.param('storelist')[i].stktransregionid,
-							stk_trans_store_id 	: req.param('storelist')[i].stktransstoreid, 
-							stk_recv_region_id  : req.param('storelist')[i].stkrecvregionid,		
-							stk_recv_store_id	: req.param('storelist')[i].stkrecvstoreid,	
-							status    			: req.param('storelist')[i].status,	
-							last_updated_dt		: req.param('storelist')[i].lastupdateddt,
-					        last_updated_by		: req.param('storelist')[i].lastupdatedby,
+							store_id			: req.param('storeid'),
+							company_id			: req.param('companyid'),
+							store_code			: req.param('storecode'),
+							store_name    		: req.param('storename'),
+							address 			: req.param('address'),
+							pincode 	   		: req.param('pincode'),
+							state_id 			: req.param('stateid'), 
+							city_id 			: req.param('cityid'),
+							landline_no 		: req.param('landlineno'),
+							mobile_no 			: req.param('mobileno'),
+							email_id 			: req.param('emailid'), 
+							contact_person		: req.param('contactperson'),		
+							contact_no			: req.param('contactno'),							
+							is_warehouse 		: req.param('iswarehouse'),
+							warehouse_id 	   	: req.param('warehouseid'),
+							store_brand_name 	: req.param('storebrandname'),
+							dl_no 				: req.param('dlno'),
+							cst_no 				: req.param('cstno'),
+							tin_no 				: req.param('tinno'),
+							discount_percent 	: req.param('discountpercent'),
+							servicetax_no		: req.param('servicetaxno'),		
+							door_delivery_yn	: req.param('door_deliveryyn'),							
+							stk_check_freq 		: req.param('stkcheckfreq'),
+							stk_check_day		: req.param('stkcheckday'),		
+							stk_check_sms		: req.param('stkchecksms'),								
+							stk_check_email 	: req.param('stkcheckemail'),
+							stk_transfer_yn 	: req.param('stktransferyn'),
+							stk_receive_yn 		: req.param('stkreceiveyn'), 
+							stk_trans_lvl 		: req.param('stktranslvl'),
+							stk_recv_lvl 		: req.param('stkrecvlvl'),
+							stk_trans_region_id : req.param('stktransregionid'),
+							stk_trans_store_id 	: req.param('stktransstoreid'), 
+							stk_recv_region_id  : req.param('stkrecvregionid'),		
+							stk_recv_store_id	: req.param('stkrecvstoreid'),	
+							status    			: req.param('status'),	
+							last_updated_dt		: req.param('lastupdateddt'),
+					        last_updated_by		: req.param('lastupdatedby')
 					        
 							})
-				
-					}
-				})
-		
-			.error(function(err){
-				res.send(err);
-			});
-		
-			if(req.param('voucherid') == null)
-			{
-			res.send("Inserted Successfully ");
-			}
-			else
-			{
-			res.send("Updated Successfully");
-			}
-	} 
-
-
+							.then(function(data){
+								if(data){
+									log.info('Saved successfully.');
+									response.message = 'Saved successfully.';
+									response.status  = true;
+									res.send(response);
+								}
+								else{
+									log.info('Updated successfully.');
+									response.message = 'State Updated successfully.';
+									response.status  = true;
+									res.send(response);
+								}
+								
+							}).error(function(err){
+								log.error(err);
+								response.status  	= false;
+								response.message 	= 'Internal error.';
+								response.data  		= err;
+								res.send(response);
+							});
+					}; 

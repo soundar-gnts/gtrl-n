@@ -19,9 +19,12 @@ var voucherService= require('../services/VoucherService.js');
 
 module.exports = function(app, server){
 	
+	// Voucher
 	app.post('/getvoucherlist', voucherService.getVoucherList);
-	app.post('/getvouchertypelist', voucherService.getVoucherTypeList);
 	app.post('/saveorupdatevoucher', voucherService.saveOrUpdateVoucher);
 	
+	// Voucher Type List
+	app.post('/saveorupdatevouchertype', voucherService.saveOrUpdateVoucherType);
+	app.post('/getvouchertypelist', voucherService.getVoucherTypeList);
 }
 

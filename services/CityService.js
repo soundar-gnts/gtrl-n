@@ -41,17 +41,18 @@ var response 	= {
 			})
 			.then(function(data){
 				if(data){
-					log.info('City saved successfully.');
-					response.message = 'City Saved successfully.';
+					log.info('Saved successfully.');
+					response.message = ' Saved successfully.';
 					response.status  = true;
-					res.send(response);
+					
 				}
 				else{
-					log.info('City Updated successfully.');
-					response.message = 'City Updated successfully.';
+					log.info(' Updated successfully.');
+					response.message = ' Updated successfully.';
 					response.status  = true;
-					res.send(response);
+					
 				}
+				res.send(response);
 				
 			}).error(function(err){
 				log.error(err);
@@ -71,6 +72,7 @@ var response 	= {
 		var cityName	= req.param("cityname");
 		var status		= req.param("status");
 		var stateId		= req.param("stateid");
+		var attr 	= "";
 		
 		if(cityId!=null){
 			condition ="city_id="+cityId;
@@ -100,7 +102,12 @@ var response 	= {
 			
 		}
 
-		  city.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		if(req.param('isfulllist')=='F'||req.param('isfulllist')=='P'){
+			attr=['city_name'];
+		}
+			
+
+		  city.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
 		  .then(function(citylist){
 				if(citylist.length === 0){
 					
@@ -108,16 +115,18 @@ var response 	= {
 					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
 					response.data 	 = "";
-					res.send(response);
+					
 				} else{
 					
 					log.info('About '+citylist.length+' results.');
 					response.status  	= true;
 					response.message 	= 'About '+citylist.length+' results.';
 					response.data 		= citylist;
-					res.send(response);
+					
 				}
+				res.send(response);
 			})
+			
 			.error(function(err){
 				log.error(err);
 				response.status  	= false;

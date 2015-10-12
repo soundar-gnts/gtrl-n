@@ -42,14 +42,15 @@ var response = {
 					log.info('Card Type Saved successfully.');
 					response.message = 'Card Type saved successfully.';
 					response.status  = true;
-					res.send(response);
+					
 				}
 				else{
 					log.info('Card Type Updated successfully.');
 					response.message = 'Card Type Updated successfully.';
 					response.status  = true;
-					res.send(response);
+					
 				}
+				res.send(response);
 				
 			}).error(function(err){
 				log.error(err);
@@ -106,15 +107,16 @@ var response = {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data 	 = "";
-				res.send(response);
+				
 			} else{
 				
 				log.info('About '+cardtypelist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+cardtypelist.length+' results.';
 				response.data 		= cardtypelist;
-				res.send(response);
+				
 			}
+			res.send(response);
 		})
 		.error(function(err){
 			log.error(err);

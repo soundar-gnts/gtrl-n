@@ -23,9 +23,9 @@ module.exports = function(app, server){
 	app.post('/getstorelist', storeService.getStoreList);
 	app.post('/saveorupdatestore', storeService.saveOrUpdateStore);
 	
-	//Store region
+	//Store region	
 	app.post('/getstoreregionlist', storeService.getStoreRegionList);
-	
+	app.post('/saveorupdatestoreregion', storeService.saveOrUpdateStoreRegion);
 	
 }
 

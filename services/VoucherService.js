@@ -24,59 +24,8 @@ var response 		= {
 						message : String,
 						data	: String
 						};
-//SaveOrUpdate Voucher and VoucherType Details
 
-	exports.saveOrUpdateVoucher = function(req, res){
-		
-		voucherType.upsert(
-			{
-			voucher_type_id			: req.param('vouchertypeid'),
-			company_id				: req.param('companyid'),
-			voucher_type_name		: req.param('vouchertypename'),
-			status    				: req.param('status'),
-			last_updated_dt			: req.param('lastupdateddt'),
-	        last_updated_by			: req.param('lastupdatedby')
-	   
-			})			
-			.then(function(v){
-		
-					for(var i=0;i<req.param('voucherlist').length;i++){
-						
-						voucher.upsert({
-							
-							voucher_id			: req.param('voucherlist')[i].voucherid,
-							company_id			: req.param('voucherlist')[i].companyid,
-							voucher_code		: req.param('voucherlist')[i].vouchercode,
-							voucher_type_id     : v.vouchertypeid,
-							discount_level		: req.param('voucherlist')[i].discountlevel,
-							discount_value		: req.param('voucherlist')[i].discountvalue,
-							prod_cat_id			: req.param('voucherlist')[i].prodcatid,
-							min_bill_value		: req.param('voucherlist')[i].minbillvalue,
-							region_id			: req.param('voucherlist')[i].regionid,
-							status    			: req.param('voucherlist')[i].status,	
-							last_updated_dt		: new Date(),
-					        last_updated_by		: req.param('voucherlist')[i].lastupdatedby
-					        
-							})
-				
-					}
-				})
-		
-			.error(function(err){
-				res.send(err);
-			});
-		
-			if(req.param('voucherid') == null)
-			{
-			res.send("Inserted Successfully ");
-			}
-			else
-			{
-			res.send("Updated Successfully");
-			}
-	} 
-
-	//Voucher List
+//Voucher List
 
 	exports.getVoucherList = function(req, res) {
 		
@@ -131,7 +80,7 @@ var response 		= {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data 	 = "";
-				res.send(response);
+			
 				
 			} else{
 				
@@ -139,8 +88,9 @@ var response 		= {
 				response.status  	= true;
 				response.message 	= 'About '+voucherlist.length+' results.';
 				response.data 		= voucherlist;
-				res.send(response);
+				
 			}
+			res.send(response);
 		})
 		.error(function(err){
 			log.error(err);
@@ -150,6 +100,7 @@ var response 		= {
 			res.send(response);
 		});
 	};
+	
 // Voucher Type List
 
 	exports.getVoucherTypeList = function(req, res) {
@@ -194,19 +145,21 @@ var response 		= {
 		.then(function(vouchertypelist){
 			if(vouchertypelist.length === 0){
 				
-				log.info('No data found.');
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data 	 = "";
-				res.send(response);
+				
 			} else{
 				
 				log.info('About '+vouchertypelist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+vouchertypelist.length+' results.';
 				response.data 		= vouchertypelist;
-				res.send(response);
+				
 			}
+			res.send(response);
+			
 		})
 		.error(function(err){
 			log.error(err);
@@ -217,3 +170,84 @@ var response 		= {
 		});
 	};
 	
+//SaveOrUpdate Voucher Type Details	
+	
+	exports.saveOrUpdateVoucherType = function(req, res){
+			
+			voucherType.upsert(
+				{
+				voucher_type_id			: req.param('vouchertypeid'),
+				company_id				: req.param('companyid'),
+				voucher_type_name		: req.param('vouchertypename'),
+				status    				: req.param('status'),
+				last_updated_dt			: req.param('lastupdateddt'),
+		        last_updated_by			: req.param('lastupdatedby')
+		   
+				})	
+		
+		.then(function(data){
+			if(data){
+				log.info('Saved successfully.');
+				response.message = ' Saved successfully.';
+				response.status  = true;
+				
+			}
+			else{
+				log.info(' Updated successfully.');
+				response.message = ' Updated successfully.';
+				response.status  = true;
+				
+			}
+			res.send(response);
+		}).error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
+		});
+	}; 
+	
+//SaveOrUpdate Voucher  Details
+
+	exports.saveOrUpdateVoucher = function(req, res){			
+						
+						voucher.upsert({
+							
+							voucher_id			: req.param('voucherid'),
+							company_id			: req.param('companyid'),
+							voucher_code		: req.param('vouchercode'),
+							voucher_type_id     : req.param('vouchertypeid'),
+							discount_level		: req.param('discountlevel'),
+							discount_value		: req.param('discountvalue'),
+							prod_cat_id			: req.param('prodcatid'),
+							min_bill_value		: req.param('minbillvalue'),
+							region_id			: req.param('regionid'),
+							status    			: req.param('status'),	
+							last_updated_dt		: req.param('lastupdateddt'),
+					        last_updated_by		: req.param('lastupdatedby')
+					        
+							})
+							.then(function(data){
+								if(data){
+									log.info('Saved successfully.');
+									response.message = ' Saved successfully.';
+									response.status  = true;
+									
+								}
+								else{
+									log.info(' Updated successfully.');
+									response.message = ' Updated successfully.';
+									response.status  = true;
+									
+								}
+								res.send(response);
+							}).error(function(err){
+								log.error(err);
+								response.status  	= false;
+								response.message 	= 'Internal error.';
+								response.data  		= err;
+								res.send(response);
+							});
+						}; 
+
