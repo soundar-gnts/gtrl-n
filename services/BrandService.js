@@ -15,7 +15,13 @@
  */
 
 var brand = require('../models/Brand.js');
+var appMsg		= require('../config/Message.js');
 
+var response 	= {
+						status	: Boolean,
+						message : String,
+						data	: String
+					};
 // To Brand full LIST
 exports.getBrandDetails = function(req, res) {
 	var conditionQuery = "";
@@ -49,13 +55,32 @@ exports.getBrandDetails = function(req, res) {
 		}
 		
 	}
-	brand.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]}).then(function(err, result) {
-		if(err)
-			res.send(err);
-		else
-			res.send(result);
+	brand.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]})
+	.then(function(result){
+		if(result.length === 0){
+			
+			log.info('No data found.');
+			response.message = appMsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			response.data 	 = "";
+			res.send(response);
+		} else{
+			
+			log.info('About '+result.length+' results.');
+			response.status  	= true;
+			response.message 	= 'About '+result.length+' results.';
+			response.data 		= result;
+			res.send(response);
+		}
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
 	});
-	}
+};
 
 //To Save Brand List
 
