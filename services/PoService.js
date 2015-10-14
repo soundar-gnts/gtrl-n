@@ -19,6 +19,7 @@ var log 	= require('../config/logger').logger;
 var appMsg	= require('../config/Message.js');
 var poHeader= require('../models/PoHeader.js');
 var poDetail= require('../models/PoDetail.js');
+var slnogen = require('../models/SlnoGen.js');
 
 
 //insert or update Purchase order details
@@ -100,26 +101,44 @@ exports.saveOrUpdatePo = function(req, res){
 		});
 	} else{
 		
-		poHeader.create(purchaseOrder)
-		.then(function(data){
-			
-			for(var i = 0; i < detailsLength; i++){
-				purchaseDetails[i].po_id = data.po_id;
-				saveOrUpdatePoDetailsFn(purchaseDetails[i]);
+		slnogen.findOne({ where : {ref_key : 'PO_NO'}})
+		.then(function(slno){
+			if(!slno){
+				
+			} else{
+				purchaseOrder.po_no = slno.prefix_key+slno.prefix_cncat+slno.suffix_key+slno.suffix_cncat+slno.curr_seqno;
+				
+				poHeader.create(purchaseOrder)
+				.then(function(data){
+					slno.last_seqno = slno.curr_seqno;
+					slno.curr_seqno = slno.curr_seqno+1;
+					slno.save();
+					for(var i = 0; i < detailsLength; i++){
+						purchaseDetails[i].po_id = data.po_id;
+						saveOrUpdatePoDetailsFn(purchaseDetails[i]);
+					}
+					log.info('Purchase order saved successfully.');
+					response.message	= 'Purchase order saved successfully.';
+					response.data  		= data.po_id;
+					response.status 	= true;
+					res.send(response);
+				})
+				.error(function(err){
+					log.error(err);
+					response.status  	= false;
+					response.message 	= 'Internal error.';
+					response.data  		= err;
+					res.send(response);
+				});
 			}
-			log.info('Purchase order saved successfully.');
-			response.message	= 'Purchase order saved successfully.';
-			response.data  		= data.po_id;
-			response.status 	= true;
-			res.send(response);
-		})
-		.error(function(err){
+		}).error(function(err){
 			log.error(err);
 			response.status  	= false;
 			response.message 	= 'Internal error.';
 			response.data  		= err;
 			res.send(response);
 		});
+		
 	}
 }
 
@@ -145,7 +164,7 @@ exports.getPo = function(req, res){
 		fetchAssociation = [{model : poDetail}]
 	}
 	
-	if(req.param('selectedAttributes')=='yes'){
+	if(req.param('isfulllist')=='p'){
 		selectedAttributes = ['po_id']
 	}
 	
@@ -219,6 +238,7 @@ exports.changePoStatus = function(req, res){
 	poHeader.findOne({where : {po_id : req.param('poid')}})
 	.then(function(poHeaderDet){
 		poHeaderDet.status = req.param('status');
+		poHeaderDet.po_remark = req.param('poremark');
 		poHeaderDet.save();
 		log.info('Your Order is '+req.param('status')+'.');
 		response.status  	= true;
@@ -234,8 +254,35 @@ exports.changePoStatus = function(req, res){
 	});
 }
 
+// insert or update purchase order details
 exports.saveOrUpdatePoDetails = function(req, res){
-	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	var purchaseDetail = {
+			po_dtlid		: req.param('podtlid'),
+			po_id			: req.param('poid'),
+			manufg_id		: req.param('manufgid'),
+			prod_id			: req.param('prodid'),
+			po_qty			: req.param('poqty'),
+			bal_qty			: req.param('balqty'),
+			uom_id			: req.param('uomid'),
+			rate			: req.param('rate'),
+			basic_value		: req.param('basicvalue'),
+			discount_prcnt	: req.param('discountprcnt'),
+			tax_id			: req.param('taxid'),
+			tax_prnct		: req.param('taxprnct'),
+			tax_value		: req.param('taxvalue'),
+			purchase_value	: req.param('purchasevalue'),
+			discount_value	: req.param('discountvalue')
+	}
+	saveOrUpdatePoDetailsFn(purchaseDetail);
+	log.info('Purchase order saved successfully.');
+	response.message 	= 'Purchase order saved successfully.';
+	response.status  	= true;
+	res.send(response);
 }
 
 function saveOrUpdatePoDetailsFn(purchaseDetail) {
@@ -250,6 +297,12 @@ function saveOrUpdatePoDetailsFn(purchaseDetail) {
 //get all Product details
 exports.getPoDetails = function(req, res){
 
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
 	var selectedAttributes 	= "";
 	var condition 			= "";
 	var poDetailsId 		= req.param('podtlid');
@@ -306,7 +359,17 @@ exports.getPoDetails = function(req, res){
 }
 
 exports.deletePoDetails = function(req, res){
-	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	var condition = "po_dtlid='"+req.param('podtlid')+"'";
+	deletePoDetailsFn(condition);
+	log.info(data+' Product removed.');
+	response.status  	= true;
+	response.message 	= data+' Product removed.';
+	res.send(response)
 }
 	
 	

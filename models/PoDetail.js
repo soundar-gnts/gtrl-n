@@ -16,7 +16,7 @@
 
 var model		= require('../config/sequelize.js');
 var dataTypes	= require('sequelize');
-var poHeader	= require('../models/PoHeader.js');
+//var poHeader	= require('../models/PoHeader.js');
 
 var poDetail = model.define('t_po_dtl', {
 

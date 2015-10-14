@@ -15,152 +15,81 @@
  * 
  */
 
-var log 	= require('../config/logger').logger;
-var appMsg	= require('../config/Message.js');
-var soHeader= require('../models/SalesOrderHeader.js');
-var soDetail= require('../models/SalesOrderDetail.js');
+var log 		= require('../config/logger').logger;
+var appMsg		= require('../config/Message.js');
+var soHeader	= require('../models/SalesOrderHeader.js');
+var soDetail	= require('../models/SalesOrderDetail.js');
+var common		= require('../services/CommonService.js');
 
-
-//insert or update Purchase order details
-exports.saveOrUpdateSalesOrder = function(req, res){
+//insert or update Sales order details
+exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, res){
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
-	var salesDetails = [];
-	var salesOrder = {
-			salesorder_id		: req.param('salesorderid'),
-			customer_id			: req.param('customerid'),
-			total_tax			: req.param('totaltax'),
-			Order_value			: req.param('ordervalue'),
-			total_qty			: req.param('totalqty'),
-			delivery_type		: req.param('deliverytype'),
-			delivery_remark		: req.param('deliveryremark'),
-			status 				: req.param('status'),
-			last_updated_dt		: req.param('lastupdateddt'),
-			last_updated_by		: req.param('lastupdatedby'),
-			shipping_addr		: req.param('shippingaddr'),
-			company_id			: req.param('companyid'),
-			sal_ordr_number		: req.param('salordrnumber'),
-			shipng_adrs_city	: req.param('shipngadrscity'),
-			shipping_addr_state	: req.param('shippingaddrstate'),
-			shipping_addr_pincde: req.param('shippingaddrpincde'),
-			shipping_addr_name	: req.param('shippingaddrname'),
-			exptdelv_date		: req.param('exptdelvdate'),
-			shipping_mobilnum	: req.param('shippingmobilnum'),
-			otp_code			: req.param('otpcode')
-	}
-	
-	for(var i = 0; i < req.param('salesdetails').length; i++){
-		var salesDetail = {
+	if(salesOrder.salesorder_id != null){
+		soHeader.upsert(salesOrder)
+		.then(function(data){
+			log.info(salesDetails.length);
+			if(salesDetails.length>0){
+				var condition = "salesorder_id='"+salesOrder.salesorder_id+"'";
+				deleteSalesOrderDetailsFn(condition);
+			}
 			
-			product_id		: req.param('salesdetails')[i].productid,
-			uom_id			: req.param('salesdetails')[i].uomid,
-			rate			: req.param('salesdetails')[i].rate,
-			order_qty		: req.param('salesdetails')[i].orderqty,
-			order_value		: req.param('salesdetails')[i].ordervalue,
-			discount_prcnt	: req.param('salesdetails')[i].discountprcnt,
-			tax_ptcnt		: req.param('salesdetails')[i].taxptcnt,
-			tax_value		: req.param('salesdetails')[i].taxvalue,
-			basic_value		: req.param('salesdetails')[i].basicvalue,
-			discount_value	: req.param('salesdetails')[i].discountvalue
-		}
-		salesDetails[i].push(salesDetail);
-	}
-	
-	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
-	.then(function(sOrder){
-		if(!sOrder){
-			soHeader.create(salesOrder)
-			.then(function(data){
-				log.info(req.param('salesdetails').length+' Sales details found.');
-				for(var i = 0; i < req.param('salesdetails').length; i++){
-					salesDetails[i].salesorder_id = data.salesorder_id,
-					soDetail.create(salesDetails[i])
-					.then(function(data){
-						
-					})
-					.error(function(err){
-						log.error(err);
-						response.status  	= false;
-						response.message 	= 'Internal error.';
-						response.data  		= err;
-						res.send(response);
-					});
-				}
-				log.info('Salse order saved successfully.');
-				response.message = 'Salse order saved successfully.';
-				response.status  = true;
-				res.send(response);
-			})
-			.error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= 'Internal error.';
-				response.data  		= err;
-				res.send(response);
-			});
-		} else if(sOrder.status == 'Draft'){
-			soHeader.upsert(salesOrder)
-			.then(function(data){
-				
-				soDetail.destroy({where:{salesorder_id : parseInt(req.param('salesorderid'))}})
-				.then(function(d){
-					log.info(d+' Deleted');
-					log.info(req.param('salesdetails').length+' Sales details found for edit.');
-					for(var i = 0; i < req.param('purchasedetails').length; i++){
-						
-						salesDetails[i].salesorder_id = req.param('salesorderid');
-						soDetail.upsert(salesDetails[i])
-						.then(function(data){
-							
-						})
-						.error(function(err){
-							log.error(err);
-							response.status  	= false;
-							response.message 	= 'Internal error.';
-							response.data  		= err;
-							res.send(response);
-						});
-					}
-					
-					log.info('Sales order editted successfully.');
-					response.message = 'Salse order editted successfully.';
-					response.status  = true;
-					res.send(response);
-				}).error(function(err){
-					log.error(err);
-					response.status  	= false;
-					response.message 	= 'Internal error.';
-					response.data  		= err;
-					res.send(response);
-				});
-			}).error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= 'Internal error.';
-				response.data  		= err;
-				res.send(response);
-			});
-		} else{
-			log.info('Order is approved you cannot change the details.');
-			response.message = 'Order is approved you cannot change the details.';
-			response.status  = false;
+			for(var i = 0; i < salesDetails.length; i++){
+				saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
+			}
+			log.info('Sales order editted successfully.');
+			response.message 	= 'Sales order editted successfully.';
+			response.data  		= salesOrder.salesorder_id;
+			response.status  	= true;
 			res.send(response);
-		}
-	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
-	});
+		}).error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
+		});
+	} else{
+		//sens otp to mobile number
+		salesOrder.otp_code			= common.generateOTP(4);
+		salesOrder.sal_ordr_number	= common.generateOTP(12);
+		soHeader.create(salesOrder)
+		.then(function(data){
+			
+			for(var i = 0; i < salesDetails.length; i++){
+				salesDetails[i].salesorder_id = data.salesorder_id;
+				saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
+			}
+			log.info('Sales order saved successfully.');
+			response.message	= 'Sales order saved successfully.';
+			response.data  		= data.salesorder_id;
+			response.status 	= true;
+			res.send(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
+		});
+	}
 	
 }
 
+function saveOrUpdateSalesOrderDetailsFn(salesDetail) {
+	soDetail.upsert(salesDetail)
+	.then(function(data){
+		
+	}).error(function(err){
+		log.error(err);
+	});
+}
 
-//get all Purchase order details
+//get all Sales order details
 exports.getSalesOrder = function(req, res){
 	var response = {
 			status	: Boolean,
@@ -168,20 +97,34 @@ exports.getSalesOrder = function(req, res){
 			data	: String
 	}
 
-	var condition 	= "";
-	var soId 		= req.param('salesorderid');
-	var companyId 	= req.param('companyid');
-	var status		= req.param('status');
+	var fetchAssociation 	= "";
+	var selectedAttributes 	= "";
+	var condition 			= "";
+	var soId 				= req.param('salesorderid');
+	var companyId 			= req.param('companyid');
+	var status				= req.param('status');
+	var storeId				= req.param('storeid');
+	var salesOrderNumber	= req.param('salordrnumber');
+	var otpCode				= req.param('otpcode');
+	var customerId			= req.param('customerid');
+	
+	if(req.param('fetchassociation')=='yes'){
+		fetchAssociation = [{model : soDetail}]
+	}
+	
+	if(req.param('isfulllist')=='p'){
+		selectedAttributes = ['salesorder_id']
+	}
 	
 	if(companyId != null)
 		condition = "company_id="+companyId;
 	
 	if(soId!=null)
 		if(condition === "")
-			condition = "salesorder_id='"+soId+"'";
+			condition = "t_salesorder_hdr.salesorder_id='"+soId+"'";
 	
 		else
-			condition = condition+" and salesorder_id='"+soId+"'";
+			condition = condition+" and t_salesorder_hdr.salesorder_id='"+soId+"'";
 	
 	if(status!=null)
 		if(condition === "")
@@ -190,9 +133,38 @@ exports.getSalesOrder = function(req, res){
 		else
 			condition = condition+" and status='"+status+"'";
 	
+	if(storeId!=null)
+		if(condition === "")
+			condition = "store_id='"+storeId+"'";
+	
+		else
+			condition = condition+" and store_id='"+storeId+"'";
+	
+	if(salesOrderNumber!=null)
+		if(condition === "")
+			condition = "sal_ordr_number='"+salesOrderNumber+"'";
+	
+		else
+			condition = condition+" and sal_ordr_number='"+salesOrderNumber+"'";
+	
+	if(otpCode!=null)
+		if(condition === "")
+			condition = "otp_code='"+otpCode+"'";
+	
+		else
+			condition = condition+" and otp_code='"+otpCode+"'";
+	
+	if(customerId!=null)
+		if(condition === "")
+			condition = "customer_id='"+customerId+"'";
+	
+		else
+			condition = condition+" and customer_id='"+customerId+"'";
+	
 	soHeader.findAll({
-		where	: [condition],
-		include	: {model : soDetail}
+		where				: [condition],
+		include				: fetchAssociation,
+		attributes			: selectedAttributes
 	})
 		.then(function(soDtls){
 			if(soDtls.length == 0){
@@ -217,8 +189,8 @@ exports.getSalesOrder = function(req, res){
 		});
 }
 
-//Change Purchase order status.
-exports.cahngeSalesOrderStatus = function(req, res){
+//OTP Verification
+exports.salesOrderOtpVerification = function(req, res){
 	
 	var response = {
 			status	: Boolean,
@@ -227,12 +199,23 @@ exports.cahngeSalesOrderStatus = function(req, res){
 	}
 	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
 	.then(function(soHeaderDet){
-		soHeaderDet.status = req.param('status');
-		psoHeaderDet.save();
-		log.info('Your Order is '+req.param('status')+'.');
-		response.status  	= true;
-		response.message 	= 'Your Order is '+req.param('status')+'.';
-		res.send(response);
+		if(soHeaderDet.otp_code == req.param('otpcode')){
+//			soHeaderDet.sal_ordr_number	= 'Active';
+			soHeaderDet.status			= 'Active';
+			soHeaderDet.delivery_remark = req.param('deliveryremark');
+			soHeaderDet.save();
+			log.info('Your Order is '+req.param('status')+'.');
+			response.status  	= true;
+			response.message 	= 'Your Sales Order is '+req.param('status')+'.';
+			res.send(response);
+		} else{
+			
+			log.info('Invalid OTP.');
+			response.status  	= false;
+			response.message 	= 'Invalid OTP.';
+			res.send(response);
+		}
+		
 	})
 	.error(function(err){
 		log.error(err);
@@ -240,5 +223,90 @@ exports.cahngeSalesOrderStatus = function(req, res){
 		response.message 	= 'Internal error.';
 		response.data  		= err;
 		res.send(response);
+	});
+}
+
+//get all Sales order details
+exports.getSalesOrderDetails = function(req, res){
+
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	var selectedAttributes 	= "";
+	var condition 			= "";
+	var soDetailsId 		= req.param('salesorderdtlid');
+	var soId 				= req.param('salesorderid');
+	var status				= req.param('status');
+	
+	if(req.param('isfulllist')=='p')
+		selectedAttributes=['salesorder_dtl_id','salesorder_id']
+	
+	if(soId != null)
+		condition = "salesorder_id="+soId;
+	
+	if(soDetailsId!=null)
+		if(condition === "")
+			condition = "salesorder_dtl_id='"+soDetailsId+"'";
+	
+		else
+			condition = condition+" and salesorder_dtl_id='"+soDetailsId+"'";
+	
+	soDetail.findAll({
+		where 		: [condition],
+		attributes	: selectedAttributes
+		
+	})
+		.then(function(soDetls){
+			if(soDetls.length == 0){
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
+				response.status  = false;
+				res.send(response);
+			} else{
+				log.info('About '+soDetls.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+soDetls.length+' results.';
+				response.data 		= soDetls;
+				res.send(response);
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
+		});
+}
+
+function deleteSalesOrderDetailsFn(condition){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	soDetail.destroy({where : [condition]})
+	.then(function(data){
+		
+		if(data >= '1'){
+			log.info(data+' Sales details removed.');
+			response.status  	= true;
+			response.message 	= data+' Sales details removed.';
+		} else{
+			log.info('No Sales details found.');
+			response.status  	= true;
+			response.message 	= 'No Sales details found.';
+		}
+		return response;
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		return response;
 	});
 }

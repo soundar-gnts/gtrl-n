@@ -21,46 +21,77 @@ var fs = require("fs");
 var imageUploadService = require('../services/imageUploadService.js')
 var config = require('../config/config.js');
 var category = require('../models/ProductCategory.js');
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-}
+
 
 //insert product categoryp
 exports.saveOrUpdateproductCategory = function(req, res){
 	
-	category.findOne({where : {prod_cat_id : req.param('prodcatid')}})
-	.then(function(cat){
-		if(!cat){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	var productCategory = {
 			
-			category.create({
-				prod_cat_name	: req.param('prodcatname'),
-			    parent_id		: req.param('parentid'),
-			    company_id		: req.param('companyid'),
-			    level_no		: req.param('levelno'),
-			    last_level		: req.param('lastlevel'),
-			    status			: req.param('status'),
-				last_updated_dt	: req.param("lastupdateddt"),
-				last_updated_by	: req.param('lastupdatedby'),
-				sales_count		: req.param('salescount'),
-				refer_parid		: req.param('referparid')
+			prod_cat_id		: req.param('prodcatid'),
+			prod_cat_name	: req.param('prodcatname'),
+		    parent_id		: req.param('parentid'),
+		    company_id		: req.param('companyid'),
+		    level_no		: req.param('levelno'),
+		    last_level		: req.param('lastlevel'),
+		    status			: req.param('status'),
+			last_updated_dt	: req.param("lastupdateddt"),
+			last_updated_by	: req.param('lastupdatedby'),
+			sales_count		: req.param('salescount'),
+			refer_parid		: req.param('referparid')
+			
+	}
+	if(req.param('prodcatid') != null){
+		
+		var file1 = config.CATEGORYIMAGEFOLDER + "/"+req.param('prodcatid')+'.'+req.files.img.type.split('image/')[1];
+		var file2 = config.CATEGORYIMAGEFOLDER + "/"+'bg'+req.param('prodcatid')+'.'+req.files.bgimg.type.split('image/')[1];
+		
+		imageUploadService.imageUpload(req.files.img.path, file1);
+		imageUploadService.imageUpload(req.files.bgimg.path, file2);
+		
+		productCategory.prod_cat_image	= config.SERVER+'/'+file1;
+		productCategory.prod_cat_bgimage= config.SERVER+'/'+file2;
 				
-			})
-			.then(function(cat){
-				var file1 = config.CATEGORYIMAGEFOLDER + "/"+cat.prod_cat_id+".jpeg";
-				var file2 = config.CATEGORYIMAGEFOLDER + "/"+'bg'+cat.prod_cat_id+".jpeg";
-				imageUploadService.imageUpload(req.files.img.path, file1);
-				imageUploadService.imageUpload(req.files.bgimg.path, file2);
-				cat.prod_cat_image = config.SERVER+'/'+file1;
-				cat.prod_cat_bgimage = config.SERVER+'/'+file2;
-				cat.save().then(function(a){
-					log.info('Product category saved successfully.');
-					response.message = 'Product category saved successfully.';
-					response.status  = true;
-					res.send(response);
-				});
-				
+		category.upsert(productCategory)
+		.then(function(data){
+			log.info('Product category editted successfully.');
+			response.message= 'Product category editted successfully.';
+			response.data  	= req.param('prodcatid');
+			response.status = true;
+			res.send(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
+		});
+	} else{
+		category.create(productCategory)
+		.then(function(catgry){
+			
+			var file1 = config.CATEGORYIMAGEFOLDER + "/"+catgry.prod_cat_id+'.'+req.files.img.type.split('image/')[1];
+			var file2 = config.CATEGORYIMAGEFOLDER + "/"+'bg'+catgry.prod_cat_id+'.'+req.files.bgimg.type.split('image/')[1];
+			
+			imageUploadService.imageUpload(req.files.img.path, file1);
+			imageUploadService.imageUpload(req.files.bgimg.path, file2);
+			
+			catgry.prod_cat_image	= config.SERVER+'/'+file1;
+			catgry.prod_cat_bgimage = config.SERVER+'/'+file2;
+			
+			catgry.save().then(function(a){
+				log.info('Product category saved successfully.');
+				response.message= 'Product category saved successfully.';
+				response.data  	= catgry.prod_cat_id;
+				response.status = true;
+				res.send(response);
 			})
 			.error(function(err){
 				log.error(err);
@@ -70,47 +101,22 @@ exports.saveOrUpdateproductCategory = function(req, res){
 				res.send(response);
 			});
 			
-		} else{
-			var file1 = config.CATEGORYIMAGEFOLDER + "/"+req.param('prodcatid')+".jpeg";
-			var file2 = config.CATEGORYIMAGEFOLDER + "/"+'bg'+req.param('prodcatid')+".jpeg";
-			imageUploadService.imageUpload(req.files.img.path, file1);
-			imageUploadService.imageUpload(req.files.bgimg.path, file2);
-			
-			cat.prod_cat_image 	= config.SERVER+'/'+file1;
-			cat.prod_cat_bgimage 	= config.SERVER+'/'+file2;
-			
-			cat.prod_cat_name		= req.param('prodcatname'),
-			cat.parent_id			= req.param('parentid'),
-			cat.company_id			= req.param('companyid'),
-			cat.level_no			= req.param('levelno'),
-			cat.last_level			= req.param('lastlevel'),
-			cat.status				= req.param('status'),
-			cat.last_updated_dt		= new Date(),
-			cat.last_updated_by		= req.param('lastupdatedby'),
-			cat.sales_count			= req.param('salescount'),
-			cat.refer_parid			= req.param('referparid')
-			cat.save();
-			log.info('Product category editted successfully.');
-			response.message = 'Product category editted successfully.';
-			response.status  = false;
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
 			res.send(response);
-			
-		}
-	})
-	.error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
-	});
+		});
+	}
 }
 
 //get all product category
 exports.getProductCategory = function(req, res){
 
 	var condition 		= "";
-	var prodcatid 		= req.param('prodcatid')
+	var prodcatid 		= req.param('prodcatid');
 	var companyId 		= req.param('companyid');
 	var status			= req.param('status');
 	var productCatName 	= req.param('prodcatname');

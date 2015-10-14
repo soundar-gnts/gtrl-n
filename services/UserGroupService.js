@@ -15,17 +15,17 @@
  * 
  */
 
-var log = require('../config/logger').logger;
-var appMsg			= require('../config/Message.js');
-var userGroup = require('../models/UserGroup.js');
-var user = require('../models/User.js');
+var log			= require('../config/logger').logger;
+var appMsg		= require('../config/Message.js');
+var userGroup 	= require('../models/UserGroup.js');
+var user 		= require('../models/User.js');
 var response = {
 		status	: Boolean,
 		message : String,
 		data	: String
 }
 
-//insert or update Uom
+//insert or update User Group
 exports.saveOrUpdateUserGroup = function(req, res){
 	var uGroup = {
 			group_id		: req.param('groupid'),
@@ -126,7 +126,7 @@ exports.saveOrUpdateUserGroup = function(req, res){
 }
 
 
-//get all Uom
+//get all User Group
 exports.getUserGroup = function(req, res){
 
 	var condition 	= "";

@@ -21,7 +21,7 @@ var userAccessTree	= require('../models/UserAccessTree.js');
 var userGroup = require('../models/UserGroup.js');
 
 
-//insert or update Uom
+//insert or update User Access Tree
 exports.saveOrUpdateUserAccessTree = function(req, res){
 	var response = {
 			status	: Boolean,
@@ -93,7 +93,7 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 }
 
 
-//get all Uom
+//get all User Access Tree
 exports.getUserAccessTree = function(req, res){
 
 	var response = {

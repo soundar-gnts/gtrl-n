@@ -25,8 +25,6 @@ module.exports = function(app, server){
 	app.post('/changepostatus', 		poService.changePoStatus);
 	
 	//details tables
-	app.post('/savepodatadetails',		poService.saveOrUpdatePoDetails);
 	app.post('/getpodatadetails', 		poService.getPoDetails);
-	app.post('/deletepodatadetails', 	poService.deletePoDetails);
 	
 }
