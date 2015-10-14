@@ -13,11 +13,12 @@
  * Version       Date           	Modified By             Remarks
  * 
  */
-
-var purchaseReturnHdr 	= require('../models/PurchaseReturnHdr.js');
-var purchaseReturnDtl 	= require('../models/PurchaseReturnDtl.js');
+var stockLedgerService  = require('../services/StockLedgerService.js');
 var accountRecevable 	= require('../models/AccountReceivables.js');
 var productSerialCodes	= require('../models/ProductSerialCodes.js');
+var purchaseReturnHdr 	= require('../models/PurchaseReturnHdr.js');
+var purchaseReturnDtl 	= require('../models/PurchaseReturnDtl.js');
+
 var log 				= require('../config/logger').logger;
 var appMsg				= require('../config/Message.js');
 var response 			= {
@@ -98,7 +99,7 @@ exports.savePurchaseReturnDetails = function(req, res){
 		
 }
 
-//SaveOrUpdate Purchase ReturnHdr Details
+//SaveOrUpdate Purchase ReturnDetails
 
 	exports.savePurchaseReturnDtl = function(req, res){	
 	
@@ -289,35 +290,7 @@ exports.savePurchaseReturnDetails = function(req, res){
 				res.send(response);
 			});
 		}
-//Delete Purchase Return Details
-		
-		exports.deletePurchaseReturnDtl = function(req, res) {		
-			if(req.param("returndtlid")!=null){
-				purchaseReturnDtl.destroy({where:{
-					return_dtlid		: req.param("returndtlid")		
-			}}).then(function(data){
-				if(data){
-					log.info('Deleted Successfully.');
-					response.message = 'Deleted Successfully.';
-					response.status  = true;
-					response.data	 = "";
-					res.send(response);
-				}
-				
-			}).error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= 'Internal error.';
-				response.data  		= err;
-				res.send(response);
-			});
-			}else{
-				response.status  	= false;
-				response.message 	= 'JSON Error - Key Not found';
-				response.data  		= "";
-				res.send(response);
-			}
-		}
+
 
 
 // To UpdatePurchaseReturnHdr Status
@@ -363,53 +336,196 @@ exports.savePurchaseReturnDetails = function(req, res){
 				res.send(response);
 			}
 		}
-		//SaveOrUpdate Purchase Return Header
-		/*
-		exports.savePurchaseReturnHdr = function(req, res){	
+//insert or update Purchase Return details
+ 
+ exports.saveOrUpdatePurchaseReturn = function(req, res){
+ 	var response = {
+ 			status	: Boolean,
+ 			message : String,
+ 			data	: String
+ 	}
+ 	var returnhdr = {
+ 			return_id			: req.param('returnid'),
+			company_id			: req.param('companyid'),
+			po_id 				: req.param('poid'),
+			retrun_ref_no 		: req.param('retrunrefno'),
+			return_date 		: req.param('returndate'),
+			store_id 			: req.param('storeid'),
+			supplier_id 		: req.param('supplierid'),
+			amount_payble 		: req.param('amountpayble'),
+			outstanding_amount 	: req.param('outstandingamount'),
+			return_type 		: req.param('returntype'),
+			payment_mode 		: req.param('paymentmode'),
+			discount_prcnt 		: req.param('discountprcnt'),
+			discount_value 		: req.param('discountvalue'),
+			return_reason 		: req.param('returnreason'),
+			cancel_remark 		: req.param('cancelremark'),
+			status		   		: req.param('status'),
+			last_updated_dt		: req.param('lastupdateddt'),
+			last_updated_by		: req.param('lastupdatedby'),
+			batch_no            : req.param('batchno'),
+ 	}
+ 	var returnDetails = [];
+ 	var detailsLength = 0;
+ 	
+ 	if(req.param('returnlist') != null)
+ 		
+ 		detailsLength = req.param('returnlist').length;
+ 	
+ 	for(var i = 0; i < detailsLength; i++){
+ 		var purchasereturndtl = {
+ 				return_dtlid		: req.param('returnlist')[i].returndtlid,
+				return_id			: req.param('returnid'),
+				company_id 			: req.param('returnlist')[i].companyid,
+				product_id 			: req.param('returnlist')[i].productid,
+				return_qty 			: req.param('returnlist')[i].returnqty,
+				uom_id 				: req.param('returnlist')[i].uomid,
+				rate 				: req.param('returnlist')[i].rate,
+				basic_value 		: req.param('returnlist')[i].basicvalue,	
+				discount_prcnt 		: req.param('returnlist')[i].discountprcnt,
+				discount_value 		: req.param('returnlist')[i].discountvalue,
+				tax_id 				: req.param('returnlist')[i].taxid,
+				tax_prnct 			: req.param('returnlist')[i].taxprnct,
+				tax_value 			: req.param('returnlist')[i].taxvalue,
+ 		}
+ 		returnDetails.push(purchasereturndtl);
+ 	}
+ 	
+ 	if(req.param('returnid')!=null){
+ 	
+ 		purchaseReturnHdr.upsert(returnhdr)
+ 		.then(function(data){ 		
+ 			if(returnDetails.length>0){
+				var condition = "return_id='"+req.param('returnid')+"'";
+				
+				deletePurchaseReturnDtl(condition);
+			}
 			
-			purchaseReturnHdr.upsert(
-					{
-						return_id			: req.param('returnid'),
-						company_id			: req.param('companyid'),
-						po_id 				: req.param('poid'),
-						retrun_ref_no 		: req.param('retrunrefno'),
-						return_date 		: req.param('returndate'),
-						store_id 			: req.param('storeid'),
-						supplier_id 		: req.param('supplierid'),
-						amount_payble 		: req.param('amountpayble'),
-						outstanding_amount 	: req.param('outstandingamount'),
-						return_type 		: req.param('returntype'),
-						payment_mode 		: req.param('paymentmode'),
-						discount_prcnt 		: req.param('discountprcnt'),
-						discount_value 		: req.param('discountvalue'),
-						return_reason 		: req.param('returnreason'),
-						cancel_remark 		: req.param('cancelremark'),
-						status		   		: req.param('status'),
-						last_updated_dt		: req.param('lastupdateddt'),
-						last_updated_by		: req.param('lastupdatedby'),
-					
-			   
-					})	
+ 			for(var i = 0; i < returnDetails.length; i++){
+ 				saveOrUpdateRe(returnDetails[i]);
+ 				if(req.param("status")!=null&&req.param('status')=='Approved')
+ 		 		{
+ 		 				console.log("Approved",req.param('returnlist')[i].productid);
+ 		 		stockLedgerService.insertStockLedger(
+ 		 				req.param('returnlist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
+ 		 				0,req.param('returnlist')[i].returnqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
+ 		 				,req.param("cancelremark"));
+ 		 		}
+ 			}
+ 			if(req.param("status")!=null&&req.param("status")=='Approved'){
+ 				//To update account payable
+ 				accountRecevable.insertAccountRecevable(req.param("companyid"),req.param("storeid"),new Date(),null,req.param("invoiceno"),
+ 						req.param("invoicedate"),null,req.param("invoiceamount"),req.param("actionremarks"),p.supplier_id,req.param("lastupdateddt")
+ 						,req.param("lastupdatedby"));
+ 				
+ 				}
+ 			log.info('Updated Successfully.');
+ 			response.message 	= 'Updated Successfully.';
+ 			response.data  		= req.param('poid');
+ 			response.status  	= true;
+ 			res.send(response);
+ 			
+ 		})
+ 		.error(function(err){
+ 			log.error(err);
+ 			response.status  	= false;
+ 			response.message 	= 'Internal error.';
+ 			response.data  		= err;
+ 			res.send(response);
+ 		});
+ 	} else{
+ 	
+ 		purchaseReturnHdr.create(returnhdr)
+ 		.then(function(data){
+ 			
+ 			for(var i = 0; i < detailsLength; i++){
+ 				
+ 				returnDetails[i].return_id = data.return_id;
+ 			
+
+ 				saveOrUpdateRe(returnDetails[i]);
+ 				if(req.param("status")!=null&&req.param('status')=='Approved')
+ 		 		{
+ 		 				console.log("Approved",req.param('returnlist')[i].productid);
+ 		 		stockLedgerService.insertStockLedger(
+ 		 				req.param('returnlist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
+ 		 				0,req.param('returnlist')[i].invoiceqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
+ 		 				,req.param("cancelremark"));
+ 		 		
+ 				productSerialCodesService.updateProductSerialCodes(req.param("companyid"),p.purchase_id,req.param('returnlist')[i].productid,
+ 						req.param("storeid"),req.param("batchno"));
+ 		 		}
+ 			}
+ 			
+ 			if(req.param("status")!=null&&req.param("status")=='Approved'){
+ 				//To update account Receivable
+ 				accountRecevable.insertAccountRecevable(req.param("companyid"),req.param("storeid"),new Date(),null,req.param("invoiceno"),
+ 						req.param("invoicedate"),null,req.param("invoiceamount"),req.param("actionremarks"),p.supplier_id,req.param("lastupdateddt")
+ 						,req.param("lastupdatedby"));
+ 				
+ 				}
+ 			log.info('Saved successfully.');
+ 			response.message	= 'Saved successfully.';
+ 			response.data  		= data.return_id;
+ 			response.status 	= true;
+ 			res.send(response);
+ 		})
+ 		.error(function(err){
+ 			log.error(err);
+ 			response.status  	= false;
+ 			response.message 	= 'Internal error.';
+ 			response.data  		= err;
+ 			res.send(response);
+ 		});
+ 		
+ 		
+ 	}
+ 	
+
+ }
+ function saveOrUpdateRe(purchasereturndtl) {
+	 console.log(purchasereturndtl);
+	 purchaseReturnDtl.upsert(purchasereturndtl)
+	 
+		.then(function(data){
 			
-						.then(function(data){
-							if(data){
-								log.info(' saved successfully.');
-								response.message = ' Saved successfully.';
-								response.status  = true;
-								res.send(response);
-							}
-							else{
-								log.info(' Updated successfully.');
-								response.message = ' Updated successfully.';
-								response.status  = true;
-								res.send(response);
-							}
-							
-						}).error(function(err){
-							log.error(err);
-							response.status  	= false;
-							response.message 	= 'Internal error.';
-							response.data  		= err;
-							res.send(response);
-						});
-				}; */
+		}).error(function(err){
+			log.error(err);
+		});
+	}
+ 
+ function deletePurchaseReturnDtl(condition){
+		var response = {
+				status	: Boolean,
+				message : String,
+				data	: String
+		}
+		purchaseReturnDtl.destroy({where : [condition]})
+		.then(function(data){
+			
+			if(data >= '1'){
+				log.info(data+' Removed.');
+				response.status  	= true;
+				response.message 	= data+' Removed removed.';
+			} else{
+				log.info('No data found.');
+				response.status  	= true;
+				response.message 	= 'No data found.';
+			}
+			return response;
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			return response;
+		});
+	}
+ 
+ 
+ 
+ 
+ 
+ 
+ 

@@ -165,4 +165,21 @@ exports.insertProductSerialCodes = function(companyid,grnid,productid,storeid,ba
 		
 }
 
+//To Update Product Serial Status.
 
+exports.updateProductSerialCodes = function(companyid,productid,storeid,batchid) {
+	productserialcodes.upsert({
+		company_id 				: companyid,	
+		product_id 				: productid,
+		store_id 				: storeid,
+		batch_id 				: batchid,
+		status 					: 'Returned',
+		print_status 			: 'Not Printed'
+		
+	}).then(function(data){
+		
+	}).error(function(err){
+		
+	});
+		
+}

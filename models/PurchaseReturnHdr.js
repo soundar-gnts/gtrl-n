@@ -43,6 +43,7 @@ var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 	status		   		: dataTypes.STRING,
 	last_updated_dt		: dataTypes.DATE,
 	last_updated_by		: dataTypes.STRING,
+	batch_no			: dataTypes.STRING,
 
 }, {
 	timestamps : false,

@@ -128,7 +128,7 @@ exports.saveStockSummary = function(req, res) {
 		
 }
 
-exports.updteStockSummary=function(productid,companyid,storeid,batchno,currstock,lastsolddt,lastsoldqty){
+exports.UpdateStockSummary=function(productid,companyid,storeid,batchno,currstock,lastsolddt,lastsoldqty){
 	var values={
 			product_id:productid,company_id:companyid,store_id:storeid,curr_stock:currstock,batch_no:batchno
 	};

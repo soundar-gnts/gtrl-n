@@ -30,6 +30,7 @@ var stockTransferDtl = model.define('t_stock_transfer_dtl', {
 	transfer_id 		: dataTypes.INTEGER,
 	product_id 			: dataTypes.INTEGER,
 	batch_no			: dataTypes.STRING,
+	transfer_qty		: dataTypes.INTEGER,
 	uom_id 				: dataTypes.INTEGER,
 	received_qty 		: dataTypes.INTEGER,
 	rate 				: dataTypes.DOUBLE,	

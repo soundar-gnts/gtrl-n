@@ -148,4 +148,77 @@ exports.saveAccountReceivables = function(req, res) {
 		
 }
 
+exports.insertAccountRecevable = function(companyid,storeid,entrydate,accountid,invoiceno,invoicedate,invoiceamount,
+		remarks,supplierid,lastupdateddt,lastupdatedby) {
+	var accreceive={
+		company_id 				: companyid,
+		store_id 				: storeid,
+		entry_date 				: entrydate,
+		account_id 				: accountid,			 
+		invoice_no 				: invoiceno,
+		invoice_date 			: invoicedate,	
+		invoice_amount 			: invoiceamount,
+		paid_amount 			: 0,
+		balance_amount 			: invoiceamount,
+		remarks 				: remarks,
+		prepared_by 			: null,
+		actioned_by 			: null,
+		status 					: 'Pending',
+		last_updated_dt 		: lastupdateddt,
+		last_updated_by 		: lastupdatedby
+		
+	};
+	
+	accounts.findOne({where:[{supplier_id:supplierid,status:'Active'}]})
+	.then(function(result){
+		console.log("result--->"+result);
+		if(result!=null){
+			accreceive.account_id=result.account_id;
+			accountpayables.create(accreceive).then(function(data){
+			}).error(function(err){
+				log.error(err);
+			});
+				
+		}else{
 
+			accounts.create({
+				company_id 					: companyid,
+				store_id 					: storeid,
+				account_group 				: 'Supplier',
+				account_name 				: 'Supplier'+'-'+storeid+'-'+companyid,
+				account_dt 					: entrydate,
+				finance_year 				: '',
+				generate_voucher_yn 		: '',
+				supplier_id 				: supplierid,
+				od_amoun 					: 0,
+				open_balance 				: 0,
+				parked_amount 				: 0,
+				current_balance 			: 0,
+				aproveauth 					: '',
+				selfapprv_yn 				: 'N',
+				remarks 					: 'Nill',
+				status 						: 'Active',
+				last_updated_dt 			: lastupdateddt,
+				last_updated_by 			: lastupdateddt
+				
+			}).then(function(data){
+				accreceive.account_id=data.account_id;
+				accountpayables.create(accreceive).then(function(data){
+				}).error(function(err){
+					log.error(err);
+					console.log("Error--1->"+err);
+				});
+					
+			}).error(function(err){
+				console.log("Error--2->"+err);
+			});
+				
+
+		}
+		
+	});
+	
+	
+	
+	
+}

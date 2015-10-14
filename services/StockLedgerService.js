@@ -146,6 +146,7 @@ exports.saveStockLedger = function(req, res) {
 }
 
 exports.insertStockLedger=function(productid,companyid,storeid,batchno,inqty,outqty,uomid,refno,refdate,refremarks){
+	console.log(productid);
 	stockledger.findOne({where:[{product_id:productid,company_id:companyid,store_id:storeid,batch_no:batchno,is_latest:'Y'}]})
 	.then(function(result){
 		if(inqty==null){
@@ -191,7 +192,7 @@ exports.insertStockLedger=function(productid,companyid,storeid,batchno,inqty,out
 			if(outqty==null||outqty==0){
 				lastsoldqty=inqty;
 			}
-			stockSummaryService.updteStockSummary(productid,companyid,storeid,batchno,ledger.close_qty,refdate,lastsoldqty);
+			stockSummaryService.UpdateStockSummary(productid,companyid,storeid,batchno,ledger.close_qty,refdate,lastsoldqty);
 		});
 		
 		

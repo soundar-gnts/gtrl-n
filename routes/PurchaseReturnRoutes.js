@@ -25,11 +25,13 @@ module.exports = function(app, server){
 	app.post('/savepurchasereturndetails',purchaseReturnService.savePurchaseReturnDetails);
 	app.post('/getpurchasereturnhdrlist',purchaseReturnService.getPurchaseReturnHdrList);	
 	app.post('/updatepurchasereturnstatus',purchaseReturnService.updatePurchaseReturnStatus);	
+	app.post('/saveorupdatepurchasereturn',purchaseReturnService.saveOrUpdatePurchaseReturn);	
+	
 	
 	//Purchase Return Details
 	
 	app.post('/savePurchasereturndtl',purchasereturndtlservice.savePurchaseReturnDtl);
 	app.post('/getpurchasereturndtl',purchasereturndtlservice.getPurchaseReturnDtl);	
-	app.post('/deletepurchasereturndtl',purchasereturndtlservice.deletePurchaseReturnDtl);	
+	//app.post('/deletepurchasereturndtl',purchasereturndtlservice.deletePurchaseReturnDtl);	
 
 }
