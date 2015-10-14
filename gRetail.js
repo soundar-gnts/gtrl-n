@@ -56,8 +56,8 @@ require('./routes/UserAccessTreeRoutes.js')(app, server);
 require('./routes/ScreenTreeRoutes.js')(app, server);
 require('./routes/PoRoutes.js')(app, server);
 require('./routes/PoDetailsRoutes.js')(app, server);
-require('./routes/SalesOrderRoutes.js')(app, server);
-require('./routes/SalesOrderDetailsRoutes.js')(app, server);
+//require('./routes/SalesOrderRoutes.js')(app, server);
+//require('./routes/SalesOrderDetailsRoutes.js')(app, server);
 
 require('./routes/StateRoutes.js')(app, server);
 require('./routes/CityRoutes.js')(app, server);
@@ -85,6 +85,7 @@ require('./routes/StockAdjustmentsRoutes.js')(app, server);
 require('./routes/AccountPayablesRoutes.js')(app, server);
 require('./routes/StockLedgerRoutes.js')(app, server);
 require('./routes/StockSummaryRoutes.js')(app, server);
+require('./routes/StockTransferRoutes.js')(app, server);
 
 
 
