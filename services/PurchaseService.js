@@ -26,6 +26,8 @@ var response = {
 };
 var appmsg			= require('../config/Message.js');
 
+var stockLedgerService = require('../services/StockLedgerService.js');
+
 // To get Purchase Header List based on user param
 exports.getPurchaseHdrDetails = function(req, res) {
 	var attr 	= "";
@@ -234,9 +236,18 @@ exports.savePurchaseHdrDetails = function(req, res) {
 				mrp						: req.param('purchasedtlslist')[i].mrp,
 				discount_value			: req.param('purchasedtlslist')[i].discountvalue
 				
+			}).then(function(data){
+				
+				console.log("yes...");
+	
 			}).error(function(err) {
 				res.send(err);
 			});
+			stockLedgerService.insertStockLedger(
+					req.param('purchasedtlslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
+					req.param('purchasedtlslist')[i].invoiceqty,0,req.param('purchasedtlslist')[i].uomid,req.param("invoiceno"),req.param("invoicedate")
+					,req.param("actionremarks"));
+
 		}
 		}
 			log.info('Saved Successfully.');

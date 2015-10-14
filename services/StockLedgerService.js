@@ -21,6 +21,7 @@ var response = {
 		data	: String
 };
 var appmsg			= require('../config/Message.js');
+var stockSummaryService = require('../services/StockSummaryService.js');
 
 // To get StockLedger List based on user param
 exports.getStockLedgerDetails = function(req, res) {
@@ -143,3 +144,60 @@ exports.saveStockLedger = function(req, res) {
 	});
 		
 }
+
+exports.insertStockLedger=function(productid,companyid,storeid,batchno,inqty,outqty,uomid,refno,refdate,refremarks){
+	stockledger.findOne({where:[{product_id:productid,company_id:companyid,store_id:storeid,batch_no:batchno,is_latest:'Y'}]})
+	.then(function(result){
+		if(inqty==null){
+			inqty=0;
+		}
+		if(outqty==null){
+			outqty=0;
+		}
+		
+		var ledger={
+				ledger_date 				: new Date(),
+				product_id 					: productid,
+				company_id 					: companyid,
+				store_id 					: storeid,
+				batch_no 					: batchno,
+				open_qty 					: 0,
+				in_qty 						: inqty,
+				out_qty 					: outqty,
+				close_qty 					: 0,
+				uom_id 						: uomid,
+				is_latest 					: 'Y',
+				ref_no 						: refno,
+				ref_date 					: refdate,
+				ref_remarks 				: refremarks
+		};
+		
+		
+		if(result!=null){
+			ledger.open_qty=result.close_qty;
+		}else{
+			ledger.open_qty=0;
+		}
+		ledger.close_qty =ledger.open_qty+inqty-outqty; 
+
+		stockledger.create(ledger).then(function(p) {
+			if (result != null) {
+				stockledger.update({is_latest:'N'},{where : {stock_ledid:result.stock_ledid}}).error(function(err){
+					
+				});
+			}
+			//For update Stock Summary
+			var lastsoldqty =outqty;
+			if(outqty==null||outqty==0){
+				lastsoldqty=inqty;
+			}
+			stockSummaryService.updteStockSummary(productid,companyid,storeid,batchno,ledger.close_qty,refdate,lastsoldqty);
+		});
+		
+		
+	});
+	
+	
+	
+}
+
