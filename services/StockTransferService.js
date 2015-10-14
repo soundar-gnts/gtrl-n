@@ -182,70 +182,7 @@ exports.getStocktransferDtl = function(req, res) {
 		});
 	};
 
-/*
-// To Save/Update StockTransferHdr and  Detail
 
-	exports.saveTransferDetails = function(req, res) {
-		
-		stocktranshdr.upsert({
-				
-			transfer_id					: req.param("transferid"),
-			company_id 					: req.param("companyid"),
-			transfer_refno 				: req.param("transferrefno"),
-			from_Store_id 				: req.param("fromStoreid"),
-			to_store_id 				: req.param("tostoreid"),
-			transfer_ctgry 				: req.param("transferctgry"),
-			transfer_remarks 			: req.param("transferremarks"),	
-			transfer_Status 			: req.param("transferStatus"),
-			basic_total 				: req.param("basictotal"),
-			total_tax 					: req.param("totaltax"),
-			total_value 				: req.param("totalvalue"),
-			action_remarks 				: req.param("actionremarks"),
-			actioned_by 				: req.param("actionedby"),
-			actioned_dt 				: req.param("actioneddt"),
-			transfered_by 				: req.param("transferedby"),
-			
-			
-		}).then(function(st){
-			for(var i=0;i<req.param('stocktranslist').length;i++){
-				stocktransdtl.upsert({
-					transfer_dtlid 			: req.param('stocktranslist')[i].transferdtlid,
-					transfer_id 			: st.transferid,
-					product_id 				: req.param('stocktranslist')[i].productid,
-					batch_no				: req.param('stocktranslist')[i].batchno,
-					received_qty 			: req.param('stocktranslist')[i].receivedqty,
-					rate 					: req.param('stocktranslist')[i].rate,				
-					basic_value				: req.param('stocktranslist')[i].basicvalue,
-					discount_prcnt			: req.param('stocktranslist')[i].discountprcnt,
-					tax_id					: req.param('stocktranslist')[i].taxid,
-					tax_prnct				: req.param('stocktranslist')[i].taxprnct,
-					tax_value				: req.param('stocktranslist')[i].taxvalue,
-					remarks					: req.param('stocktranslist')[i].remarks,
-					status					: req.param('stocktranslist')[i].status,
-					
-					
-				}).error(function(err) {
-					res.send(err);
-				});
-			}
-			
-				log.info('Saved Successfully.');
-				response.message = 'Saved Successfully.';
-				response.status  = true;
-				response.data	 = "";
-				res.send(response);
-			
-			
-		}).error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
-			res.send(response);
-		});
-			
-	};
-*/
 // To Save/Update StockTransfer Detail
 	
 	exports.saveStockTransDtls = function(req, res) {
@@ -345,8 +282,9 @@ exports.getStocktransferDtl = function(req, res) {
 					actioned_dt 				: req.param("actioneddt"),
 					transfered_by 				: req.param("transferedby")
 					}
-			
-			stocktranshdr.upsert().then(function(st){
+			bank.findOne({where : [{transfer_id    :req.param("transferid")}]}).then(function(result) {
+				if(!result){
+			stocktranshdr.create(stocktrans).then(function(st){
 				for(var i=0;i<req.param('stocktranslist').length;i++){
 					stocktransdtl.upsert({
 						transfer_dtlid 			: req.param('stocktranslist')[i].transferdtlid,
@@ -367,21 +305,56 @@ exports.getStocktransferDtl = function(req, res) {
 					}).error(function(err) {
 						res.send(err);
 					});
-				}
-				
-					log.info('Saved Successfully.');
-					response.message = 'Saved Successfully.';
-					response.status  = true;
-					response.data	 = "";
-					res.send(response);
-				
-				
-			}).error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= 'Internal error.';
-				response.data  		= err;
-				res.send(response);
-			});
-				
-		};
+					if(p){
+						log.info('Saved Successfully.');
+						response.message = 'Updated Successfully.';
+						response.status  = true;
+						res.send(response);
+					}
+							}
+					 }).error(function(err){
+							log.error(err);
+							response.status  	= false;
+							response.message 	= 'Internal error.';
+							response.data  		= err;
+							res.send(response);
+						});	 }else{
+
+							stocktranshdr.upsert(stocktrans).then(function(st){
+								for(var i=0;i<req.param('stocktranslist').length;i++){
+									stocktransdtl.upsert({
+										transfer_dtlid 			: req.param('stocktranslist')[i].transferdtlid,
+										transfer_id 			: req.param("transferid"),
+										product_id 				: req.param('stocktranslist')[i].productid,
+										batch_no				: req.param('stocktranslist')[i].batchno,
+										received_qty 			: req.param('stocktranslist')[i].receivedqty,
+										rate 					: req.param('stocktranslist')[i].rate,				
+										basic_value				: req.param('stocktranslist')[i].basicvalue,
+										discount_prcnt			: req.param('stocktranslist')[i].discountprcnt,
+										tax_id					: req.param('stocktranslist')[i].taxid,
+										tax_prnct				: req.param('stocktranslist')[i].taxprnct,
+										tax_value				: req.param('stocktranslist')[i].taxvalue,
+										remarks					: req.param('stocktranslist')[i].remarks,
+										status					: req.param('stocktranslist')[i].status,
+										
+										
+									}).error(function(err) {
+										res.send(err);
+									});
+									if(!p){
+										log.info('Updated Successfully.');
+										response.message = 'Updated Successfully.';
+										response.status  = true;
+										res.send(response);
+									}
+											}
+									 }).error(function(err){
+											log.error(err);
+											response.status  	= false;
+											response.message 	= 'Internal error.';
+											response.data  		= err;
+											res.send(response);
+										});	 
+						}});
+						
+			}
