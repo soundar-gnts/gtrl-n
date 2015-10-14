@@ -127,3 +127,36 @@ exports.saveStockSummary = function(req, res) {
 	});
 		
 }
+
+exports.UpdateStockSummary=function(productId,companyId,storeId,adjustQty,batchNo){
+	var values={
+			product_id:productId,company_id:companyId,store_id:storeId,adjust_qty:adjustQty,batch_no:batchNo
+	};
+	stocksummary.findOne({where : [values]}).then(function(result) {
+		if(result!=null){
+			stocksummary.upsert({
+		stock_id					: req.param("stockid"),
+		product_id 					: req.param("productid"),
+		company_id 					: req.param("companyid"),
+		store_id 					: req.param("storeid"),
+		batch_no 					: req.param("batchno"),
+		curr_stock 					:result.curr_stock + req.param("currstock"),
+		last_sold_dt 				: req.param("lastsolddt"),
+		last_sold_qty 				: req.param("lastsoldqty")
+		
+	}).then(function(data){
+			log.info('Updated Successfully.');
+			response.message = 'Updated Successfully.';
+			response.status  = true;
+			response.data	 = "";
+			res.send(response);
+		
+	})
+		}}).error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
+}
