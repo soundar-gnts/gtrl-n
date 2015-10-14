@@ -401,3 +401,26 @@ function deletePoDetailsFn(condition){
 		return response;
 	});
 }
+
+
+//For update balance qty
+exports.updatePODetailBalanceQty=function(poid,prodid,qty){
+	poDetail.findOne({where:[{po_id:poid,prod_id:prodid}]})
+	.then(function(result){
+		if(result!=null){
+			var balqty=0;
+			if(result.bal_qty!=null){
+				balqty=result.bal_qty;
+			}
+			balqty = balqty-qty;
+			poDetail.update({bal_qty:balqty},{where : {po_dtlid:result.po_dtlid}}).error(function(err){
+				
+			});
+			
+		}
+	});
+	
+	
+	
+}
+

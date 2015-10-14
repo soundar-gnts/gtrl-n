@@ -29,6 +29,7 @@ var appmsg			= require('../config/Message.js');
 var stockLedgerService = require('../services/StockLedgerService.js');
 var accountPayablesService = require('../services/AccountPayablesService.js');
 var productSerialCodesService = require('../services/ProductSerialCodesService.js');
+var poService = require('../services/PoService.js');
 
 // To get Purchase Header List based on user param
 exports.getPurchaseHdrDetails = function(req, res) {
@@ -251,10 +252,13 @@ exports.savePurchaseHdrDetails = function(req, res) {
 					req.param('purchasedtlslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
 					req.param('purchasedtlslist')[i].invoiceqty,0,req.param('purchasedtlslist')[i].uomid,req.param("invoiceno"),
 					req.param("invoicedate"),req.param("actionremarks"));
-			
+			//To Insert Row in product Serail Codes
 			productSerialCodesService.insertProductSerialCodes(req.param("companyid"),p.purchase_id,req.param('purchasedtlslist')[i].productid,
 					req.param("storeid"),req.param("batchno"),req.param('purchasedtlslist')[i].eanserialno,
 					req.param('purchasedtlslist')[i].storeserialno);
+			
+			//For Update balance qty in Purchase order details.
+			poService.updatePODetailBalanceQty(p.po_id,req.param('purchasedtlslist')[i].productid,req.param('purchasedtlslist')[i].invoiceqty);
 			
 			}
 

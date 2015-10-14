@@ -27,7 +27,7 @@ var poDetail = model.define('t_po_dtl', {
 	},
 	
 	po_id			: dataTypes.INTEGER,
-	prod_id			: dataTypes.STRING,
+	prod_id			: dataTypes.INTEGER,
 	po_qty			: dataTypes.INTEGER,
 	bal_qty			: dataTypes.INTEGER,
 	uom_id			: dataTypes.INTEGER,
