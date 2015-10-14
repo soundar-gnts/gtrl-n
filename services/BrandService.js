@@ -94,10 +94,23 @@ exports.saveBrandDetails = function(req,res){
 		last_updated_by:req.param("updatedby"),
 	}).then(function(err){
 		if(err){
-			res.send("Brand Added Succesfully");}else{
-				res.send("Brand Updated Succesfully");
-			}
+			log.info('Saved Successfully.');
+			response.message = 'Saved Successfully.';
+			response.status  = true;
+			res.send(response);
+		}
+		else{
+			log.info('Updated Successfully.');
+			response.message = 'Updated Successfully.';
+			response.status  = true;
+			res.send(response);
+		}
 		
-	})
+	}).error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
 }
-		

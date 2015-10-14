@@ -17,12 +17,12 @@
 var bank = require('../models/Bank.js');
 var bankBranch = require('../models/BankBranch.js');
 var appMsg		= require('../config/Message.js');
-
-var response 	= {
-						status	: Boolean,
-						message : String,
-						data	: String
-					};
+var log = require('../config/logger').logger;
+var response = {
+		status	: Boolean,
+		message : String,
+		data	: String
+};
 
 // To Get Bank full LIST
 exports.getBankDetails = function(req, res) {
@@ -211,44 +211,91 @@ exports.getBankBranchDetails = function(req, res) {
 //To Save Bank List
 
 exports.saveBankDetails = function(req,res){
-
-	 bank.create({
-		 		bank_id    :req.param("bankid"),
-				bank_code  :req.param("bankcode"),
-				bank_name  :req.param("bankname"), 
-				company_id :req.param("companyid"),
-				status 	   :req.param("status"),
+var val={		bank_id      :req.param("bankid"),
+				bank_code    :req.param("bankcode"),
+				bank_name    :req.param("bankname"), 
+				company_id   :req.param("companyid"),
+				status 	     :req.param("status"),
 				last_updated_dt:req.param("updateddate"),
-				last_updated_by:req.param("updatedby")} ).then(function(p){
-					
-	
+				last_updated_by:req.param("updatedby")};
+	bank.findOne({where : [{bank_id    :req.param("bankid")}]}).then(function(result) {
+		if(!result){
+	 bank.create(val).then(function(p){
 			for(var i=0;i<req.param('bankbranchlist').length;i++){
-	bankBranch.create({
-		branch_id   :req.param("bankbranchlist")[i].branchid,
-		bank_id   :p.bank_id,
-		branch_code :req.param("bankbranchlist")[i].branchcode,
-		branch_name :req.param("bankbranchlist")[i].branchname, 
-		company_id :req.param("bankbranchlist")[i].companyid,
-		ifsc_code  :req.param("bankbranchlist")[i].ifsccode,
-		address :req.param("bankbranchlist")[i].address,
-		pincode 	   :req.param("bankbranchlist")[i].pincode,
-		landline_no :req.param("bankbranchlist")[i].landlineno, 
-		fax_no 	   :req.param("bankbranchlist")[i].faxno,
-		email_id :req.param("bankbranchlist")[i].emailid, 
-		contact_person :req.param("bankbranchlist")[i].contactperson,
-		contact_no 	   :req.param("bankbranchlist")[i].contactno,
-			state_id :req.param("bankbranchlist")[i].stateid, 
-		city_id :req.param("bankbranchlist")[i].cityid,
-		last_updated_dt:req.param("bankbranchlist")[i].updateddate,
-		last_updated_by:req.param("bankbranchlist")[i].updatedby
+	bankBranch.upsert({
+		branch_id  			 :req.param("bankbranchlist")[i].branchid,
+		bank_id   			 :p.bank_id,
+		branch_code			 :req.param("bankbranchlist")[i].branchcode,
+		branch_name 		 :req.param("bankbranchlist")[i].branchname, 
+		company_id 			 :req.param("bankbranchlist")[i].companyid,
+		ifsc_code 			 :req.param("bankbranchlist")[i].ifsccode,
+		address 			 :req.param("bankbranchlist")[i].address,
+		pincode 	   	     :req.param("bankbranchlist")[i].pincode,
+		landline_no			 :req.param("bankbranchlist")[i].landlineno, 
+		fax_no 	   			 :req.param("bankbranchlist")[i].faxno,
+		email_id 			 :req.param("bankbranchlist")[i].emailid, 
+		contact_person 	   	 :req.param("bankbranchlist")[i].contactperson,
+		contact_no 	  		 :req.param("bankbranchlist")[i].contactno,
+		state_id  			 :req.param("bankbranchlist")[i].stateid, 
+		city_id 			 :req.param("bankbranchlist")[i].cityid,
+		last_updated_dt		 :req.param("bankbranchlist")[i].updateddate,
+		last_updated_by		 :req.param("bankbranchlist")[i].updatedby
 	}).error(function(err){
 		res.send(err);
-	});}
-			})
-			if(req.param("bankid")==undefined){
-				res.send('Successfully Added.'); 
-				}else{
-					res.send('Successfully Updated.'); 
-
+	});
+	if(p){
+		log.info('Saved Successfully.');
+		response.message = 'Saved Successfully.';
+		response.status  = true;
+		res.send(response);
+	}
 			}
+	 }).error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			res.send(response);
+		});}else{
+
+		 bank.upsert(val).then(function(p){
+				for(var i=0;i<req.param('bankbranchlist').length;i++){
+		bankBranch.upsert({
+			branch_id  			 :req.param("bankbranchlist")[i].branchid,
+			bank_id    		     :req.param("bankid"),	
+			branch_code			 :req.param("bankbranchlist")[i].branchcode,
+			branch_name 		 :req.param("bankbranchlist")[i].branchname, 
+			company_id 			 :req.param("bankbranchlist")[i].companyid,
+			ifsc_code 			 :req.param("bankbranchlist")[i].ifsccode,
+			address 			 :req.param("bankbranchlist")[i].address,
+			pincode 	   	     :req.param("bankbranchlist")[i].pincode,
+			landline_no			 :req.param("bankbranchlist")[i].landlineno, 
+			fax_no 	   			 :req.param("bankbranchlist")[i].faxno,
+			email_id 			 :req.param("bankbranchlist")[i].emailid, 
+			contact_person 	   	 :req.param("bankbranchlist")[i].contactperson,
+			contact_no 	  		 :req.param("bankbranchlist")[i].contactno,
+			state_id  			 :req.param("bankbranchlist")[i].stateid, 
+			city_id 			 :req.param("bankbranchlist")[i].cityid,
+			last_updated_dt		 :req.param("bankbranchlist")[i].updateddate,
+			last_updated_by		 :req.param("bankbranchlist")[i].updatedby
+		}).error(function(err){
+			res.send(err);
+		});
+		if(!p){
+			log.info('Updated Successfully.');
+			response.message = 'Updated Successfully.';
+			response.status  = true;
+			res.send(response);
+		}
+				}
+		 }).error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= 'Internal error.';
+				response.data  		= err;
+				res.send(response);
+			});	 }});
+			
 }
+
+

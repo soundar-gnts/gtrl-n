@@ -44,7 +44,6 @@ var Company = model.define('m_company', {
 
 	    
 },{
-	timestamps: false,
 	 freezeTableName: true,
 	tableName: 'm_company'
 },{

@@ -32,7 +32,6 @@ var ccy = model.define('m_ccy', {
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	timestamps : false,
 	freezeTableName : true,
 	tableName : 'm_ccy'
 });

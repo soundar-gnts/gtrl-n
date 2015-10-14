@@ -20,6 +20,7 @@ var response = {
 		message : String,
 		data	: String
 };
+var stockLedgerService = require('../services/StockLedgerService.js');
 var appmsg			= require('../config/Message.js');
 
 // To get Stock Adjustments List based on user param
@@ -92,13 +93,15 @@ exports.getStockAdjustmentsDetails = function(req, res) {
 
 // To Save/Update Stock Adjustments Details
 exports.saveStockAdjustments = function(req, res) {
-	stockadjustments.upsert({
+	stockadjustments.create({
 		adjust_id					: req.param("adjustid"),
 		product_id 					: req.param("productid"),
 		company_id 					: req.param("companyid"),
 		store_id 					: req.param("storeid"),
 		adjust_date 				: req.param("adjustdate"),
 		adjust_qty 					: req.param("adjustqty"),
+		batch_no					: req.param("batchno"),
+		uom_id						: req.param("uomid"),
 		adjust_symbol 				: req.param("adjustsymbol"),
 		adjust_reason 				: req.param("adjustreason"),
 		actioned_by 				: req.param("actionedby"),
@@ -111,6 +114,10 @@ exports.saveStockAdjustments = function(req, res) {
 			response.status  = true;
 			response.data	 = "";
 			res.send(response);
+			if(data.adjust_symbol==='+'){
+			stockLedgerService.insertStockLedger(data.product_id,data.company_id,data.store_id,data.batch_no,data.adjust_qty,null,data.uom_id,null,data.actioned_dt,data.adjust_reason);}else{
+				stockLedgerService.insertStockLedger(data.product_id,data.company_id,data.store_id,data.batch_no,null,data.adjust_qty,data.uom_id,null,data.actioned_dt,data.adjust_reason)
+			}
 		}
 		else{
 			log.info('Updated Successfully.');
@@ -129,3 +136,4 @@ exports.saveStockAdjustments = function(req, res) {
 	});
 		
 }
+

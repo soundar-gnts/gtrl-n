@@ -29,14 +29,14 @@ var stockadjustments = model.define('t_stock_adjustments', {
 	store_id			: dataTypes.INTEGER,
 	adjust_date			: dataTypes.DATE,
 	product_id			: dataTypes.INTEGER,
+	uom_id				: dataTypes.INTEGER,
 	adjust_qty			: dataTypes.INTEGER,
 	adjust_symbol		: dataTypes.STRING,
 	adjust_reason		: dataTypes.STRING,
+	batch_no			: dataTypes.STRING,
 	actioned_by			: dataTypes.STRING,
 	actioned_dt			: dataTypes.DATE
-
-}, {
-	timestamps 			: false,
+	}, {
 	freezeTableName 	: true,
 	tableName 			: 't_stock_adjustments'
 });

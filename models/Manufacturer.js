@@ -50,7 +50,6 @@ var manufacturer = model.define('m_manufacturer', {
 
 	
 },{
-	timestamps: false,
 	 freezeTableName: true,
 	tableName: 'm_manufacturer'
 });

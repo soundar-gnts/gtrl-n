@@ -16,7 +16,6 @@
  */
 var stockAdjustmentsService = require('../services/StockAdjustmentsService.js');
 module.exports = function(app, server) {
-	
 	app.post('/getstockadjustmentsdetails', stockAdjustmentsService.getStockAdjustmentsDetails);
 	app.post('/savestockadjustments', stockAdjustmentsService.saveStockAdjustments);
 }

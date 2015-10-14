@@ -17,6 +17,6 @@
 var slnoGenService = require('../services/SlnoGenService.js');
 module.exports = function(app, server) {
 	app.post('/getslnogendetails', slnoGenService.getSlnoGenDetails);
-	app.post('/saveslnogen', slnoGenService.saveSlnoGen);
+	app.post('/updatesequenceno', slnoGenService.updateSequenceNo);
 }
 

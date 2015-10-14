@@ -19,7 +19,6 @@ module.exports = function(app, server) {
 	
 	app.post('/getstocksummarydetails', stockSummaryService.getStockSummaryDetails);
 	app.post('/savestocksummary', stockSummaryService.saveStockSummary);
-	app.post('/updatestocksummary', stockSummaryService.UpdateStockSummary);
 
 	
 }

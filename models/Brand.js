@@ -34,7 +34,6 @@ var brand = model.define('m_brand', {
 	 
 	
 },{
-	timestamps: false,
 	 freezeTableName: true,
 	tableName: 'm_brand'
 });

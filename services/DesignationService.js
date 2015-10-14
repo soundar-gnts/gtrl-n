@@ -90,12 +90,25 @@ exports.saveDesignDetails = function(req,res){
 				  status 	   :req.param("status"),
 				last_updated_dt:req.param("updateddate"),
 				last_updated_by:req.param("updatedby")} ).then(function(err){
-						if(err){
-						res.send("Designation Added Succesfully");}else{
-							res.send("Designation Updated Succesfully");
-						}
+
+					if(err){
+						log.info('Saved Successfully.');
+						response.message = 'Saved Successfully.';
+						response.status  = true;
+						res.send(response);
+					}
+					else{
+						log.info('Updated Successfully.');
+						response.message = 'Updated Successfully.';
+						response.status  = true;
+						res.send(response);
+					}
 					
-				})
-}
-					
-	
+				}).error(function(err){
+					log.error(err);
+					response.status  	= false;
+					response.message 	= 'Internal error.';
+					response.data  		= err;
+					res.send(response);
+				});
+			}

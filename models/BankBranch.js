@@ -43,7 +43,6 @@ var bankBranch = model.define('m_bank_branch', {
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	timestamps : false,
 	freezeTableName : true,
 	tableName : 'm_bank_branch'
 });

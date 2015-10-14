@@ -92,42 +92,38 @@ exports.getSlnoGenDetails = function(req, res) {
 	});
 }
 
+//To Update curr seqno and last seqno
 
-
-
-// To Save Serial No Generation
-exports.saveSlnoGen = function(req, res) {
-	slnogen.upsert({
-		slno_id				: req.param("slnoid"),
+exports.updateSequenceNo = function(req, res) {
+	
+var values={
 		company_id 			: req.param("companyid"),
-		slno_gen_level 		: req.param("slnogenlevel"),
 		store_id 			: req.param("storeid"),
 		ref_key 			: req.param("refkey"),
-		key_desc 			: req.param("keydesc"),
 		autogen_yn 			: req.param("autogenyn"),
-		prefix_key 			: req.param("prefixkey"),
-		prefix_cncat 		: req.param("prefixcncat"),
-		suffix_key 			: req.param("suffixkey"),
-		suffix_cncat 		: req.param("suffixcncat"),
-		curr_seqno 			: req.param("currseqno"),
-		last_seqno 			: req.param("lastseqno"),
-		status 				: req.param("status"),
-		last_updated_dt 	: req.param("lastupdateddt"),
-		last_updated_by 	: req.param("lastupdatedby")
-	}).then(function(data){
-		if(data){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
-			response.status  = true;
-			res.send(response);
-		}
-		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
-			response.status  = true;
-			res.send(response);
-		}
-		
+		status 				: req.param("status")
+};
+	slnogen.findOne({where : [values]}).then(function(result) {
+		if(result){
+			slnogen.upsert({
+				slno_id				: result.slno_id,
+				curr_seqno 			: result.curr_seqno + 1 ,
+				last_seqno 			: result.curr_seqno,
+				last_updated_dt 	: req.param("lastupdateddt"),
+				last_updated_by 	: req.param("lastupdatedby")
+			}).then(function(data){
+					log.info('Updated Successfully.');
+					response.message = 'Updated Successfully.';
+					response.status  = true;
+					res.send(response);
+			});
+				} else{
+					log.info(appmsg.LISTNOTFOUNDMESSAGE);
+					response.message = appmsg.LISTNOTFOUNDMESSAGE;
+					response.status  = false;
+					response.data	 = "";
+					res.send(response);
+				}
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
@@ -135,7 +131,4 @@ exports.saveSlnoGen = function(req, res) {
 		response.data  		= err;
 		res.send(response);
 	});
-		
 }
-
-
