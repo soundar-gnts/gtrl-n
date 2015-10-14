@@ -134,7 +134,7 @@ exports.updteStockSummary=function(productid,companyid,storeid,batchno,currstock
 	};
 	stocksummary.findOne({where : [values]}).then(function(result) {
 		if (result != null) {
-			stocksummary.update({curr_stock:currstock},{where : {stock_id:result.stock_id}})
+			stocksummary.update({curr_stock:currstock,last_sold_dt:lastsolddt,last_sold_qty:lastsoldqty},{where : {stock_id:result.stock_id}})
 			.error(function(err){
 				
 			});

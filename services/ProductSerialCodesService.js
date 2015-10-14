@@ -144,4 +144,25 @@ exports.saveProductSerialCodes = function(req, res) {
 		
 }
 
+//To Insert New Product Serial.
+exports.insertProductSerialCodes = function(companyid,grnid,productid,storeid,batchid,eanserialno,storeserialno) {
+	productserialcodes.create({
+		company_id 				: companyid,
+		grn_id 					: grnid,
+		product_id 				: productid,
+		store_id 				: storeid,
+		batch_id 				: batchid,
+		ean_serialno 			: eanserialno,
+		store_serialno 			: storeserialno,
+		status 					: 'Available',
+		print_status 			: 'Not Printed'
+		
+	}).then(function(data){
+		
+	}).error(function(err){
+		
+	});
+		
+}
+
 

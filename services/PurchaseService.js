@@ -27,6 +27,8 @@ var response = {
 var appmsg			= require('../config/Message.js');
 
 var stockLedgerService = require('../services/StockLedgerService.js');
+var accountPayablesService = require('../services/AccountPayablesService.js');
+var productSerialCodesService = require('../services/ProductSerialCodesService.js');
 
 // To get Purchase Header List based on user param
 exports.getPurchaseHdrDetails = function(req, res) {
@@ -243,12 +245,27 @@ exports.savePurchaseHdrDetails = function(req, res) {
 			}).error(function(err) {
 				res.send(err);
 			});
+			if(req.param("status")!=null&&req.param("status")=='Approved'){
+			//To update stock ledger and summary
 			stockLedgerService.insertStockLedger(
 					req.param('purchasedtlslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
-					req.param('purchasedtlslist')[i].invoiceqty,0,req.param('purchasedtlslist')[i].uomid,req.param("invoiceno"),req.param("invoicedate")
-					,req.param("actionremarks"));
+					req.param('purchasedtlslist')[i].invoiceqty,0,req.param('purchasedtlslist')[i].uomid,req.param("invoiceno"),
+					req.param("invoicedate"),req.param("actionremarks"));
+			
+			productSerialCodesService.insertProductSerialCodes(req.param("companyid"),p.purchase_id,req.param('purchasedtlslist')[i].productid,
+					req.param("storeid"),req.param("batchno"),req.param('purchasedtlslist')[i].eanserialno,
+					req.param('purchasedtlslist')[i].storeserialno);
+			
+			}
 
 		}
+		}
+		if(req.param("status")!=null&&req.param("status")=='Approved'){
+		//To update account payable
+		accountPayablesService.insertAccountPayables(req.param("companyid"),req.param("storeid"),new Date(),null,req.param("invoiceno"),
+				req.param("invoicedate"),null,req.param("invoiceamount"),req.param("actionremarks"),p.supplier_id,req.param("lastupdateddt")
+				,req.param("lastupdatedby"));
+		
 		}
 			log.info('Saved Successfully.');
 			response.message = 'Saved Successfully.';

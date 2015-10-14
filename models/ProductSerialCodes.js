@@ -29,7 +29,7 @@ var productserialcodes = model.define('t_product_serial_codes', {
 	grn_id				: dataTypes.INTEGER,
 	product_id			: dataTypes.INTEGER,
 	store_id			: dataTypes.INTEGER,
-	batch_id			: dataTypes.INTEGER,
+	batch_id			: dataTypes.STRING,
 	ean_serialno		: dataTypes.STRING,
 	store_serialno		: dataTypes.STRING,
 	status				: dataTypes.STRING,

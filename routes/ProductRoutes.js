@@ -15,10 +15,16 @@
  * 
  */
 var productService = require('../services/ProductService.js');
+var productSerialCodesService = require('../services/ProductSerialCodesService.js');
+
 module.exports = function(app, server) {
 	app.post('/saveproduct', productService.saveProduct);
 	app.post('/getproductslist', productService.getProductsList);
 	app.post('/getproductspec', productService.getProductSpec);
 	app.post('/getproductimages', productService.getProductImages);
 	app.post('/getproductbrands', productService.getProductBrands);
+	//For product serial codes.
+	app.post('/getproductserialcodesdetails', productSerialCodesService.getProductSerialCodesDetails);
+	app.post('/saveproductserialcodes', productSerialCodesService.saveProductSerialCodes);
+	
 }
