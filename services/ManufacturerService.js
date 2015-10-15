@@ -17,7 +17,8 @@
 var manufac = require('../models/Manufacturer.js');
 var appMsg		= require('../config/Message.js');
 var log = require('../config/logger').logger;
-
+var path = require('path');
+var fileName=path.basename(__filename);
 var response 	= {
 						status	: Boolean,
 						message : String,
@@ -27,6 +28,7 @@ var response 	= {
 // To get full Manufacturer List
 exports.getmanufactDetails = function(req, res) {
 	var conditionQuery = "";
+	var attr 	= "";
 	var manufgId=req.param("manufgid");
 	var manufgName=req.param("manufgname");
 	var status=req.param("status");
@@ -83,19 +85,21 @@ exports.getmanufactDetails = function(req, res) {
 			conditionQuery=conditionQuery+" and city_id="+cityId;
 		}	
 		}
-	
-	manufac.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]})
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['manufg_id','manufg_name'];
+	}
+	manufac.findAll({where : [conditionQuery],attributes: attr,order: [['last_updated_dt', 'DESC']]})
 	.then(function(result){
 		if(result.length === 0){
 			
-			log.info('No data found.');
+			log.info(fileName+'.getmanufactDetails - No data found.');
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data 	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(fileName+'.getmanufactDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
@@ -103,7 +107,7 @@ exports.getmanufactDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(err);
+		log.error(fileName+'.getmanufactDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -143,20 +147,20 @@ exports.saveManufacDetails = function(req,res){
 	}).then(function(err){
 
 		if(err){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(fileName+'.saveManufacDetails - '+appMsg.SAVEMESSAGE);
+			response.message = appMsg.SAVEMESSAGE;
 			response.status  = true;
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(fileName+'.saveManufacDetails - '+appMsg.UPDATEMESSAGE);
+			response.message = appMsg.UPDATEMESSAGE;
 			response.status  = true;
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
+		log.error(fileName+'.saveManufacDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;

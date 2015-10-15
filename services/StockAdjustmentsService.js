@@ -15,10 +15,12 @@
  */
 var stockadjustments = require('../models/StockAdjustments.js');
 var log = require('../config/logger').logger;
+var path = require('path');
+var fileName=path.basename(__filename);
 var response = {
 		status	: Boolean,
 		message : String,
-		data	: String
+		data	: String  
 };
 var stockLedgerService = require('../services/StockLedgerService.js');
 var appmsg			= require('../config/Message.js');
@@ -26,6 +28,7 @@ var appmsg			= require('../config/Message.js');
 // To get Stock Adjustments List based on user param
 exports.getStockAdjustmentsDetails = function(req, res) {
 	var condition = "";
+	var attr 	= "";
 	var adjustid=req.param("adjustid");
 	var companyid=req.param("companyid");
 	var productid=req.param("productid");
@@ -63,24 +66,26 @@ exports.getStockAdjustmentsDetails = function(req, res) {
 			condition=condition+" and adjust_symbol='"+adjustsymbol+"'";
 		}
 	}
-	
-	stockadjustments.findAll({where : [condition]}).then(function(result) {
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['adjust_id','product_id','company_id','adjust_symbol'];
+	}
+	stockadjustments.findAll({where : [condition],attributes: attr,order: [['actioned_dt', 'DESC']]}).then(function(result) {
 		if(result.length === 0){
-			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			log.info(fileName+'.getStockAdjustmentsDetails - '+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(fileName+'.getStockAdjustmentsDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(err);
+		log.error(fileName+'.getStockAdjustmentsDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -109,26 +114,28 @@ exports.saveStockAdjustments = function(req, res) {
 		
 	}).then(function(data){
 		if(data){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(fileName+'.saveStockAdjustments - '+appMsg.SAVEMESSAGE);
+			response.message = appMsg.SAVEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
 			res.send(response);
-			if(data.adjust_symbol==='+'){
-			stockLedgerService.insertStockLedger(data.product_id,data.company_id,data.store_id,data.batch_no,data.adjust_qty,null,data.uom_id,null,data.actioned_dt,data.adjust_reason);}else{
-				stockLedgerService.insertStockLedger(data.product_id,data.company_id,data.store_id,data.batch_no,null,data.adjust_qty,data.uom_id,null,data.actioned_dt,data.adjust_reason)
-			}
+			
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(fileName+'.saveStockAdjustments - '+appMsg.UPDATEMESSAGE);
+			response.message = appMsg.UPDATEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
 			res.send(response);
+			
+			if(data.adjust_symbol==='+'){
+				stockLedgerService.insertStockLedger(data.product_id,data.company_id,data.store_id,data.batch_no,data.adjust_qty,null,data.uom_id,null,data.actioned_dt,"Stock Adjustment - "+data.adjust_reason);}else{
+					stockLedgerService.insertStockLedger(data.product_id,data.company_id,data.store_id,data.batch_no,null,data.adjust_qty,data.uom_id,null,data.actioned_dt,"Stock Adjustment - "+data.adjust_reason)
+				}
 		}
 		
 	}).error(function(err){
-		log.error(err);
+		log.error(fileName+'.saveStockAdjustments - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;

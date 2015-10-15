@@ -17,7 +17,8 @@
 var ccy = require('../models/Currency.js');
 var appMsg		= require('../config/Message.js');
 var log = require('../config/logger').logger;
-
+var path = require('path');
+var fileName=path.basename(__filename);
 var response 	= {
 						status	: Boolean,
 						message : String,
@@ -27,6 +28,7 @@ var response 	= {
 // To Get Bank full LIST
 exports.getCcyDetails = function(req, res) {
 	var conditionQuery = "";
+	var attr 	= "";
 	var companyId=req.param("companyid");
 	var ccyName=req.param("ccyname");
 	var status=req.param("status");
@@ -66,18 +68,21 @@ exports.getCcyDetails = function(req, res) {
 		}
 		
 	}
-	ccy.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]})
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['ccy_id','ccy_code','ccy_name'];
+	}
+	ccy.findAll({where : [conditionQuery],attributes: attr,order: [['last_updated_dt', 'DESC']]})
 	.then(function(result){
 		if(result.length === 0){
 			
-			log.info('No data found.');
+			log.info(fileName+'.getCcyDetails - No data found.');
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data 	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(fileName+'.getCcyDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
@@ -85,7 +90,7 @@ exports.getCcyDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(err);
+		log.error(fileName+'.getCcyDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -106,20 +111,20 @@ exports.saveCcyDetails = function(req,res){
 				last_updated_by:req.param("updatedby")} ).then(function(err){
 
 					if(err){
-						log.info('Saved Successfully.');
-						response.message = 'Saved Successfully.';
+						log.info(fileName+'.saveCcyDetails - '+appMsg.SAVEMESSAGE);
+						response.message = appMsg.SAVEMESSAGE;
 						response.status  = true;
 						res.send(response);
 					}
 					else{
-						log.info('Updated Successfully.');
-						response.message = 'Updated Successfully.';
+						log.info(fileName+'.saveCcyDetails - '+appMsg.UPDATEMESSAGE);
+						response.message = appMsg.UPDATEMESSAGE;
 						response.status  = true;
 						res.send(response);
 					}
 					
 				}).error(function(err){
-					log.error(err);
+					log.error(fileName+'.saveCcyDetails - '+err);
 					response.status  	= false;
 					response.message 	= 'Internal error.';
 					response.data  		= err;

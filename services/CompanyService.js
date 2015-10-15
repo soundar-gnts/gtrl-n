@@ -17,7 +17,8 @@
 var company = require('../models/Company.js');
 var appMsg		= require('../config/Message.js');
 var log = require('../config/logger').logger;
-
+var path = require('path');
+var fileName=path.basename(__filename);
 var response 	= {
 						status	: Boolean,
 						message : String,
@@ -27,6 +28,7 @@ var response 	= {
 
 // To Company full LIST
 exports.getcompanyDetails = function(req, res) {
+	var attr 	= "";
 	var conditionQuery = "";
 	var companyId=req.param("companyid");
 	var conpanyName=req.param("companyname");
@@ -76,18 +78,21 @@ exports.getcompanyDetails = function(req, res) {
 			conditionQuery=conditionQuery+" and city_id="+cityId;
 		}	
 		}
-	company.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]})
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['company_id','email_id'];
+	}
+	company.findAll({where : [conditionQuery],attributes: attr,order: [['last_updated_dt', 'DESC']]})
 	.then(function(result){
 		if(result.length === 0){
 			
-			log.info('No data found.');
+			log.info(fileName+'.getcompanyDetails - No data found.');
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data 	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(fileName+'.getcompanyDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
@@ -95,7 +100,7 @@ exports.getcompanyDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(err);
+		log.error(fileName+'.getcompanyDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -126,20 +131,20 @@ exports.saveCompanyDetails = function(req,res){
 	}).then(function(err){
 
 		if(err){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(fileName+'.saveCompanyDetails - '+appMsg.SAVEMESSAGE);
+			response.message = appMsg.SAVEMESSAGE;
 			response.status  = true;
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(fileName+'.saveCompanyDetails - '+appMsg.UPDATEMESSAGE);
+			response.message = appMsg.UPDATEMESSAGE;
 			response.status  = true;
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
+		log.error(fileName+'.saveCompanyDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;

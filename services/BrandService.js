@@ -17,7 +17,8 @@
 var brand = require('../models/Brand.js');
 var appMsg		= require('../config/Message.js');
 var log = require('../config/logger').logger;
-
+var path = require('path');
+var fileName=path.basename(__filename);
 var response 	= {
 						status	: Boolean,
 						message : String,
@@ -25,6 +26,7 @@ var response 	= {
 					};
 // To Brand full LIST
 exports.getBrandDetails = function(req, res) {
+	var attr 	= "";
 	var conditionQuery = "";
 	var companyId=req.param("companyid");
 	var brandName=req.param("brandname");
@@ -56,18 +58,21 @@ exports.getBrandDetails = function(req, res) {
 		}
 		
 	}
-	brand.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]})
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['brand_id','company_id','brand_name'];
+	}
+	brand.findAll({where : [conditionQuery],attributes: attr,order: [['last_updated_dt', 'DESC']]})
 	.then(function(result){
 		if(result.length === 0){
 			
-			log.info('No data found.');
+			log.info(fileName+'.getBrandDetails - No data found.');
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data 	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(fileName+'.getBrandDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
@@ -75,7 +80,7 @@ exports.getBrandDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(err);
+		log.error(fileName+'.getBrandDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -95,20 +100,20 @@ exports.saveBrandDetails = function(req,res){
 		last_updated_by:req.param("updatedby"),
 	}).then(function(err){
 		if(err){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(fileName+'.saveBrandDetails - '+appMsg.SAVEMESSAGE);
+			response.message = appMsg.SAVEMESSAGE;
 			response.status  = true;
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(fileName+'.saveBrandDetails - '+appMsg.UPDATEMESSAGE);
+			response.message = appMsg.UPDATEMESSAGE;
 			response.status  = true;
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
+		log.error(fileName+'.saveBrandDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;

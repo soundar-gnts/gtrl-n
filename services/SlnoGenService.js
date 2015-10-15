@@ -21,7 +21,8 @@ var response = {
 		data	: String
 };
 var appmsg			= require('../config/Message.js');
-
+var path = require('path');
+var fileName=path.basename(__filename);
 // To get full Serial No Generation List
 exports.getSlnoGenDetails = function(req, res) {
 	var attr 	= "";
@@ -31,6 +32,7 @@ exports.getSlnoGenDetails = function(req, res) {
 	var storeid=req.param("storeid");
 	var refkey=req.param("refkey");
 	var status=req.param("status");
+	var autogenyn=req.param("autogenyn");
 	if(slnoid!=null){
 		condition ="slno_id="+slnoid;
 	}
@@ -70,38 +72,39 @@ exports.getSlnoGenDetails = function(req, res) {
 	slnogen.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
 			
-			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			log.info(fileName+'.getSlnoGenDetails - '+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(fileName+'.getSlnoGenDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(err);
+		log.error(fileName+'.getSlnoGenDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
 		res.send(response);
 	});
+
 }
 
 //To Update curr seqno and last seqno
 
-exports.updateSequenceNo = function(req, res) {
+exports.updateSequenceNo = function(companyid,storeid,refkey,autogenyn,status,lastupdateddt,lastupdatedby) {
 	
 var values={
-		company_id 			: req.param("companyid"),
-		store_id 			: req.param("storeid"),
-		ref_key 			: req.param("refkey"),
-		autogen_yn 			: req.param("autogenyn"),
-		status 				: req.param("status")
+		company_id 			: companyid,
+		store_id 			: storeid,
+		ref_key 			: refkey,
+		autogen_yn 			: autogenyn,
+		status 				: status
 };
 	slnogen.findOne({where : [values]}).then(function(result) {
 		if(result){
@@ -109,26 +112,43 @@ var values={
 				slno_id				: result.slno_id,
 				curr_seqno 			: result.curr_seqno + 1 ,
 				last_seqno 			: result.curr_seqno,
-				last_updated_dt 	: req.param("lastupdateddt"),
-				last_updated_by 	: req.param("lastupdatedby")
+				last_updated_dt 	: lastupdateddt,
+				last_updated_by 	: lastupdatedby
 			}).then(function(data){
-					log.info('Updated Successfully.');
-					response.message = 'Updated Successfully.';
+					log.info(fileName+'.updateSequenceNo - '+appMsg.UPDATEMESSAGE);
+					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
 					res.send(response);
 			});
 				} else{
-					log.info(appmsg.LISTNOTFOUNDMESSAGE);
+					log.info(fileName+'.updateSequenceNo - '+appmsg.LISTNOTFOUNDMESSAGE);
 					response.message = appmsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
 					response.data	 = "";
 					res.send(response);
 				}
 	}).error(function(err){
-		log.error(err);
+		log.error(fileName+'.updateSequenceNo - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
 		res.send(response);
 	});
+}
+
+exports.getSlnoValue=function(companyid,storeid,refkey,autogenyn,status){
+	var attr 	= "";
+	var sno="";
+	attr=['prefix_key','prefix_cncat','suffix_key','suffix_cncat','curr_seqno'];
+	var values={
+			company_id 			: companyid,
+			store_id 			: storeid,
+			ref_key 			: refkey,
+			autogen_yn 			: autogenyn,
+			status 				: status
+	}
+	slnogen.findOne({where : [values],attributes: attr}).then(function(result) {
+		sno=result.prefix_key+""+result.prefix_cncat+""+result.suffix_key+""+result.suffix_cncat+""+result.curr_seqno;
+	});
+	return sno;
 }

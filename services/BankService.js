@@ -18,6 +18,8 @@ var bank = require('../models/Bank.js');
 var bankBranch = require('../models/BankBranch.js');
 var appMsg		= require('../config/Message.js');
 var log = require('../config/logger').logger;
+var path = require('path');
+var fileName=path.basename(__filename);
 var response = {
 		status	: Boolean,
 		message : String,
@@ -27,6 +29,7 @@ var response = {
 // To Get Bank full LIST
 exports.getBankDetails = function(req, res) {
 	var conditionQuery = "";
+	var attr 	= "";
 	var companyId=req.param("companyid");
 	var bankName=req.param("bankname");
 	var status=req.param("status");
@@ -66,18 +69,21 @@ exports.getBankDetails = function(req, res) {
 		}
 		
 	}
-	bank.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]})
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['bank_id','bank_code','bank_name'];
+	}
+	bank.findAll({where : [conditionQuery],attributes: attr,order: [['last_updated_dt', 'DESC']]})
 	.then(function(result){
 		if(result.length === 0){
 			
-			log.info('No data found.');
+			log.info(fileName+'.getBankDetails -  No data found.');
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data 	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(fileName+'.getBankDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
@@ -85,7 +91,7 @@ exports.getBankDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(err);
+		log.error(fileName+'.getBankDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -96,6 +102,7 @@ exports.getBankDetails = function(req, res) {
 //To Get Bank Branchfull LIST
 exports.getBankBranchDetails = function(req, res) {
 	var conditionQuery = "";
+	var attr 	= "";
 	var companyId=req.param("companyid");
 	var branchName=req.param("branchname");
 	var status=req.param("status");
@@ -180,19 +187,21 @@ exports.getBankBranchDetails = function(req, res) {
 		}	
 		}
 	
-	
-	bankBranch.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]})
+	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		attr=['branch_id','branch_code','branch_name'];
+	}
+	bankBranch.findAll({where : [conditionQuery],attributes: attr,order: [['last_updated_dt', 'DESC']]})
 	.then(function(result){
 		if(result.length === 0){
 			
-			log.info('No data found.');
+			log.info(fileName+'.getBankBranchDetails - No data found.');
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data 	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(fileName+'.getBankBranchDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
@@ -200,7 +209,7 @@ exports.getBankBranchDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(err);
+		log.error(fileName+'.getBankBranchDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -218,8 +227,7 @@ var val={		bank_id      :req.param("bankid"),
 				status 	     :req.param("status"),
 				last_updated_dt:req.param("updateddate"),
 				last_updated_by:req.param("updatedby")};
-	bank.findOne({where : [{bank_id    :req.param("bankid")}]}).then(function(result) {
-		if(!result){
+		if(req.param("bankid")===null){
 	 bank.create(val).then(function(p){
 			for(var i=0;i<req.param('bankbranchlist').length;i++){
 	bankBranch.upsert({
@@ -244,14 +252,14 @@ var val={		bank_id      :req.param("bankid"),
 		res.send(err);
 	});
 	if(p){
-		log.info('Saved Successfully.');
-		response.message = 'Saved Successfully.';
+		log.info(fileName+'.saveBankDetails - '+appMsg.SAVEMESSAGE);
+		response.message = appMsg.SAVEMESSAGE;
 		response.status  = true;
 		res.send(response);
 	}
 			}
 	 }).error(function(err){
-			log.error(err);
+			log.error(fileName+'.saveBankDetails - '+err);
 			response.status  	= false;
 			response.message 	= 'Internal error.';
 			response.data  		= err;
@@ -282,19 +290,19 @@ var val={		bank_id      :req.param("bankid"),
 			res.send(err);
 		});
 		if(!p){
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(fileName+'.saveBankDetails - '+appMsg.UPDATEMESSAGE);
+			response.message = appMsg.UPDATEMESSAGE;
 			response.status  = true;
 			res.send(response);
 		}
 				}
 		 }).error(function(err){
-				log.error(err);
+				log.error(fileName+'.saveBankDetails - '+err);
 				response.status  	= false;
 				response.message 	= 'Internal error.';
 				response.data  		= err;
 				res.send(response);
-			});	 }});
+			});	 }
 			
 }
 
