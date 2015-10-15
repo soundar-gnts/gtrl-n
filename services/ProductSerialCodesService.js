@@ -167,19 +167,48 @@ exports.insertProductSerialCodes = function(companyid,grnid,productid,storeid,ba
 
 //To Update Product Serial Status.
 
-exports.updateProductSerialCodes = function(companyid,productid,storeid,batchid) {
-	productserialcodes.upsert({
-		company_id 				: companyid,	
-		product_id 				: productid,
-		store_id 				: storeid,
-		batch_id 				: batchid,
-		status 					: 'Returned',
-		print_status 			: 'Not Printed'
+exports.updateProductSerialCodes = function(companyid,grnid,productid,storeid,batchid) {
+	
+		var serialcode = {
+							company_id 				: companyid,			
+							product_id 				: productid,
+							store_id 				: storeid,
+							batch_id 				: batchid,
+						 }
+		productserialcodes.update({status : 'Returned',print_status : 'Not Printed'},{where : [serialcode]})
+		.error(function(err){
+			
+	});	
+	
+}
+exports.insertStockLedger=function(productid,companyid,storeid,batchno,inqty,outqty,uomid,refno,refdate,refremarks){
+	
+	var serialcode = {
+			company_id 				: companyid,			
+			product_id 				: productid,
+			store_id 				: storeid,
+			batch_id 				: batchid,
+		 }
+	
+	productserialcodes.findAll({where:[serialcode]})
+	.then(function(result){		
+		if(result.length === 0){
+				productserialcodes.update({status : 'Returned',print_status : 'Not Printed'},{where : [serialcode]})
+
+			}
+			else{
+				
+				log.info('No data found.');
+				response.message = 'No data found.';
+				response.status  = false;
+				response.data	 = "";
+				res.send(response);
+			
+			}
 		
-	}).then(function(data){
-		
-	}).error(function(err){
 		
 	});
-		
+	
+	
+	
 }

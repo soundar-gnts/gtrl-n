@@ -15,8 +15,8 @@
  */
 
 var stockLedgerService  = require('../services/StockLedgerService.js');
-var accountRecevable 	= require('../models/AccountReceivables.js');
-var productSerialCodes	= require('../models/ProductSerialCodes.js');
+var accountReceivable 	= require('../services/AccountReceivableService.js');
+var productSerialCodes	= require('../services/ProductSerialCodesService.js');
 var purchaseReturnHdr 	= require('../models/PurchaseReturnHdr.js');
 var purchaseReturnDtl 	= require('../models/PurchaseReturnDtl.js');
 var log 				= require('../config/logger').logger;
@@ -26,6 +26,7 @@ var response 			= {
 							message : String,
 							data	: String
 							};
+var productSerialCodesService = require('../services/ProductSerialCodesService.js');
 
 // To get Purchase Return Header List 
 		
@@ -297,12 +298,12 @@ var response 			= {
  			
  			for(var i = 0; i < returnDetails.length; i++){
  				
- 				if(returnDetails.length>0){
+ 				/*if(returnDetails.length>0){
  					var condition = "return_id='"+req.param('returnid')+"'"; 					
  					deletePurchaseReturnDtl(condition);
- 				}
- 				
+ 				} */				
  				saveOrUpdateReturn(returnDetails[i]);
+ 				
  				if(req.param("status")!=null&&req.param('status')=='Approved')
  		 		{
  		 		stockLedgerService.insertStockLedger(
@@ -310,21 +311,20 @@ var response 			= {
  		 				0,req.param('returnlist')[i].returnqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
  		 				,"Purchase Return - "+req.param("returnreason"));
  		 		
- 		 		productSerialCodesService.updateProductSerialCodes(req.param("companyid"),p.purchase_id,req.param('returnlist')[i].productid,
+ 		 		productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('returnid'),req.param('returnlist')[i].productid,
  						req.param("storeid"),req.param("batchno"));
  		 		}
  			}
- 			if(req.param("status")!=null&&req.param("status")=='Approved'){			
- 		
- 				
- 				accountRecevable.insertAccountRecevable(req.param("companyid"),req.param("storeid"),new Date(),null,req.param("invoiceno"),
- 						req.param("invoicedate"),null,req.param("invoiceamount"),req.param("actionremarks"),p.supplier_id,req.param("lastupdateddt")
- 						,req.param("lastupdatedby"));
- 				
- 				}
+ 			if(req.param("status")!=null&&req.param("status")=='Approved'){		 		
+ 			console.log("sadasd",returnhdr.supplier_id);
+ 			accountReceivable.insertAccountReceivable(req.param("supplierid"),req.param("companyid"),req.param("storeid"),new Date(),null,req.param("retrunrefno"),
+ 						req.param("returndate"),req.param("amountpayble"),req.param("cancelremark"),req.param("lastupdateddt")
+ 						,req.param("lastupdatedby"));	
+ 			
+ 			}
  			log.info('Updated Successfully.');
  			response.message 	= 'Updated Successfully.';
- 			response.data  		= req.param('poid');
+ 			response.data  		= req.param('returnid');
  			response.status  	= true;
  			res.send(response);
  			
@@ -336,36 +336,17 @@ var response 			= {
  			response.data  		= err;
  			res.send(response);
  		});
- 	} else{
- 	
- 		purchaseReturnHdr.create(returnhdr)
- 		.then(function(data){
+ 	} else { 	
+ 		purchaseReturnHdr.create(returnhdr).then(function(data){
  			
  			for(var i = 0; i < detailsLength; i++){
  				
  				returnDetails[i].return_id = data.return_id; 			
 
  				saveOrUpdateReturn(returnDetails[i]);
- 				if(req.param("status")!=null&&req.param('status')=='Approved')
- 		 		{
- 					
- 		 		stockLedgerService.insertStockLedger(
- 		 				req.param('returnlist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
- 		 				0,req.param('returnlist')[i].invoiceqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
- 		 				,req.param("cancelremark"));
- 		 		
- 				productSerialCodesService.updateProductSerialCodes(req.param("companyid"),p.purchase_id,req.param('returnlist')[i].productid,
- 						req.param("storeid"),req.param("batchno"));
- 		 		}
- 			}
- 			
- 			if(req.param("status")!=null&&req.param("status")=='Approved'){
- 			
- 				accountRecevable.insertAccountRecevable(req.param("companyid"),req.param("storeid"),new Date(),null,req.param("invoiceno"),
- 						req.param("invoicedate"),null,req.param("invoiceamount"),req.param("actionremarks"),p.supplier_id,req.param("lastupdateddt")
- 						,req.param("lastupdatedby"));
  				
- 				}
+ 			}
+ 		
  			log.info('Saved successfully.');
  			response.message	= 'Saved successfully.';
  			response.data  		= data.return_id;

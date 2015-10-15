@@ -13,6 +13,7 @@
  * 
  * 
  */
+var accounts 			= require('../models/Accounts.js');
 var accountreceivables  = require('../models/AccountReceivables.js');
 var log 				= require('../config/logger').logger;
 var appMsg				= require('../config/Message.js');
@@ -33,6 +34,7 @@ exports.getAccountReceivableDetails = function(req, res) {
 	var storeid			= req.param("storeid");
 	var invoiceno		= req.param("invoiceno");
 	var status			= req.param("status");
+	
 	
 	if(accrcbleid!=null){
 		condition ="accrcble_id="+accrcbleid;
@@ -148,8 +150,10 @@ exports.saveAccountReceivables = function(req, res) {
 		
 }
 
-exports.insertAccountRecevable = function(companyid,storeid,entrydate,accountid,invoiceno,invoicedate,invoiceamount,
-		remarks,supplierid,lastupdateddt,lastupdatedby) {
+exports.insertAccountReceivable = function(supplierid,companyid,storeid,entrydate,accountid,invoiceno,
+		invoicedate,invoiceamount,remarks,lastupdateddt,lastupdatedby) {
+	console.log("asda");
+	console.log(supplierid);
 	var accreceive={
 		company_id 				: companyid,
 		store_id 				: storeid,
@@ -171,54 +175,18 @@ exports.insertAccountRecevable = function(companyid,storeid,entrydate,accountid,
 	
 	accounts.findOne({where:[{supplier_id:supplierid,status:'Active'}]})
 	.then(function(result){
-		console.log("result--->"+result);
+	
 		if(result!=null){
 			accreceive.account_id=result.account_id;
-			accountpayables.create(accreceive).then(function(data){
+			accountreceivables.create(accreceive).then(function(data){
 			}).error(function(err){
 				log.error(err);
 			});
 				
-		}else{
-
-			accounts.create({
-				company_id 					: companyid,
-				store_id 					: storeid,
-				account_group 				: 'Supplier',
-				account_name 				: 'Supplier'+'-'+storeid+'-'+companyid,
-				account_dt 					: entrydate,
-				finance_year 				: '',
-				generate_voucher_yn 		: '',
-				supplier_id 				: supplierid,
-				od_amoun 					: 0,
-				open_balance 				: 0,
-				parked_amount 				: 0,
-				current_balance 			: 0,
-				aproveauth 					: '',
-				selfapprv_yn 				: 'N',
-				remarks 					: 'Nill',
-				status 						: 'Active',
-				last_updated_dt 			: lastupdateddt,
-				last_updated_by 			: lastupdateddt
-				
-			}).then(function(data){
-				accreceive.account_id=data.account_id;
-				accountpayables.create(accreceive).then(function(data){
-				}).error(function(err){
-					log.error(err);
-					console.log("Error--1->"+err);
-				});
-					
-			}).error(function(err){
-				console.log("Error--2->"+err);
-			});
-				
+		}else{     
 
 		}
 		
-	});
-	
-	
-	
+	});	
 	
 }
