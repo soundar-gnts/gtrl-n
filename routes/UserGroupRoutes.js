@@ -15,11 +15,12 @@
  * 
  */
 
-var paymentTypeService = require('../services/UserGroupService.js');
+var userGroupService = require('../services/UserGroupService.js');
 
 module.exports = function(app, server){
 	
-	app.post('/saveusergroupdetails', 	paymentTypeService.saveOrUpdateUserGroup);
-	app.post('/getusergroupdetails', 	paymentTypeService.getUserGroup);
+	app.post('/saveusergroupdetails', 		userGroupService.saveOrUpdateUserGroup);
+	app.post('/getusergroupdetails', 		userGroupService.getUserGroup);
+	app.post('/getuseraccesstreedetails', 	userGroupService.getUserAccessTree);
 	
 }

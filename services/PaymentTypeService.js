@@ -59,11 +59,17 @@ exports.saveOrUpdatePymentType = function(req, res){
 //get all Payment type
 exports.getPymentType = function(req, res){
 	
-	var condition 		= "";
-	var paymentTypeId 	= req.param('pymttypeid');
-	var companyId 		= req.param('companyid');
-	var status			= req.param('status');
-	var paymentName 	= req.param('pymttypename');
+	
+	var condition 			= "";
+	var paymentTypeId 		= req.param('pymttypeid');
+	var companyId 			= req.param('companyid');
+	var status				= req.param('status');
+	var paymentName 		= req.param('pymttypename');
+	var selectedAttributes	= "";
+	
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['pymt_type_id','pymt_type_name']
+	}
 	
 	if(companyId != "")
 		condition = "company_id="+companyId;
@@ -89,7 +95,11 @@ exports.getPymentType = function(req, res){
 		else
 			condition = condition+" and pymt_type_name='"+paymentName+"'";
 	
-	paymentType.findAll({where : [condition]})
+	paymentType.findAll({
+		where		: [condition],
+		attributes	: selectedAttributes
+	
+	})
 		.then(function(type){
 			if(type.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);

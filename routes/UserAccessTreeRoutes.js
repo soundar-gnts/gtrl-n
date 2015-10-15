@@ -20,6 +20,6 @@ var userAccessTreeService = require('../services/UserAccessTreeService.js');
 module.exports = function(app, server){
 	
 	app.post('/saveuseraccesstreedetails', userAccessTreeService.saveOrUpdateUserAccessTree);
-	app.post('/getuseraccesstreedetails', 	userAccessTreeService.getUserAccessTree);
+	//app.post('/getuseraccesstreedetails', 	userAccessTreeService.getUserAccessTree);
 	
 }

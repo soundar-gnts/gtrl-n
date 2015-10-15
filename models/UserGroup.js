@@ -14,8 +14,10 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
+var model 			= require('../config/sequelize.js');
+var dataTypes 		= require('sequelize');
+var userAccessTree	= require('../models/UserAccessTree.js');
+
 
 var userGroup = model.define('m_user_group', {
 
@@ -36,4 +38,5 @@ var userGroup = model.define('m_user_group', {
 	tableName : 'm_user_group'
 });
 
+userGroup.hasMany(userAccessTree, {foreignKey: 'group_id'});
 module.exports = userGroup;

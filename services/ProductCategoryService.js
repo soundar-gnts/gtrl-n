@@ -15,12 +15,13 @@
  * 
  */
 
-var log = require('../config/logger').logger;
-var appMsg			= require('../config/Message.js');
-var fs = require("fs");
-var imageUploadService = require('../services/imageUploadService.js')
-var config = require('../config/config.js');
-var category = require('../models/ProductCategory.js');
+var log					= require('../config/logger').logger;
+var common				= require('../services/CommonService.js');
+var appMsg				= require('../config/Message.js');
+var config 				= require('../config/config.js');
+var fs 					= require("fs");
+var imageUploadService 	= require('../services/imageUploadService.js')
+var category 			= require('../models/ProductCategory.js');
 
 
 //insert product categoryp
@@ -31,6 +32,10 @@ exports.saveOrUpdateproductCategory = function(req, res){
 			message : String,
 			data	: String
 	}
+	
+	var randomNumber = common.generateOTP(6);
+	var file1 = config.CATEGORYIMAGEFOLDER + "/"+randomNumber+'.'+req.files.img.type.split('image/')[1];
+	var file2 = config.CATEGORYIMAGEFOLDER + "/"+'bg-'+randomNumber+'.'+req.files.bgimg.type.split('image/')[1];
 	
 	var productCategory = {
 			
@@ -44,84 +49,62 @@ exports.saveOrUpdateproductCategory = function(req, res){
 			last_updated_dt	: req.param("lastupdateddt"),
 			last_updated_by	: req.param('lastupdatedby'),
 			sales_count		: req.param('salescount'),
-			refer_parid		: req.param('referparid')
+			refer_parid		: req.param('referparid'),
+			prod_cat_image	: config.SERVER+'/'+file1,
+			prod_cat_bgimage: config.SERVER+'/'+file2
 			
 	}
-	if(req.param('prodcatid') != null){
 		
-		var file1 = config.CATEGORYIMAGEFOLDER + "/"+req.param('prodcatid')+'.'+req.files.img.type.split('image/')[1];
-		var file2 = config.CATEGORYIMAGEFOLDER + "/"+'bg'+req.param('prodcatid')+'.'+req.files.bgimg.type.split('image/')[1];
-		
-		imageUploadService.imageUpload(req.files.img.path, file1);
-		imageUploadService.imageUpload(req.files.bgimg.path, file2);
-		
-		productCategory.prod_cat_image	= config.SERVER+'/'+file1;
-		productCategory.prod_cat_bgimage= config.SERVER+'/'+file2;
-				
-		category.upsert(productCategory)
-		.then(function(data){
-			log.info('Product category editted successfully.');
-			response.message= 'Product category editted successfully.';
-			response.data  	= req.param('prodcatid');
+	imageUploadService.imageUpload(req.files.img.path, file1);
+	imageUploadService.imageUpload(req.files.bgimg.path, file2);
+			
+	category.upsert(productCategory)
+	.then(function(data){
+		if(data){
+			log.info('Product category saved successfully.');
+			response.message= 'Product category saved successfully.';
 			response.status = true;
 			res.send(response);
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
+		} else{
+			log.info('Product category editted successfully.');
+			response.message= 'Product category editted successfully.';
+			response.status = true;
 			res.send(response);
-		});
-	} else{
-		category.create(productCategory)
-		.then(function(catgry){
-			
-			var file1 = config.CATEGORYIMAGEFOLDER + "/"+catgry.prod_cat_id+'.'+req.files.img.type.split('image/')[1];
-			var file2 = config.CATEGORYIMAGEFOLDER + "/"+'bg'+catgry.prod_cat_id+'.'+req.files.bgimg.type.split('image/')[1];
-			
-			imageUploadService.imageUpload(req.files.img.path, file1);
-			imageUploadService.imageUpload(req.files.bgimg.path, file2);
-			
-			catgry.prod_cat_image	= config.SERVER+'/'+file1;
-			catgry.prod_cat_bgimage = config.SERVER+'/'+file2;
-			
-			catgry.save().then(function(a){
-				log.info('Product category saved successfully.');
-				response.message= 'Product category saved successfully.';
-				response.data  	= catgry.prod_cat_id;
-				response.status = true;
-				res.send(response);
-			})
-			.error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= 'Internal error.';
-				response.data  		= err;
-				res.send(response);
-			});
-			
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
-			res.send(response);
-		});
-	}
+		}
+		
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
+	
 }
 
 //get all product category
 exports.getProductCategory = function(req, res){
 
-	var condition 		= "";
-	var prodcatid 		= req.param('prodcatid');
-	var companyId 		= req.param('companyid');
-	var status			= req.param('status');
-	var productCatName 	= req.param('prodcatname');
-	var parantId		= req.param('parentid');
-	var levelNo			= req.param('levelno');
+
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	var selectedAttributes	= "";
+	var condition 			= "";
+	var prodcatid 			= req.param('prodcatid');
+	var companyId 			= req.param('companyid');
+	var status				= req.param('status');
+	var productCatName 		= req.param('prodcatname');
+	var parantId			= req.param('parentid');
+	var levelNo				= req.param('levelno');
+	
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['prod_cat_id','prod_cat_name','level_no']
+	}
 	
 	if(companyId != null)
 		condition = "company_id="+companyId;
@@ -161,7 +144,11 @@ exports.getProductCategory = function(req, res){
 		else
 			condition = condition+" and level_no='"+levelNo+"'";
 	
-	category.findAll({where : [condition]})
+	category.findAll({
+		where		: [condition],
+		attributes	: selectedAttributes
+	
+	})
 		.then(function(categories){
 			if(categories.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);

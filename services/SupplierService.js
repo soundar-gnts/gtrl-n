@@ -80,11 +80,16 @@ exports.saveOrUpdateSupplierDetails = function(req, res){
 //get all Supplier
 exports.getSupplier = function(req, res){
 
-	var condition 	= "";
-	var supId 		= req.param('supplierid');
-	var companyId 	= req.param('companyid');
-	var status		= req.param('status');
-	var supName	= req.param('suppliername');
+	var condition 			= "";
+	var supId 				= req.param('supplierid');
+	var companyId 			= req.param('companyid');
+	var status				= req.param('status');
+	var supName				= req.param('suppliername');
+	var selectedAttributes	= "";
+	
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['supplier_id','supplier_code','supplier_name']
+	}
 	
 	if(companyId != null)
 		condition = "company_id="+companyId;
@@ -110,7 +115,11 @@ exports.getSupplier = function(req, res){
 		else
 			condition = condition+" and supplier_name='"+supName+"'";
 	
-	supplier.findAll({where : [condition]})
+	supplier.findAll({
+		where		: [condition],
+		attributes	: selectedAttributes
+	
+	})
 		.then(function(suppliers){
 			if(suppliers.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);

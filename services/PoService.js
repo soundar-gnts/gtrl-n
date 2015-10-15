@@ -29,6 +29,12 @@ exports.saveOrUpdatePo = function(req, res){
 			message : String,
 			data	: String
 	}
+	
+	var purchaseDetails			= [];
+	var detailsLength			= 0;
+	var purchaseDeleteDetailsIds= [];
+	var purchaseDelDetailsLength= 0;
+	
 	var purchaseOrder = {
 			po_id			: req.param('poid'),
 			company_id		: req.param('companyid'),
@@ -47,14 +53,14 @@ exports.saveOrUpdatePo = function(req, res){
 			last_updated_dt	: req.param('lastupdateddt'),
 			last_updated_by	: req.param('lastupdatedby')
 	}
-	var purchaseDetails = [];
-	var detailsLength = 0;
+	
 	if(req.param('purchasedetails') != null)
 		detailsLength = req.param('purchasedetails').length;
 	
 	for(var i = 0; i < detailsLength; i++){
 		var purchaseDetail = {
 				po_id			: req.param('poid'),
+				po_dtlid		: req.param('purchasedetails')[i].podtlid,
 				manufg_id		: req.param('purchasedetails')[i].manufgid,
 				prod_id			: req.param('purchasedetails')[i].prodid,
 				po_qty			: req.param('purchasedetails')[i].poqty,
@@ -72,19 +78,32 @@ exports.saveOrUpdatePo = function(req, res){
 		purchaseDetails.push(purchaseDetail);
 	}
 	
+	if(req.param('purchasedeletedetails') != null)
+		purchaseDelDetailsLength = req.param('purchasedeletedetails').length;
+	
+	for(var i = 0; i < purchaseDelDetailsLength; i++){
+		var purchaseDeleteDetailsId = {
+			po_dtlid	: req.param('purchasedeletedetails')[i].podtlid,
+		}
+		purchaseDeleteDetailsIds.push(purchaseDeleteDetailsId);
+	}
+	
 	if(req.param('poid')!=null){
 	
 		poHeader.upsert(purchaseOrder)
 		.then(function(data){
-			log.info(purchaseDetails.length);
-			if(purchaseDetails.length>0){
-				var condition = "po_id='"+req.param('poid')+"'";
-				deletePoDetailsFn(condition);
-			}
+
+			log.info(purchaseDeleteDetailsIds.length+' Purchase detail is going to remove.');
+			log.info(purchaseDetails.length+' Purchase detail is going to update');
 			
-			for(var i = 0; i < purchaseDetails.length; i++){
+			//delete sales details from purchase order details table.
+			for(var i = 0; i < purchaseDeleteDetailsIds.length; i++)
+				deletePoDetailsFn("po_dtlid='"+purchaseDeleteDetailsIds[i].po_dtlid+"'");
+			
+			//update/save new purchase details into purchase order details table.
+			for(var i = 0; i < purchaseDetails.length; i++)
 				saveOrUpdatePoDetailsFn(purchaseDetails[i]);
-			}
+			
 			log.info('Purchase order editted successfully.');
 			response.message 	= 'Purchase order editted successfully.';
 			response.data  		= req.param('poid');
@@ -160,12 +179,12 @@ exports.getPo = function(req, res){
 	var storeId				= req.param('storeid');
 	var supplierId			= req.param('supplierid');
 	
-	if(req.param('fetchAssociation')=='yes'){
+	if(req.param('fetchassociation')=='yes'){
 		fetchAssociation = [{model : poDetail}]
 	}
 	
-	if(req.param('isfulllist')=='p'){
-		selectedAttributes = ['po_id']
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['po_id','po_no']
 	}
 	
 	if(companyId != null)
@@ -200,9 +219,9 @@ exports.getPo = function(req, res){
 			condition = condition+" and supplier_id='"+supplierId+"'";
 	
 	poHeader.findAll({
-		where				: [condition],
-		include				: fetchAssociation,
-		attributes			: selectedAttributes
+		where		: [condition],
+		include		: fetchAssociation,
+		attributes	: selectedAttributes
 	})
 		.then(function(poDtls){
 			if(poDtls.length == 0){
@@ -227,7 +246,7 @@ exports.getPo = function(req, res){
 		});
 }
 
-//Change Purchase order status.
+// Cancel, Approve and Reject service (po_hdr)
 exports.changePoStatus = function(req, res){
 	
 	var response = {
@@ -309,7 +328,7 @@ exports.getPoDetails = function(req, res){
 	var poId 				= req.param('poid');
 	var status				= req.param('status');
 	
-	if(req.param('selectedAttributes')=='yes')
+	if(req.param('isfulllist')=='yes')
 		selectedAttributes=['po_id','po_dtlid']
 	
 	if(poId != null)

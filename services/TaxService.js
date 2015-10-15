@@ -69,12 +69,17 @@ exports.saveOrUpdateTax = function(req, res){
 //get all Tax
 exports.getTax = function(req, res){
 
-	var condition 	= "";
-	var taxId 	= req.param('taxid');
-	var companyId 	= req.param('companyid');
-	var status		= req.param('status');
-	var taxName 	= req.param('taxname');
-	var stateId 		= req.param('stateid');
+	var condition 			= "";
+	var taxId 				= req.param('taxid');
+	var companyId 			= req.param('companyid');
+	var status				= req.param('status');
+	var taxName 			= req.param('taxname');
+	var stateId 			= req.param('stateid');
+	var selectedAttributes	= "";
+	
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['tax_id','tax_name']
+	}
 	
 	if(companyId != null)
 		condition = "company_id="+companyId;
@@ -106,7 +111,11 @@ exports.getTax = function(req, res){
 		else
 			condition = condition+" and state_id='"+stateId+"'";
 	
-	tax.findAll({where : [condition]})
+	tax.findAll({
+		where		: [condition],
+		attributes	: selectedAttributes
+	
+	})
 		.then(function(taxs){
 			if(taxs.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);

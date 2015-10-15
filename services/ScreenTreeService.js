@@ -71,6 +71,11 @@ exports.getScreenTree = function(req, res){
 	var screenId 	= req.param('screenid');
 	var status		= req.param('status');
 	var screeName 	= req.param('screenname');
+	var selectedAttributes	= "";
+	
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['screen_id','screen_name']
+	}
 	
 	if(screenId!=null)
 		if(condition === "")
@@ -91,7 +96,11 @@ exports.getScreenTree = function(req, res){
 		else
 			condition = condition+" and screen_name='"+screeName+"'";
 	
-	screenTree.findAll({where : [condition]})
+	screenTree.findAll({
+		where		: [condition],
+		attributes	: selectedAttributes
+	
+	})
 		.then(function(screenTrees){
 			if(screenTrees.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);

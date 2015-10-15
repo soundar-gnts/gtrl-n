@@ -59,11 +59,16 @@ exports.saveOrUpdateUom = function(req, res){
 //get all Uom
 exports.getUom = function(req, res){
 
-	var condition 	= "";
-	var uomId 		= req.param('uomid');
-	var companyId 	= req.param('companyid');
-	var status		= req.param('status');
-	var uomName 	= req.param('uomname');
+	var condition 			= "";
+	var uomId 				= req.param('uomid');
+	var companyId 			= req.param('companyid');
+	var status				= req.param('status');
+	var uomName 			= req.param('uomname');
+	var selectedAttributes	= "";
+	
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['uom_id','uom_name']
+	}
 	
 	if(companyId != null)
 		condition = "company_id="+companyId;
@@ -89,7 +94,11 @@ exports.getUom = function(req, res){
 		else
 			condition = condition+" and uom_name='"+uomName+"'";
 	
-	uom.findAll({where : [condition]})
+	uom.findAll({
+		where		: [condition],
+		attributes	: selectedAttributes
+	
+	})
 		.then(function(uoms){
 			if(uoms.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);

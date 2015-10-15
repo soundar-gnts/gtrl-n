@@ -22,7 +22,7 @@ var soDetail	= require('../models/SalesOrderDetail.js');
 var common		= require('../services/CommonService.js');
 
 //insert or update Sales order details
-exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, res){
+exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDeleteDetailsIds, res){
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -31,20 +31,24 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, res){
 	if(salesOrder.salesorder_id != null){
 		soHeader.upsert(salesOrder)
 		.then(function(data){
-			log.info(salesDetails.length);
-			if(salesDetails.length>0){
-				var condition = "salesorder_id='"+salesOrder.salesorder_id+"'";
-				deleteSalesOrderDetailsFn(condition);
-			}
 			
-			for(var i = 0; i < salesDetails.length; i++){
+			log.info(salesDeleteDetailsIds.length+' Sales detail is going to remove.');
+			log.info(salesDetails.length+' Sales detail is going to update');
+			
+			//delete sales details from sales order detail table.
+			for(var i = 0; i < salesDeleteDetailsIds.length; i++)
+				deleteSalesOrderDetailsFn("salesorder_dtl_id='"+salesDeleteDetailsIds[i].salesorder_dtl_id+"'");
+			
+			//update/save new sales details into sales order table.
+			for(var i = 0; i < salesDetails.length; i++)
 				saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
-			}
+			
 			log.info('Sales order editted successfully.');
 			response.message 	= 'Sales order editted successfully.';
 			response.data  		= salesOrder.salesorder_id;
 			response.status  	= true;
 			res.send(response);
+			
 		}).error(function(err){
 			log.error(err);
 			response.status  	= false;
@@ -53,7 +57,8 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, res){
 			res.send(response);
 		});
 	} else{
-		//sens otp to mobile number
+		
+		//send otp to mobile number
 		salesOrder.otp_code			= common.generateOTP(4);
 		salesOrder.sal_ordr_number	= common.generateOTP(12);
 		soHeader.create(salesOrder)
@@ -83,9 +88,13 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, res){
 function saveOrUpdateSalesOrderDetailsFn(salesDetail) {
 	soDetail.upsert(salesDetail)
 	.then(function(data){
-		
+		log.info('Sales order details saved.');
 	}).error(function(err){
 		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
 	});
 }
 
@@ -112,8 +121,8 @@ exports.getSalesOrder = function(req, res){
 		fetchAssociation = [{model : soDetail}]
 	}
 	
-	if(req.param('isfulllist')=='p'){
-		selectedAttributes = ['salesorder_id']
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['salesorder_id','sal_ordr_number']
 	}
 	
 	if(companyId != null)
@@ -200,13 +209,11 @@ exports.salesOrderOtpVerification = function(req, res){
 	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
 	.then(function(soHeaderDet){
 		if(soHeaderDet.otp_code == req.param('otpcode')){
-//			soHeaderDet.sal_ordr_number	= 'Active';
-			soHeaderDet.status			= 'Active';
-			soHeaderDet.delivery_remark = req.param('deliveryremark');
+			soHeaderDet.status			= 'Pending';
 			soHeaderDet.save();
-			log.info('Your Order is '+req.param('status')+'.');
+			log.info('OTP has been verified successfully.');
 			response.status  	= true;
-			response.message 	= 'Your Sales Order is '+req.param('status')+'.';
+			response.message 	= 'OTP has been verified successfully.';
 			res.send(response);
 		} else{
 			
@@ -215,6 +222,37 @@ exports.salesOrderOtpVerification = function(req, res){
 			response.message 	= 'Invalid OTP.';
 			res.send(response);
 		}
+		
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
+}
+
+// Approve, Cancel and Reject service for sales_order_hdr table
+exports.changeSalesOrderStatus = function(req, res){
+	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
+	.then(function(soHeaderDet){
+		
+		soHeaderDet.status			= req.param('status');
+		soHeaderDet.delivery_remark = req.param('deliveryremark');
+		soHeaderDet.last_updated_by = req.param('lastupdatedby');
+		soHeaderDet.last_updated_dt = req.param('lastupdateddt');
+		soHeaderDet.save();
+		log.info('Sales order is '+req.param('status'));
+		response.status  	= true;
+		response.message 	= 'Sales order is '+req.param('status');
+		res.send(response);
 		
 	})
 	.error(function(err){
@@ -281,6 +319,7 @@ exports.getSalesOrderDetails = function(req, res){
 			res.send(response);
 		});
 }
+
 
 function deleteSalesOrderDetailsFn(condition){
 	var response = {

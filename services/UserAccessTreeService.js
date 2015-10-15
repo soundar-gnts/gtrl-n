@@ -102,11 +102,20 @@ exports.getUserAccessTree = function(req, res){
 			data	: String
 	}
 	
-	var condition 	= "";
-	var accessTreeId= req.param('acctreeid');
-	var companyId 	= req.param('companyid');
-	var status		= req.param('status');
+	var condition 			= "";
+	var accessTreeId		= req.param('acctreeid');
+	var companyId 			= req.param('companyid');
+	var status				= req.param('status');
+	var selectedAttributes	= "";
+	var fetchAssociation 	= "";
 	
+	if(req.param('fetchAssociation')=='yes'){
+		fetchAssociation = [{model : poDetail}]
+	}
+	
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['acc_tree_id','group_id']
+	}
 	
 	if(companyId != null)
 		condition = "m_user_access_tree.company_id="+companyId;
@@ -126,8 +135,9 @@ exports.getUserAccessTree = function(req, res){
 			condition = condition+" and status='"+status+"'";
 	
 	userAccessTree.findAll({
-		where	: [condition],
-		include : {model : userGroup}
+		where		: [condition],
+		attributes	: selectedAttributes,
+		include 	: fetchAssociation
 	
 	})
 		.then(function(accesTre){

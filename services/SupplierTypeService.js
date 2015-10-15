@@ -24,7 +24,7 @@ var response = {
 		data	: String
 }
 
-//insert or update Tax
+//insert or update Supplier Type
 exports.saveOrUpdateSupplierType = function(req, res){
 	supplierType.upsert({
 		supp_type_id	: req.param('supptypeid'),
@@ -56,7 +56,7 @@ exports.saveOrUpdateSupplierType = function(req, res){
 }
 
 
-//get all Tax
+//get all Supplier Type
 exports.getSupplierType = function(req, res){
 
 	var condition 	= "";
@@ -64,6 +64,11 @@ exports.getSupplierType = function(req, res){
 	var companyId 	= req.param('companyid');
 	var status		= req.param('status');
 	var name 		= req.param('supptypename');
+	var selectedAttributes	= "";
+	
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['supp_type_id','supp_type_name']
+	}
 	
 	if(companyId != null)
 		condition = "company_id="+companyId;
@@ -89,7 +94,11 @@ exports.getSupplierType = function(req, res){
 		else
 			condition = condition+" and supp_type_name='"+name+"'";
 	
-	supplierType.findAll({where : [condition]})
+	supplierType.findAll({
+		where		: [condition],
+		attributes	: selectedAttributes
+	
+	})
 		.then(function(supType){
 			if(supType.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);

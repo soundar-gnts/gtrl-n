@@ -24,7 +24,7 @@ var response = {
 		data	: String
 }
 
-//insert or update Tax
+//insert or update upplier Account Type
 exports.saveOrUpdateSupplierAccountType = function(req, res){
 	suppAccType.upsert({
 		supp_acct_id	: req.param('suppacctid'),
@@ -56,7 +56,7 @@ exports.saveOrUpdateSupplierAccountType = function(req, res){
 }
 
 
-//get all Tax
+//get all upplier Account Type
 exports.getSupplierAccountType = function(req, res){
 
 	var condition 	= "";
@@ -64,6 +64,11 @@ exports.getSupplierAccountType = function(req, res){
 	var companyId 	= req.param('companyid');
 	var status		= req.param('status');
 	var name 		= req.param('suppacctname');
+	var selectedAttributes	= "";
+	
+	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+		selectedAttributes = ['supp_acct_id','supp_acct_name']
+	}
 	
 	if(companyId != null)
 		condition = "company_id="+companyId;
@@ -89,7 +94,11 @@ exports.getSupplierAccountType = function(req, res){
 		else
 			condition = condition+" and supp_acct_name='"+name+"'";
 	
-	suppAccType.findAll({where : [condition]})
+	suppAccType.findAll({
+		where		: [condition],
+		attributes	: selectedAttributes
+	
+	})
 		.then(function(supAccType){
 			if(supAccType.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);

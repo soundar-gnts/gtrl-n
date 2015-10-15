@@ -23,9 +23,15 @@ module.exports = function(app, server){
 	app.post('/savesalesorderdetails',		saveOrUpdateSalesOrder);
 	app.post('/getsalesorderdetails', 		soService.getSalesOrder);
 	app.post('/salesorderotpverification', 	soService.salesOrderOtpVerification);
+	app.post('/changesalesorderstatus', 	soService.changeSalesOrderStatus);
 		
 	function saveOrUpdateSalesOrder(req, res){
 		
+		var salesDetails			= [];
+		var detailsLength			= 0;
+		var salesDeleteDetailsIds	= [];
+		var salesDelDetailsLength	= 0;
+				
 		var salesOrder = {
 				salesorder_id		: req.param('salesorderid'),
 				customer_id			: req.param('customerid'),
@@ -48,29 +54,39 @@ module.exports = function(app, server){
 				otp_code			: req.param('otpcode')
 		}
 		
-		var salesDetails = [];
-		var detailsLength = 0;
+		
 		if(req.param('salesdetails') != null)
 			detailsLength = req.param('salesdetails').length;
-		console.log(detailsLength);
+		
 		for(var i = 0; i < detailsLength; i++){
 			var salesDetail = {
+				salesorder_dtl_id	: req.param('salesdetails')[i].salesorderdtlid,
 				salesorder_id		: req.param('salesorderid'),
-				product_id		: req.param('salesdetails')[i].productid,
-				uom_id			: req.param('salesdetails')[i].uomid,
-				rate			: req.param('salesdetails')[i].rate,
-				order_qty		: req.param('salesdetails')[i].orderqty,
-				order_value		: req.param('salesdetails')[i].ordervalue,
-				discount_prcnt	: req.param('salesdetails')[i].discountprcnt,
-				tax_ptcnt		: req.param('salesdetails')[i].taxptcnt,
-				tax_value		: req.param('salesdetails')[i].taxvalue,
-				basic_value		: req.param('salesdetails')[i].basicvalue,
-				discount_value	: req.param('salesdetails')[i].discountvalue
+				product_id			: req.param('salesdetails')[i].productid,
+				uom_id				: req.param('salesdetails')[i].uomid,
+				rate				: req.param('salesdetails')[i].rate,
+				order_qty			: req.param('salesdetails')[i].orderqty,
+				order_value			: req.param('salesdetails')[i].ordervalue,
+				discount_prcnt		: req.param('salesdetails')[i].discountprcnt,
+				tax_ptcnt			: req.param('salesdetails')[i].taxptcnt,
+				tax_value			: req.param('salesdetails')[i].taxvalue,
+				basic_value			: req.param('salesdetails')[i].basicvalue,
+				discount_value		: req.param('salesdetails')[i].discountvalue
 			}
 			salesDetails.push(salesDetail);
 		}
 		
-		var response = soService.saveOrUpdateSalesOrderFn(salesOrder, salesDetails, res);
+		if(req.param('salesdeletedetails') != null)
+			salesDelDetailsLength = req.param('salesdeletedetails').length;
+		
+		for(var i = 0; i < salesDelDetailsLength; i++){
+			var salesDeleteDetailsId = {
+				salesorder_dtl_id	: req.param('salesdeletedetails')[i].salesorderdtlid,
+			}
+			salesDeleteDetailsIds.push(salesDeleteDetailsId);
+		}
+		
+		var response = soService.saveOrUpdateSalesOrderFn(salesOrder, salesDetails, salesDeleteDetailsIds, res);
 		
 	}
 	

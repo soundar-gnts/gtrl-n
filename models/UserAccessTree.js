@@ -39,5 +39,5 @@ var accesTree = model.define('m_user_access_tree', {
 	tableName : 'm_user_access_tree'
 });
 
-accesTree.belongsTo(userGroup, {foreignKey : 'group_id', targetKey : 'group_id'});
+//accesTree.belongsTo(userGroup, {foreignKey : 'group_id', targetKey : 'group_id'});
 module.exports = accesTree;
