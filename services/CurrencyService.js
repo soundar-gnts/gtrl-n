@@ -16,6 +16,7 @@
 
 var ccy = require('../models/Currency.js');
 var appMsg		= require('../config/Message.js');
+var log = require('../config/logger').logger;
 
 var response 	= {
 						status	: Boolean,

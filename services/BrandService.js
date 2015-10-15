@@ -16,6 +16,7 @@
 
 var brand = require('../models/Brand.js');
 var appMsg		= require('../config/Message.js');
+var log = require('../config/logger').logger;
 
 var response 	= {
 						status	: Boolean,
