@@ -20,9 +20,8 @@ var purchasereturndtlservice	= require('../services/PurchaseReturnDtlService.js'
 
 module.exports = function(app, server){
 	
-	//Purchase Return Header
+	//Purchase Return Header	
 	
-	app.post('/savepurchasereturndetails',purchaseReturnService.savePurchaseReturnDetails);
 	app.post('/getpurchasereturnhdrlist',purchaseReturnService.getPurchaseReturnHdrList);	
 	app.post('/updatepurchasereturnstatus',purchaseReturnService.updatePurchaseReturnStatus);	
 	app.post('/saveorupdatepurchasereturn',purchaseReturnService.saveOrUpdatePurchaseReturn);	
@@ -30,8 +29,9 @@ module.exports = function(app, server){
 	
 	//Purchase Return Details
 	
-	app.post('/savePurchasereturndtl',purchasereturndtlservice.savePurchaseReturnDtl);
-	app.post('/getpurchasereturndtl',purchasereturndtlservice.getPurchaseReturnDtl);	
+	app.post('/getpurchasereturndtl',purchasereturndtlservice.getPurchaseReturnDtl);
+	
+	//app.post('/savePurchasereturndtl',purchasereturndtlservice.savePurchaseReturnDtl);
 	//app.post('/deletepurchasereturndtl',purchasereturndtlservice.deletePurchaseReturnDtl);	
 
 }

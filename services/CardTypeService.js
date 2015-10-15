@@ -18,15 +18,16 @@ var cardtype 	= require('../models/CardType.js');
 var log 		= require('../config/logger').logger;
 var appMsg		= require('../config/Message.js');
 
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
+var response	= {
+					status	: Boolean,
+					message : String,
+					data	: String
+				  };
 
 //SaveOrUpdate Cardtype Details
 
 	exports.saveOrUpdateCardType = function(req, res){
+		
 		cardtype.upsert({
 			
 			card_type_id		: req.param('cardtypeid'),
@@ -36,17 +37,18 @@ var response = {
 			status				: req.param('status'),
 			last_updated_dt		: new Date(),
 			last_updated_by		: req.param('lastupdatedby') 
+			
 			})
 			.then(function(data){
 				if(data){
-					log.info('Card Type Saved successfully.');
-					response.message = 'Card Type saved successfully.';
+					log.info('Saved successfully.');
+					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
 					
 				}
 				else{
-					log.info('Card Type Updated successfully.');
-					response.message = 'Card Type Updated successfully.';
+					log.info(' Updated successfully.');
+					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
 					
 				}
@@ -65,6 +67,7 @@ var response = {
 
 	exports.getCardTypeList = function(req, res) {
 		
+		var attr 			= "";
 		var condition 		= "";
 		var companyId 		= req.param("companyid");
 		var cardTypeId 		= req.param("cardtypeid");
@@ -99,10 +102,15 @@ var response = {
 			
 		}
 		
-		cardtype.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+			attr=['card_type_id','card_type'];
+		}
+		
+		cardtype.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
+		
 		.then(function(cardtypelist){
-			if(cardtypelist.length === 0){
-				
+			
+			if(cardtypelist.length === 0){				
 				log.info('No data found.');
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;

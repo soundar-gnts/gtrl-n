@@ -42,13 +42,13 @@ var response 	= {
 			.then(function(data){
 				if(data){
 					log.info('Saved successfully.');
-					response.message = ' Saved successfully.';
+					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
 					
 				}
 				else{
 					log.info(' Updated successfully.');
-					response.message = ' Updated successfully.';
+					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
 					
 				}
@@ -72,11 +72,12 @@ var response 	= {
 		var cityName	= req.param("cityname");
 		var status		= req.param("status");
 		var stateId		= req.param("stateid");
-		var attr 	= "";
+		var attr 		= "";
 		
 		if(cityId!=null){
 			condition ="city_id="+cityId;
 			}
+		
 		if(stateId!=null){
 			if(condition === ""){
 				condition="state_id ='"+stateId+"'";
@@ -102,13 +103,15 @@ var response 	= {
 			
 		}
 
-		if(req.param('isfulllist')=='F'||req.param('isfulllist')=='P'){
-			attr=['city_name'];
+		if(req.param('isfulllist')== null ||req.param('isfulllist')=='P'){
+			attr=['city_id','city_name'];
 		}
 			
 
 		  city.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
+		  
 		  .then(function(citylist){
+			  
 				if(citylist.length === 0){
 					
 					log.info('No data found.');

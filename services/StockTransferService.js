@@ -232,39 +232,6 @@ exports.getStocktransferDtl = function(req, res) {
 		});
 			
 	}
-	
-//To Delete StockTransfer Detail
-	
-	exports.deleteStockTransferDtl = function(req, res) {
-		if(req.param("transferdtlid")!=null){
-			stocktransdtl.destroy({where:{
-				
-				transfer_dtlid			: req.param("transferdtlid")		
-				
-		}}).then(function(data){
-			if(data){
-				log.info('Deleted Successfully.');
-				response.message = 'Deleted Successfully.';
-				response.status  = true;
-				response.data	 = "";
-				res.send(response);
-			}
-			
-		}).error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
-			res.send(response);
-		});
-		}else{
-			response.status  	= false;
-			response.message 	= 'JSON Error - Key Not found';
-			response.data  		= "";
-			res.send(response);
-		}
-	};
-	
 
 	// To Save/Update StockTransferHdr and  Detail
 		
@@ -335,17 +302,19 @@ exports.getStocktransferDtl = function(req, res) {
 			 				if(req.param('status')=='Approved')
 			 		 		{
 			 		 				console.log("Approved",req.param('stocktranslist')[i].productid);
+			 		 				
 			 		 		stockLedgerService.insertStockLedger(
-			 		 				req.param('stocktranslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
-			 		 				0,req.param('stocktranslist')[i].returnqty,req.param('stocktranslist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
+			 		 				req.param('stocktranslist')[i].productid,req.param("companyid"),req.param("fromStoreid"),req.param("batchno"),
+			 		 				0,req.param('stocktranslist')[i].returnqty,req.param('stocktranslist')[i].uomid,req.param("transferrefno"),0
 			 		 				,req.param("cancelremark"));
-			 				productSerialCodesService.updateProductSerialCodes(req.param("companyid"),p.purchase_id,req.param('returnlist')[i].productid,
-			 						req.param("storeid"),req.param("batchno"));
+			 		 		
+			 				productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('stocktranslist')[i].productid,
+			 						req.param("fromStoreid"),req.param("batchno"));
 			 		 		}
 			 			}
 			 			log.info('Updated Successfully.');
 			 			response.message 	= 'Updated Successfully.';
-			 			response.data  		= req.param('poid');
+			 			response.data  		= req.param('transferid');
 			 			response.status  	= true;
 			 			res.send(response);
 			 			
@@ -370,18 +339,18 @@ exports.getStocktransferDtl = function(req, res) {
 			 				saveOrUpdateTransfer(transferDetails[i]);
 			 				if(req.param('status')=='Approved')
 			 		 		{
-			 		 				console.log("Approved",req.param('returnlist')[i].productid);
-			 		 		stockLedgerService.insertStockLedger(
-			 		 				req.param('stocktranslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
-			 		 				0,req.param('stocktranslist')[i].invoiceqty,req.param('stocktranslist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
-			 		 				,req.param("cancelremark"));
-			 				productSerialCodesService.updateProductSerialCodes(req.param("companyid"),p.purchase_id,req.param('returnlist')[i].productid,
-			 						req.param("storeid"),req.param("batchno"));
+			 					stockLedgerService.insertStockLedger(
+				 		 				req.param('stocktranslist')[i].productid,req.param("companyid"),req.param("fromStoreid"),req.param("batchno"),
+				 		 				0,req.param('stocktranslist')[i].returnqty,req.param('stocktranslist')[i].uomid,req.param("transferrefno"),0
+				 		 				,req.param("cancelremark"));
+				 		 		
+				 				productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('stocktranslist')[i].productid,
+				 						req.param("fromStoreid"),req.param("batchno"));
 			 		 		}
 			 			}
 			 			log.info('Saved successfully.');
 			 			response.message	= 'Saved successfully.';
-			 			response.data  		= data.return_id;
+			 			response.data  		= data.transfer_id;
 			 			response.status 	= true;
 			 			res.send(response);
 			 		})

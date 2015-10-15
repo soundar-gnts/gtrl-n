@@ -39,13 +39,13 @@ var response = {
 			.then(function(data){
 				if(data){
 					log.info('Saved successfully.');
-					response.message = 'Saved successfully.';
+					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
 					
 				}
 				else{
-					log.info('State Updated successfully.');
-					response.message = 'State Updated successfully.';
+					log.info(' Updated successfully.');
+					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
 					
 				}
@@ -59,7 +59,7 @@ var response = {
 			});
 	}; 
 
-//State full List
+//State  List
 
 	exports.getStateList = function(req, res) {
 		
@@ -67,6 +67,7 @@ var response = {
 		var stateId		= req.param("stateid");
 		var stateName	= req.param("statename");
 		var status		= req.param("status");
+		var attr 		= "";
 		
 		if(stateId!=null){
 			condition ="state_id="+stateId;
@@ -79,6 +80,7 @@ var response = {
 				condition=condition+" and status='"+status+"'";
 			}
 		}
+		
 		if(stateName!=null){
 			if(condition === ""){
 				condition="state_name='"+stateName+"'";
@@ -87,7 +89,13 @@ var response = {
 			}
 			
 		}
-		state.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		
+		if(req.param('isfulllist')== null||req.param('isfulllist') == 'P'){
+			
+			attr=['state_name','state_id'];
+		}
+			
+		state.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
 		  .then(function(statelist){
 				if(statelist.length === 0){
 					
@@ -115,8 +123,4 @@ var response = {
 			});
 		};
 		
-		exports.saveOrUpdateState = function(req, res){
-		state.update({$set: { state_name : req.param('statename') , state_id	: req.param('stateid') }},
-				
-				{ upsert: true });
-		}
+	

@@ -18,19 +18,18 @@ var store 		     = require('../models/Store.js');
 var storeRegion		 = require('../models/StoreRegion.js');
 var log 			 = require('../config/logger').logger;
 var appMsg			 = require('../config/Message.js');
-
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
+var response 		 = {
+							status	: Boolean,
+							message : String,
+							data	: String
+							};
 
 //Store List
 
 	exports.getStoreList = function(req, res) {
 		
 		var conditionQuery 		= "";
-	
+		var attr 				= "";
 		var storeId 			= req.param("storeid");
 		var companyId 			= req.param("companyid");
 		var storeCode 			= req.param("storecode");
@@ -129,7 +128,12 @@ var response = {
 				conditionQuery=conditionQuery+" and stk_recv_store_id="+stkRecvStoreId;
 			}	
 			}
-		store.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']]})
+		
+		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+			attr=['store_id','store_code','store_name','city_id','state_id','warehouse_id'];
+		}	
+		
+		store.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']],attributes: attr})
 		.then(function(storelist){
 			if(storelist.length === 0){
 				
@@ -160,6 +164,7 @@ var response = {
 
 	exports.getStoreRegionList = function(req, res) {
 		
+		var attr 				= "";
 		var condition 			= "";
 		var regionId 			= req.param("regionid");
 		var companyId 			= req.param("companyid");
@@ -193,8 +198,11 @@ var response = {
 			}
 			
 		}
-			
-		storeRegion.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+			attr=['region_id','region_name'];
+		}
+		
+		storeRegion.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
 		.then(function(regionlist){
 			if(regionlist.length === 0){
 				
@@ -240,13 +248,13 @@ var response = {
 			.then(function(data){
 				if(data){
 					log.info('Saved successfully.');
-					response.message = 'Saved successfully.';
+					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
-				
+					
 				}
 				else{
-					log.info('Updated successfully.');
-					response.message = 'Updated successfully.';
+					log.info(' Updated successfully.');
+					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
 					
 				}
@@ -310,15 +318,15 @@ var response = {
 							.then(function(data){
 								if(data){
 									log.info('Saved successfully.');
-									response.message = 'Saved successfully.';
+									response.message = appMsg.SAVEMESSAGE;
 									response.status  = true;
-									res.send(response);
+									
 								}
 								else{
-									log.info('Updated successfully.');
-									response.message = 'State Updated successfully.';
+									log.info(' Updated successfully.');
+									response.message = appMsg.UPDATEMESSAGE;
 									response.status  = true;
-									res.send(response);
+									
 								}
 								
 							}).error(function(err){

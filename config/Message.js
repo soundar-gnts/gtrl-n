@@ -15,4 +15,6 @@
  * 
  */
 
-exports.LISTNOTFOUNDMESSAGE = 'No data found.';
+exports.LISTNOTFOUNDMESSAGE  = 'No data found.';
+exports.SAVEMESSAGE 		 = 'Saved successfully.';
+exports.UPDATEMESSAGE		 = 'Updated successfully.';

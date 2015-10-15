@@ -13,12 +13,12 @@
  * Version       Date           	Modified By             Remarks
  * 
  */
+
 var stockLedgerService  = require('../services/StockLedgerService.js');
 var accountRecevable 	= require('../models/AccountReceivables.js');
 var productSerialCodes	= require('../models/ProductSerialCodes.js');
 var purchaseReturnHdr 	= require('../models/PurchaseReturnHdr.js');
 var purchaseReturnDtl 	= require('../models/PurchaseReturnDtl.js');
-
 var log 				= require('../config/logger').logger;
 var appMsg				= require('../config/Message.js');
 var response 			= {
@@ -27,128 +27,12 @@ var response 			= {
 							data	: String
 							};
 
-
-//SaveOrUpdate Purchase Return Header and Details
-
-exports.savePurchaseReturnDetails = function(req, res){
-	
-	purchaseReturnHdr.upsert(
-		{
-			return_id			: req.param('returnid'),
-			company_id			: req.param('companyid'),
-			po_id 				: req.param('poid'),
-			retrun_ref_no 		: req.param('retrunrefno'),
-			return_date 		: req.param('returndate'),
-			store_id 			: req.param('storeid'),
-			supplier_id 		: req.param('supplierid'),
-			amount_payble 		: req.param('amountpayble'),
-			outstanding_amount 	: req.param('outstandingamount'),
-			return_type 		: req.param('returntype'),
-			payment_mode 		: req.param('paymentmode'),
-			discount_prcnt 		: req.param('discountprcnt'),
-			discount_value 		: req.param('discountvalue'),
-			return_reason 		: req.param('returnreason'),
-			cancel_remark 		: req.param('cancelremark'),
-			status		   		: req.param('status'),
-			last_updated_dt		: req.param('lastupdateddt'),
-			last_updated_by		: req.param('lastupdatedby'),
-		
-   
-		})			
-		.then(function(pr){
-	
-				for(var i=0;i<req.param('returnlist').length;i++){
-					
-					purchaseReturnDtl.upsert({
-						return_dtlid		: req.param('returnlist')[i].returndtlid,
-						return_id			: req.param('returnlist')[i].returnid,
-						company_id 			: req.param('returnlist')[i].companyid,
-						product_id 			: req.param('returnlist')[i].productid,
-						return_qty 			: req.param('returnlist')[i].returnqty,
-						uom_id 				: req.param('returnlist')[i].uomid,
-						rate 				: req.param('returnlist')[i].rate,
-						basic_value 		: req.param('returnlist')[i].basicvalue,	
-						discount_prcnt 		: req.param('returnlist')[i].discountprcnt,
-						discount_value 		: req.param('returnlist')[i].discountvalue,
-						tax_id 				: req.param('returnlist')[i].taxid,
-						tax_prnct 			: req.param('returnlist')[i].taxprnct,
-						tax_value 			: req.param('returnlist')[i].taxvalue,
-												
-				        
-						})
-			
-			.error(function(err) {
-				res.send(err);
-			});
-		}
-		
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
-			response.status  = true;
-			response.data	 = "";
-			res.send(response);
-		
-		
-	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
-	});
-		
-}
-
-//SaveOrUpdate Purchase ReturnDetails
-
-	exports.savePurchaseReturnDtl = function(req, res){	
-	
-			purchaseReturnDtl.upsert({
-						return_dtlid		: req.param('returndtlid'),
-						return_id			: req.param('returnid'),
-						company_id 			: req.param('companyid'),
-						product_id 			: req.param('productid'),
-						return_qty 			: req.param('returnqty'),
-						uom_id 				: req.param('uomid'),
-						rate 				: req.param('rate'),
-						basic_value 		: req.param('basicvalue'),	
-						discount_prcnt 		: req.param('discountprcnt'),
-						discount_value 		: req.param('discountvalue'),
-						tax_id 				: req.param('taxid'),
-						tax_prnct 			: req.param('rtaxprnct'),
-						tax_value 			: req.param('taxvalue')
-												
-				        
-						})
-			
-						.then(function(data){
-							if(data){
-								log.info(' saved successfully.');
-								response.message = ' Saved successfully.';
-								response.status  = true;
-								res.send(response);
-							}
-							else{
-								log.info(' Updated successfully.');
-								response.message = ' Updated successfully.';
-								response.status  = true;
-								res.send(response);
-							}
-							
-						}).error(function(err){
-							log.error(err);
-							response.status  	= false;
-							response.message 	= 'Internal error.';
-							response.data  		= err;
-							res.send(response);
-						});
-				}; 
-
 // To get Purchase Return Header List 
 		
 		exports.getPurchaseReturnHdrList = function(req, res) {
 			
-			var condition 	= "";
+			var attr 		= 	"";
+			var condition 	=	"";
 			var returnid	=	req.param("returnid");
 			var companyid	=	req.param("companyid");
 			var poid		=	req.param("poid");
@@ -210,7 +94,12 @@ exports.savePurchaseReturnDetails = function(req, res){
 				}
 			}
 			
-			purchaseReturnHdr.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+			if(req.param('isfulllist')== null ||req.param('isfulllist')=='P'){
+				
+				attr=['return_id','store_id','supplier_id','retrun_ref_no'];
+			}
+			
+			purchaseReturnHdr.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
 			
 			.then(function(result) {
 				if(result.length === 0){
@@ -265,6 +154,11 @@ exports.savePurchaseReturnDetails = function(req, res){
 				}
 			}
 				
+			if(req.param('isfulllist')== null ||req.param('isfulllist')=='P'){
+				
+				attr=['return_dtlid','product_id'];
+			}
+			
 			purchaseReturnDtl.findAll({where : [condition]})
 			
 			.then(function(result) {
@@ -339,41 +233,46 @@ exports.savePurchaseReturnDetails = function(req, res){
 //insert or update Purchase Return details
  
  exports.saveOrUpdatePurchaseReturn = function(req, res){
- 	var response = {
- 			status	: Boolean,
- 			message : String,
- 			data	: String
- 	}
- 	var returnhdr = {
- 			return_id			: req.param('returnid'),
-			company_id			: req.param('companyid'),
-			po_id 				: req.param('poid'),
-			retrun_ref_no 		: req.param('retrunrefno'),
-			return_date 		: req.param('returndate'),
-			store_id 			: req.param('storeid'),
-			supplier_id 		: req.param('supplierid'),
-			amount_payble 		: req.param('amountpayble'),
-			outstanding_amount 	: req.param('outstandingamount'),
-			return_type 		: req.param('returntype'),
-			payment_mode 		: req.param('paymentmode'),
-			discount_prcnt 		: req.param('discountprcnt'),
-			discount_value 		: req.param('discountvalue'),
-			return_reason 		: req.param('returnreason'),
-			cancel_remark 		: req.param('cancelremark'),
-			status		   		: req.param('status'),
-			last_updated_dt		: req.param('lastupdateddt'),
-			last_updated_by		: req.param('lastupdatedby'),
-			batch_no            : req.param('batchno'),
- 	}
- 	var returnDetails = [];
- 	var detailsLength = 0;
- 	
- 	if(req.param('returnlist') != null)
+	 
+	 	var response	 = {
+				 			status	: Boolean,
+				 			message : String,
+				 			data	: String				 			
+	 						}
+	 	
+	 	var returnhdr 	 = { 			
+				 			return_id			: req.param('returnid'),
+							company_id			: req.param('companyid'),
+							po_id 				: req.param('poid'),
+							retrun_ref_no 		: req.param('retrunrefno'),
+							return_date 		: req.param('returndate'),
+							store_id 			: req.param('storeid'),
+							supplier_id 		: req.param('supplierid'),
+							amount_payble 		: req.param('amountpayble'),
+							outstanding_amount 	: req.param('outstandingamount'),
+							return_type 		: req.param('returntype'),
+							payment_mode 		: req.param('paymentmode'),
+							discount_prcnt 		: req.param('discountprcnt'),
+							discount_value 		: req.param('discountvalue'),
+							return_reason 		: req.param('returnreason'),
+							cancel_remark 		: req.param('cancelremark'),
+							status		   		: req.param('status'),
+							last_updated_dt		: req.param('lastupdateddt'),
+							last_updated_by		: req.param('lastupdatedby'),
+							batch_no            : req.param('batchno'),
+	 						}
+	 	
+	 	var returnDetails = [];
+	 	var detailsLength = 0;
+	 	
+	 	if(req.param('returnlist') != null)
  		
  		detailsLength = req.param('returnlist').length;
  	
- 	for(var i = 0; i < detailsLength; i++){
- 		var purchasereturndtl = {
+	 	for(var i = 0; i < detailsLength; i++){
+ 		
+	 		var purchasereturndtl = {
+ 				
  				return_dtlid		: req.param('returnlist')[i].returndtlid,
 				return_id			: req.param('returnid'),
 				company_id 			: req.param('returnlist')[i].companyid,
@@ -387,33 +286,37 @@ exports.savePurchaseReturnDetails = function(req, res){
 				tax_id 				: req.param('returnlist')[i].taxid,
 				tax_prnct 			: req.param('returnlist')[i].taxprnct,
 				tax_value 			: req.param('returnlist')[i].taxvalue,
- 		}
- 		returnDetails.push(purchasereturndtl);
- 	}
+	 		}
+	 		returnDetails.push(purchasereturndtl);
+	 	}
  	
- 	if(req.param('returnid')!=null){
- 	
- 		purchaseReturnHdr.upsert(returnhdr)
- 		.then(function(data){ 		
- 			if(returnDetails.length>0){
-				var condition = "return_id='"+req.param('returnid')+"'";
-				
-				deletePurchaseReturnDtl(condition);
-			}
-			
+	 	if(req.param('returnid')!=null){
+	 		
+	 		purchaseReturnHdr.upsert(returnhdr)
+	 		.then(function(data){ 		
+ 			
  			for(var i = 0; i < returnDetails.length; i++){
- 				saveOrUpdateRe(returnDetails[i]);
+ 				
+ 				if(returnDetails.length>0){
+ 					var condition = "return_id='"+req.param('returnid')+"'"; 					
+ 					deletePurchaseReturnDtl(condition);
+ 				}
+ 				
+ 				saveOrUpdateReturn(returnDetails[i]);
  				if(req.param("status")!=null&&req.param('status')=='Approved')
  		 		{
- 		 				console.log("Approved",req.param('returnlist')[i].productid);
  		 		stockLedgerService.insertStockLedger(
  		 				req.param('returnlist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
  		 				0,req.param('returnlist')[i].returnqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
- 		 				,req.param("cancelremark"));
+ 		 				,"Purchase Return - "+req.param("returnreason"));
+ 		 		
+ 		 		productSerialCodesService.updateProductSerialCodes(req.param("companyid"),p.purchase_id,req.param('returnlist')[i].productid,
+ 						req.param("storeid"),req.param("batchno"));
  		 		}
  			}
- 			if(req.param("status")!=null&&req.param("status")=='Approved'){
- 				//To update account payable
+ 			if(req.param("status")!=null&&req.param("status")=='Approved'){			
+ 		
+ 				
  				accountRecevable.insertAccountRecevable(req.param("companyid"),req.param("storeid"),new Date(),null,req.param("invoiceno"),
  						req.param("invoicedate"),null,req.param("invoiceamount"),req.param("actionremarks"),p.supplier_id,req.param("lastupdateddt")
  						,req.param("lastupdatedby"));
@@ -440,13 +343,12 @@ exports.savePurchaseReturnDetails = function(req, res){
  			
  			for(var i = 0; i < detailsLength; i++){
  				
- 				returnDetails[i].return_id = data.return_id;
- 			
+ 				returnDetails[i].return_id = data.return_id; 			
 
- 				saveOrUpdateRe(returnDetails[i]);
+ 				saveOrUpdateReturn(returnDetails[i]);
  				if(req.param("status")!=null&&req.param('status')=='Approved')
  		 		{
- 		 				console.log("Approved",req.param('returnlist')[i].productid);
+ 					
  		 		stockLedgerService.insertStockLedger(
  		 				req.param('returnlist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
  		 				0,req.param('returnlist')[i].invoiceqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
@@ -458,7 +360,7 @@ exports.savePurchaseReturnDetails = function(req, res){
  			}
  			
  			if(req.param("status")!=null&&req.param("status")=='Approved'){
- 				//To update account Receivable
+ 			
  				accountRecevable.insertAccountRecevable(req.param("companyid"),req.param("storeid"),new Date(),null,req.param("invoiceno"),
  						req.param("invoicedate"),null,req.param("invoiceamount"),req.param("actionremarks"),p.supplier_id,req.param("lastupdateddt")
  						,req.param("lastupdatedby"));
@@ -483,7 +385,7 @@ exports.savePurchaseReturnDetails = function(req, res){
  	
 
  }
- function saveOrUpdateRe(purchasereturndtl) {
+ function saveOrUpdateReturn(purchasereturndtl) {
 	 console.log(purchasereturndtl);
 	 purchaseReturnDtl.upsert(purchasereturndtl)
 	 

@@ -17,7 +17,6 @@
 var voucher 		= require('../models/Voucher.js');
 var voucherType		= require('../models/VoucherType.js');
 var appMsg			= require('../config/Message.js');
-
 var log 			= require('../config/logger').logger;
 var response 		= {
 						status	: Boolean,
@@ -29,6 +28,7 @@ var response 		= {
 
 	exports.getVoucherList = function(req, res) {
 		
+		var attr 			= "";
 		var condition 		= "";
 		var companyId 		= req.param("companyid");
 		var voucherId 		= req.param("voucherid");
@@ -71,8 +71,11 @@ var response 		= {
 			}
 			
 		}
-			
-		voucher.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+			attr=['voucher_id','voucher_code','prod_cat_id'];
+		}	
+		
+		voucher.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
 		.then(function(voucherlist){
 			if(voucherlist.length === 0){
 				
@@ -105,6 +108,7 @@ var response 		= {
 
 	exports.getVoucherTypeList = function(req, res) {
 		
+		var attr 				= "";
 		var condition 			= "";
 		var companyId 			= req.param("companyid");
 		var voucherTypeId 		= req.param("vouchertypeid");
@@ -140,8 +144,13 @@ var response 		= {
 			}
 			
 		}
+		
+		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+			attr=['voucher_type_id','voucher_type_name'];
+		}	
+		
 			
-		voucherType.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
+		voucherType.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
 		.then(function(vouchertypelist){
 			if(vouchertypelist.length === 0){
 				
@@ -188,13 +197,13 @@ var response 		= {
 		.then(function(data){
 			if(data){
 				log.info('Saved successfully.');
-				response.message = ' Saved successfully.';
+				response.message = appMsg.SAVEMESSAGE;
 				response.status  = true;
 				
 			}
 			else{
 				log.info(' Updated successfully.');
-				response.message = ' Updated successfully.';
+				response.message = appMsg.UPDATEMESSAGE;
 				response.status  = true;
 				
 			}
@@ -231,13 +240,13 @@ var response 		= {
 							.then(function(data){
 								if(data){
 									log.info('Saved successfully.');
-									response.message = ' Saved successfully.';
+									response.message = appMsg.SAVEMESSAGE;
 									response.status  = true;
 									
 								}
 								else{
 									log.info(' Updated successfully.');
-									response.message = ' Updated successfully.';
+									response.message = appMsg.UPDATEMESSAGE;
 									response.status  = true;
 									
 								}
