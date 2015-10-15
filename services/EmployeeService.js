@@ -21,18 +21,20 @@ var response = {
 		message : String,
 		data	: String
 };
+var commonService = require('../services/CommonService.js');
 
 // To get full Employee List
 exports.getEmployeeDetails = function(req, res) {
-	var attr 	= "";
-	var condition = "";
-	var employeeid=req.param("employeeid");
-	var companyid=req.param("companyid");
-	var employeecode=req.param("employeecode");
-	var firstname=req.param("firstname");
-	var gender=req.param("gender");
-	var storeid=req.param("storeid");
-	var status=req.param("status");
+	var attr 			= "";
+	var condition 		= "";
+	var employeeid		=req.param("employeeid");
+	var companyid		=req.param("companyid");
+	var employeecode	=req.param("employeecode");
+	var firstname		=req.param("firstname");
+	var gender			=req.param("gender");
+	var storeid			=req.param("storeid");
+	var status			=req.param("status");
+	var emailid			=req.param("emailid");
 	if(employeeid!=null){
 		condition ="employee_id="+employeeid;
 	}
@@ -76,6 +78,13 @@ exports.getEmployeeDetails = function(req, res) {
 			condition="status='"+status+"'";
 		}else {
 			condition=condition+" and status='"+status+"'";
+		}
+	}
+	if(emailid!=null){
+		if(condition === ""){
+			condition="email_id='"+emailid+"'";
+		}else {
+			condition=condition+" and email_id='"+emailid+"'";
 		}
 	}
 	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
@@ -127,21 +136,26 @@ exports.saveEmployee= function(req, res) {
 		user_id 			: req.param("userid"),
 		status 				: req.param("status"),
 		last_updated_dt 	: req.param("lastupdateddt"),
-		last_updated_by 	: req.param("lastupdatedby")
+		last_updated_by 	: req.param("lastupdatedby"),
+		email_id 			: req.param("emailid"),
+		create_user_yn 		: req.param("createuseryn")
 	})
 	.then(function(p) {
-		user.upsert({
-			login_id		: p.first_name,
+		if(req.param("createuseryn")!=null&&req.param("createuseryn").toUpperCase()=='Y'){
+		user.create({
+			login_id		: p.email_id,
 			user_name		: p.first_name+' '+p.last_name,
-			login_pwd		: 'user',
+			login_pwd		: commonService.generateOTP(4),
 			employee_id		: p.employee_id,
 			status			: 'Active',
 			company_id		: p.company_id,
-			last_updated_dt	: new Date(),
-		    last_updated_by	: 'Created by Self.'
+			otp_code		: commonService.generateOTP(6),
+			last_updated_dt	: p.last_updated_dt,
+		    last_updated_by	: p.last_updated_by
 		}).error(function(err){
 			
 		});
+		}
 		
 	}).then(function(data){
 		if(data){

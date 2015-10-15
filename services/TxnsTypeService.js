@@ -23,12 +23,12 @@ var response = {
 var appmsg			= require('../config/Message.js');
 // To get full Transaction Type List
 exports.getTxnsTypeDetails = function(req, res) {
-	var attr 	= "";
-	var condition = "";
-	var transtypeid=req.param("transtypeid");
-	var companyid=req.param("companyid");
-	var transtypename=req.param("transtypename");
-	var status=req.param("status");
+	var attr 			= "";
+	var condition 		= "";
+	var transtypeid		=req.param("transtypeid");
+	var companyid		=req.param("companyid");
+	var transtypename	=req.param("transtypename");
+	var status			=req.param("status");
 	if(transtypeid!=null){
 		condition ="trans_type_id="+transtypeid;
 	}

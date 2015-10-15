@@ -22,17 +22,18 @@ var response = {
 };
 var appmsg			= require('../config/Message.js');
 var accounts = require('../models/Accounts.js');
+var commonService = require('../services/CommonService.js');
 
 // To get Account Payables List based on user param
 exports.getAccountPayablesDetails = function(req, res) {
-	var attr 	= "";
-	var condition = "";
-	var accpaybleid=req.param("accpaybleid");
-	var companyid=req.param("companyid");
-	var storeid=req.param("storeid");
-	var accountid=req.param("accountid");
-	var billno=req.param("billno");
-	var status=req.param("status");
+	var attr 			= "";
+	var condition 		= "";
+	var accpaybleid		=req.param("accpaybleid");
+	var companyid		=req.param("companyid");
+	var storeid			=req.param("storeid");
+	var accountid		=req.param("accountid");
+	var billno			=req.param("billno");
+	var status			=req.param("status");
 	if(accpaybleid!=null){
 		condition ="accpayble_id="+accpaybleid;
 	}
@@ -175,7 +176,7 @@ exports.insertAccountPayables = function(companyid,storeid,entrydate,accountid,b
 	
 	accounts.findOne({where:[{supplier_id:supplierid,status:'Active'}]})
 	.then(function(result){
-		console.log("result--->"+result);
+		console.log("result--->"+result.account_id);
 		if(result!=null){
 			accpay.account_id=result.account_id;
 			accountpayables.create(accpay).then(function(data){
@@ -189,7 +190,7 @@ exports.insertAccountPayables = function(companyid,storeid,entrydate,accountid,b
 				company_id 					: companyid,
 				store_id 					: storeid,
 				account_group 				: 'Supplier',
-				account_name 				: 'Supplier'+'-'+storeid+'-'+companyid,
+				account_name 				: 'Supplier-'+commonService.generateOTP(4),
 				account_dt 					: entrydate,
 				finance_year 				: '',
 				generate_voucher_yn 		: '',

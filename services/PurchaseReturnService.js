@@ -312,7 +312,7 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
  		 				,"Purchase Return - "+req.param("returnreason"));
  		 		
  		 		productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('returnid'),req.param('returnlist')[i].productid,
- 						req.param("storeid"),req.param("batchno"));
+ 						req.param("storeid"),req.param("batchno"),'Returned');
  		 		}
  			}
  			if(req.param("status")!=null&&req.param("status")=='Approved'){		 		

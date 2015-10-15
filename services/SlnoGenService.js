@@ -25,13 +25,13 @@ var path = require('path');
 var fileName=path.basename(__filename);
 // To get full Serial No Generation List
 exports.getSlnoGenDetails = function(req, res) {
-	var attr 	= "";
-	var condition = "";
-	var slnoid=req.param("slnoid");
-	var companyid=req.param("companyid");
-	var storeid=req.param("storeid");
-	var refkey=req.param("refkey");
-	var status=req.param("status");
+	var attr 			= "";
+	var condition 		= "";
+	var slnoid			=req.param("slnoid");
+	var companyid		=req.param("companyid");
+	var storeid			=req.param("storeid");
+	var refkey			=req.param("refkey");
+	var status			=req.param("status");
 	var autogenyn=req.param("autogenyn");
 	if(slnoid!=null){
 		condition ="slno_id="+slnoid;

@@ -24,11 +24,11 @@ var appmsg			= require('../config/Message.js');
 
 // To get Customer Age Group based on user param
 exports.getCustAgeGroupDetails = function(req, res) {
-	var condition = "";
-	var agegroupid=req.param("agegroupid");
-	var companyid=req.param("companyid");
-	var agegroupname=req.param("agegroupname");
-	var status=req.param("status");
+	var condition 		= "";
+	var agegroupid		=req.param("agegroupid");
+	var companyid		=req.param("companyid");
+	var agegroupname	=req.param("agegroupname");
+	var status			=req.param("status");
 	if(agegroupid!=null){
 		condition ="age_group_id="+agegroupid;
 	}

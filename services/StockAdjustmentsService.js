@@ -27,13 +27,13 @@ var appmsg			= require('../config/Message.js');
 
 // To get Stock Adjustments List based on user param
 exports.getStockAdjustmentsDetails = function(req, res) {
-	var condition = "";
-	var attr 	= "";
-	var adjustid=req.param("adjustid");
-	var companyid=req.param("companyid");
-	var productid=req.param("productid");
-	var storeid=req.param("storeid");
-	var adjustsymbol=req.param("adjustsymbol");
+	var condition 			= "";
+	var attr 				= "";
+	var adjustid			=req.param("adjustid");
+	var companyid			=req.param("companyid");
+	var productid			=req.param("productid");
+	var storeid				=req.param("storeid");
+	var adjustsymbol		=req.param("adjustsymbol");
 	
 	if(adjustid!=null){
 		condition ="adjust_id="+adjustid;

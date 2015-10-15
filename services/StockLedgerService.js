@@ -25,13 +25,13 @@ var stockSummaryService = require('../services/StockSummaryService.js');
 
 // To get StockLedger List based on user param
 exports.getStockLedgerDetails = function(req, res) {
-	var condition = "";
-	var stockledid=req.param("stockledid");
-	var companyid=req.param("companyid");
-	var productid=req.param("productid");
-	var storeid=req.param("storeid");
-	var batchno=req.param("batchno");
-	var islatest=req.param("islatest");
+	var condition 		= "";
+	var stockledid		=req.param("stockledid");
+	var companyid		=req.param("companyid");
+	var productid		=req.param("productid");
+	var storeid			=req.param("storeid");
+	var batchno			=req.param("batchno");
+	var islatest		=req.param("islatest");
 	if(stockledid!=null){
 		condition ="stock_ledid="+stockledid;
 	}

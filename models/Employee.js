@@ -38,7 +38,9 @@ var employee = model.define('m_employee', {
 	user_id 			: dataTypes.INTEGER,
 	status 				: dataTypes.STRING,
 	last_updated_dt 	: dataTypes.DATE,
-	last_updated_by 	: dataTypes.STRING
+	last_updated_by 	: dataTypes.STRING,
+	email_id			: dataTypes.STRING,
+	create_user_yn		: dataTypes.STRING
 
 }, {
 	timestamps : false,

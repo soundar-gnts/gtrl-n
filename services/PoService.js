@@ -423,7 +423,7 @@ function deletePoDetailsFn(condition){
 
 
 //For update balance qty
-exports.updatePODetailBalanceQty=function(poid,prodid,qty){
+exports.updatePODetailBalanceQty=function(poid,prodid,qty,mode){
 	poDetail.findOne({where:[{po_id:poid,prod_id:prodid}]})
 	.then(function(result){
 		if(result!=null){
@@ -431,7 +431,11 @@ exports.updatePODetailBalanceQty=function(poid,prodid,qty){
 			if(result.bal_qty!=null){
 				balqty=result.bal_qty;
 			}
-			balqty = balqty-qty;
+			if(mode=='DELETE'){
+				balqty = balqty-qty;
+			}else{
+				balqty = balqty+qty;
+			}
 			poDetail.update({bal_qty:balqty},{where : {po_dtlid:result.po_dtlid}}).error(function(err){
 				
 			});

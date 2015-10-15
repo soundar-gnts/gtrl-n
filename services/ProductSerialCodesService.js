@@ -23,14 +23,14 @@ var response = {
 
 // To get Product Serial Codes List based on user param
 exports.getProductSerialCodesDetails = function(req, res) {
-	var condition = "";
-	var serialrefno=req.param("serialrefno");
-	var companyid=req.param("companyid");
-	var grnid=req.param("grnid");
-	var productid=req.param("productid");
-	var storeid=req.param("storeid");
-	var batchid=req.param("batchid");
-	var status=req.param("status");
+	var condition 		= "";
+	var serialrefno		=req.param("serialrefno");
+	var companyid		=req.param("companyid");
+	var grnid			=req.param("grnid");
+	var productid		=req.param("productid");
+	var storeid			=req.param("storeid");
+	var batchid			=req.param("batchid");
+	var status			=req.param("status");
 	if(serialrefno!=null){
 		condition ="serial_refno="+serialrefno;
 	}
@@ -167,7 +167,7 @@ exports.insertProductSerialCodes = function(companyid,grnid,productid,storeid,ba
 
 //To Update Product Serial Status.
 
-exports.updateProductSerialCodes = function(companyid,grnid,productid,storeid,batchid) {
+exports.updateProductSerialCodes = function(companyid,grnid,productid,storeid,batchid,status) {
 	
 		var serialcode = {
 							company_id 				: companyid,			
@@ -175,7 +175,7 @@ exports.updateProductSerialCodes = function(companyid,grnid,productid,storeid,ba
 							store_id 				: storeid,
 							batch_id 				: batchid,
 						 }
-		productserialcodes.update({status : 'Returned',print_status : 'Not Printed'},{where : [serialcode]})
+		productserialcodes.update({status : status,print_status : 'Not Printed'},{where : [serialcode]})
 		.error(function(err){
 			
 	});	

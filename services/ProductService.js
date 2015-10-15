@@ -142,16 +142,16 @@ exports.saveProduct = function(req, res) {
 
 //To get product full list
 exports.getProductsList=function(req,res){
-	var attr 	= "";
-	var condition = "";
-	var companyid=req.param("companyid");
-	var prodid=req.param("prodid");
-	var prodcode=req.param("prodcode");
-	var prodname=req.param("prodname");
-	var manufgid=req.param("manufgid");
-	var brandid=req.param("brandid");
-	var prodcatid=req.param("prodcatid");
-	var status=req.param("status");
+	var attr 			= "";
+	var condition 		= "";
+	var companyid		=req.param("companyid");
+	var prodid			=req.param("prodid");
+	var prodcode		=req.param("prodcode");
+	var prodname		=req.param("prodname");
+	var manufgid		=req.param("manufgid");
+	var brandid			=req.param("brandid");
+	var prodcatid		=req.param("prodcatid");
+	var status			=req.param("status");
 	
 	
 	if(companyid!=null){
@@ -236,11 +236,11 @@ exports.getProductsList=function(req,res){
 
 //For get product specification list
 exports.getProductSpec=function(req,res){
-	var condition = "";
-	var prodspecid=req.param("prodspecid");
-	var prodid=req.param("prodid");
-	var specname=req.param("specname");
-	var status=req.param("status");
+	var condition 		= "";
+	var prodspecid		=req.param("prodspecid");
+	var prodid			=req.param("prodid");
+	var specname		=req.param("specname");
+	var status			=req.param("status");
 	if(prodspecid!=null){
 		condition ="prod_spec_id="+prodspecid;
 	}
@@ -291,12 +291,12 @@ exports.getProductSpec=function(req,res){
 }
 //for get products images
 exports.getProductImages=function(req,res){
-	var condition = "";
-	var productimageid=req.param("productimageid");
-	var prodid=req.param("prodid");
-	var companyid=req.param("companyid");
-	var storeid=req.param("storeid");
-	var status=req.param("status");
+	var condition 			= "";
+	var productimageid		=req.param("productimageid");
+	var prodid				=req.param("prodid");
+	var companyid			=req.param("companyid");
+	var storeid				=req.param("storeid");
+	var status				=req.param("status");
 	if(productimageid!=null){
 		condition ="product_image_id="+productimageid;
 	}
@@ -355,12 +355,12 @@ exports.getProductImages=function(req,res){
 
 //for get products images
 exports.getProductBrands=function(req,res){
-	var condition = "";
-	var prodbrandid=req.param("prodbrandid");
-	var prodid=req.param("prodid");
-	var companyid=req.param("companyid");
-	var brandid=req.param("brandid");
-	var status=req.param("status");
+	var condition 		= "";
+	var prodbrandid		=req.param("prodbrandid");
+	var prodid			=req.param("prodid");
+	var companyid		=req.param("companyid");
+	var brandid			=req.param("brandid");
+	var status			=req.param("status");
 	if(prodbrandid!=null){
 		condition ="prod_brand_id="+prodbrandid;
 	}

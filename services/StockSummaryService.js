@@ -24,12 +24,12 @@ var appmsg			= require('../config/Message.js');
 
 // To get Stock Summary List based on user param
 exports.getStockSummaryDetails = function(req, res) {
-	var condition = "";
-	var stockid=req.param("stockid");
-	var companyid=req.param("companyid");
-	var productid=req.param("productid");
-	var storeid=req.param("storeid");
-	var batchno=req.param("batchno");
+	var condition 		= "";
+	var stockid			=req.param("stockid");
+	var companyid		=req.param("companyid");
+	var productid		=req.param("productid");
+	var storeid			=req.param("storeid");
+	var batchno			=req.param("batchno");
 	if(stockid!=null){
 		condition ="stock_id="+stockid;
 	}

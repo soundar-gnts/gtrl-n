@@ -24,17 +24,17 @@ var appmsg			= require('../config/Message.js');
 
 // To get Customer List based on user param
 exports.getCustomerDetails = function(req, res) {
-	var attr 	= "";
-	var condition = "";
-	var custid=req.param("custid");
-	var companyid=req.param("companyid");
-	var custcode=req.param("custcode");
-	var custgroupid=req.param("custgroupid");
-	var agegroupid=req.param("agegroupid");
-	var cusfirstname=req.param("cusfirstname");
-	var gender=req.param("gender");
-	var mobileno=req.param("mobileno");
-	var status=req.param("status");
+	var attr 			= "";
+	var condition 		= "";
+	var custid			=req.param("custid");
+	var companyid		=req.param("companyid");
+	var custcode		=req.param("custcode");
+	var custgroupid		=req.param("custgroupid");
+	var agegroupid		=req.param("agegroupid");
+	var cusfirstname	=req.param("cusfirstname");
+	var gender			=req.param("gender");
+	var mobileno		=req.param("mobileno");
+	var status			=req.param("status");
 	if(custid!=null){
 		condition ="cust_id="+custid;
 	}

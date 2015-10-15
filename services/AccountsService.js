@@ -24,14 +24,14 @@ var appmsg			= require('../config/Message.js');
 
 // To get Account List based on user param
 exports.getAccountsDetails = function(req, res) {
-	var attr 	= "";
-	var condition = "";
-	var accountid=req.param("accountid");
-	var companyid=req.param("companyid");
-	var storeid=req.param("storeid");
-	var accountname=req.param("accountname");
-	var accountgroup=req.param("accountgroup");
-	var status=req.param("status");
+	var attr 			= "";
+	var condition 		= "";
+	var accountid		=req.param("accountid");
+	var companyid		=req.param("companyid");
+	var storeid			=req.param("storeid");
+	var accountname		=req.param("accountname");
+	var accountgroup	=req.param("accountgroup");
+	var status			=req.param("status");
 	if(accountid!=null){
 		condition ="account_id="+accountid;
 	}

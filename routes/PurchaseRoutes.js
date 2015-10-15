@@ -22,7 +22,5 @@ module.exports = function(app, server) {
 	app.post('/updatepurchasestatus', purchaseService.updatePurchaseStatus);
 	//For purchase details
 	app.post('/getpurchasedetails', purchaseService.getPurchaseDetails);
-	app.post('/deletepurchasedetails', purchaseService.deletePurchaseDetails);
-	app.post('/savepurchasedtls', purchaseService.savePurchaseDtls);
 }
 

@@ -31,7 +31,7 @@ var accountpayables = model.define('t_account_payables', {
 	account_id			: dataTypes.INTEGER,
 	bill_no				: dataTypes.STRING,
 	bill_date			: dataTypes.DATE,
-	grn_no				: dataTypes.STRING,
+	grn_no				: dataTypes.INTEGER,
 	invoice_amount		: dataTypes.INTEGER,
 	paid_amount			: dataTypes.INTEGER,
 	balance_amount		: dataTypes.INTEGER,

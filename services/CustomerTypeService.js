@@ -24,11 +24,11 @@ var appmsg			= require('../config/Message.js');
 
 // To get Customer Type List based on user param
 exports.getCustomerTypeDetails = function(req, res) {
-	var condition = "";
-	var custgroupid=req.param("custgroupid");
-	var companyid=req.param("companyid");
-	var custgroupname=req.param("custgroupname");
-	var status=req.param("status");
+	var condition 		= "";
+	var custgroupid		=req.param("custgroupid");
+	var companyid		=req.param("companyid");
+	var custgroupname	=req.param("custgroupname");
+	var status			=req.param("status");
 	if(custgroupid!=null){
 		condition ="cust_group_id="+custgroupid;
 	}
