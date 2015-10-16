@@ -15,6 +15,8 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log					= require('../config/logger').logger;
 var common				= require('../services/CommonService.js');
 var appMsg				= require('../config/Message.js');
@@ -26,6 +28,7 @@ var category 			= require('../models/ProductCategory.js');
 
 //insert product categoryp
 exports.saveOrUpdateproductCategory = function(req, res){
+	log.info(fileName+'.saveOrUpdateproductCategory');
 	
 	var response = {
 			status	: Boolean,
@@ -86,6 +89,7 @@ exports.saveOrUpdateproductCategory = function(req, res){
 //get all product category
 exports.getProductCategory = function(req, res){
 
+	log.info(fileName+'.getProductCategory');
 
 	var response = {
 			status	: Boolean,

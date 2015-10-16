@@ -123,32 +123,41 @@ exports.saveOrUpdatePo = function(req, res){
 			res.send(response);
 		});
 	} else{
-		slnogenService.getSlnoValue(req.param('companyid'), req.param('storeid'), refkey, 'y', 'Active', function(err, data){
-			
-			console.log(data);
-			purchaseOrder.po_no = data
+		slnogenService.getSlnoValue(req.param('companyid'), req.param('storeid'), refkey, 'y', 'Active', function(sl){
+			console.log(sl);
+			if(sl){
+				purchaseOrder.po_no = sl.sno;
 
-			poHeader.create(purchaseOrder)
-			.then(function(data){
-				
-				for(var i = 0; i < detailsLength; i++){
-					purchaseDetails[i].po_id = data.po_id;
-					saveOrUpdatePoDetailsFn(purchaseDetails[i]);
-				}
-
-				log.info('Purchase order saved successfully.');
-				response.message	= 'Purchase order saved successfully.';
-				response.data  		= data.po_id;
+				poHeader.create(purchaseOrder)
+				.then(function(data){
+					
+					for(var i = 0; i < detailsLength; i++){
+						purchaseDetails[i].po_id = data.po_id;
+						saveOrUpdatePoDetailsFn(purchaseDetails[i]);
+					}
+					slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
+					log.info('Purchase order saved successfully.');
+					response.message	= 'Purchase order saved successfully.';
+					response.data  		= data.po_id;
+					response.status 	= true;
+					res.send(response);
+				})
+				.error(function(err){
+					log.error(err);
+					response.status  	= false;
+					response.message 	= 'Internal error.';
+					response.data  		= err;
+					res.send(response);
+				});
+			} else{
+				log.info.log('Serial no is : '+slno);
+				log.info('Serial no cannot be created.');
+				response.message	= 'Serial no cannot be created.';
 				response.status 	= true;
 				res.send(response);
-			})
-			.error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= 'Internal error.';
-				response.data  		= err;
-				res.send(response);
-			});
+				
+				
+			}
 		});
 	}
 }

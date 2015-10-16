@@ -15,6 +15,8 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log = require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var uom = require('../models/Uom.js');
@@ -26,6 +28,7 @@ var response = {
 
 //insert or update Uom
 exports.saveOrUpdateUom = function(req, res){
+	log.info(fileName+'.saveOrUpdateUom');
 	uom.upsert({
 		uom_id			: req.param('uomid'),
 		uom_name		: req.param('uomname'),
@@ -35,19 +38,19 @@ exports.saveOrUpdateUom = function(req, res){
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
-			log.info('Unit of messure saved successfully.');
+			log.info(fileName+'.saveOrUpdateUom - Unit of messure saved successfully.');
 			response.message = 'Unit of messure saved successfully.';
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info('Unit of messure editted successfully.');
+			log.info(fileName+'.saveOrUpdateUom - Unit of messure editted successfully.');
 			response.message = 'Unit of messure editted successfully.';
 			response.status  = true;
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
+		log.error(fileName+'.saveOrUpdateUom - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -58,6 +61,7 @@ exports.saveOrUpdateUom = function(req, res){
 
 //get all Uom
 exports.getUom = function(req, res){
+	log.info(fileName+'.getUom');
 
 	var condition 			= "";
 	var uomId 				= req.param('uomid');
@@ -101,12 +105,12 @@ exports.getUom = function(req, res){
 	})
 		.then(function(uoms){
 			if(uoms.length == 0){
-				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				log.info(fileName+'.getUom - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{
-				log.info('About '+uoms.length+' results.');
+				log.info(fileName+'.getUom - About '+uoms.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+uoms.length+' results.';
 				response.data 		= uoms;
@@ -114,6 +118,7 @@ exports.getUom = function(req, res){
 			}
 		})
 		.error(function(err){
+			log.error(fileName+'.getUom - ');
 			log.error(err);
 			response.status  	= false;
 			response.message 	= 'Internal error.';

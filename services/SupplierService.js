@@ -15,6 +15,8 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log = require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var supplier = require('../models/Supplier.js');
@@ -27,6 +29,7 @@ var response = {
 //insert or update Supplier
 exports.saveOrUpdateSupplierDetails = function(req, res){
 	
+	log.info(fileName+'.saveOrUpdateSupplierDetails');
 	supplier.upsert({
 		supplier_id		: req.param('supplierid'),
 		supplier_code	: req.param('suppliercode'),
@@ -55,12 +58,12 @@ exports.saveOrUpdateSupplierDetails = function(req, res){
 		account_type	: req.param('accounttype')
 	}).then(function(data){
 		if(data){
-			log.info('Supplier saved successfully.');
+			log.info(fileName+'.saveOrUpdateSupplierDetails - Supplier saved successfully.');
 			response.message = 'Supplier saved successfully.';
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info('Supplier editted successfully.');
+			log.info('supplier editted successfully.');
 			response.message = 'Supplier editted successfully.';
 			response.status  = true;
 			res.send(response);
@@ -80,6 +83,7 @@ exports.saveOrUpdateSupplierDetails = function(req, res){
 //get all Supplier
 exports.getSupplier = function(req, res){
 
+	log.info(fileName+'.getSupplier');
 	var condition 			= "";
 	var supId 				= req.param('supplierid');
 	var companyId 			= req.param('companyid');
@@ -122,12 +126,12 @@ exports.getSupplier = function(req, res){
 	})
 		.then(function(suppliers){
 			if(suppliers.length == 0){
-				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				log.info(fileName+'.getSupplier - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{
-				log.info('About '+suppliers.length+' results.');
+				log.info(fileName+'.getSupplier - About '+suppliers.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+suppliers.length+' results.';
 				response.data 		= suppliers;

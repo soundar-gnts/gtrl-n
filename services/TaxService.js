@@ -15,6 +15,8 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log = require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var tax = require('../models/Tax.js');
@@ -26,6 +28,7 @@ var response = {
 
 //insert or update Tax
 exports.saveOrUpdateTax = function(req, res){
+	log.info(fileName+'.saveOrUpdateTax');
 	tax.upsert({
 		tax_id			: req.param('taxid'),
 		tax_name		: req.param('taxname'),
@@ -45,12 +48,12 @@ exports.saveOrUpdateTax = function(req, res){
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
-			log.info('Tax saved successfully.');
+			log.info(fileName+'.saveOrUpdateTax - Tax saved successfully.');
 			response.message = 'Tax saved successfully.';
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info('Tax editted successfully.');
+			log.info(fileName+'.saveOrUpdateTax - Tax editted successfully.');
 			response.message = 'Tax editted successfully.';
 			response.status  = true;
 			res.send(response);
@@ -68,6 +71,7 @@ exports.saveOrUpdateTax = function(req, res){
 
 //get all Tax
 exports.getTax = function(req, res){
+	log.info(fileName+'.getTax');
 
 	var condition 			= "";
 	var taxId 				= req.param('taxid');
@@ -118,12 +122,12 @@ exports.getTax = function(req, res){
 	})
 		.then(function(taxs){
 			if(taxs.length == 0){
-				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				log.info(fileName+'.getTax - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{
-				log.info('About '+taxs.length+' results.');
+				log.info(fileName+'.getTax - About '+taxs.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+taxs.length+' results.';
 				response.data 		= taxs;

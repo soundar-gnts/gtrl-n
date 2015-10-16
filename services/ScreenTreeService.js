@@ -15,6 +15,8 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log = require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var screenTree = require('../models/ScreenTree.js');
@@ -22,6 +24,7 @@ var screenTree = require('../models/ScreenTree.js');
 
 //insert or update Uom
 exports.saveOrUpdateScreenTree = function(req, res){
+	log.info(fileName+'.saveOrUpdateScreenTree');
 	
 	var response = {
 			status	: Boolean,
@@ -60,6 +63,7 @@ exports.saveOrUpdateScreenTree = function(req, res){
 
 //get all Uom
 exports.getScreenTree = function(req, res){
+	log.info(fileName+'.getScreenTree');
 	
 	var response = {
 			status	: Boolean,

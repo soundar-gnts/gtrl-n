@@ -15,6 +15,8 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log = require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var suppAccType = require('../models/SupplierAccountType.js');
@@ -26,6 +28,7 @@ var response = {
 
 //insert or update upplier Account Type
 exports.saveOrUpdateSupplierAccountType = function(req, res){
+	log.info(fileName+'.saveOrUpdateSupplierAccountType');
 	suppAccType.upsert({
 		supp_acct_id	: req.param('suppacctid'),
 		supp_acct_name	: req.param('suppacctname'),
@@ -58,6 +61,7 @@ exports.saveOrUpdateSupplierAccountType = function(req, res){
 
 //get all upplier Account Type
 exports.getSupplierAccountType = function(req, res){
+	log.info(fileName+'.getSupplierAccountType');
 
 	var condition 	= "";
 	var suppAcctId	= req.param('suppacctid')
@@ -101,12 +105,12 @@ exports.getSupplierAccountType = function(req, res){
 	})
 		.then(function(supAccType){
 			if(supAccType.length == 0){
-				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				log.info(fileName+'.getSupplierAccountType - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{
-				log.info('About '+supAccType.length+' results.');
+				log.info(fileName+'.getSupplierAccountType - About '+supAccType.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+supAccType.length+' results.';
 				response.data 		= supAccType;

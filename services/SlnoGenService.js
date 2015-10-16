@@ -121,7 +121,7 @@ var values={
 					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
 					response.data	 = "";
-					res.send(response);
+					//res.send(response);
 				}
 	}).error(function(err){
 		log.error(fileName+'.updateSequenceNo - ');
@@ -138,7 +138,7 @@ exports.getSlnoValue=function(companyid,storeid,refkey,autogenyn,status,cb){
 	var attr 	= "";
 	var sno="";
 	var slid=""
-	attr=['prefix_key','prefix_cncat','suffix_key','suffix_cncat','curr_seqno'];
+	attr=['slno_id','prefix_key','prefix_cncat','suffix_key','suffix_cncat','curr_seqno'];
 	var values={
 			company_id 			: companyid,
 			store_id 			: storeid,
@@ -147,18 +147,19 @@ exports.getSlnoValue=function(companyid,storeid,refkey,autogenyn,status,cb){
 			status 				: status
 	}
 	slnogen.findOne({where : [values],attributes: attr}).then(function(result) {
-		sno=result.prefix_key+""+result.prefix_cncat+""+result.suffix_key+""+result.suffix_cncat+""+result.curr_seqno;
-		slid=result.slno_id;
-	}).error(function(err){
-		log.error(fileName+'.getSlnoValue - ')
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
-		if(result)
-			cb(null,sno,slid);
+		var sl = {
+			slid : String,
+			sno : String	
+		}
+		if(result){
+			sl.slid = result.slno_id;
+			sl.sno = result.prefix_key+""+result.prefix_cncat+""+result.suffix_key+""+result.suffix_cncat+""+result.curr_seqno;
+			cb(sl);
+		}
+			
+		else
+			cb(null);
 		
-		});
+	});
 	
 }

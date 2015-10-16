@@ -15,6 +15,8 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log				= require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var userGroup 		= require('../models/UserGroup.js');
@@ -27,6 +29,7 @@ var response = {
 
 //insert or update User Group
 exports.saveOrUpdateUserGroup = function(req, res){
+	log.info(fileName+'.saveOrUpdateUserGroup');
 	
 	var uGroup = {
 			group_id		: req.param('groupid'),
@@ -124,6 +127,7 @@ exports.saveOrUpdateUserGroup = function(req, res){
 //get all User Group
 exports.getUserGroup = function(req, res){
 
+	log.info(fileName+'.getUserGroup');
 	var condition 			= "";
 	var groupId 			= req.param('groupid');
 	var companyId 			= req.param('companyid');
@@ -195,6 +199,7 @@ exports.getUserGroup = function(req, res){
 
 exports.getUserAccessTree = function(req, res){
 
+	log.info(fileName+'.getUserAccessTree');
 	var response = {
 			status	: Boolean,
 			message : String,

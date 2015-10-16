@@ -15,6 +15,8 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log = require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var supplierType = require('../models/SupplierType.js');
@@ -26,6 +28,7 @@ var response = {
 
 //insert or update Supplier Type
 exports.saveOrUpdateSupplierType = function(req, res){
+	log.info(fileName+'.saveOrUpdateSupplierType');
 	supplierType.upsert({
 		supp_type_id	: req.param('supptypeid'),
 		supp_type_name	: req.param('supptypename'),
@@ -35,12 +38,12 @@ exports.saveOrUpdateSupplierType = function(req, res){
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
-			log.info('Supplier type saved successfully.');
+			log.info(fileName+'.saveOrUpdateSupplierType - Supplier type saved successfully.');
 			response.message = 'Supplier type saved successfully.';
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info('Supplier type editted successfully.');
+			log.info(fileName+'.saveOrUpdateSupplierType - Supplier type editted successfully.');
 			response.message = 'Supplier type editted successfully.';
 			response.status  = true;
 			res.send(response);
@@ -59,6 +62,7 @@ exports.saveOrUpdateSupplierType = function(req, res){
 //get all Supplier Type
 exports.getSupplierType = function(req, res){
 
+	log.info(fileName+'.getSupplierType');
 	var condition 	= "";
 	var suppTypeId 	= req.param('supptypeid');
 	var companyId 	= req.param('companyid');
@@ -101,12 +105,12 @@ exports.getSupplierType = function(req, res){
 	})
 		.then(function(supType){
 			if(supType.length == 0){
-				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				log.info(fileName+'.getSupplierType - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{
-				log.info('About '+supType.length+' results.');
+				log.info(fileName+'.getSupplierType - About '+supType.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+supType.length+' results.';
 				response.data 		= supType;

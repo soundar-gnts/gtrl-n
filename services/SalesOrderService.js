@@ -15,6 +15,8 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log 		= require('../config/logger').logger;
 var appMsg		= require('../config/Message.js');
 var soHeader	= require('../models/SalesOrderHeader.js');
@@ -23,6 +25,9 @@ var common		= require('../services/CommonService.js');
 
 //insert or update Sales order details
 exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDeleteDetailsIds, res){
+	log.info(fileName+'.saveOrUpdateSalesOrderFn');
+	
+	var refkey = 'SO_NO';
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -59,33 +64,48 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDelet
 	} else{
 		
 		//send otp to mobile number
-		salesOrder.otp_code			= common.generateOTP(4);
-		salesOrder.sal_ordr_number	= common.generateOTP(12);
-		soHeader.create(salesOrder)
-		.then(function(data){
-			
-			for(var i = 0; i < salesDetails.length; i++){
-				salesDetails[i].salesorder_id = data.salesorder_id;
-				saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
-			}
+		
+		slnogenService.getSlnoValue(salesOrder.company_id, req.param('storeid'), refkey, 'y', 'Active', function(slno){
+			if(sl == null){
+
+				salesOrder.otp_code			= common.generateOTP(4);
+				salesOrder.sal_ordr_number	= sl.sno;
+				soHeader.create(salesOrder)
+				.then(function(data){
+					
+					for(var i = 0; i < salesDetails.length; i++){
+						salesDetails[i].salesorder_id = data.salesorder_id;
+						saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
+					}
+					slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
+					log.info('Sales order saved successfully.');
+					response.message	= 'Sales order saved successfully.';
+					response.data  		= data.salesorder_id;
+					response.status 	= true;
+					res.send(response);
+				})
+				.error(function(err){
+					log.error(err);
+					response.status  	= false;
+					response.message 	= 'Internal error.';
+					response.data  		= err;
+					res.send(response);
+				});
+				
+			} else{
 			log.info('Sales order saved successfully.');
 			response.message	= 'Sales order saved successfully.';
 			response.data  		= data.salesorder_id;
 			response.status 	= true;
-			res.send(response);
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
-			res.send(response);
+			res.send(response);}
 		});
+		
 	}
 	
 }
 
 function saveOrUpdateSalesOrderDetailsFn(salesDetail) {
+	log.info(fileName+'.saveOrUpdateSalesOrderDetailsFn');
 	soDetail.upsert(salesDetail)
 	.then(function(data){
 		log.info('Sales order details saved.');
@@ -100,6 +120,7 @@ function saveOrUpdateSalesOrderDetailsFn(salesDetail) {
 
 //get all Sales order details
 exports.getSalesOrder = function(req, res){
+	log.info(fileName+'.getSalesOrder');
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -200,6 +221,7 @@ exports.getSalesOrder = function(req, res){
 
 //OTP Verification
 exports.salesOrderOtpVerification = function(req, res){
+	log.info(fileName+'.salesOrderOtpVerification');
 	
 	var response = {
 			status	: Boolean,
@@ -235,6 +257,7 @@ exports.salesOrderOtpVerification = function(req, res){
 
 // Approve, Cancel and Reject service for sales_order_hdr table
 exports.changeSalesOrderStatus = function(req, res){
+	log.info(fileName+'.changeSalesOrderStatus');
 	
 	var response = {
 			status	: Boolean,
@@ -266,6 +289,7 @@ exports.changeSalesOrderStatus = function(req, res){
 
 //get all Sales order details
 exports.getSalesOrderDetails = function(req, res){
+	log.info(fileName+'.getSalesOrderDetails');
 
 	var response = {
 			status	: Boolean,
@@ -322,6 +346,7 @@ exports.getSalesOrderDetails = function(req, res){
 
 
 function deleteSalesOrderDetailsFn(condition){
+	log.info(fileName+'.deleteSalesOrderDetailsFn');
 	var response = {
 			status	: Boolean,
 			message : String,

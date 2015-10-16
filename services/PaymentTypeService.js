@@ -15,9 +15,12 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log = require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var paymentType = require('../models/PaymentType.js');
+
 var response = {
 		status	: Boolean,
 		message : String,
@@ -26,6 +29,7 @@ var response = {
 
 //insert or update Payment type
 exports.saveOrUpdatePymentType = function(req, res){
+	log.info(fileName+'.saveOrUpdatePymentType');
 	paymentType.upsert({
 		pymt_type_id	: req.param('pymttypeid'),
 		company_id		: req.param('companyid'),
@@ -58,6 +62,7 @@ exports.saveOrUpdatePymentType = function(req, res){
 
 //get all Payment type
 exports.getPymentType = function(req, res){
+	log.info(fileName+'.getPymentType');
 	
 	
 	var condition 			= "";

@@ -15,6 +15,8 @@
  * 
  */
 
+var path = require('path');
+var fileName=path.basename(__filename);
 var log				= require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var userAccessTree	= require('../models/UserAccessTree.js');
@@ -23,6 +25,7 @@ var userGroup = require('../models/UserGroup.js');
 
 //insert or update User Access Tree
 exports.saveOrUpdateUserAccessTree = function(req, res){
+	log.info(fileName+'.saveOrUpdateUserAccessTree');
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -35,7 +38,7 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 		last_updated_dt	: req.param("lastupdateddt"),
 		last_updated_by	: req.param('lastupdatedby'),
 	}
-	log.info(accessTree);
+	//log.info(accessTree);
 	
 	userAccessTree.findAll({where : {group_id : req.param('groupid')}})
 	.then(function(aTrees){
@@ -48,14 +51,14 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 					log.info('Inserted');
 				})
 				.error(function(err){
-					log.error(err);
+					log.error(fileName+'.saveOrUpdateUserAccessTree - '+err);
 					response.status  	= false;
 					response.message 	= 'Internal error.';
 					response.data  		= err;
 					res.send(response);
 				});
 			}
-			log.info('User access tree saved successfully.');
+			log.info(fileName+'.saveOrUpdateUserAccessTree - User access tree saved successfully.');
 			response.message = 'User access tree saved successfully.';
 			response.status  = true;
 			res.send(response);
@@ -77,14 +80,14 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 					res.send(response);
 				});
 			}
-			log.info('User access tree editted successfully.');
+			log.info(fileName+'.saveOrUpdateUserAccessTree - User access tree editted successfully.');
 			response.message = 'User access tree editted successfully.';
 			response.status  = true;
 			res.send(response);
 		}
 	})
 	.error(function(err){
-		log.error(err);
+		log.error(fileName+'.saveOrUpdateUserAccessTree - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -96,6 +99,7 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 //get all User Access Tree
 exports.getUserAccessTree = function(req, res){
 
+	log.info(fileName+'.getUserAccessTree');
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -142,12 +146,12 @@ exports.getUserAccessTree = function(req, res){
 	})
 		.then(function(accesTre){
 			if(accesTre.length == 0){
-				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				log.info(fileName+'.getUserAccessTree - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				res.send(response);
 			} else{
-				log.info('About '+accesTre.length+' results.');
+				log.info(fileName+'.getUserAccessTree - About '+accesTre.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+accesTre.length+' results.';
 				response.data 		= accesTre;
@@ -155,7 +159,7 @@ exports.getUserAccessTree = function(req, res){
 			}
 		})
 		.error(function(err){
-			log.error(err);
+			log.error(fileName+'.getUserAccessTree - '+err);
 			response.status  	= false;
 			response.message 	= 'Internal error.';
 			response.data  		= err;
