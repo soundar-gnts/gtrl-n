@@ -20,7 +20,7 @@ var response = {
 		message : String,
 		data	: String
 };
-var appmsg			= require('../config/Message.js');
+var appMsg			= require('../config/Message.js');
 var path = require('path');
 var fileName=path.basename(__filename);
 // To get full Serial No Generation List
@@ -72,8 +72,8 @@ exports.getSlnoGenDetails = function(req, res) {
 	slnogen.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
 			
-			log.info(fileName+'.getSlnoGenDetails - '+appmsg.LISTNOTFOUNDMESSAGE);
-			response.message = appmsg.LISTNOTFOUNDMESSAGE;
+			log.info(fileName+'.getSlnoGenDetails - '+appMsg.LISTNOTFOUNDMESSAGE);
+			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
@@ -97,14 +97,10 @@ exports.getSlnoGenDetails = function(req, res) {
 
 //To Update curr seqno and last seqno
 
-exports.updateSequenceNo = function(companyid,storeid,refkey,autogenyn,status,lastupdateddt,lastupdatedby) {
+exports.updateSequenceNo = function(slnoid,lastupdateddt,lastupdatedby) {
 	
 var values={
-		company_id 			: companyid,
-		store_id 			: storeid,
-		ref_key 			: refkey,
-		autogen_yn 			: autogenyn,
-		status 				: status
+		slno_id 			: slnoid
 };
 	slnogen.findOne({where : [values]}).then(function(result) {
 		if(result){
@@ -121,14 +117,15 @@ var values={
 					res.send(response);
 			});
 				} else{
-					log.info(fileName+'.updateSequenceNo - '+appmsg.LISTNOTFOUNDMESSAGE);
-					response.message = appmsg.LISTNOTFOUNDMESSAGE;
+					log.info(fileName+'.updateSequenceNo - '+appMsg.LISTNOTFOUNDMESSAGE);
+					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
 					response.data	 = "";
 					res.send(response);
 				}
 	}).error(function(err){
-		log.error(fileName+'.updateSequenceNo - '+err);
+		log.error(fileName+'.updateSequenceNo - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -136,9 +133,11 @@ var values={
 	});
 }
 
+
 exports.getSlnoValue=function(companyid,storeid,refkey,autogenyn,status,cb){
 	var attr 	= "";
 	var sno="";
+	var slid=""
 	attr=['prefix_key','prefix_cncat','suffix_key','suffix_cncat','curr_seqno'];
 	var values={
 			company_id 			: companyid,
@@ -149,10 +148,17 @@ exports.getSlnoValue=function(companyid,storeid,refkey,autogenyn,status,cb){
 	}
 	slnogen.findOne({where : [values],attributes: attr}).then(function(result) {
 		sno=result.prefix_key+""+result.prefix_cncat+""+result.suffix_key+""+result.suffix_cncat+""+result.curr_seqno;
+		slid=result.slno_id;
+	}).error(function(err){
+		log.error(fileName+'.getSlnoValue - ')
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
 		if(result)
-			cb(null,sno);
+			cb(null,sno,slid);
 		
-		
-	});
+		});
 	
 }
