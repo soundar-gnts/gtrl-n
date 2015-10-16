@@ -28,11 +28,11 @@ var response = {
 
 // To Get Bank full LIST
 exports.getBankDetails = function(req, res) {
-	var conditionQuery = "";
-	var attr 	= "";
-	var companyId=req.param("companyid");
-	var bankName=req.param("bankname");
-	var status=req.param("status");
+	var conditionQuery 		= "";
+	var attr 				= "";
+	var companyId			=req.param("companyid");
+	var bankName			=req.param("bankname");
+	var status		=req.param("status");
 	var bankId=req.param("bankid");
 	var bankCode=req.param("bankcode");
 	if(bankId!=null){
@@ -94,7 +94,7 @@ exports.getBankDetails = function(req, res) {
 		log.error(fileName+'.getBankDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -213,7 +213,7 @@ exports.getBankBranchDetails = function(req, res) {
 		log.error(fileName+'.getBankBranchDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -263,7 +263,7 @@ var val={		bank_id      :req.param("bankid"),
 	 }).error(function(err){
 			log.error(fileName+'.saveBankDetails - '+err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});}else{
@@ -302,7 +302,7 @@ var val={		bank_id      :req.param("bankid"),
 				log.error(fileName+'.saveBankDetails - ');
 				log.error(err);
 				response.status  	= false;
-				response.message 	= 'Internal error.';
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
 				response.data  		= err;
 				res.send(response);
 			});	 }

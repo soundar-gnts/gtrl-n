@@ -26,12 +26,12 @@ var response 	= {
 					};
 // To Brand full LIST
 exports.getBrandDetails = function(req, res) {
-	var attr 	= "";
-	var conditionQuery = "";
-	var companyId=req.param("companyid");
-	var brandName=req.param("brandname");
-	var status=req.param("status");
-	var brandId=req.param("brandid");
+	var attr 				= "";
+	var conditionQuery 		= "";
+	var companyId			=req.param("companyid");
+	var brandName			=req.param("brandname");
+	var status				=req.param("status");
+	var brandId				=req.param("brandid");
 	if(brandId!=null){
 		conditionQuery ="brand_id="+brandid;
 		}
@@ -83,7 +83,7 @@ exports.getBrandDetails = function(req, res) {
 		log.error(fileName+'.getBrandDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -117,7 +117,7 @@ exports.saveBrandDetails = function(req,res){
 		log.error(fileName+'.saveBrandDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});

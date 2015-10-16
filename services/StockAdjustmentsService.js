@@ -97,7 +97,7 @@ exports.getStockAdjustmentsDetails = function(req, res) {
 		log.error(fileName+'.getStockAdjustmentsDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -139,9 +139,9 @@ exports.saveStockAdjustments = function(req, res) {
 			response.data	 = "";
 			res.send(response);
 			
-			if(data.status==='Approved' && data.adjust_symbol==='+'){
+			if(req.param("status")==='Approved' && req.param("adjustsymbol")==='+'){
 				stockLedgerService.insertStockLedger(req.param("productid"),req.param("companyid"),req.param("storeid"),req.param("batchno"),req.param("adjustqty"),null,req.param("uomid"),null,data.actioned_dt,"Stock Adjustment - "+data.adjust_reason);
-				}else if(data.status==='Approved' && data.adjust_symbol==='-') {
+				}else if(req.param("status")==='Approved' && req.param("adjustsymbol")==='-') {
 					stockLedgerService.insertStockLedger(req.param("productid"),req.param("companyid"),req.param("storeid"),req.param("batchno"),null,req.param("adjustqty"),req.param("uomid"),null,data.actioned_dt,"Stock Adjustment - "+data.adjust_reason)
 				}
 		}
@@ -150,7 +150,7 @@ exports.saveStockAdjustments = function(req, res) {
 		log.error(fileName+'.saveStockAdjustments - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});

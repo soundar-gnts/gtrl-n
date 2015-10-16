@@ -28,14 +28,14 @@ var response 	= {
 
 // To Company full LIST
 exports.getcompanyDetails = function(req, res) {
-	var attr 	= "";
-	var conditionQuery = "";
-	var companyId=req.param("companyid");
-	var conpanyName=req.param("companyname");
-	var status=req.param("status");
-	var emailId=req.param("email_id");
-	var stateId=req.param("stateid");
-	var cityId=req.param("cityid");
+	var attr 			= "";
+	var conditionQuery 	= "";
+	var companyId		=req.param("companyid");
+	var conpanyName		=req.param("companyname");
+	var status			=req.param("status");
+	var emailId			=req.param("email_id");
+	var stateId			=req.param("stateid");
+	var cityId			=req.param("cityid");
 	
 	if(companyId!=null){
 		conditionQuery ="company_id="+companyId;
@@ -103,7 +103,7 @@ exports.getcompanyDetails = function(req, res) {
 		log.error(fileName+'.getcompanyDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -113,22 +113,22 @@ exports.getcompanyDetails = function(req, res) {
 
 exports.saveCompanyDetails = function(req,res){
 	company.upsert({
-		company_id : req.param("companyid"),
-		company_name :req.param("companyname"), 
-		address :req.param("address"),
-		pincode 	   :req.param("pincode"),
-		landline_no :req.param("landlineno"), 
-		mobile_no :req.param("mobileno"),
-		fax_no 	   :req.param("faxno"),
-		email_id :req.param("emailid"), 
-		contact_person :req.param("contactperson"),
-		contact_no 	   :req.param("contactno"),
-		remarks :req.param("remarks"), 
-		status :req.param("status"),
-		state_id :req.param("stateid"), 
-		city_id :req.param("cityid"),
-		last_updated_dt:req.param("updateddate"),
-		last_updated_by:req.param("updatedby"),
+		company_id 			:req.param("companyid"),
+		company_name 		:req.param("companyname"), 
+		address 			:req.param("address"),
+		pincode 	        :req.param("pincode"),
+		landline_no			:req.param("landlineno"), 
+		mobile_no 			:req.param("mobileno"),
+		fax_no 	  			:req.param("faxno"),
+		email_id 			:req.param("emailid"), 
+		contact_person 		:req.param("contactperson"),
+		contact_no 	  		:req.param("contactno"),
+		remarks 			:req.param("remarks"), 
+		status 				:req.param("status"),
+		state_id 			:req.param("stateid"), 
+		city_id				:req.param("cityid"),
+		last_updated_dt		:req.param("updateddate"),
+		last_updated_by		:req.param("updatedby"),
 	}).then(function(err){
 
 		if(err){
@@ -148,7 +148,7 @@ exports.saveCompanyDetails = function(req,res){
 		log.error(fileName+'.saveCompanyDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});

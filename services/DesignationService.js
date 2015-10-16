@@ -26,12 +26,12 @@ var response 	= {
 					};
 // To Get Bank full LIST
 exports.getDesignDetails = function(req, res) {
-	var conditionQuery = "";
-	var attr 	= "";
-	var companyId=req.param("companyid");
-	var designationName=req.param("designationname");
-	var status=req.param("status");
-	var designId=req.param("designationid");
+	var conditionQuery		 = "";
+	var attr 				 = "";
+	var companyId			 =req.param("companyid");
+	var designationName		 =req.param("designationname");
+	var status				 =req.param("status");
+	var designId			 =req.param("designationid");
 	if(designId!=null){
 		conditionQuery ="designation_id="+designId;
 		}
@@ -83,7 +83,7 @@ designation.findAll({where : [conditionQuery],attributes: attr,order: [['last_up
 		log.error(fileName+'.getDesignDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -92,12 +92,12 @@ designation.findAll({where : [conditionQuery],attributes: attr,order: [['last_up
 exports.saveDesignDetails = function(req,res){
 
 	designation.upsert({
-		designation_id    :req.param("designationid"),
-		designation_name  :req.param("designationname"), 
-			     	company_id :req.param("companyid"),
-				  status 	   :req.param("status"),
-				last_updated_dt:req.param("updateddate"),
-				last_updated_by:req.param("updatedby")} ).then(function(err){
+		designation_id   		 :req.param("designationid"),
+		designation_name 		 :req.param("designationname"), 
+			     	company_id	 :req.param("companyid"),
+				  status 	  	 :req.param("status"),
+				last_updated_dt	 :req.param("updateddate"),
+				last_updated_by	 :req.param("updatedby")} ).then(function(err){
 
 					if(err){
 						log.info(fileName+'.saveDesignDetails - '+appMsg.SAVEMESSAGE);
@@ -116,7 +116,7 @@ exports.saveDesignDetails = function(req,res){
 					log.error(fileName+'.saveDesignDetails - ');
 					log.error(err);
 					response.status  	= false;
-					response.message 	= 'Internal error.';
+					response.message 	= appMsg.INTERNALERRORMESSAGE;
 					response.data  		= err;
 					res.send(response);
 				});

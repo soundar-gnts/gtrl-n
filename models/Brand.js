@@ -34,7 +34,7 @@ var brand = model.define('m_brand', {
 	 
 	
 },{
-	 freezeTableName: true,
+	freezeTableName: true,
 	tableName: 'm_brand'
 });
 module.exports = brand;

@@ -25,7 +25,7 @@ var designation = model.define('m_designation', {
 		autoIncrement : true
 	},
 	company_id 			: dataTypes.INTEGER,	
-	designation_name 			: dataTypes.STRING,
+	designation_name 	: dataTypes.STRING,
 	status 				: dataTypes.STRING,
 	last_updated_dt 	: dataTypes.DATE,
 	last_updated_by 	: dataTypes.STRING

@@ -28,14 +28,14 @@ var response 	= {
 // To get full Manufacturer List
 exports.getmanufactDetails = function(req, res) {
 	var conditionQuery = "";
-	var attr 	= "";
-	var manufgId=req.param("manufgid");
-	var manufgName=req.param("manufgname");
-	var status=req.param("status");
-	var companyId=req.param("companyid");
-	var stateId=req.param("stateid");
-	var cityId=req.param("cityid");
-	var manufgCode=req.param("manufgcode");
+	var attr 			= "";
+	var manufgId		=req.param("manufgid");
+	var manufgName		=req.param("manufgname");
+	var status			=req.param("status");
+	var companyId		=req.param("companyid");
+	var stateId			=req.param("stateid");
+	var cityId			=req.param("cityid");
+	var manufgCode		=req.param("manufgcode");
 
 	if(manufgId!=null){
 		conditionQuery ="manufg_id="+manufgId;
@@ -110,7 +110,7 @@ exports.getmanufactDetails = function(req, res) {
 		log.error(fileName+'.getmanufactDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -125,26 +125,26 @@ exports.getmanufactDetails = function(req, res) {
 exports.saveManufacDetails = function(req,res){
 	manufac.upsert
 	({
-				manufg_id   :req.param("manufgid"),
-				office_type :req.param("officetype"), 
-				manufg_code :req.param("manufgcode"),
-				manufg_name 	   :req.param("manufgname"),
-				address :req.param("address"),
-				pincode 	   :req.param("pincode"),
-				landline_no :req.param("landlineno"), 
-				mobile_no :req.param("mobileno"),
-				fax_no 	   :req.param("faxno"),
-				email_id :req.param("emailid"), 
-				contact_person :req.param("contactperson"),
-				contact_no 	   :req.param("contactno"),
-				remarks :req.param("remarks"), 
-				status :req.param("status"),
-				state_id :req.param("stateid"), 
-				city_id :req.param("cityid"),
-				parent_id :req.param("parentid"), 
-				company_id :req.param("companyid"),
-				last_updated_dt:req.param("updateddate"),
-				last_updated_by:req.param("updatedby"),
+				manufg_id 				  :req.param("manufgid"),
+				office_type 		      :req.param("officetype"), 
+				manufg_code				  :req.param("manufgcode"),
+				manufg_name 		      :req.param("manufgname"),
+				address					  :req.param("address"),
+				pincode 		   		  :req.param("pincode"),
+				landline_no 			  :req.param("landlineno"), 
+				mobile_no 				  :req.param("mobileno"),
+				fax_no 	  				  :req.param("faxno"),
+				email_id				  :req.param("emailid"), 
+				contact_person			  :req.param("contactperson"),
+				contact_no 	 			  :req.param("contactno"),
+				remarks					  :req.param("remarks"), 
+				status 					  :req.param("status"),
+				state_id 				  :req.param("stateid"), 
+				city_id					  :req.param("cityid"),
+				parent_id 				  :req.param("parentid"), 
+				company_id 				  :req.param("companyid"),
+				last_updated_dt			  :req.param("updateddate"),
+				last_updated_by			  :req.param("updatedby"),
 	}).then(function(err){
 
 		if(err){
@@ -164,7 +164,7 @@ exports.saveManufacDetails = function(req,res){
 		log.error(fileName+'.saveManufacDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});

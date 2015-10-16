@@ -27,13 +27,13 @@ var response 	= {
 
 // To Get Bank full LIST
 exports.getCcyDetails = function(req, res) {
-	var conditionQuery = "";
-	var attr 	= "";
-	var companyId=req.param("companyid");
-	var ccyName=req.param("ccyname");
-	var status=req.param("status");
-	var ccyId=req.param("ccyid");
-	var ccyCode=req.param("ccycode");
+	var conditionQuery 		= "";
+	var attr 				= "";
+	var companyId			=req.param("companyid");
+	var ccyName				=req.param("ccyname");
+	var status				=req.param("status");
+	var ccyId				=req.param("ccyid");
+	var ccyCode				=req.param("ccycode");
 	if(ccyId!=null){
 		conditionQuery ="ccy_id="+ccyId;
 		}
@@ -93,7 +93,7 @@ exports.getCcyDetails = function(req, res) {
 		log.error(fileName+'.getCcyDetails - ');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -103,13 +103,13 @@ exports.getCcyDetails = function(req, res) {
 exports.saveCcyDetails = function(req,res){
 
 	 ccy.upsert({
-		 		 ccy_id    :req.param("ccyid"),
-		 		ccy_code  :req.param("ccycode"),
-		 		ccy_name  :req.param("ccyname"), 
-				company_id :req.param("companyid"),
-				status 	   :req.param("status"),
-				last_updated_dt:req.param("updateddate"),
-				last_updated_by:req.param("updatedby")} ).then(function(err){
+		 		 ccy_id   		 :req.param("ccyid"),
+		 		ccy_code 		 :req.param("ccycode"),
+		 		ccy_name  		 :req.param("ccyname"), 
+				company_id	 	 :req.param("companyid"),
+				status 		 	 :req.param("status"),
+				last_updated_dt	 :req.param("updateddate"),
+				last_updated_by  :req.param("updatedby")} ).then(function(err){
 
 					if(err){
 						log.info(fileName+'.saveCcyDetails - '+appMsg.SAVEMESSAGE);
@@ -128,7 +128,7 @@ exports.saveCcyDetails = function(req,res){
 					log.error(fileName+'.saveCcyDetails - ');
 					log.error(err);
 					response.status  	= false;
-					response.message 	= 'Internal error.';
+					response.message 	= appMsg.INTERNALERRORMESSAGE;
 					response.data  		= err;
 					res.send(response);
 				});

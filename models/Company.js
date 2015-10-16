@@ -44,14 +44,7 @@ var Company = model.define('m_company', {
 
 	    
 },{
-	 freezeTableName: true,
+	freezeTableName: true,
 	tableName: 'm_company'
-},{
-	classMethods: {
-		associate	:function(models){
-			Company.belongsTo(models.m_user)
-			
-		}
-	}
 });
 module.exports = Company;
