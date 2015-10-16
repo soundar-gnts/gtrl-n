@@ -18,4 +18,4 @@
 exports.LISTNOTFOUNDMESSAGE  = 'No data found.';
 exports.SAVEMESSAGE 		 = 'Saved successfully.';
 exports.UPDATEMESSAGE		 = 'Updated successfully.';
-exports.INTERNALMESSAGE		 = 'Internal Error.';
+exports.INTERNALERRORMESSAGE		 = 'Internal Error.';
