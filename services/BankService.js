@@ -91,7 +91,8 @@ exports.getBankDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(fileName+'.getBankDetails - '+err);
+		log.error(fileName+'.getBankDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -209,7 +210,8 @@ exports.getBankBranchDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(fileName+'.getBankBranchDetails - '+err);
+		log.error(fileName+'.getBankBranchDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -297,7 +299,8 @@ var val={		bank_id      :req.param("bankid"),
 		}
 				}
 		 }).error(function(err){
-				log.error(fileName+'.saveBankDetails - '+err);
+				log.error(fileName+'.saveBankDetails - ');
+				log.error(err);
 				response.status  	= false;
 				response.message 	= 'Internal error.';
 				response.data  		= err;

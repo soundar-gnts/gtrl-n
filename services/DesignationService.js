@@ -80,7 +80,8 @@ designation.findAll({where : [conditionQuery],attributes: attr,order: [['last_up
 		}
 	})
 	.error(function(err){
-		log.error(fileName+'.getDesignDetails - '+err);
+		log.error(fileName+'.getDesignDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -112,7 +113,8 @@ exports.saveDesignDetails = function(req,res){
 					}
 					
 				}).error(function(err){
-					log.error(fileName+'.saveDesignDetails - '+err);
+					log.error(fileName+'.saveDesignDetails - ');
+					log.error(err);
 					response.status  	= false;
 					response.message 	= 'Internal error.';
 					response.data  		= err;

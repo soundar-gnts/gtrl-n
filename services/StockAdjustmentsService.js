@@ -23,7 +23,7 @@ var response = {
 		data	: String  
 };
 var stockLedgerService = require('../services/StockLedgerService.js');
-var appmsg			= require('../config/Message.js');
+var appMsg			= require('../config/Message.js');
 
 // To get Stock Adjustments List based on user param
 exports.getStockAdjustmentsDetails = function(req, res) {
@@ -34,6 +34,8 @@ exports.getStockAdjustmentsDetails = function(req, res) {
 	var productid			=req.param("productid");
 	var storeid				=req.param("storeid");
 	var adjustsymbol		=req.param("adjustsymbol");
+	var status				=req.param("status");
+
 	
 	if(adjustid!=null){
 		condition ="adjust_id="+adjustid;
@@ -66,13 +68,20 @@ exports.getStockAdjustmentsDetails = function(req, res) {
 			condition=condition+" and adjust_symbol='"+adjustsymbol+"'";
 		}
 	}
+	if(status!=null){
+		if(condition === ""){
+			condition="status='"+status+"'";
+		}else {
+			condition=condition+" and status='"+status+"'";
+		}
+	}
 	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
 		attr=['adjust_id','product_id','company_id','adjust_symbol'];
 	}
 	stockadjustments.findAll({where : [condition],attributes: attr,order: [['actioned_dt', 'DESC']]}).then(function(result) {
 		if(result.length === 0){
-			log.info(fileName+'.getStockAdjustmentsDetails - '+appmsg.LISTNOTFOUNDMESSAGE);
-			response.message = appmsg.LISTNOTFOUNDMESSAGE;
+			log.info(fileName+'.getStockAdjustmentsDetails - '+appMsg.LISTNOTFOUNDMESSAGE);
+			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
@@ -85,7 +94,8 @@ exports.getStockAdjustmentsDetails = function(req, res) {
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(fileName+'.getStockAdjustmentsDetails - '+err);
+		log.error(fileName+'.getStockAdjustmentsDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -98,7 +108,7 @@ exports.getStockAdjustmentsDetails = function(req, res) {
 
 // To Save/Update Stock Adjustments Details
 exports.saveStockAdjustments = function(req, res) {
-	stockadjustments.create({
+	stockadjustments.upsert({
 		adjust_id					: req.param("adjustid"),
 		product_id 					: req.param("productid"),
 		company_id 					: req.param("companyid"),
@@ -107,6 +117,7 @@ exports.saveStockAdjustments = function(req, res) {
 		adjust_qty 					: req.param("adjustqty"),
 		batch_no					: req.param("batchno"),
 		uom_id						: req.param("uomid"),
+		status						: req.param("status"),
 		adjust_symbol 				: req.param("adjustsymbol"),
 		adjust_reason 				: req.param("adjustreason"),
 		actioned_by 				: req.param("actionedby"),
@@ -128,14 +139,16 @@ exports.saveStockAdjustments = function(req, res) {
 			response.data	 = "";
 			res.send(response);
 			
-			if(data.adjust_symbol==='+'){
-				stockLedgerService.insertStockLedger(data.product_id,data.company_id,data.store_id,data.batch_no,data.adjust_qty,null,data.uom_id,null,data.actioned_dt,"Stock Adjustment - "+data.adjust_reason);}else{
-					stockLedgerService.insertStockLedger(data.product_id,data.company_id,data.store_id,data.batch_no,null,data.adjust_qty,data.uom_id,null,data.actioned_dt,"Stock Adjustment - "+data.adjust_reason)
+			if(data.status==='Approved' && data.adjust_symbol==='+'){
+				stockLedgerService.insertStockLedger(req.param("productid"),req.param("companyid"),req.param("storeid"),req.param("batchno"),req.param("adjustqty"),null,req.param("uomid"),null,data.actioned_dt,"Stock Adjustment - "+data.adjust_reason);
+				}else if(data.status==='Approved' && data.adjust_symbol==='-') {
+					stockLedgerService.insertStockLedger(req.param("productid"),req.param("companyid"),req.param("storeid"),req.param("batchno"),null,req.param("adjustqty"),req.param("uomid"),null,data.actioned_dt,"Stock Adjustment - "+data.adjust_reason)
 				}
 		}
 		
 	}).error(function(err){
-		log.error(fileName+'.saveStockAdjustments - '+err);
+		log.error(fileName+'.saveStockAdjustments - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;

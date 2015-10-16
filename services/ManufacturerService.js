@@ -107,7 +107,8 @@ exports.getmanufactDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(fileName+'.getmanufactDetails - '+err);
+		log.error(fileName+'.getmanufactDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -160,7 +161,8 @@ exports.saveManufacDetails = function(req,res){
 		}
 		
 	}).error(function(err){
-		log.error(fileName+'.saveManufacDetails - '+err);
+		log.error(fileName+'.saveManufacDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;

@@ -34,6 +34,7 @@ var stockadjustments = model.define('t_stock_adjustments', {
 	adjust_symbol		: dataTypes.STRING,
 	adjust_reason		: dataTypes.STRING,
 	batch_no			: dataTypes.STRING,
+	status				: dataTypes.STRING,
 	actioned_by			: dataTypes.STRING,
 	actioned_dt			: dataTypes.DATE
 	}, {

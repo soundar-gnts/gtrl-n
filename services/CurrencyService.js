@@ -90,7 +90,8 @@ exports.getCcyDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(fileName+'.getCcyDetails - '+err);
+		log.error(fileName+'.getCcyDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -124,7 +125,8 @@ exports.saveCcyDetails = function(req,res){
 					}
 					
 				}).error(function(err){
-					log.error(fileName+'.saveCcyDetails - '+err);
+					log.error(fileName+'.saveCcyDetails - ');
+					log.error(err);
 					response.status  	= false;
 					response.message 	= 'Internal error.';
 					response.data  		= err;

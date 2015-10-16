@@ -80,7 +80,8 @@ exports.getBrandDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(fileName+'.getBrandDetails - '+err);
+		log.error(fileName+'.getBrandDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -113,7 +114,8 @@ exports.saveBrandDetails = function(req,res){
 		}
 		
 	}).error(function(err){
-		log.error(fileName+'.saveBrandDetails - '+err);
+		log.error(fileName+'.saveBrandDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;

@@ -100,7 +100,8 @@ exports.getcompanyDetails = function(req, res) {
 		}
 	})
 	.error(function(err){
-		log.error(fileName+'.getcompanyDetails - '+err);
+		log.error(fileName+'.getcompanyDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
@@ -144,7 +145,8 @@ exports.saveCompanyDetails = function(req,res){
 		}
 		
 	}).error(function(err){
-		log.error(fileName+'.saveCompanyDetails - '+err);
+		log.error(fileName+'.saveCompanyDetails - ');
+		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
