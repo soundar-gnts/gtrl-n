@@ -136,7 +136,7 @@ var values={
 	});
 }
 
-exports.getSlnoValue=function(companyid,storeid,refkey,autogenyn,status){
+exports.getSlnoValue=function(companyid,storeid,refkey,autogenyn,status,cb){
 	var attr 	= "";
 	var sno="";
 	attr=['prefix_key','prefix_cncat','suffix_key','suffix_cncat','curr_seqno'];
@@ -149,6 +149,10 @@ exports.getSlnoValue=function(companyid,storeid,refkey,autogenyn,status){
 	}
 	slnogen.findOne({where : [values],attributes: attr}).then(function(result) {
 		sno=result.prefix_key+""+result.prefix_cncat+""+result.suffix_key+""+result.suffix_cncat+""+result.curr_seqno;
+		if(result)
+			cb(null,sno);
+		
+		
 	});
-	return sno;
+	
 }

@@ -15,21 +15,25 @@
  * 
  */
 
-var log 	= require('../config/logger').logger;
-var appMsg	= require('../config/Message.js');
-var poHeader= require('../models/PoHeader.js');
-var poDetail= require('../models/PoDetail.js');
-var slnogen = require('../models/SlnoGen.js');
+var path = require('path');
+var fileName=path.basename(__filename);
+var log 			= require('../config/logger').logger;
+var appMsg			= require('../config/Message.js');
+var poHeader		= require('../models/PoHeader.js');
+var poDetail		= require('../models/PoDetail.js');
+var slnogenService 	= require('../services/SlnoGenService.js');
 
 
 //insert or update Purchase order details
 exports.saveOrUpdatePo = function(req, res){
+	log.info(fileName+'.saveOrUpdatePo');
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
 	
+	var refkey = 'PO_NO';
 	var purchaseDetails			= [];
 	var detailsLength			= 0;
 	var purchaseDeleteDetailsIds= [];
@@ -119,51 +123,40 @@ exports.saveOrUpdatePo = function(req, res){
 			res.send(response);
 		});
 	} else{
-		
-		slnogen.findOne({ where : {ref_key : 'PO_NO'}})
-		.then(function(slno){
-			if(!slno){
+		slnogenService.getSlnoValue(req.param('companyid'), req.param('storeid'), refkey, 'y', 'Active', function(err, data){
+			
+			console.log(data);
+			purchaseOrder.po_no = data
+
+			poHeader.create(purchaseOrder)
+			.then(function(data){
 				
-			} else{
-				purchaseOrder.po_no = slno.prefix_key+slno.prefix_cncat+slno.suffix_key+slno.suffix_cncat+slno.curr_seqno;
-				
-				poHeader.create(purchaseOrder)
-				.then(function(data){
-					slno.last_seqno = slno.curr_seqno;
-					slno.curr_seqno = slno.curr_seqno+1;
-					slno.save();
-					for(var i = 0; i < detailsLength; i++){
-						purchaseDetails[i].po_id = data.po_id;
-						saveOrUpdatePoDetailsFn(purchaseDetails[i]);
-					}
-					log.info('Purchase order saved successfully.');
-					response.message	= 'Purchase order saved successfully.';
-					response.data  		= data.po_id;
-					response.status 	= true;
-					res.send(response);
-				})
-				.error(function(err){
-					log.error(err);
-					response.status  	= false;
-					response.message 	= 'Internal error.';
-					response.data  		= err;
-					res.send(response);
-				});
-			}
-		}).error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
-			res.send(response);
+				for(var i = 0; i < detailsLength; i++){
+					purchaseDetails[i].po_id = data.po_id;
+					saveOrUpdatePoDetailsFn(purchaseDetails[i]);
+				}
+
+				log.info('Purchase order saved successfully.');
+				response.message	= 'Purchase order saved successfully.';
+				response.data  		= data.po_id;
+				response.status 	= true;
+				res.send(response);
+			})
+			.error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= 'Internal error.';
+				response.data  		= err;
+				res.send(response);
+			});
 		});
-		
 	}
 }
 
 
 //get all Purchase order details
 exports.getPo = function(req, res){
+	log.info(fileName+'.getPo');
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -248,6 +241,7 @@ exports.getPo = function(req, res){
 
 // Cancel, Approve and Reject service (po_hdr)
 exports.changePoStatus = function(req, res){
+	log.info(fileName+'.changePoStatus');
 	
 	var response = {
 			status	: Boolean,
@@ -275,6 +269,7 @@ exports.changePoStatus = function(req, res){
 
 // insert or update purchase order details
 exports.saveOrUpdatePoDetails = function(req, res){
+	log.info(fileName+'.saveOrUpdatePoDetails');
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -305,6 +300,7 @@ exports.saveOrUpdatePoDetails = function(req, res){
 }
 
 function saveOrUpdatePoDetailsFn(purchaseDetail) {
+	log.info(fileName+'.saveOrUpdatePoDetailsFn');
 	poDetail.upsert(purchaseDetail)
 	.then(function(data){
 		
@@ -316,6 +312,7 @@ function saveOrUpdatePoDetailsFn(purchaseDetail) {
 //get all Product details
 exports.getPoDetails = function(req, res){
 
+	log.info(fileName+'.getPoDetails');
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -378,6 +375,7 @@ exports.getPoDetails = function(req, res){
 }
 
 exports.deletePoDetails = function(req, res){
+	log.info(fileName+'.deletePoDetails');
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -393,6 +391,7 @@ exports.deletePoDetails = function(req, res){
 	
 	
 function deletePoDetailsFn(condition){
+	log.info(fileName+'.deletePoDetailsFn');
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -424,6 +423,7 @@ function deletePoDetailsFn(condition){
 
 //For update balance qty
 exports.updatePODetailBalanceQty=function(poid,prodid,qty,mode){
+	log.info(fileName+'.updatePODetailBalanceQty');
 	poDetail.findOne({where:[{po_id:poid,prod_id:prodid}]})
 	.then(function(result){
 		if(result!=null){
