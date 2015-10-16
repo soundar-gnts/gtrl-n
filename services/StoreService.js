@@ -18,6 +18,8 @@ var store 		     = require('../models/Store.js');
 var storeRegion		 = require('../models/StoreRegion.js');
 var log 			 = require('../config/logger').logger;
 var appMsg			 = require('../config/Message.js');
+var path			 = require('path');
+var fileName		 = path.basename(__filename);
 var response 		 = {
 							status	: Boolean,
 							message : String,
@@ -137,14 +139,14 @@ var response 		 = {
 		.then(function(storelist){
 			if(storelist.length === 0){
 				
-				log.info('No data found.');
+				log.info(fileName+'.getStoreList - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;	
 				response.data	 = "";
 				
 			} else{
 				
-				log.info('About '+storelist.length+' results.');
+				log.info(fileName+'.getStoreList - '+'About '+storelist.length+' results.');			
 				response.status  	= true;
 				response.message 	= 'About '+storelist.length+' results.';
 				response.data 		= storelist;
@@ -153,9 +155,10 @@ var response 		 = {
 			res.send(response);
 		})
 		.error(function(err){
+			log.info(fileName+'.getStoreList - '+appMsg.INTERNALERRORMESSAGE);
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -206,13 +209,14 @@ var response 		 = {
 		.then(function(regionlist){
 			if(regionlist.length === 0){
 				
-				log.info('No data found.');
+				log.info(fileName+'.getStoreRegionList - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data	 = "";
 			
 			} else{
 				
+				log.info(fileName+'.getStoreRegionList - '+'About '+regionlist.length+' results.');
 				log.info('About '+regionlist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+regionlist.length+' results.';
@@ -222,9 +226,11 @@ var response 		 = {
 			res.send(response);
 		})
 		.error(function(err){
+			
+			log.info(fileName+'.getStoreRegionList - '+appMsg.INTERNALERRORMESSAGE);
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -247,13 +253,13 @@ var response 		 = {
 			})
 			.then(function(data){
 				if(data){
-					log.info('Saved successfully.');
+					log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.SAVEMESSAGE);
 					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
 					
 				}
 				else{
-					log.info(' Updated successfully.');
+					log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.UPDATEMESSAGE);
 					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
 					
@@ -261,9 +267,10 @@ var response 		 = {
 				res.send(response);
 				
 			}).error(function(err){
+				log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.INTERNALERRORMESSAGE);
 				log.error(err);
 				response.status  	= false;
-				response.message 	= 'Internal error.';
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
 				response.data  		= err;
 				res.send(response);
 			});
@@ -317,22 +324,24 @@ var response 		 = {
 							})
 							.then(function(data){
 								if(data){
-									log.info('Saved successfully.');
+									
+									log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.SAVEMESSAGE);
 									response.message = appMsg.SAVEMESSAGE;
 									response.status  = true;
 									
 								}
 								else{
-									log.info(' Updated successfully.');
+									log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.UPDATEMESSAGE);								
 									response.message = appMsg.UPDATEMESSAGE;
 									response.status  = true;
 									
 								}
 								
 							}).error(function(err){
+								log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.INTERNALERRORMESSAGE);
 								log.error(err);
 								response.status  	= false;
-								response.message 	= 'Internal error.';
+								response.message 	= appMsg.INTERNALERRORMESSAGE;
 								response.data  		= err;
 								res.send(response);
 							});

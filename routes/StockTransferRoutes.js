@@ -18,8 +18,7 @@ var stockTransferService = require('../services/StockTransferService.js');
 
 module.exports = function(app, server){
 	app.post('/getstocktransferhdr', stockTransferService.getStocktransferHdr);
-	app.post('/getstocktransferdtl', stockTransferService.getStocktransferDtl);
-	app.post('/savestocktransdtls', stockTransferService.saveStockTransDtls);
+	app.post('/getstocktransferdtl', stockTransferService.getStocktransferDtl);	
 	app.post('/savetransferdetails', stockTransferService.saveTransferDetails);
 
 }

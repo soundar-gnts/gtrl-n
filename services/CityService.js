@@ -17,7 +17,8 @@
 var city 		= require('../models/City.js');
 var log 		= require('../config/logger').logger;
 var appMsg		= require('../config/Message.js');
-
+var path		= require('path');
+var fileName	= path.basename(__filename);
 var response 	= {
 						status	: Boolean,
 						message : String,
@@ -27,8 +28,8 @@ var response 	= {
 
 //SaveOrUpdate City Details
 
-	exports.saveOrUpdateCity = function(req, res){
-		
+	exports.saveOrUpdateCity = function(req, res){	
+
 		city.upsert({
 			
 			city_id			: req.param('cityid'),
@@ -41,13 +42,13 @@ var response 	= {
 			})
 			.then(function(data){
 				if(data){
-					log.info('Saved successfully.');
+					log.info(fileName+'.saveOrUpdateCity - '+appMsg.SAVEMESSAGE);
 					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
 					
 				}
 				else{
-					log.info(' Updated successfully.');
+					log.info(fileName+'.saveOrUpdateCity - '+appMsg.UPDATEMESSAGE);
 					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
 					
@@ -55,9 +56,10 @@ var response 	= {
 				res.send(response);
 				
 			}).error(function(err){
+				log.info(fileName+'.saveOrUpdateCity - '+appMsg.INTERNALERRORMESSAGE);
 				log.error(err);
 				response.status  	= false;
-				response.message 	= 'Internal error.';
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
 				response.data  		= err;
 				res.send(response);
 			});
@@ -65,7 +67,7 @@ var response 	= {
 
 	//City Full LIST
 
-	exports.getCityList = function(req, res) {
+	exports.getCityList = function(req, res) {	
 		
 		var condition  	= "";		
 		var cityId		= req.param("cityid");
@@ -114,14 +116,14 @@ var response 	= {
 			  
 				if(citylist.length === 0){
 					
-					log.info('No data found.');
+					log.info(fileName+'.getCityList - '+appMsg.LISTNOTFOUNDMESSAGE);
 					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
 					response.data 	 = "";
 					
 				} else{
-					
-					log.info('About '+citylist.length+' results.');
+
+					log.info(fileName+'.getCityList - About '+citylist.length+' results.');					
 					response.status  	= true;
 					response.message 	= 'About '+citylist.length+' results.';
 					response.data 		= citylist;
@@ -131,9 +133,10 @@ var response 	= {
 			})
 			
 			.error(function(err){
+				log.error(fileName+'.getCityList - '+appMsg.INTERNALERRORMESSAGE);
 				log.error(err);
 				response.status  	= false;
-				response.message 	= 'Internal error.';
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
 				response.data  		= err;
 				res.send(response);
 			});

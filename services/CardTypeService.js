@@ -17,7 +17,8 @@
 var cardtype 	= require('../models/CardType.js');
 var log 		= require('../config/logger').logger;
 var appMsg		= require('../config/Message.js');
-
+var path		= require('path');
+var fileName	= path.basename(__filename);
 var response	= {
 					status	: Boolean,
 					message : String,
@@ -41,13 +42,13 @@ var response	= {
 			})
 			.then(function(data){
 				if(data){
-					log.info('Saved successfully.');
+					log.info(fileName+'.saveOrUpdateCardType - '+appMsg.SAVEMESSAGE);
 					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
 					
 				}
 				else{
-					log.info(' Updated successfully.');
+					log.info(fileName+'.saveOrUpdateCardType - '+appMsg.UPDATEMESSAGE);
 					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
 					
@@ -55,9 +56,10 @@ var response	= {
 				res.send(response);
 				
 			}).error(function(err){
+				log.info(fileName+'.saveOrUpdateCardType - '+appMsg.INTERNALERRORMESSAGE);
 				log.error(err);
 				response.status  	= false;
-				response.message 	= 'Internal error.';
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
 				response.data  		= err;
 				res.send(response);
 			});
@@ -111,14 +113,13 @@ var response	= {
 		.then(function(cardtypelist){
 			
 			if(cardtypelist.length === 0){				
-				log.info('No data found.');
+				log.info(fileName+'.getCardTypeList - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data 	 = "";
 				
 			} else{
-				
-				log.info('About '+cardtypelist.length+' results.');
+				log.info(fileName+'.getCardTypeList - '+'About '+cardtypelist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+cardtypelist.length+' results.';
 				response.data 		= cardtypelist;
@@ -127,6 +128,7 @@ var response	= {
 			res.send(response);
 		})
 		.error(function(err){
+			log.info(fileName+'.getCardTypeList - '+appMsg.INTERNALERRORMESSAGE);
 			log.error(err);
 			response.status  	= false;
 			response.message 	= 'Internal error.';

@@ -18,6 +18,8 @@ var voucher 		= require('../models/Voucher.js');
 var voucherType		= require('../models/VoucherType.js');
 var appMsg			= require('../config/Message.js');
 var log 			= require('../config/logger').logger;
+var path			= require('path');
+var fileName		= path.basename(__filename);
 var response 		= {
 						status	: Boolean,
 						message : String,
@@ -79,15 +81,14 @@ var response 		= {
 		.then(function(voucherlist){
 			if(voucherlist.length === 0){
 				
-				log.info('No data found.');
+				log.info(fileName+'.getVoucherList - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data 	 = "";
 			
 				
 			} else{
-				
-				log.info('About '+voucherlist.length+' results.');
+				log.info(fileName+'.getVoucherList - '+'About '+voucherlist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+voucherlist.length+' results.';
 				response.data 		= voucherlist;
@@ -96,9 +97,10 @@ var response 		= {
 			res.send(response);
 		})
 		.error(function(err){
+			log.info(fileName+'.getVoucherList - '+appMsg.INTERNALERRORMESSAGE);
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -154,14 +156,14 @@ var response 		= {
 		.then(function(vouchertypelist){
 			if(vouchertypelist.length === 0){
 				
-				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				log.info(fileName+'.getVoucherTypeList - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data 	 = "";
 				
 			} else{
 				
-				log.info('About '+vouchertypelist.length+' results.');
+				log.info(fileName+'.getVoucherTypeList - '+'About '+vouchertypelist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+vouchertypelist.length+' results.';
 				response.data 		= vouchertypelist;
@@ -171,9 +173,10 @@ var response 		= {
 			
 		})
 		.error(function(err){
+			log.info(fileName+'.getVoucherTypeList - '+appMsg.INTERNALERRORMESSAGE);
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -196,22 +199,23 @@ var response 		= {
 		
 		.then(function(data){
 			if(data){
-				log.info('Saved successfully.');
+				log.info(fileName+'.saveOrUpdateVoucherType - '+appMsg.SAVEMESSAGE);
 				response.message = appMsg.SAVEMESSAGE;
 				response.status  = true;
 				
 			}
 			else{
-				log.info(' Updated successfully.');
+				log.info(fileName+'.saveOrUpdateVoucherType - '+appMsg.UPDATEMESSAGE);
 				response.message = appMsg.UPDATEMESSAGE;
 				response.status  = true;
 				
 			}
 			res.send(response);
 		}).error(function(err){
+			log.info(fileName+'.saveOrUpdateVoucherType - '+appMsg.INTERNALERRORMESSAGE);
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -239,22 +243,23 @@ var response 		= {
 							})
 							.then(function(data){
 								if(data){
-									log.info('Saved successfully.');
+									log.info(fileName+'.saveOrUpdateVoucher - '+appMsg.SAVEMESSAGE);
 									response.message = appMsg.SAVEMESSAGE;
 									response.status  = true;
 									
 								}
 								else{
-									log.info(' Updated successfully.');
+									log.info(fileName+'.saveOrUpdateVoucher - '+appMsg.UPDATEMESSAGE);
 									response.message = appMsg.UPDATEMESSAGE;
 									response.status  = true;
 									
 								}
 								res.send(response);
 							}).error(function(err){
+								log.info(fileName+'.saveOrUpdateVoucher - '+appMsg.INTERNALERRORMESSAGE);
 								log.error(err);
 								response.status  	= false;
-								response.message 	= 'Internal error.';
+								response.message 	= appMsg.INTERNALERRORMESSAGE;
 								response.data  		= err;
 								res.send(response);
 							});

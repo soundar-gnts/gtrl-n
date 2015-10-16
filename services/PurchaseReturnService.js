@@ -21,6 +21,8 @@ var purchaseReturnHdr 	= require('../models/PurchaseReturnHdr.js');
 var purchaseReturnDtl 	= require('../models/PurchaseReturnDtl.js');
 var log 				= require('../config/logger').logger;
 var appMsg				= require('../config/Message.js');
+var path				= require('path');
+var fileName			= path.basename(__filename);
 var response 			= {
 							status	: Boolean,
 							message : String,
@@ -104,23 +106,25 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 			
 			.then(function(result) {
 				if(result.length === 0){
-					log.info('No data found.');
+					
+					log.info(fileName+'.getPurchaseReturnHdrList - '+appMsg.LISTNOTFOUNDMESSAGE);
 					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;		
 					response.data  = "";		
 					res.send(response);
 				} else{
 					
-					log.info('About '+result.length+' results.');
+					log.info(fileName+'.getPurchaseReturnHdrList - '+'About '+result.length+' results.');					
 					response.status  	= true;
 					response.message 	= 'About '+result.length+' results.';
 					response.data 		= result;
 					res.send(response);
 				}
 			}).error(function(err){
+				log.info(fileName+'.getPurchaseReturnHdrList - '+appMsg.INTERNALERRORMESSAGE);
 				log.error(err);
 				response.status  	= false;
-				response.message 	= 'Internal error.';
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
 				response.data  		= err;
 				res.send(response);
 			});
@@ -164,23 +168,26 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 			
 			.then(function(result) {
 				if(result.length === 0){
-					log.info('No data found.');
+					
+					log.info(fileName+'.getPurchaseReturnDtl - '+appMsg.LISTNOTFOUNDMESSAGE);
 					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;		
 					response.data  = "";		
 					res.send(response);
 				} else{
 					
-					log.info('About '+result.length+' results.');
+					log.info(fileName+'.getPurchaseReturnDtl - '+'About '+result.length+' results.');					
 					response.status  	= true;
 					response.message 	= 'About '+result.length+' results.';
 					response.data 		= result;
 					res.send(response);
 				}
 			}).error(function(err){
+				
+				log.info(fileName+'.getPurchaseReturnDtl - '+appMsg.INTERNALERRORMESSAGE);
 				log.error(err);
 				response.status  	= false;
-				response.message 	= 'Internal error.';
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
 				response.data  		= err;
 				res.send(response);
 			});
@@ -203,24 +210,25 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 				
 			}).then(function(data){
 				if(data){
-					log.info('Saved Successfully.');
-					response.message = 'Saved Successfully.';
+					log.info(fileName+'.updatePurchaseReturnStatus - '+appMsg.SAVEMESSAGE);
+					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
 					response.data	 = "";
 					res.send(response);
 				}
 				else{
-					log.info('Updated Successfully.');
-					response.message = 'Updated Successfully.';
+					log.info(fileName+'.updatePurchaseReturnStatus - '+appMsg.SAVEMESSAGE);
+					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
 					response.data	 = "";
 					res.send(response);
 				}
 				
 			}).error(function(err){
+				log.info(fileName+'.updatePurchaseReturnStatus - '+appMsg.INTERNALERRORMESSAGE);
 				log.error(err);
 				response.status  	= false;
-				response.message 	= 'Internal error.';
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
 				response.data  		= err;
 				res.send(response);
 			});
@@ -234,6 +242,7 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 //insert or update Purchase Return details
  
  exports.saveOrUpdatePurchaseReturn = function(req, res){
+	 
 	 
 	 	var response	 = {
 				 			status	: Boolean,
@@ -265,6 +274,7 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 	 	
 	 	var returnDetails = [];
 	 	var detailsLength = 0;
+	
 	 	
 	 	if(req.param('returnlist') != null)
  		
@@ -290,53 +300,53 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 	 		}
 	 		returnDetails.push(purchasereturndtl);
 	 	}
- 	
-	 	if(req.param('returnid')!=null){
-	 		
-	 		purchaseReturnHdr.upsert(returnhdr)
-	 		.then(function(data){ 		
- 			
- 			for(var i = 0; i < returnDetails.length; i++){
- 				
- 				/*if(returnDetails.length>0){
- 					var condition = "return_id='"+req.param('returnid')+"'"; 					
- 					deletePurchaseReturnDtl(condition);
- 				} */				
- 				saveOrUpdateReturn(returnDetails[i]);
- 				
- 				if(req.param("status")!=null&&req.param('status')=='Approved')
- 		 		{
- 		 		stockLedgerService.insertStockLedger(
- 		 				req.param('returnlist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
- 		 				0,req.param('returnlist')[i].returnqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
- 		 				,"Purchase Return - "+req.param("returnreason"));
- 		 		
- 		 		productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('returnid'),req.param('returnlist')[i].productid,
- 						req.param("storeid"),req.param("batchno"),'Returned');
- 		 		}
- 			}
- 			if(req.param("status")!=null&&req.param("status")=='Approved'){		 		
- 			console.log("sadasd",returnhdr.supplier_id);
- 			accountReceivable.insertAccountReceivable(req.param("supplierid"),req.param("companyid"),req.param("storeid"),new Date(),null,req.param("retrunrefno"),
- 						req.param("returndate"),req.param("amountpayble"),req.param("cancelremark"),req.param("lastupdateddt")
- 						,req.param("lastupdatedby"));	
- 			
- 			}
- 			log.info('Updated Successfully.');
- 			response.message 	= 'Updated Successfully.';
- 			response.data  		= req.param('returnid');
- 			response.status  	= true;
- 			res.send(response);
- 			
- 		})
- 		.error(function(err){
- 			log.error(err);
- 			response.status  	= false;
- 			response.message 	= 'Internal error.';
- 			response.data  		= err;
- 			res.send(response);
- 		});
- 	} else { 	
+	 	if(req.param("status")!='Deleted'){
+				 	if(req.param('returnid')!=null){
+				 		
+				 		purchaseReturnHdr.upsert(returnhdr)
+				 		.then(function(data){ 		
+			 			
+			 			for(var i = 0; i < returnDetails.length; i++){
+			 							
+			 				saveOrUpdateReturn(returnDetails[i]);
+			 				
+			 				if(req.param("status")!=null&&req.param('status')=='Approved')
+			 		 		{
+				 				//To update stock ledger and summary
+				 		 		stockLedgerService.insertStockLedger(
+				 		 				req.param('returnlist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
+				 		 				0,req.param('returnlist')[i].returnqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
+				 		 				,"Purchase Return - Invoice Number :"+req.param("batchno")+'-'+req.param("returnreason"));
+				 		 		
+				 		 		
+				 		 		//To update product serial number status as 'Deleted'
+				 		 		productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('returnid'),req.param('returnlist')[i].productid,
+				 						req.param("storeid"),req.param("batchno"),'Returned');
+			 		 		}
+			 			}
+			 			if(req.param("status")!=null&&req.param("status")=='Approved'){		 		
+			 	
+			 			accountReceivable.insertAccountReceivable(req.param("supplierid"),req.param("companyid"),req.param("storeid"),new Date(),null,req.param("retrunrefno"),
+			 						req.param("returndate"),req.param("amountpayble"),req.param("outstandingamount"),req.param("returnreason"),req.param("lastupdateddt")
+			 						,req.param("lastupdatedby"));	
+			 			
+			 			}
+			 			log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.UPDATEMESSAGE);
+			 			response.message 	= appMsg.UPDATEMESSAGE;
+			 			response.data  		= req.param('returnid');
+			 			response.status  	= true;
+			 			res.send(response);
+			 			
+			 		})
+			 		.error(function(err){
+			 			log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.INTERNALERRORMESSAGE);
+			 			log.error(err);
+			 			response.status  	= false;
+			 			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			 			response.data  		= err;
+			 			res.send(response);
+			 		});
+			 	} else { 	
  		purchaseReturnHdr.create(returnhdr).then(function(data){
  			
  			for(var i = 0; i < detailsLength; i++){
@@ -347,23 +357,53 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
  				
  			}
  		
- 			log.info('Saved successfully.');
- 			response.message	= 'Saved successfully.';
+ 			log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.SAVEMESSAGE);
+ 			response.message	= appMsg.SAVEMESSAGE;
  			response.data  		= data.return_id;
  			response.status 	= true;
  			res.send(response);
  		})
  		.error(function(err){
+ 			log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.INTERNALERRORMESSAGE);
  			log.error(err);
  			response.status  	= false;
- 			response.message 	= 'Internal error.';
+ 			response.message 	= appMsg.INTERNALERRORMESSAGE;
  			response.data  		= err;
  			res.send(response);
  		});
  		
  		
  	}
- 	
+	 	}else{
+			if(req.param('returnlist')!=null){
+				for(var i=0;i<req.param('returnlist').length;i++){
+									
+					//To update stock ledger and summary
+					stockLedgerService.insertStockLedger(
+	 		 				req.param('returnlist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
+	 		 				0,req.param('returnlist')[i].returnqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
+	 		 				,"Delete Purchase Return Entry - Invoice Number :"+req.param("batchno")+'-'+req.param("returnreason"));
+							
+					//To update product serial number status as 'Deleted'
+					productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('returnid'),req.param('returnlist')[i].productid,
+	 						req.param("storeid"),req.param("batchno"),'Deleted');
+					
+					//for delete Purchase Return details
+					deletePurchaseReturnDtl(req.param('returnlist')[i].returndtlid);
+					
+				}
+				//For Delete Purchase Return 
+				deletePurchaseReturnHdr(req.param("returnid"));
+				
+				log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.DELETEMESSAGE);
+				response.message = appMsg.DELETEMESSAGE;
+				response.status  = true;
+				response.data	 = "";
+				res.send(response);
+				
+			}
+		
+		}
 
  }
  function saveOrUpdateReturn(purchasereturndtl) {
@@ -377,37 +417,30 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 		});
 	}
  
- function deletePurchaseReturnDtl(condition){
-		var response = {
-				status	: Boolean,
-				message : String,
-				data	: String
-		}
-		purchaseReturnDtl.destroy({where : [condition]})
-		.then(function(data){
-			
-			if(data >= '1'){
-				log.info(data+' Removed.');
-				response.status  	= true;
-				response.message 	= data+' Removed removed.';
-			} else{
-				log.info('No data found.');
-				response.status  	= true;
-				response.message 	= 'No data found.';
-			}
-			return response;
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
-			return response;
-		});
-	}
  
+//To Delete PurchaseReturn Detail
+ function deletePurchaseReturnDtl(returndtlid) {
+ 	console.log("returndtlid-"+returndtlid);
+ 	if(returndtlid!=null){
+ 		purchaseReturnDtl.destroy({where:{return_dtlid	: returndtlid	}}).then(function(data){
+ 		
+ 	}).error(function(err){
+ 		console.log(err);
+ 	});
+ 	}
+ }
  
- 
+ //To Delete PurchaseReturn Header
+ function deletePurchaseReturnHdr(returnid) {
+ 	console.log("returnid-"+returnid);
+ 	if(returnid!=null){
+ 		purchaseReturnHdr.destroy({where:{return_id	: returnid }}).then(function(data){
+ 		
+ 	}).error(function(err){
+ 		console.log(err);
+ 	});
+ 	}
+ }
  
  
  

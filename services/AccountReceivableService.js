@@ -151,9 +151,10 @@ exports.saveAccountReceivables = function(req, res) {
 }
 
 exports.insertAccountReceivable = function(supplierid,companyid,storeid,entrydate,accountid,invoiceno,
-		invoicedate,invoiceamount,remarks,lastupdateddt,lastupdatedby) {
+		invoicedate,invoiceamount,outstandingamount,remarks,lastupdateddt,lastupdatedby) {
 	console.log("asda");
 	console.log(supplierid);
+	var paidamnt = invoiceamount - outstandingamount
 	var accreceive={
 		company_id 				: companyid,
 		store_id 				: storeid,
@@ -162,8 +163,8 @@ exports.insertAccountReceivable = function(supplierid,companyid,storeid,entrydat
 		invoice_no 				: invoiceno,
 		invoice_date 			: invoicedate,	
 		invoice_amount 			: invoiceamount,
-		paid_amount 			: 0,
-		balance_amount 			: invoiceamount,
+		paid_amount 			: paidamnt,
+		balance_amount 			: outstandingamount,
 		remarks 				: remarks,
 		prepared_by 			: null,
 		actioned_by 			: null,

@@ -171,6 +171,21 @@ exports.insertProductSerialCodes = function(companyid,grnid,productid,storeid,ba
 	});
 		
 }
+//To Update Product Serial Code Storeid.
+
+exports.updateProductSerialStoreid= function(companyid,productid,storeid,batchid) {
+	
+		var serialcode = {
+							company_id 				: companyid,			
+							product_id 				: productid,						
+							batch_id 				: batchid,
+						 }
+		productserialcodes.update({store_id : storeid},{where : [serialcode]})
+		.error(function(err){
+			
+	});	
+	
+}
 
 //To Update Product Serial Status.
 

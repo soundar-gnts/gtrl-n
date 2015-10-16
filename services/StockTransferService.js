@@ -13,14 +13,14 @@
  * 
  * 
  */
-
+var productSerialCodes	= require('../services/ProductSerialCodesService.js');
 var stockLedgerService  = require('../services/StockLedgerService.js');
-var accountRecevable 	= require('../models/AccountReceivables.js');
-var productSerialCodes	= require('../models/ProductSerialCodes.js');
 var stocktranshdr  		= require('../models/StockTransferHdr.js');
 var stocktransdtl  		= require('../models/StockTransferDtl.js');
 var log 				= require('../config/logger').logger;
 var appMsg				= require('../config/Message.js');
+var path				= require('path');
+var fileName			= path.basename(__filename);
 var response  			= {
 							status	: Boolean,
 							message : String,
@@ -36,9 +36,9 @@ exports.getStocktransferHdr = function(req, res) {
 	var transferrefno	= req.param("transferrefno");
 	var companyid		= req.param("companyid");
 	var fromStoreid		= req.param("fromStoreid");
-	var to_store_id		= req.param("tostoreid");
-	var transfer_ctgry	= req.param("transferctgry");
-	var transfer_Status	= req.param("transferStatus");
+	var tostoreid		= req.param("tostoreid");
+	var transferctgry	= req.param("transferctgry");
+	var transferStatus	= req.param("transferStatus");
 	
 	if(transferid!=null){
 		condition ="transfer_id="+transferid;
@@ -91,23 +91,24 @@ exports.getStocktransferHdr = function(req, res) {
 	
 	.then(function(result) {
 		if(result.length === 0){
-			log.info('No data found.');
+			log.info(fileName+'.getStocktransferHdr - '+appMsg.LISTNOTFOUNDMESSAGE);
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(fileName+'.getStocktransferHdr - '+'About '+result.length+' results.');		
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
+		log.info(fileName+'.getStocktransferHdr - '+appMsg.INTERNALERRORMESSAGE);
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -164,110 +165,68 @@ exports.getStocktransferDtl = function(req, res) {
 		
 		.then(function(result) {
 			if(result.length === 0){
-				log.info('No data found.');
+				log.info(fileName+'.getStocktransferDtl - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data	 = "";
 				res.send(response);
 			} else{
-				
-				log.info('About '+result.length+' results.');
+				log.info(fileName+'.getStocktransferDtl - '+'About '+result.length+' results.');			
 				response.status  	= true;
 				response.message 	= 'About '+result.length+' results.';
 				response.data 		= result;
 				res.send(response);
 			}
 		}).error(function(err){
+			log.info(fileName+'.getStocktransferDtl - '+appMsg.INTERNALERRORMESSAGE);
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
 	};
 
 
-// To Save/Update StockTransfer Detail
-	
-	exports.saveStockTransDtls = function(req, res) {
-		
-		stocktransdtl.upsert({
-			transfer_dtlid 			: req.param('transferdtlid'),
-			transfer_id 			: req.param('transferid'),
-			product_id 				: req.param('productid'),
-			batch_no				: req.param('batchno'),
-			received_qty 			: req.param('receivedqty'),
-			rate 					: req.param('rate'),				
-			basic_value				: req.param('basicvalue'),
-			discount_prcnt			: req.param('discountprcnt'),
-			tax_id					: req.param('taxid'),
-			tax_prnct				: req.param('taxprnct'),
-			tax_value				: req.param('taxvalue'),
-			remarks					: req.param('remarks'),
-			status					: req.param('status'),
-			
-			
-		}).then(function(data){
-			if(data){
-				log.info('Saved Successfully.');
-				response.message = 'Saved Successfully.';
-				response.status  = true;
-				response.data	 = "";
-				res.send(response);
-			}
-			else{
-				log.info('Updated Successfully.');
-				response.message = 'Updated Successfully.';
-				response.status  = true;
-				response.data	 = "";
-				res.send(response);
-			}
-			
-		}).error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
-			res.send(response);
-		});
-			
-	}
 
 	// To Save/Update StockTransferHdr and  Detail
+
+	exports.saveTransferDetails = function(req, res){
 		
+		var response    = 	{
+				 			status	: Boolean,
+				 			message : String,
+				 			data	: String
+				 			}
+    	var trnsferhdr  =	{
+				 			transfer_id					: req.param("transferid"),
+							company_id 					: req.param("companyid"),
+							transfer_refno 				: req.param("transferrefno"),
+							transfer_date				: req.param("transferdate"),
+							from_Store_id 				: req.param("fromStoreid"),
+							to_store_id 				: req.param("tostoreid"),
+							transfer_ctgry 				: req.param("transferctgry"),
+							transfer_remarks 			: req.param("transferremarks"),	
+							transfer_Status 			: req.param("transferStatus"),
+							basic_total 				: req.param("basictotal"),
+							total_tax 					: req.param("totaltax"),
+							total_value 				: req.param("totalvalue"),
+							action_remarks 				: req.param("actionremarks"),
+							actioned_by 				: req.param("actionedby"),
+							actioned_dt 				: req.param("actioneddt"),
+							transfered_by 				: req.param("transferedby")
+				 			}
+		var transferDetails = [];
+		var detailsLength = 0;		
 		
-		 exports.saveTransferDetails = function(req, res){
-			 	var response = {
-			 			status	: Boolean,
-			 			message : String,
-			 			data	: String
-			 	}
-			 	var trnsferhdr = {
-			 			transfer_id					: req.param("transferid"),
-						company_id 					: req.param("companyid"),
-						transfer_refno 				: req.param("transferrefno"),
-						from_Store_id 				: req.param("fromStoreid"),
-						to_store_id 				: req.param("tostoreid"),
-						transfer_ctgry 				: req.param("transferctgry"),
-						transfer_remarks 			: req.param("transferremarks"),	
-						transfer_Status 			: req.param("transferStatus"),
-						basic_total 				: req.param("basictotal"),
-						total_tax 					: req.param("totaltax"),
-						total_value 				: req.param("totalvalue"),
-						action_remarks 				: req.param("actionremarks"),
-						actioned_by 				: req.param("actionedby"),
-						actioned_dt 				: req.param("actioneddt"),
-						transfered_by 				: req.param("transferedby")
-			 	}
-			 	var transferDetails = [];
-			 	var detailsLength = 0;
-			 	
-			 	if(req.param('stocktranslist') != null)
+	    if(req.param('stocktranslist') != null)
 			 		
-			 		detailsLength = req.param('stocktranslist').length;
+		detailsLength = req.param('stocktranslist').length;
 			 	
-			 	for(var i = 0; i < detailsLength; i++){
-			 		var transferdtl = {
+		for(var i = 0; i < detailsLength; i++){
+			
+			var transferdtl = {
+					
 			 				transfer_dtlid 			: req.param('stocktranslist')[i].transferdtlid,
 							transfer_id 			: req.param("transferid"),
 							product_id 				: req.param('stocktranslist')[i].productid,
@@ -283,34 +242,42 @@ exports.getStocktransferDtl = function(req, res) {
 							tax_value				: req.param('stocktranslist')[i].taxvalue,
 							remarks					: req.param('stocktranslist')[i].remarks,
 							status					: req.param('stocktranslist')[i].status,
+			 			}
+			 				transferDetails.push(transferdtl);
 			 		}
-			 		transferDetails.push(transferdtl);
-			 	}
 			 	
 			 	if(req.param('transferid')!=null){
 			 	
-			 		stocktranshdr.upsert(trnsferhdr)
-			 		.then(function(data){ 		
-			 			if(transferDetails.length>0){
-							var condition = "transfer_id='"+req.param('transferid')+"'";
-							
-							deleteStockTransDtl(condition);
-						}
-						
+			 		stocktranshdr.upsert(trnsferhdr).then(function(data){ 
+			 		
 			 			for(var i = 0; i < transferDetails.length; i++){
-			 				saveOrUpdateTransfer(returnDetails[i]);
-			 				if(req.param('status')=='Approved')
-			 		 		{
-			 		 				console.log("Approved",req.param('stocktranslist')[i].productid);
-			 		 				
-			 		 		stockLedgerService.insertStockLedger(
-			 		 				req.param('stocktranslist')[i].productid,req.param("companyid"),req.param("fromStoreid"),req.param("batchno"),
-			 		 				0,req.param('stocktranslist')[i].returnqty,req.param('stocktranslist')[i].uomid,req.param("transferrefno"),0
-			 		 				,req.param("cancelremark"));
-			 		 		
-			 				productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('stocktranslist')[i].productid,
-			 						req.param("fromStoreid"),req.param("batchno"));
-			 		 		}
+			 				
+			 				saveOrUpdateTransfer(transferDetails[i]);
+			 			
+			 				
+			 				if(req.param('transferStatus')==='Approved' && transferDetails[i].transfer_qty!=0){
+			 					
+			 					console.log("trans---"+req.param('stocktranslist')[i].transferqty);
+			 					//To update stock ledger and summary details 
+			 					stockLedgerService.insertStockLedger(req.param('stocktranslist')[i].productid,req.param("companyid"),req.param("fromStoreid"),req.param('stocktranslist')[i].batchno,
+			 							null,req.param('stocktranslist')[i].transferqty,req.param('stocktranslist')[i].uomid,req.param("transferrefno"),req.param("transferdate"),"Stock Transfer Out- "+req.param('transferremarks'));
+			 					
+			 					//To update product serial code details 
+			 					productSerialCodes.updateProductSerialStoreid(req.param("companyid"),req.param('stocktranslist')[i].productid,
+				 						req.param("fromStoreid"),req.param('stocktranslist')[i].batchno);
+			 				}
+			 				else if(req.param('transferStatus')==='Approved' && transferDetails[i].received_qty!=0){
+			 				
+			 					console.log("receive---"+req.param('stocktranslist')[i].receivedqty);
+			 					//To update stock ledger and summary details 
+			 					stockLedgerService.insertStockLedger(req.param('stocktranslist')[i].productid,req.param("companyid"),req.param("fromStoreid"),req.param('stocktranslist')[i].batchno,
+			 							req.param('stocktranslist')[i].receivedqty,null,req.param('stocktranslist')[i].uomid,req.param("transferrefno"),req.param("transferdate"),"Stock Transfer Out- "+req.param('transferremarks'));
+			 					
+			 					//To update product serial code details 
+			 					productSerialCodes.updateProductSerialStoreid(req.param("companyid"),req.param('stocktranslist')[i].productid,
+				 						req.param("tostoreid"),req.param('stocktranslist')[i].batchno);
+			 				}
+			 			
 			 			}
 			 			log.info('Updated Successfully.');
 			 			response.message 	= 'Updated Successfully.';
@@ -333,20 +300,10 @@ exports.getStocktransferDtl = function(req, res) {
 			 			
 			 			for(var i = 0; i < detailsLength; i++){
 			 				
-			 				transferDetails[i].transfer_id = data.transfer_id;
-			 			
+			 				transferDetails[i].transfer_id = data.transfer_id;			 			
 
 			 				saveOrUpdateTransfer(transferDetails[i]);
-			 				if(req.param('status')=='Approved')
-			 		 		{
-			 					stockLedgerService.insertStockLedger(
-				 		 				req.param('stocktranslist')[i].productid,req.param("companyid"),req.param("fromStoreid"),req.param("batchno"),
-				 		 				0,req.param('stocktranslist')[i].returnqty,req.param('stocktranslist')[i].uomid,req.param("transferrefno"),0
-				 		 				,req.param("cancelremark"));
-				 		 		
-				 				productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('stocktranslist')[i].productid,
-				 						req.param("fromStoreid"),req.param("batchno"));
-			 		 		}
+			 				
 			 			}
 			 			log.info('Saved successfully.');
 			 			response.message	= 'Saved successfully.';
@@ -368,8 +325,8 @@ exports.getStocktransferDtl = function(req, res) {
 
 			 }
 		 
- function saveOrUpdateTransfer(purchasereturndtl) {
-				 console.log(purchasereturndtl);
+ function saveOrUpdateTransfer(transferdtl) {
+				 console.log(transferdtl);
 				 stocktransdtl.upsert(transferdtl)
 				 
 					.then(function(data){
