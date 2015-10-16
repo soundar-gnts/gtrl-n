@@ -25,6 +25,11 @@ var response = {
 		data	: String
 };
 
+var appmsg			= require('../config/Message.js');
+
+var path = require('path');
+var filename=path.basename(__filename);
+
 // To save product details
 exports.saveProduct = function(req, res) {
 	product.create({
@@ -119,24 +124,27 @@ exports.saveProduct = function(req, res) {
 		
 	}).then(function(data){
 		if(data){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(filename+'>>saveProduct>>'+appmsg.SAVEMESSAGE);
+			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(filename+'>>saveProduct>>'+appmsg.UPDATEMESSAGE);
+			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>saveProduct>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 }
 
@@ -212,25 +220,26 @@ exports.getProductsList=function(req,res){
 	product.findAll({where : [condition],attributes: attr}).then(function(result){
 		if(result.length === 0){
 			
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(filename+'>>getProductsList>>'+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getProductsList>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>getProductsList>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 }
 
@@ -267,26 +276,26 @@ exports.getProductSpec=function(req,res){
 	}
 	productspec.findAll({where : [condition]}).then(function(result){
 		if(result.length === 0){
-			
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(filename+'>>getProductSpec>>'+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getProductSpec>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>getProductSpec>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 }
 //for get products images
@@ -330,26 +339,25 @@ exports.getProductImages=function(req,res){
 	}
 	productimage.findAll({where : [condition]}).then(function(result){
 		if(result.length === 0){
-			
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(filename+'>>getProductImages>>'+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
-			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getProductImages>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>getProductImages>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 }
 
@@ -395,26 +403,25 @@ exports.getProductBrands=function(req,res){
 	
 	productbrand.findAll({where : [condition]}).then(function(result){
 		if(result.length === 0){
-			
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(filename+'>>getProductBrands>>'+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
-			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getProductBrands>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>getProductBrands>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 }
 

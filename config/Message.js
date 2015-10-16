@@ -19,3 +19,5 @@ exports.LISTNOTFOUNDMESSAGE  = 'No data found.';
 exports.SAVEMESSAGE 		 = 'Saved successfully.';
 exports.UPDATEMESSAGE		 = 'Updated successfully.';
 exports.INTERNALERRORMESSAGE		 = 'Internal Error.';
+exports.DELETEMESSAGE		 = 'Deleted successfully.';
+exports.PRODUCTSOLDMESSAGE	 = 'Product is already sold, GRN delete is not allowed';

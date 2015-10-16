@@ -22,6 +22,10 @@ var response = {
 		data	: String
 };
 var commonService = require('../services/CommonService.js');
+var appmsg			= require('../config/Message.js');
+
+var path = require('path');
+var filename=path.basename(__filename);
 
 // To get full Employee List
 exports.getEmployeeDetails = function(req, res) {
@@ -94,20 +98,21 @@ exports.getEmployeeDetails = function(req, res) {
 	employee.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
 			
-			log.info('No data found.');
-			response.message = 'No data found.';
+			log.info(filename+'>>getEmployeeDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getEmployeeDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
+		log.info(filename+'>>getEmployeeDetails>>');
 		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
@@ -159,19 +164,20 @@ exports.saveEmployee= function(req, res) {
 		
 	}).then(function(data){
 		if(data){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(filename+'>>saveEmployee>>'+appmsg.SAVEMESSAGE);
+			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(filename+'>>saveEmployee>>'+appmsg.UPDATEMESSAGE);
+			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
 			res.send(response);
 		}
 		
 	}).error(function(err){
+		log.info(filename+'>>saveEmployee>>');
 		log.error(err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';

@@ -21,6 +21,10 @@ var response = {
 		data	: String
 };
 var appmsg			= require('../config/Message.js');
+
+var path = require('path');
+var filename=path.basename(__filename);
+
 // To get full Transaction Type List
 exports.getTxnsTypeDetails = function(req, res) {
 	var attr 			= "";
@@ -59,26 +63,26 @@ exports.getTxnsTypeDetails = function(req, res) {
 	
 	txnstype.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
-			
-			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			log.info(filename+'>>getTxnsTypeDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getTxnsTypeDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>getTxnsTypeDetails>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 }
 
@@ -97,24 +101,27 @@ exports.saveTxnsType = function(req, res) {
 		last_updated_by 	: req.param("lastupdatedby")
 	}).then(function(data){
 		if(data){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(filename+'>>saveTxnsType>>'+appmsg.SAVEMESSAGE);
+			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(filename+'>>saveTxnsType>>'+appmsg.UPDATEMESSAGE);
+			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
+			response.data	 = "";
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>saveTxnsType>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 		
 }

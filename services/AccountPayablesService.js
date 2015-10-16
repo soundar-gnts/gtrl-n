@@ -24,6 +24,9 @@ var appmsg			= require('../config/Message.js');
 var accounts = require('../models/Accounts.js');
 var commonService = require('../services/CommonService.js');
 
+var path = require('path');
+var filename=path.basename(__filename);
+
 // To get Account Payables List based on user param
 exports.getAccountPayablesDetails = function(req, res) {
 	var attr 			= "";
@@ -78,23 +81,24 @@ exports.getAccountPayablesDetails = function(req, res) {
 	
 	accountpayables.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
-			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			log.info(filename+'>>getAccountPayablesDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getAccountPayablesDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
+		log.info(filename+'>>getAccountPayablesDetails>>');
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appmsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -126,26 +130,27 @@ exports.saveAccountPayables = function(req, res) {
 		
 	}).then(function(data){
 		if(data){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(filename+'>>saveAccountPayables>>'+appmsg.SAVEMESSAGE);
+			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
-			response.data	 = "";
+			response.data	 = req.param("accpaybleid");
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(filename+'>>saveAccountPayables>>'+appmsg.UPDATEMESSAGE);
+			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
-			response.data	 = "";
+			response.data	 = req.param("accpaybleid");
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>saveAccountPayables>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 		
 }

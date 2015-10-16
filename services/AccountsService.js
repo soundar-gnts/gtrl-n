@@ -22,6 +22,9 @@ var response = {
 };
 var appmsg			= require('../config/Message.js');
 
+var path = require('path');
+var filename=path.basename(__filename);
+
 // To get Account List based on user param
 exports.getAccountsDetails = function(req, res) {
 	var attr 			= "";
@@ -77,25 +80,26 @@ exports.getAccountsDetails = function(req, res) {
 	
 	accounts.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
-			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			log.info(filename+'>>getAccountsDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getAccountsDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>getAccountsDetails>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 }
 
@@ -133,26 +137,27 @@ exports.saveAccounts = function(req, res) {
 		
 	}).then(function(data){
 		if(data){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(filename+'>>saveAccounts>>'+appmsg.SAVEMESSAGE);
+			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(filename+'>>saveAccounts>>'+appmsg.UPDATEMESSAGE);
+			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>saveAccounts>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 		
 }
@@ -163,24 +168,25 @@ exports.deleteAccountDetails = function(req, res) {
 		account_id					: req.param("accountid")		
 	}}).then(function(data){
 		if(data){
-			log.info('Deleted Successfully.');
-			response.message = 'Deleted Successfully.';
+			log.info(filename+'>>deleteAccountDetails>>'+appmsg.DELETEMESSAGE);
+			response.message = appmsg.DELETEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>deleteAccountDetails>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 	}else{
-		response.status  	= false;
-		response.message 	= 'JSON Error - Key Not found';
-		response.data  		= "";
-		res.send(response);
+			response.status  	= false;
+			response.message 	= 'JSON Error - Key Not found';
+			response.data  		= "";
+			res.send(response);
 	}
 }

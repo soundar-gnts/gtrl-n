@@ -1,7 +1,4 @@
 /**
- * New node file
- */
-/**
  * @Filename 		: PurchaseService.js
  * @Description 	: To write Business Logic for Product Purchase. 
  * @Author 			: SOUNDAR C 
@@ -16,6 +13,7 @@
  * 
  * 
  */
+var slnogenService 	= require('../services/SlnoGenService.js');
 var purchasehdr = require('../models/PurchaseHdr.js');
 var purchasedtl = require('../models/PurchaseDtl.js');
 var log = require('../config/logger').logger;
@@ -30,6 +28,10 @@ var stockLedgerService = require('../services/StockLedgerService.js');
 var accountPayablesService = require('../services/AccountPayablesService.js');
 var productSerialCodesService = require('../services/ProductSerialCodesService.js');
 var poService = require('../services/PoService.js');
+var salesService = require('../services/SalesService.js');
+
+var path = require('path');
+var filename=path.basename(__filename);
 
 // To get Purchase Header List based on user param
 exports.getPurchaseHdrDetails = function(req, res) {
@@ -120,14 +122,14 @@ exports.getPurchaseHdrDetails = function(req, res) {
 	
 	purchasehdr.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
-			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			log.info(filename+'>>getPurchaseHdrDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getPurchaseHdrDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
@@ -136,7 +138,7 @@ exports.getPurchaseHdrDetails = function(req, res) {
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appmsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -167,14 +169,14 @@ exports.getPurchaseDetails = function(req, res) {
 	
 	purchasedtl.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			log.info(filename+'>>getPurchaseDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getPurchaseDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
@@ -183,7 +185,7 @@ exports.getPurchaseDetails = function(req, res) {
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appmsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -194,8 +196,12 @@ exports.getPurchaseDetails = function(req, res) {
 
 // To Save/Update Purchase Details
 exports.savePurchaseHdrDetails = function(req, res) {
+	var refkey = 'BILL_NO';
 		if(req.param("status")!='Deleted'){
-		
+			slnogenService.getSlnoValue(req.param('companyid'), req.param('storeid'), refkey, 'y', 'Active', function(sl){
+				console.log(sl.sno);
+				slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
+			});
 		purchasehdr.create({
 			purchase_id					: req.param("purchaseid"),
 			po_id 						: req.param("poid"),
@@ -275,56 +281,90 @@ exports.savePurchaseHdrDetails = function(req, res) {
 					p.supplier_id,req.param("lastupdateddt"),req.param("lastupdatedby"));
 			
 			}
-				log.info('Saved Successfully.');
-				response.message = 'Saved Successfully.';
+				log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.SAVEMESSAGE);
+				response.message = appmsg.SAVEMESSAGE;
 				response.status  = true;
 				response.data	 = "";
 				res.send(response);
 			
 			
 		}).error(function(err){
+			log.info(filename+'>>savePurchaseHdrDetails>>');
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
 		}else{
+			
 			if(req.param('purchasedtlslist')!=null){
-				for(var i=0;i<req.param('purchasedtlslist').length;i++){
-					//For Update balance qty in Purchase order details.
-					poService.updatePODetailBalanceQty(req.param("poid"),req.param('purchasedtlslist')[i].productid,
-							req.param('purchasedtlslist')[i].invoiceqty,'ADD');
+				getSalesCount(req.param('purchasedtlslist'),req.param("batchno"), function(count){
+					console.log("before if count-->"+count);
+					if(count==0){
+
+						//For Reverse 
+						for(var i=0;i<req.param('purchasedtlslist').length;i++){
+							
+							//For Update balance qty in Purchase order details.
+							poService.updatePODetailBalanceQty(req.param("poid"),req.param('purchasedtlslist')[i].productid,
+									req.param('purchasedtlslist')[i].invoiceqty,'ADD');
+							
+							//To update stock ledger and summary
+							stockLedgerService.insertStockLedger(
+									req.param('purchasedtlslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),0,
+									req.param('purchasedtlslist')[i].invoiceqty,req.param('purchasedtlslist')[i].uomid,req.param("invoiceno"),
+									req.param("invoicedate"),"Delete Purchase Entry -Invoice Number : "+req.param("invoiceno")+'-'+req.param("actionremarks"));
+						
+							//To update product serial number status as 'Deleted'
+							productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param("purchaseid")
+									,req.param('purchasedtlslist')[i].productid,req.param("storeid"),req.param("batchno"),'Deleted');
+							
+							//for delete purchase details
+							deletePurchaseDetails(req.param('purchasedtlslist')[i].purchasedtlid);
+							
+						}
+						//For Delete Purchase Account
+						deletePurchaseHeader(req.param("purchaseid"));
+						
+						log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.DELETEMESSAGE);
+						response.message = appmsg.DELETEMESSAGE;
+						response.status  = true;
+						response.data	 = req.param("purchaseid");
+						res.send(response);
+										
+					}else{
+						log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.PRODUCTSOLDMESSAGE);
+						response.message = appmsg.PRODUCTSOLDMESSAGE;
+						response.status  = false;
+						response.data	 = req.param("purchaseid");
+						res.send(response);
+					}
 					
-					//To update stock ledger and summary
-					stockLedgerService.insertStockLedger(
-							req.param('purchasedtlslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),0,
-							req.param('purchasedtlslist')[i].invoiceqty,req.param('purchasedtlslist')[i].uomid,req.param("invoiceno"),
-							req.param("invoicedate"),"Delete Purchase Entry -Invoice Number : "+req.param("invoiceno")+'-'+req.param("actionremarks"));
+					
+				});
 				
-					//To update product serial number status as 'Deleted'
-					productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param("purchaseid")
-							,req.param('purchasedtlslist')[i].productid,req.param("storeid"),req.param("batchno"),'Deleted');
-					
-					//for delete purchase details
-					deletePurchaseDetails(req.param('purchasedtlslist')[i].purchasedtlid);
-					
-				}
-				//For Delete Purchase Account
-				deletePurchaseHeader(req.param("purchaseid"));
-				
-				log.info('Deleted Successfully.');
-				response.message = 'Deleted Successfully.';
-				response.status  = true;
-				response.data	 = "";
-				res.send(response);
 				
 			}
 		
 		}
 }
 
-
+function getSalesCount(purchasedtlslist, batchNo, callback){
+	var count = 0;
+	for(var i=0;i<purchasedtlslist.length;i++){
+		salesService.getSaleDetail(purchasedtlslist[i].productid,batchNo,function(data){
+			if(data){
+				count++;
+				console.log("count-1-->"+count);
+			}
+		});
+		
+		
+	}
+	console.log("count-2-->"+count);
+	callback(count);
+}
 
 
 //To Update Purchase Header Status
@@ -343,15 +383,15 @@ exports.updatePurchaseStatus = function(req, res) {
 		
 	}).then(function(data){
 		if(data){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(appmsg.SAVEMESSAGE);
+			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(appmsg.UPDATEMESSAGE);
+			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
 			res.send(response);
@@ -360,7 +400,7 @@ exports.updatePurchaseStatus = function(req, res) {
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appmsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});

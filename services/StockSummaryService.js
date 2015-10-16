@@ -22,6 +22,9 @@ var response = {
 };
 var appmsg			= require('../config/Message.js');
 
+var path = require('path');
+var filename=path.basename(__filename);
+
 // To get Stock Summary List based on user param
 exports.getStockSummaryDetails = function(req, res) {
 	var condition 		= "";
@@ -65,25 +68,26 @@ exports.getStockSummaryDetails = function(req, res) {
 	
 	stocksummary.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			log.info(filename+'>>getStockSummaryDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>>getStockSummaryDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>getStockSummaryDetails>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 }
 
@@ -104,30 +108,31 @@ exports.saveStockSummary = function(req, res) {
 		
 	}).then(function(data){
 		if(data){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
+			log.info(filename+'>>saveStockSummary>>'+appmsg.SAVEMESSAGE);
+			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
+			log.info(filename+'>>saveStockSummary>>'+appmsg.UPDATEMESSAGE);
+			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>>saveStockSummary>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 		
 }
-
+//Updation in stock summery
 exports.UpdateStockSummary=function(productid,companyid,storeid,batchno,currstock,lastsolddt,lastsoldqty){
 	var values={
 			product_id:productid,company_id:companyid,store_id:storeid,curr_stock:currstock,batch_no:batchno
