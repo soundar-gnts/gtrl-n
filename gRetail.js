@@ -84,6 +84,7 @@ require('./routes/AccountPayablesRoutes.js')(app, server);
 require('./routes/StockLedgerRoutes.js')(app, server);
 require('./routes/StockSummaryRoutes.js')(app, server);
 require('./routes/StockTransferRoutes.js')(app, server);
+require('./routes/AccountTransactionRoutes.js')(app, server);
 
 
 
