@@ -64,6 +64,7 @@ require('./routes/PurchaseReturnRoutes.js')(app, server);
 require('./routes/VoucherRoutes.js')(app, server);
 require('./routes/StoreRoutes.js')(app, server);
 require('./routes/AccountReceivableRoutes.js')(app, server);
+require('./routes/FeedBackRoutes.js')(app, server);
 
 require('./routes/CompanyRoutes.js')(app, server);
 require('./routes/ManufacturerRoutes.js')(app, server);

@@ -143,16 +143,16 @@ var response 		 = {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;	
 				response.data	 = "";
-				
+				res.send(response);
 			} else{
 				
 				log.info(fileName+'.getStoreList - '+'About '+storelist.length+' results.');			
 				response.status  	= true;
 				response.message 	= 'About '+storelist.length+' results.';
 				response.data 		= storelist;
-				
+				res.send(response);
 			}
-			res.send(response);
+			
 		})
 		.error(function(err){
 			log.info(fileName+'.getStoreList - '+appMsg.INTERNALERRORMESSAGE);
@@ -213,17 +213,16 @@ var response 		 = {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data	 = "";
-			
+				res.send(response);
 			} else{
 				
 				log.info(fileName+'.getStoreRegionList - '+'About '+regionlist.length+' results.');
-				log.info('About '+regionlist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+regionlist.length+' results.';
 				response.data 		= regionlist;
-				
+				res.send(response);
 			}
-			res.send(response);
+			
 		})
 		.error(function(err){
 			
@@ -256,15 +255,15 @@ var response 		 = {
 					log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.SAVEMESSAGE);
 					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
-					
+					res.send(response);
 				}
 				else{
 					log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.UPDATEMESSAGE);
 					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
-					
+					res.send(response);
 				}
-				res.send(response);
+			
 				
 			}).error(function(err){
 				log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.INTERNALERRORMESSAGE);
@@ -328,13 +327,13 @@ var response 		 = {
 									log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.SAVEMESSAGE);
 									response.message = appMsg.SAVEMESSAGE;
 									response.status  = true;
-									
+									res.send(response);
 								}
 								else{
 									log.info(fileName+'.saveOrUpdateStoreRegion - '+appMsg.UPDATEMESSAGE);								
 									response.message = appMsg.UPDATEMESSAGE;
 									response.status  = true;
-									
+									res.send(response);
 								}
 								
 							}).error(function(err){

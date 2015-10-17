@@ -36,7 +36,7 @@ var response 	= {
 			city_name		: req.param('cityname'),
 			state_id		: req.param('stateid'),
 			status    		: req.param('status'),	
-			last_updated_dt	: new Date(),
+			last_updated_dt	: req.param('lastupdateddt'),
 	        last_updated_by	: req.param('lastupdatedby')
 	        
 			})
@@ -45,15 +45,15 @@ var response 	= {
 					log.info(fileName+'.saveOrUpdateCity - '+appMsg.SAVEMESSAGE);
 					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
-					
+					res.send(response);
 				}
 				else{
 					log.info(fileName+'.saveOrUpdateCity - '+appMsg.UPDATEMESSAGE);
 					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
-					
+					res.send(response);
 				}
-				res.send(response);
+				
 				
 			}).error(function(err){
 				log.info(fileName+'.saveOrUpdateCity - '+appMsg.INTERNALERRORMESSAGE);
@@ -120,16 +120,16 @@ var response 	= {
 					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
 					response.data 	 = "";
-					
+					res.send(response);
 				} else{
 
 					log.info(fileName+'.getCityList - About '+citylist.length+' results.');					
 					response.status  	= true;
 					response.message 	= 'About '+citylist.length+' results.';
 					response.data 		= citylist;
-					
+					res.send(response);
 				}
-				res.send(response);
+				
 			})
 			
 			.error(function(err){

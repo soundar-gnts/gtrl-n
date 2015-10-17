@@ -85,16 +85,16 @@ var response 		= {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data 	 = "";
-			
+				res.send(response);
 				
 			} else{
 				log.info(fileName+'.getVoucherList - '+'About '+voucherlist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+voucherlist.length+' results.';
 				response.data 		= voucherlist;
-				
+				res.send(response);
 			}
-			res.send(response);
+			
 		})
 		.error(function(err){
 			log.info(fileName+'.getVoucherList - '+appMsg.INTERNALERRORMESSAGE);
@@ -160,16 +160,16 @@ var response 		= {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data 	 = "";
-				
+				res.send(response);
 			} else{
 				
 				log.info(fileName+'.getVoucherTypeList - '+'About '+vouchertypelist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+vouchertypelist.length+' results.';
 				response.data 		= vouchertypelist;
-				
+				res.send(response);
 			}
-			res.send(response);
+			
 			
 		})
 		.error(function(err){
@@ -202,15 +202,15 @@ var response 		= {
 				log.info(fileName+'.saveOrUpdateVoucherType - '+appMsg.SAVEMESSAGE);
 				response.message = appMsg.SAVEMESSAGE;
 				response.status  = true;
-				
+				res.send(response);
 			}
 			else{
 				log.info(fileName+'.saveOrUpdateVoucherType - '+appMsg.UPDATEMESSAGE);
 				response.message = appMsg.UPDATEMESSAGE;
 				response.status  = true;
-				
+				res.send(response);
 			}
-			res.send(response);
+			
 		}).error(function(err){
 			log.info(fileName+'.saveOrUpdateVoucherType - '+appMsg.INTERNALERRORMESSAGE);
 			log.error(err);
@@ -246,15 +246,15 @@ var response 		= {
 									log.info(fileName+'.saveOrUpdateVoucher - '+appMsg.SAVEMESSAGE);
 									response.message = appMsg.SAVEMESSAGE;
 									response.status  = true;
-									
+									res.send(response);
 								}
 								else{
 									log.info(fileName+'.saveOrUpdateVoucher - '+appMsg.UPDATEMESSAGE);
 									response.message = appMsg.UPDATEMESSAGE;
 									response.status  = true;
-									
+									res.send(response);
 								}
-								res.send(response);
+								
 							}).error(function(err){
 								log.info(fileName+'.saveOrUpdateVoucher - '+appMsg.INTERNALERRORMESSAGE);
 								log.error(err);

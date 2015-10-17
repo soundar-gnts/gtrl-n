@@ -42,16 +42,16 @@ var response = {
 					log.info(fileName+'.saveOrUpdateState - '+appMsg.SAVEMESSAGE);
 					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
-					
+					res.send(response);
 				}
 				else{
 					log.info(fileName+'.saveOrUpdateState - '+appMsg.UPDATEMESSAGE);
 					log.info(' Updated successfully.');
 					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
-					
+					res.send(response);
 				}
-				res.send(response);
+				
 			}).error(function(err){
 				log.info(fileName+'.saveOrUpdateState - '+appMsg.INTERNALERRORMESSAGE);
 				log.error(err);
@@ -106,15 +106,15 @@ var response = {
 					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
 					response.data 	 = "";
-					
+					res.send(response);
 				} else{
 					log.info(fileName+'.getStateList - About '+statelist.length+' results.');	
 					response.status  	= true;
 					response.message 	= 'About '+statelist.length+' results.';
 					response.data 		= statelist;
-					
+					res.send(response);
 				}
-				res.send(response);
+				
 			})
 			.error(function(err){
 				log.info(fileName+'.getStateList - '+appMsg.INTERNALERRORMESSAGE);

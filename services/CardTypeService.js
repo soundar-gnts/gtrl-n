@@ -45,15 +45,15 @@ var response	= {
 					log.info(fileName+'.saveOrUpdateCardType - '+appMsg.SAVEMESSAGE);
 					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
-					
+					res.send(response);
 				}
 				else{
 					log.info(fileName+'.saveOrUpdateCardType - '+appMsg.UPDATEMESSAGE);
 					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
-					
+					res.send(response);
 				}
-				res.send(response);
+				
 				
 			}).error(function(err){
 				log.info(fileName+'.saveOrUpdateCardType - '+appMsg.INTERNALERRORMESSAGE);
@@ -117,15 +117,15 @@ var response	= {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data 	 = "";
-				
+				res.send(response);
 			} else{
 				log.info(fileName+'.getCardTypeList - '+'About '+cardtypelist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+cardtypelist.length+' results.';
 				response.data 		= cardtypelist;
-				
+				res.send(response);
 			}
-			res.send(response);
+			
 		})
 		.error(function(err){
 			log.info(fileName+'.getCardTypeList - '+appMsg.INTERNALERRORMESSAGE);
