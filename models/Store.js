@@ -65,8 +65,8 @@ var store 		= model.define('m_store', {
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	timestamps : false,
+	
 	freezeTableName : true,
-	tableName : 'm_store'
+	tableName 		: 'm_store'
 });
 module.exports = store;

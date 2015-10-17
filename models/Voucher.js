@@ -39,8 +39,8 @@
 		last_updated_by 	: dataTypes.STRING
 	
 	}, {
-		timestamps : false,
+
 		freezeTableName : true,
-		tableName : 'm_voucher'
+		tableName 		: 'm_voucher'
 	});
 	module.exports = voucher;

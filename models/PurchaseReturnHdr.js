@@ -46,8 +46,8 @@ var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 	batch_no			: dataTypes.STRING,
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 't_purchase_return_hdr'
+
+	freezeTableName  : true,
+	tableName		 : 't_purchase_return_hdr'
 });
 module.exports = purchaseReturnHdr;

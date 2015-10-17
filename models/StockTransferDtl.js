@@ -43,8 +43,8 @@ var stockTransferDtl = model.define('t_stock_transfer_dtl', {
 	status				: dataTypes.STRING,
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 't_stock_transfer_dtl'
+	
+	freezeTableName 	: true,
+	tableName 			: 't_stock_transfer_dtl'
 });
 module.exports = stockTransferDtl;

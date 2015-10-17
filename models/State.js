@@ -32,8 +32,8 @@
 		last_updated_by	: dataTypes.STRING,
 	
 	},{
-		timestamps: false,
+		
 		 freezeTableName: true,
-		tableName: 'm_state'
+		 tableName: 'm_state'
 	});
 	module.exports = State;

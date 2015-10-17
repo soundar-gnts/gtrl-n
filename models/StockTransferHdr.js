@@ -43,8 +43,8 @@ var stockTransferHdr = model.define('t_stock_transfer_hdr', {
 	transfered_by		: dataTypes.STRING,
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 't_stock_transfer_hdr'
+	
+	freezeTableName 	: true,
+	tableName		    : 't_stock_transfer_hdr'
 });
 module.exports = stockTransferHdr;

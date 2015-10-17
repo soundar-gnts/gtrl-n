@@ -33,8 +33,8 @@ var storeRegion 	= model.define('m_store_region', {
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	timestamps : false,
+	
 	freezeTableName : true,
-	tableName : 'm_store_region'
+	tableName 		: 'm_store_region'
 });
 module.exports = storeRegion;

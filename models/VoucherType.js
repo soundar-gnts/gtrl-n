@@ -33,8 +33,8 @@
 		last_updated_by 	: dataTypes.STRING
 	
 	}, {
-		timestamps : false,
+		
 		freezeTableName : true,
-		tableName : 'm_voucher_type'
+		tableName 		: 'm_voucher_type'
 	});
 	module.exports = voucherType;

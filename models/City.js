@@ -32,8 +32,7 @@
 		last_updated_dt	: dataTypes.DATE,
 		last_updated_by	: dataTypes.STRING,
 	
-	},{
-		timestamps: false,
+	},{	
 		freezeTableName: true,
 		tableName: 'm_city'
 	});

@@ -38,7 +38,7 @@ var purchaseReturnDtl	= model.define('t_purchase_return_dtl', {
 	tax_value 			: dataTypes.DOUBLE,
 
 }, {
-	timestamps : false,
+	
 	freezeTableName : true,
 	tableName : 't_purchase_return_dtl'
 });
