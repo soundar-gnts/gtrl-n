@@ -58,13 +58,13 @@ exports.saveOrUpdateSupplierDetails = function(req, res){
 		account_type	: req.param('accounttype')
 	}).then(function(data){
 		if(data){
-			log.info(fileName+'.saveOrUpdateSupplierDetails - Supplier saved successfully.');
-			response.message = 'Supplier saved successfully.';
+			log.info(appMsg.SUPPLIERSAVESUCCESS);
+			response.message = appMsg.SUPPLIERSAVESUCCESS;
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info('supplier editted successfully.');
-			response.message = 'Supplier editted successfully.';
+			log.info(appMsg.SUPPLIEREDITSUCCESS);
+			response.message = appMsg.SUPPLIEREDITSUCCESS;
 			response.status  = true;
 			res.send(response);
 		}
@@ -72,7 +72,7 @@ exports.saveOrUpdateSupplierDetails = function(req, res){
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -141,7 +141,7 @@ exports.getSupplier = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});

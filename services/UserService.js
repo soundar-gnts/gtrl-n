@@ -15,17 +15,15 @@
  * 
  */
 
-var path = require('path');
-var fileName=path.basename(__filename);
-var log = require('../config/logger').logger;
-var User = require('../models/User.js');
-var Customer = require('../models/Customer.js');
+var path			= require('path');
+var fileName		=path.basename(__filename);
+var log				= require('../config/logger').logger;
+var User			= require('../models/User.js');
+var Customer		= require('../models/Customer.js');
+var userGroup		= require('../models/UserGroup.js'); 
+var userAccessTree	= require('../models/UserAccessTree.js');
+var employee		= require('../models/Employee.js'); 
 
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-}
 
 //generate OTP
 function generateOTP(){
@@ -35,6 +33,11 @@ function generateOTP(){
 //user signup
 exports.signup = function(req, res){
 	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
 	if(req.param('userid')!=null){
 		userUpdation(req);
 		if(req.param('mode') == 'mob')
@@ -68,6 +71,11 @@ exports.signup = function(req, res){
 	
 }
 function userUpdation(req){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
 	var otp = generateOTP();
 	User.upsert({
 		user_id			: req.param('userid'),
@@ -102,6 +110,11 @@ function userUpdation(req){
 	});
 }
 function customerUpdation(req){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
 	Customer.upsert({
 		cust_id			: req.param('custid'),
 		cus_first_name	: req.param('firstname'),
@@ -123,18 +136,48 @@ function customerUpdation(req){
 //User Login
 exports.login = function(req, res){
 
-	User.findOne({attributes:['user_id','user_name','session_id']},{where : {login_id : req.param('loginId'),login_pwd : req.param('loginPwd'),company_id : req.param('companyId')
-		}})
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	User.findOne({
+		where		: {login_id : req.param('loginId'),login_pwd : req.param('loginPwd'),company_id : req.param('companyId')},
+		include		: [
+		       		   {model : employee, attributes: ['store_id']},
+		       		   {model : userGroup, attributes: ['group_id', 'group_name'],
+		       			   include : {model : userAccessTree, attributes: ['screen_name']}
+		       		   }
+		       		   
+		       		   
+		],
+		attributes	: ['user_id', 'user_name', 'session_id', 'company_id']
+	})
 		.then(function(user){
 			if(!user){
-				res.send('Invalid Username and Password');
-			} else{			
-				if(user.status=="Verification")
-				{
-				res.send('OTP Verifiction is Pending');
+				log.info('Please Enter Valid Username OR Password');
+				response.message = 'Please Enter Valid Username OR Password';
+				response.status  = false;
+				response.data  = user;
+				res.send(response);
+				
+			}else{
+				if(user.status=="Verification"){
+					log.info('OTP Verifiction is Pending');
+					response.message = 'OTP Verifiction is Pending';
+					response.status  = true;
+					response.data  = user;
+					res.send(response);
 				}
-		
-				res.send('success',user);
+					
+				
+				log.info('You have logged in successfully');
+				response.message = 'You have logged in successfully';
+				response.status  = true;
+				response.data  = user;
+				res.send(response);
+				
 			}
 		})
 		.error(function(err){
@@ -148,7 +191,11 @@ exports.login = function(req, res){
 
 // list all users
 exports.getUser = function(req, res){
-
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
 	var condition 	= "";
 	var userId 		= req.param('userid');
 	var companyId 	= req.param('companyid');
@@ -204,6 +251,11 @@ exports.getUser = function(req, res){
 }
 
 exports.getAllCustomer = function(req, res){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
 	Customer.findAll()
 		.then(function(users){
 			if(users.length == 0){

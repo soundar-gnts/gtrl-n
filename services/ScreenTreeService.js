@@ -40,13 +40,13 @@ exports.saveOrUpdateScreenTree = function(req, res){
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
-			log.info('Screen tree saved successfully.');
-			response.message = 'Screen tree saved successfully.';
+			log.info(appMsg.SCREENTREESAVESUCCESS);
+			response.message = appMsg.SCREENTREESAVESUCCESS;
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info('Screen tree editted successfully.');
-			response.message = 'Screen tree editted successfully.';
+			log.info(appMsg.SCREENTREEEDITSUCCESS);
+			response.message = appMsg.SCREENTREEEDITSUCCESS;
 			response.status  = true;
 			res.send(response);
 		}
@@ -54,7 +54,7 @@ exports.saveOrUpdateScreenTree = function(req, res){
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -122,7 +122,7 @@ exports.getScreenTree = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});

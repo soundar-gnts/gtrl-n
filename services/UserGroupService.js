@@ -67,14 +67,14 @@ exports.saveOrUpdateUserGroup = function(req, res){
 				.error(function(err){
 					log.error(err);
 					response.status  	= false;
-					response.message 	= 'Internal error.';
+					response.message 	= appMsg.INTERNALERROR;
 					response.data  		= err;
 					res.send(response);
 				});
 			}
 			
-			log.info('User group editted successfully.');
-			response.message	= 'User group editted successfully.';
+			log.info(appMsg.USERGROUPEDITSUCCESS);
+			response.message	= appMsg.USERGROUPEDITSUCCESS;
 			response.data  		= data.po_id;
 			response.status 	= true;
 			res.send(response);
@@ -83,7 +83,7 @@ exports.saveOrUpdateUserGroup = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -99,14 +99,14 @@ exports.saveOrUpdateUserGroup = function(req, res){
 				.error(function(err){
 					log.error(err);
 					response.status  	= false;
-					response.message 	= 'Internal error.';
+					response.message 	= appMsg.INTERNALERROR;
 					response.data  		= err;
 					res.send(response);
 				});
 			}
 			
-			log.info('User group saved successfully.');
-			response.message	= 'User group saved successfully.';
+			log.info(appMsg.USERGROUPSAVESUCCESS);
+			response.message	= appMsg.USERGROUPSAVESUCCESS;
 			response.data  		= data.po_id;
 			response.status 	= true;
 			res.send(response);
@@ -115,7 +115,7 @@ exports.saveOrUpdateUserGroup = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -191,7 +191,7 @@ exports.getUserGroup = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -264,7 +264,7 @@ exports.getUserAccessTree = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});

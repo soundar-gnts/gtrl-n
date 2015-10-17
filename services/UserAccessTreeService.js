@@ -53,13 +53,13 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 				.error(function(err){
 					log.error(fileName+'.saveOrUpdateUserAccessTree - '+err);
 					response.status  	= false;
-					response.message 	= 'Internal error.';
+					response.message 	= appMsg.INTERNALERROR;
 					response.data  		= err;
 					res.send(response);
 				});
 			}
-			log.info(fileName+'.saveOrUpdateUserAccessTree - User access tree saved successfully.');
-			response.message = 'User access tree saved successfully.';
+			log.info(appMsg.USERACCESSTREESAVESUCCESS);
+			response.message = appMsg.USERACCESSTREESAVESUCCESS;
 			response.status  = true;
 			res.send(response);
 		} else{
@@ -75,13 +75,13 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 				.error(function(err){
 					log.error(err);
 					response.status  	= false;
-					response.message 	= 'Internal error.';
+					response.message 	= appMsg.INTERNALERROR;
 					response.data  		= err;
 					res.send(response);
 				});
 			}
-			log.info(fileName+'.saveOrUpdateUserAccessTree - User access tree editted successfully.');
-			response.message = 'User access tree editted successfully.';
+			log.info(appMsg.USERACCESSTREEEDITSUCCESS);
+			response.message = appMsg.USERACCESSTREEEDITSUCCESS;
 			response.status  = true;
 			res.send(response);
 		}
@@ -89,7 +89,7 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 	.error(function(err){
 		log.error(fileName+'.saveOrUpdateUserAccessTree - '+err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -161,7 +161,7 @@ exports.getUserAccessTree = function(req, res){
 		.error(function(err){
 			log.error(fileName+'.getUserAccessTree - '+err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});

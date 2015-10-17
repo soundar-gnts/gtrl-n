@@ -15,8 +15,11 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
+var model		= require('../config/sequelize.js');
+var dataTypes	= require('sequelize');
+var userGroup	= require('../models/UserGroup.js'); 
+var employee	= require('../models/Employee.js'); 
+
 var User = model.define('m_user', {
 	
 	user_id			: {
@@ -57,4 +60,7 @@ var User = model.define('m_user', {
 	 freezeTableName: true,
 	tableName: 'm_user'
 });
+
+User.hasOne(userGroup, {foreignKey : 'group_id'});
+User.hasOne(employee, {foreignKey : 'employee_id'});
 module.exports = User;

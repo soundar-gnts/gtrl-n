@@ -38,13 +38,13 @@ exports.saveOrUpdateSupplierAccountType = function(req, res){
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
-			log.info('Supplier account type saved successfully.');
-			response.message = 'Supplier account type saved successfully.';
+			log.info(appMsg.SUPPLIERACCOUNTTYPESAVESUCCESS);
+			response.message = appMsg.SUPPLIERACCOUNTTYPESAVESUCCESS;
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info('Supplier account type editted successfully.');
-			response.message = 'Supplier account type editted successfully.';
+			log.info(appMsg.SUPPLIERACCOUNTTYPEEDITSUCCESS);
+			response.message = appMsg.SUPPLIERACCOUNTTYPEEDITSUCCESS;
 			response.status  = true;
 			res.send(response);
 		}
@@ -52,7 +52,7 @@ exports.saveOrUpdateSupplierAccountType = function(req, res){
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -120,7 +120,7 @@ exports.getSupplierAccountType = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});

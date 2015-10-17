@@ -64,13 +64,13 @@ exports.saveOrUpdateproductCategory = function(req, res){
 	category.upsert(productCategory)
 	.then(function(data){
 		if(data){
-			log.info('Product category saved successfully.');
-			response.message= 'Product category saved successfully.';
+			log.info(appMsg.PRODUCTCATEGORYSAVESUCCESS);
+			response.message= appMsg.PRODUCTCATEGORYSAVESUCCESS;
 			response.status = true;
 			res.send(response);
 		} else{
-			log.info('Product category editted successfully.');
-			response.message= 'Product category editted successfully.';
+			log.info(appMsg.PRODUCTCATEGORYEDITSUCCESS);
+			response.message= appMsg.PRODUCTCATEGORYEDITSUCCESS;
 			response.status = true;
 			res.send(response);
 		}
@@ -79,7 +79,7 @@ exports.saveOrUpdateproductCategory = function(req, res){
 	.error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -170,7 +170,7 @@ exports.getProductCategory = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});

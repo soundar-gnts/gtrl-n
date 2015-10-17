@@ -38,13 +38,13 @@ exports.saveOrUpdateUom = function(req, res){
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
-			log.info(fileName+'.saveOrUpdateUom - Unit of messure saved successfully.');
-			response.message = 'Unit of messure saved successfully.';
+			log.info(appMsg.UOMSAVESUCCESS);
+			response.message = appMsg.UOMSAVESUCCESS;
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info(fileName+'.saveOrUpdateUom - Unit of messure editted successfully.');
-			response.message = 'Unit of messure editted successfully.';
+			log.info(appMsg.UOMEDITSUCCESS);
+			response.message = appMsg.UOMEDITSUCCESS;
 			response.status  = true;
 			res.send(response);
 		}
@@ -52,7 +52,7 @@ exports.saveOrUpdateUom = function(req, res){
 	}).error(function(err){
 		log.error(fileName+'.saveOrUpdateUom - '+err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -121,7 +121,7 @@ exports.getUom = function(req, res){
 			log.error(fileName+'.getUom - ');
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});

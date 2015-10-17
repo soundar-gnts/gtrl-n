@@ -38,13 +38,13 @@ exports.saveOrUpdateSupplierType = function(req, res){
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
-			log.info(fileName+'.saveOrUpdateSupplierType - Supplier type saved successfully.');
-			response.message = 'Supplier type saved successfully.';
+			log.info(appMsg.SUPPLIERTYPESAVESUCCESS);
+			response.message = appMsg.SUPPLIERTYPESAVESUCCESS;
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info(fileName+'.saveOrUpdateSupplierType - Supplier type editted successfully.');
-			response.message = 'Supplier type editted successfully.';
+			log.info(appMsg.SUPPLIERTYPEEDITSUCCESS);
+			response.message = appMsg.SUPPLIERTYPEEDITSUCCESS;
 			response.status  = true;
 			res.send(response);
 		}
@@ -52,7 +52,7 @@ exports.saveOrUpdateSupplierType = function(req, res){
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -120,7 +120,7 @@ exports.getSupplierType = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});

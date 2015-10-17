@@ -108,8 +108,8 @@ exports.saveOrUpdatePo = function(req, res){
 			for(var i = 0; i < purchaseDetails.length; i++)
 				saveOrUpdatePoDetailsFn(purchaseDetails[i]);
 			
-			log.info('Purchase order editted successfully.');
-			response.message 	= 'Purchase order editted successfully.';
+			log.info(appMsg.POEDITSUCCESS);
+			response.message 	= appMsg.POEDITSUCCESS;
 			response.data  		= req.param('poid');
 			response.status  	= true;
 			res.send(response);
@@ -118,46 +118,41 @@ exports.saveOrUpdatePo = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});
 	} else{
-		slnogenService.getSlnoValue(req.param('companyid'), req.param('storeid'), refkey, 'y', 'Active', function(sl){
+		
+		slnogenService.getSlnoValue(req.param('companyid'), req.param('storeid'), refkey, req.param('autogenyn'), 'Active', function(sl){
 			console.log(sl);
-			if(sl){
-				purchaseOrder.po_no = sl.sno;
+			
+			purchaseOrder.po_no = req.param('pono') || sl.sno;
 
-				poHeader.create(purchaseOrder)
-				.then(function(data){
+			poHeader.create(purchaseOrder)
+			.then(function(data){
 					
-					for(var i = 0; i < detailsLength; i++){
-						purchaseDetails[i].po_id = data.po_id;
-						saveOrUpdatePoDetailsFn(purchaseDetails[i]);
-					}
-					slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
-					log.info('Purchase order saved successfully.');
-					response.message	= 'Purchase order saved successfully.';
-					response.data  		= data.po_id;
-					response.status 	= true;
-					res.send(response);
-				})
-				.error(function(err){
-					log.error(err);
-					response.status  	= false;
-					response.message 	= 'Internal error.';
-					response.data  		= err;
-					res.send(response);
-				});
-			} else{
-				log.info.log('Serial no is : '+slno);
-				log.info('Serial no cannot be created.');
-				response.message	= 'Serial no cannot be created.';
+				for(var i = 0; i < detailsLength; i++){
+					purchaseDetails[i].po_id = data.po_id;
+					saveOrUpdatePoDetailsFn(purchaseDetails[i]);
+				}
+				if(sl.slid != null)
+					slnogenService.updateSequenceNo(sl.slid, req.param('lastupdateddt'), req.param('lastupdatedby'));
+						
+				log.info(appMsg.POSAVESUCCESS);
+				response.message	= appMsg.POSAVESUCCESS;
+				response.data  		= data.po_id;
 				response.status 	= true;
 				res.send(response);
-				
-				
-			}
+			})
+			.error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= appMsg.INTERNALERROR;
+				response.data  		= err;
+				res.send(response);
+			});
+			
 		});
 	}
 }
@@ -242,7 +237,7 @@ exports.getPo = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -270,7 +265,7 @@ exports.changePoStatus = function(req, res){
 	.error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -377,7 +372,7 @@ exports.getPoDetails = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -423,7 +418,7 @@ function deletePoDetailsFn(condition){
 	.error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		return response;
 	});

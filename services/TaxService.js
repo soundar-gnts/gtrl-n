@@ -48,13 +48,13 @@ exports.saveOrUpdateTax = function(req, res){
 		last_updated_by	: req.param('lastupdatedby'),
 	}).then(function(data){
 		if(data){
-			log.info(fileName+'.saveOrUpdateTax - Tax saved successfully.');
-			response.message = 'Tax saved successfully.';
+			log.info(appMsg.TAXSAVESUCCESS);
+			response.message = appMsg.TAXSAVESUCCESS;
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info(fileName+'.saveOrUpdateTax - Tax editted successfully.');
-			response.message = 'Tax editted successfully.';
+			log.info(appMsg.TAXEDITSUCCESS);
+			response.message = appMsg.TAXEDITSUCCESS;
 			response.status  = true;
 			res.send(response);
 		}
@@ -62,7 +62,7 @@ exports.saveOrUpdateTax = function(req, res){
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -137,7 +137,7 @@ exports.getTax = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});

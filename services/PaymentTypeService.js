@@ -39,13 +39,13 @@ exports.saveOrUpdatePymentType = function(req, res){
 		last_updated_by	: req.param('lastupdatedby')
 	}).then(function(data){
 		if(data){
-			log.info('Payment type saved successfully.');
-			response.message = 'Payment type saved successfully.';
+			log.info(appMsg.PAYMENTTYPESAVESUCCESS);
+			response.message = appMsg.PAYMENTTYPESAVESUCCESS;
 			response.status  = true;
 			res.send(response);
 		} else{
-			log.info('Payment type editted successfully.');
-			response.message = 'Payment type editted successfully.';
+			log.info(appMsg.PAYMENTTYPEEDITSUCCESS);
+			response.message = appMsg.PAYMENTTYPEEDITSUCCESS;
 			response.status  = true;
 			res.send(response);
 		}
@@ -53,7 +53,7 @@ exports.saveOrUpdatePymentType = function(req, res){
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= 'Internal error.';
+		response.message 	= appMsg.INTERNALERROR;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -122,7 +122,7 @@ exports.getPymentType = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= 'Internal error.';
+			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
 			res.send(response);
 		});
