@@ -198,10 +198,10 @@ exports.getPurchaseDetails = function(req, res) {
 exports.savePurchaseHdrDetails = function(req, res) {
 	var refkey = 'BILL_NO';
 		if(req.param("status")!='Deleted'){
-			slnogenService.getSlnoValue(req.param('companyid'), req.param('storeid'), refkey, 'y', 'Active', function(sl){
+			/*slnogenService.getSlnoValue(req.param('companyid'), req.param('storeid'), refkey, 'y', 'Active', function(sl){
 				console.log(sl.sno);
 				slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
-			});
+			});*/
 		purchasehdr.create({
 			purchase_id					: req.param("purchaseid"),
 			po_id 						: req.param("poid"),
