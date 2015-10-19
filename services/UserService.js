@@ -16,7 +16,7 @@
  */
 
 var path			= require('path');
-var fileName		=path.basename(__filename);
+var fileName		= path.basename(__filename);
 var log				= require('../config/logger').logger;
 var User			= require('../models/User.js');
 var Customer		= require('../models/Customer.js');
