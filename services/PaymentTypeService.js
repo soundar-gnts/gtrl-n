@@ -53,7 +53,7 @@ exports.saveOrUpdatePymentType = function(req, res){
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= appMsg.INTERNALERROR;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -122,7 +122,7 @@ exports.getPymentType = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERROR;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});

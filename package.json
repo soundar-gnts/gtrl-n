@@ -11,6 +11,7 @@
     "body-parser" 		: "*",
     "sequelize" 		: "*",
     "winston"			: "*",
-    "fs"				: "*"
+    "path"				: "*",
+    "crypto"			: "*"
   }
 }

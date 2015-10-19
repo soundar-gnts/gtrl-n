@@ -53,7 +53,7 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 				.error(function(err){
 					log.error(fileName+'.saveOrUpdateUserAccessTree - '+err);
 					response.status  	= false;
-					response.message 	= appMsg.INTERNALERROR;
+					response.message 	= appMsg.INTERNALERRORMESSAGE;
 					response.data  		= err;
 					res.send(response);
 				});
@@ -75,7 +75,7 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 				.error(function(err){
 					log.error(err);
 					response.status  	= false;
-					response.message 	= appMsg.INTERNALERROR;
+					response.message 	= appMsg.INTERNALERRORMESSAGE;
 					response.data  		= err;
 					res.send(response);
 				});
@@ -89,7 +89,7 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 	.error(function(err){
 		log.error(fileName+'.saveOrUpdateUserAccessTree - '+err);
 		response.status  	= false;
-		response.message 	= appMsg.INTERNALERROR;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -161,7 +161,7 @@ exports.getUserAccessTree = function(req, res){
 		.error(function(err){
 			log.error(fileName+'.getUserAccessTree - '+err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERROR;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});

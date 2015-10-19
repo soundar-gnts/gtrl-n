@@ -15,14 +15,18 @@
  * 
  */
 
-var m_user_service = require('../services/UserService.js');
+var userService = require('../services/UserService.js');
 
 module.exports = function(app, server){
 
-	app.post('/signup', 	m_user_service.signup);
-	app.post('/login', 		m_user_service.login);
-	app.post('/getuser',	m_user_service.getUser);
-	app.post('/edituser', 	m_user_service.signup);
+	
+	app.post('/signup', 		userService.signup);
+	app.post('/login', 			userService.login);
+	app.post('/getuser',		userService.getUser);
+	app.post('/edituser', 		userService.signup);
+	app.post('/otpverification',userService.userOTPVerification);
+	app.post('/resendotp',		userService.resendOTP);
+	app.post('/forgotpassword',	userService.forgotPassword);
 	
 }
 

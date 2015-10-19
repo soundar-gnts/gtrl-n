@@ -19,6 +19,8 @@ var model		= require('../config/sequelize.js');
 var dataTypes	= require('sequelize');
 var userGroup	= require('../models/UserGroup.js'); 
 var employee	= require('../models/Employee.js'); 
+var customer	= require('../models/Customer.js'); 
+//var bcrypt = require('bcrypt-nodejs');
 
 var User = model.define('m_user', {
 	
@@ -61,6 +63,9 @@ var User = model.define('m_user', {
 	tableName: 'm_user'
 });
 
-User.hasOne(userGroup, {foreignKey : 'group_id'});
-User.hasOne(employee, {foreignKey : 'employee_id'});
+
+
+User.hasOne(userGroup, 	{foreignKey : 'group_id'});
+User.hasOne(employee, 	{foreignKey : 'employee_id'});
+User.belongsTo(customer, 	{foreignKey : 'cust_id'});
 module.exports = User;

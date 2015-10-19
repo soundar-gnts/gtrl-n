@@ -10,7 +10,7 @@
  * Technologies Pvt. Ltd.
  * 
  * Version 			Date 		Modified By 		Remarks
- * 
+ * 0.1				19-10-2015	Haris K.A.			
  * 
  */
 var log = require('../config/logger').logger;
@@ -23,11 +23,12 @@ var appmsg			= require('../config/Message.js');
 var path = require('path');
 var filename=path.basename(__filename);
 //
-var saledtl = require('../models/SaleDtl.js');
+var saleDtl = require('../models/SaleDtl.js');
+var saleHdr = require('../models/SaleHeader.js');
 
 exports.getSaleDetail=function(productid,batchno,callback){
 	console.log(productid);
-	saledtl.findOne({where:[{product_id:productid,batch_no:batchno}]})
+	saleDtl.findOne({where:[{product_id:productid,batch_no:batchno}]})
 	.then(function(result){
 		callback(result);
 	});
@@ -43,75 +44,122 @@ exports.saveOrUpdateSalesFn = function(sales, salesDetails, salesDeleteDetailsId
 			message : String,
 			data	: String
 	}
-	if(salesOrder.salesorder_id != null){
-		soHeader.upsert(salesOrder)
+	if(sales.sale_id != null){
+		saleHdr.upsert(sales)
 		.then(function(data){
 			
-			log.info(salesDeleteDetailsIds.length+' Sales detail is going to remove.');
-			log.info(salesDetails.length+' Sales detail is going to update');
+			log.info(salesDeleteDetailsIds.length+' Sale detail is going to remove.');
+			log.info(salesDetails.length+' Sale detail is going to update');
 			
-			//delete sales details from sales order detail table.
+			//delete sale details from sale detail table.
 			for(var i = 0; i < salesDeleteDetailsIds.length; i++)
-				deleteSalesOrderDetailsFn("salesorder_dtl_id='"+salesDeleteDetailsIds[i].salesorder_dtl_id+"'");
+				deleteSaleDetailsFn("sale_dtlid='"+salesDeleteDetailsIds[i].sale_dtlid+"'", function(result){
+					if(!result.status)
+						callback(result);
+				});
 			
-			//update/save new sales details into sales order table.
+			//update/save new sale details into sale detail table.
 			for(var i = 0; i < salesDetails.length; i++)
-				saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
+				saveOrUpdateSaleDetailsFn(salesDetails[i], function(result){
+					if(!result.status)
+						callback(result);
+				});
 			
-			log.info(appMsg.SALESORDEREDITSUCCESS);
-			response.message 	= appMsg.SALESORDEREDITSUCCESS;
+			log.info(appMsg.SALESEDITSUCCESS);
+			response.message 	= appMsg.SALESEDITSUCCESS;
 			response.data  		= salesOrder.salesorder_id;
 			response.status  	= true;
-			res.send(response);
+			callback(response);
 			
 		}).error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERROR;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
 	} else{
-		
-		//send otp to mobile number
-		
-		slnogenService.getSlnoValue(salesOrder.company_id, req.param('storeid'), refkey, 'y', 'Active', function(slno){
-			if(sl == null){
-
-				salesOrder.otp_code			= common.generateOTP(4);
-				salesOrder.sal_ordr_number	= sl.sno;
-				soHeader.create(salesOrder)
-				.then(function(data){
-					
-					for(var i = 0; i < salesDetails.length; i++){
-						salesDetails[i].salesorder_id = data.salesorder_id;
-						saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
-					}
-					slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
-					log.info(appMsg.SALESORDERSAVESUCCESS);
-					response.message	= appMsg.SALESORDERSAVESUCCESS;
-					response.data  		= data.salesorder_id;
-					response.status 	= true;
-					res.send(response);
-				})
-				.error(function(err){
-					log.error(err);
-					response.status  	= false;
-					response.message 	= appMsg.INTERNALERROR;
-					response.data  		= err;
-					res.send(response);
-				});
 				
-			} else{
-			log.info('Sales order saved successfully.');
-			response.message	= 'Sales order saved successfully.';
-			response.data  		= data.salesorder_id;
+		saleHdr.create(sales)
+		.then(function(data){
+				
+			for(var i = 0; i < salesDetails.length; i++){
+				salesDetails[i].sale_id = data.sale_id;
+				saveOrUpdateSaleDetailsFn(salesDetails[i], function(result){
+					if(!result.status)
+						callback(result);
+				});
+			}
+			log.info(appMsg.SALESSAVESUCCESS);
+			response.message	= appMsg.SALESSAVESUCCESS;
+			response.data  		= data.sale_id;
 			response.status 	= true;
-			res.send(response);}
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
 		});
+		
+
 		
 	}
 	
+}
+
+function saveOrUpdateSaleDetailsFn(saleDetail, callback){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	log.info(fileName+'.saveOrUpdateSaleDetailsFn');
+	saleDtl.upsert(saleDetail)
+	.then(function(data){
+		log.error('Sale detail saved');
+		response.status  	= true;
+		callback(response);
+	}).error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		callback(response);
+	});
+
+}
+
+function deleteSaleDetailsFn(condition, callback){
+	log.info(fileName+'.deleteSaleDetailsFn');
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	saleDtl.destroy({where : [condition]})
+	.then(function(data){
+		
+		if(data >= '1'){
+			log.info(data+' Sale details removed.');
+			response.status  	= true;
+			callback(response);
+		} else{
+			log.info('No Sales details found.');
+			response.status  	= true;
+			callback(response);
+		}
+		
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		callback(response);
+	});
 }
 
 exports.getSalesFn = function(condition, callback){

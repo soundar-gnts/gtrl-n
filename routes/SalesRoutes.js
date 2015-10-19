@@ -64,20 +64,24 @@ module.exports = function(app, server){
 		if(req.param('salesdetails') != null)
 			salesDetailsLength = req.param('salesdetails').length;
 		
-		for(var i = 0; i < detailsLength; i++){
+		for(var i = 0; i < salesDetailsLength; i++){
 			var salesDetail = {
-				salesorder_dtl_id	: req.param('salesdetails')[i].salesorderdtlid,
-				salesorder_id		: req.param('salesorderid'),
-				product_id			: req.param('salesdetails')[i].productid,
-				uom_id				: req.param('salesdetails')[i].uomid,
-				rate				: req.param('salesdetails')[i].rate,
-				order_qty			: req.param('salesdetails')[i].orderqty,
-				order_value			: req.param('salesdetails')[i].ordervalue,
-				discount_prcnt		: req.param('salesdetails')[i].discountprcnt,
-				tax_ptcnt			: req.param('salesdetails')[i].taxptcnt,
-				tax_value			: req.param('salesdetails')[i].taxvalue,
-				basic_value			: req.param('salesdetails')[i].basicvalue,
-				discount_value		: req.param('salesdetails')[i].discountvalue
+					sale_dtlid			: req.param('salesdetails')[i].saledtlid,
+					sale_id				: req.param('saleid'),
+					product_id			: req.param('salesdetails')[i].productid,
+					sold_qty			: req.param('salesdetails')[i].soldqty,
+					uom_id				: req.param('salesdetails')[i].uomid,
+					return_qty			: req.param('salesdetails')[i].returnqty,
+					rate				: req.param('salesdetails')[i].rate,
+					basic_value			: req.param('salesdetails')[i].basicvalue,
+					discount_prcnt		: req.param('salesdetails')[i].discountprcnt,
+					tax_id				: req.param('salesdetails')[i].taxid,
+					tax_prnct			: req.param('salesdetails')[i].taxprnct,
+					tax_value			: req.param('salesdetails')[i].taxvalue
+					sale_value			: req.param('salesdetails')[i].salevalue
+					batch_no			: req.param('salesdetails')[i].batchno
+					salesorder_dtl_id	: req.param('salesdetails')[i].salesorderdtlid
+					discount_value		: req.param('salesdetails')[i].discountvalue
 			}
 			salesDetails.push(salesDetail);
 		}

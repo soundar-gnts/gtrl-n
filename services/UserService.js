@@ -22,13 +22,10 @@ var User			= require('../models/User.js');
 var Customer		= require('../models/Customer.js');
 var userGroup		= require('../models/UserGroup.js'); 
 var userAccessTree	= require('../models/UserAccessTree.js');
-var employee		= require('../models/Employee.js'); 
+var employee		= require('../models/Employee.js');
+var common			= require('../services/CommonService.js');
+var crypto 			= require('crypto');
 
-
-//generate OTP
-function generateOTP(){
-	return(Math.random().toString().substr(2,4));
-}
 
 //user signup
 exports.signup = function(req, res){
@@ -38,100 +35,166 @@ exports.signup = function(req, res){
 			message : String,
 			data	: String
 	}
-	if(req.param('userid')!=null){
-		userUpdation(req);
-		if(req.param('mode') == 'mob')
-		customerUpdation(req);
-		log.info('Successfully Edit.');
-		response.message = 'Successfully Edit.';
-		response.status  = true;
-		res.send(response);
-		
-	} else{
-		User.findOne({where : {login_id : req.param('loginid')}})
-		.then(function(user){
-			if(!user){
-				userUpdation(req);
-				if(req.param('mode') == 'mob')
-				customerUpdation(req);
-				log.info('Successfully Registered.');
-				response.message = 'Successfully Registered.';
-				response.status  = true;
-				res.send(response);
-			}
-			else{
-				log.info('Email Id Exist.');
-				response.message = 'Email Id Exist.';
-				response.status  = false;
-				res.send(response);
-			}
-		});
-		
+	
+	var customer = {
+			cust_id			: req.param('custid'),
+			cus_first_name	: req.param('firstname'),
+			cus_last_name	: req.param('lastname'),
+			email_id		: req.param('loginid'),
+			mobile_no		: req.param('mobileno'),
+			company_id		: req.param('companyid'),
+			last_updated_dt	: new Date(),
+		    last_updated_by	: req.param('firstname')+' '+req.param('lastname')
 	}
 	
+	
+	
+	var user = {
+			user_id			: req.param('userid'),
+			login_id		: req.param('loginid'),
+			user_name		: req.param('firstname')+' '+req.param('lastname'),
+			login_pwd		: req.param('loginpwd'),
+			access_Card_no	: req.param('accesscardno'),
+			group_id		: req.param('groupid'),
+			edit_units_yn	: req.param('editunitsyn'),
+			data_access_lvl	: req.param('dataaccesslvl'),
+			data_store_id	: req.param('datastoreid'),
+			data_region_id	: req.param('dataregionid'),
+			txn_access_lvl	: req.param('txnaccesslvl'),
+			txn_store_id	: req.param('txnstoreid'),
+			txn_region_id	: req.param('txnregionid'),
+			credit_bill_yn	: req.param('creditbillyn'),
+			employee_id		: req.param('employeeid'),
+			discount_prcnt	: req.param('discountprcnt'),
+			edit_price_yn	: req.param('editpriceyn'),
+			edit_tax_yn		: req.param('edittaxyn'),
+			status			: req.param('status'),
+			company_id		: req.param('companyid'),
+			last_updated_dt	: req.param('lastupdateddt'),
+		    last_updated_by	: req.param('firstname')+' '+req.param('lastname')
+	}
+	
+	if(req.param('mode') == 'mob'){
+		createOrUpdateCustomer(customer, function(result){
+			if(!result.status)
+				res.send(result);
+			else{
+				createOrUpdateUser(user, result.data, function(data){
+					res.send(data);
+				});
+			}
+			
+		});
+	}
 }
-function userUpdation(req){
-	var response = {
+
+function createOrUpdateCustomer(customer, callback){
+	var result = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
-	var otp = generateOTP();
-	User.upsert({
-		user_id			: req.param('userid'),
-		login_id		: req.param('loginid'),
-		user_name		: req.param('firstname')+' '+req.param('lastname'),
-		login_pwd		: req.param('loginpwd'),
-		access_Card_no	: req.param('accesscardno'),
-		group_id		: req.param('groupid'),
-		edit_units_yn	: req.param('editunitsyn'),
-		data_access_lvl	: req.param('dataaccesslvl'),
-		data_store_id	: req.param('datastoreid'),
-		data_region_id	: req.param('dataregionid'),
-		txn_access_lvl	: req.param('txnaccesslvl'),
-		txn_store_id	: req.param('txnstoreid'),
-		txn_region_id	: req.param('txnregionid'),
-		credit_bill_yn	: req.param('creditbillyn'),
-		employee_id		: req.param('employeeid'),
-		discount_prcnt	: req.param('discountprcnt'),
-		edit_price_yn	: req.param('editpriceyn'),
-		edit_tax_yn		: req.param('edittaxyn'),
-		status			: req.param('status'),
-		company_id		: req.param('companyid'),
-		otp_code		: otp,
-		last_updated_dt	: new Date(),
-	    last_updated_by	: req.param('firstname')+' '+req.param('lastname')
-	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
-	});
+	if(customer.cust_id != null){
+		Customer.upsert(customer)
+		.then(function(data){
+			log.info('Customer editted successfully.');
+			result.message = 'Customer editted successfully.';
+			result.status  = true;
+			callback(result);
+		})
+		.error(function(err){
+			log.error(err);
+			result.status  	= false;
+			result.message 	= 'Internal error.';
+			result.data  	= err;
+			callback(result);
+		});
+	} else{
+		Customer.findOne({
+			where : {email_id : customer.email_id}
+		})
+		.then(function(cust){
+			
+			if(cust){
+				log.info('Your Email ID already registered.');
+				result.message	= 'Your Email ID already registered.';
+				result.status 	= false;
+				callback(result);
+			} else{
+				Customer.create(customer)
+				.then(function(data){
+					log.info('Customer seved successfully.');
+					result.message	= 'Customer seved successfully.';
+					result.status 	= true;
+					result.data		= data.cust_id;
+					callback(result);
+				})
+				.error(function(err){
+					log.error(err);
+					result.status  	= false;
+					result.message 	= 'Internal error.';
+					result.data  	= err;
+					callback(result);
+				});
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			result.status  	= false;
+			result.message 	= 'Internal error.';
+			result.data  	= err;
+			callback(result);
+		})
+		
+	}
 }
-function customerUpdation(req){
-	var response = {
+
+function createOrUpdateUser(user, custId, callback){
+	var result = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
-	Customer.upsert({
-		cust_id			: req.param('custid'),
-		cus_first_name	: req.param('firstname'),
-		cus_last_name	: req.param('lastname'),
-		email_id		: req.param('loginid'),
-		mobile_no		: req.param('mobileno'),
-		company_id		: req.param('companyid'),
-		last_updated_dt	: new Date(),
-	    last_updated_by	: req.param('firstname')+' '+req.param('lastname')
-	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
-	});
+	if(user.user_id != null){
+		
+		User.upsert(user)
+		.then(function(data){
+			log.info('User editted successfully.');
+			result.message = 'User editted successfully.';
+			result.status  = true;
+			callback(result);
+		})
+		.error(function(err){
+			log.error(err);
+			result.status  	= false;
+			result.message 	= 'Internal error.';
+			result.data  	= err;
+			callback(result);
+		})
+	} else{
+		var shasum = crypto.createHash('sha1');
+		shasum.update(user.login_pwd);
+		user.login_pwd	= shasum.digest('hex');
+		user.status		= 'pending';
+		user.cust_id	= custId;
+		user.otp_code	= common.generateOTP(4);
+		User.create(user)
+		.then(function(data){
+			log.info('User seved successfully.');
+			log.info('Registered successfully. OTP has been sent to your mobile no.');
+			result.message	= 'Registered successfully. OTP has been sent to your mobile no.';
+			result.status 	= true;
+			callback(result);
+		}).error(function(err){
+			log.error(err);
+			result.status  	= false;
+			result.message 	= 'Internal error.';
+			result.data  	= err;
+			callback(result);
+		})
+	}
 }
+
 
 //User Login
 exports.login = function(req, res){
@@ -142,8 +205,12 @@ exports.login = function(req, res){
 			data	: String
 	}
 	
+	var shasum = crypto.createHash('sha1');
+	shasum.update(req.param('loginpwd'));
+	var pwd	= shasum.digest('hex');
+	
 	User.findOne({
-		where		: {login_id : req.param('loginId'),login_pwd : req.param('loginPwd'),company_id : req.param('companyId')},
+		where		: {login_id : req.param('loginid'), login_pwd : pwd, company_id : req.param('companyid')},
 		include		: [
 		       		   {model : employee, attributes: ['store_id']},
 		       		   {model : userGroup, attributes: ['group_id', 'group_name'],
@@ -152,9 +219,10 @@ exports.login = function(req, res){
 		       		   
 		       		   
 		],
-		attributes	: ['user_id', 'user_name', 'session_id', 'company_id']
+		attributes	: ['user_id', 'user_name', 'session_id', 'company_id', 'status']
 	})
 		.then(function(user){
+			
 			if(!user){
 				log.info('Please Enter Valid Username OR Password');
 				response.message = 'Please Enter Valid Username OR Password';
@@ -162,22 +230,17 @@ exports.login = function(req, res){
 				response.data  = user;
 				res.send(response);
 				
-			}else{
-				if(user.status=="Verification"){
-					log.info('OTP Verifiction is Pending');
-					response.message = 'OTP Verifiction is Pending';
-					response.status  = true;
-					response.data  = user;
-					res.send(response);
-				}
-					
-				
+			} else if(user.status=="pending"){
+				log.info('OTP Verification is Pending');
+				response.message = 'OTP Verification is Pending';
+				response.status  = false;
+				res.send(response);
+			} else if(user.status=="verified"){
 				log.info('You have logged in successfully');
 				response.message = 'You have logged in successfully';
 				response.status  = true;
 				response.data  = user;
 				res.send(response);
-				
 			}
 		})
 		.error(function(err){
@@ -188,6 +251,153 @@ exports.login = function(req, res){
 			res.send(response);
 		});
 	}
+
+// OTP verification
+exports.userOTPVerification = function(req, res){
+	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	User.findOne({
+		where : {login_id : req.param('loginid'),otp_code : req.param("otpcode"),company_id : req.param('companyid')}
+	})
+	.then(function(data){
+		console.log(data);
+		if(!data){
+			log.info('Invalid OTP');
+			response.message = 'Invalid OTP';
+			response.status  = false;
+			res.send(response);
+			
+			
+		} else if(data.status === "verified"){
+			log.info('Your account has been already activated.');
+			response.message = 'Your account has been already activated.';
+			response.status  = true;
+			
+			res.send(response);
+		} else if(data.status != "verified"){
+			data.status = "verified";
+			data.save();
+			log.info('Your account has been activated.');
+			response.message = 'Your account has been activated.';
+			response.status  = true;
+			res.send(response);
+		} 
+			
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
+		
+	
+}
+
+// Resend OTP
+exports.resendOTP = function(req, res){
+	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	User.findOne({
+		where 	: {login_id : req.param('loginid'),company_id : req.param('companyid')},
+		include : {model : Customer, attributes : ['mobile_no']}
+	})
+	.then(function(data){
+		
+		if(!data){
+			log.info('You are not an existing user. Please Signup for further processing.');
+			response.message = 'You are not an existing user. Please Signup for further processing.';
+			response.status  = true;
+			res.send(response);
+			reply.success = false
+			
+		} else if(data.status == "verified"){
+			log.info('Your account has been already activated.');
+			response.message = 'Your account has been already activated.';
+			response.status  = true;
+			
+			res.send(response);
+		} else if(data.status != "verified"){
+			data.otp_code = common.generateOTP(4);
+			data.save();
+//			mobile sms send function
+//			console.log(data.m_customer.mobile_no);
+			log.info('OTP has sent to your Mobile no.');
+			response.message = 'OTP has sent to your Mobile no.';
+			response.status  = true;
+			res.send(response);
+		}
+			
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
+		
+	
+}
+
+//forgot pasword
+//Resend OTP
+exports.forgotPassword = function(req, res){
+	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	User.findOne({
+		where 	: {login_id : req.param('loginid'),company_id : req.param('companyid')}
+	})
+	.then(function(data){
+		
+		if(!data){
+			log.info('You are not an existing user. Please Signup for further processing.');
+			response.message = 'You are not an existing user. Please Signup for further processing.';
+			response.status  = true;
+			res.send(response);
+			reply.success = false
+			
+		} else if(data.status != "verified"){
+			log.info('Your registered Email ID not yet activated.');
+			response.message = 'Your registered Email ID not yet activated.';
+			response.status  = false;
+			res.send(response);
+		} else if(data.status == "verified"){
+			data.login_pwd = req.param('loginpwd');
+			data.save();
+			log.info('Password has been sent to your registered email.');
+			response.message = 'Password has been sent to your registered email.';
+			response.status  = true;
+			res.send(response);
+		}
+			
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= 'Internal error.';
+		response.data  		= err;
+		res.send(response);
+	});
+		
+	
+}
 
 // list all users
 exports.getUser = function(req, res){

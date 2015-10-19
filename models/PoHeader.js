@@ -17,6 +17,7 @@
 var model		= require('../config/sequelize.js');
 var dataTypes	= require('sequelize');
 var poDetail	= require('../models/PoDetail.js');
+var supplier	= require('../models/Supplier.js');
 
 var poHeader = model.define('t_po_hdr', {
 
@@ -48,5 +49,6 @@ var poHeader = model.define('t_po_hdr', {
 	tableName : 't_po_hdr'
 });
 
-poHeader.hasMany(poDetail, {foreignKey: 'po_id'});
+poHeader.hasMany(poDetail, 	{foreignKey: 'po_id'});
+poHeader.hasOne(supplier, 	{foreignKey: 'supplier_id'});
 module.exports = poHeader;

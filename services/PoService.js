@@ -21,6 +21,7 @@ var log 			= require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var poHeader		= require('../models/PoHeader.js');
 var poDetail		= require('../models/PoDetail.js');
+var supplier	= require('../models/Supplier.js');
 var slnogenService 	= require('../services/SlnoGenService.js');
 
 
@@ -118,7 +119,7 @@ exports.saveOrUpdatePo = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERROR;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -141,14 +142,18 @@ exports.saveOrUpdatePo = function(req, res){
 						
 				log.info(appMsg.POSAVESUCCESS);
 				response.message	= appMsg.POSAVESUCCESS;
-				response.data  		= data.po_id;
+				var po = {
+						po_id : data.po_id,
+						po_no : data.po_no
+				}
+				response.data  		= po;
 				response.status 	= true;
 				res.send(response);
 			})
 			.error(function(err){
 				log.error(err);
 				response.status  	= false;
-				response.message 	= appMsg.INTERNALERROR;
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
 				response.data  		= err;
 				res.send(response);
 			});
@@ -167,7 +172,7 @@ exports.getPo = function(req, res){
 			data	: String
 	}
 
-	var fetchAssociation 	= "";
+	var fetchAssociation 	= [{model : supplier, attributes : ['supplier_code']}];
 	var selectedAttributes 	= "";
 	var condition 			= "";
 	var poId 				= req.param('poid');
@@ -176,16 +181,17 @@ exports.getPo = function(req, res){
 	var storeId				= req.param('storeid');
 	var supplierId			= req.param('supplierid');
 	
-	if(req.param('fetchassociation')=='yes'){
-		fetchAssociation = [{model : poDetail}]
+	if(req.param('fetchassociation')=='y'){
+		fetchAssociation = [{model : poDetail},{model : supplier, attributes : ['supplier_code']}]
 	}
 	
 	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
-		selectedAttributes = ['po_id','po_no']
+		selectedAttributes = ['po_id','po_no'];
+		
 	}
 	
 	if(companyId != null)
-		condition = "company_id="+companyId;
+		condition = "t_po_hdr.company_id="+companyId;
 	
 	if(poId!=null)
 		if(condition === "")
@@ -210,10 +216,10 @@ exports.getPo = function(req, res){
 	
 	if(supplierId!=null)
 		if(condition === "")
-			condition = "supplier_id='"+supplierId+"'";
+			condition = "m_supplier.supplier_id='"+supplierId+"'";
 	
 		else
-			condition = condition+" and supplier_id='"+supplierId+"'";
+			condition = condition+" and m_supplier.supplier_id='"+supplierId+"'";
 	
 	poHeader.findAll({
 		where		: [condition],
@@ -237,7 +243,7 @@ exports.getPo = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERROR;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -265,7 +271,7 @@ exports.changePoStatus = function(req, res){
 	.error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= appMsg.INTERNALERROR;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -372,7 +378,7 @@ exports.getPoDetails = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERROR;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -418,7 +424,7 @@ function deletePoDetailsFn(condition){
 	.error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= appMsg.INTERNALERROR;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		return response;
 	});

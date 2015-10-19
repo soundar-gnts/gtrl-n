@@ -52,7 +52,7 @@ exports.saveOrUpdateUom = function(req, res){
 	}).error(function(err){
 		log.error(fileName+'.saveOrUpdateUom - '+err);
 		response.status  	= false;
-		response.message 	= appMsg.INTERNALERROR;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -121,7 +121,7 @@ exports.getUom = function(req, res){
 			log.error(fileName+'.getUom - ');
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERROR;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});

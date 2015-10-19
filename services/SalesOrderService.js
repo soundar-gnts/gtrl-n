@@ -57,7 +57,7 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDelet
 		}).error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERROR;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -65,11 +65,11 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDelet
 		
 		//send otp to mobile number
 		
-		slnogenService.getSlnoValue(salesOrder.company_id, req.param('storeid'), refkey, 'y', 'Active', function(slno){
-			if(sl == null){
+//		slnogenService.getSlnoValue(salesOrder.company_id, req.param('storeid'), refkey, 'y', 'Active', function(slno){
+//			if(sl == null){
 
 				salesOrder.otp_code			= common.generateOTP(4);
-				salesOrder.sal_ordr_number	= sl.sno;
+//				salesOrder.sal_ordr_number	= sl.sno;
 				soHeader.create(salesOrder)
 				.then(function(data){
 					
@@ -87,18 +87,18 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDelet
 				.error(function(err){
 					log.error(err);
 					response.status  	= false;
-					response.message 	= appMsg.INTERNALERROR;
+					response.message 	= appMsg.INTERNALERRORMESSAGE;
 					response.data  		= err;
 					res.send(response);
 				});
 				
-			} else{
-			log.info('Sales order saved successfully.');
-			response.message	= 'Sales order saved successfully.';
-			response.data  		= data.salesorder_id;
-			response.status 	= true;
-			res.send(response);}
-		});
+//			} else{
+//			log.info('Sales order saved successfully.');
+//			response.message	= 'Sales order saved successfully.';
+//			response.data  		= data.salesorder_id;
+//			response.status 	= true;
+//			res.send(response);}
+		
 		
 	}
 	
@@ -112,7 +112,7 @@ function saveOrUpdateSalesOrderDetailsFn(salesDetail) {
 	}).error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= appMsg.INTERNALERROR;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -213,7 +213,7 @@ exports.getSalesOrder = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERROR;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -249,7 +249,7 @@ exports.salesOrderOtpVerification = function(req, res){
 	.error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= appMsg.INTERNALERROR;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -281,7 +281,7 @@ exports.changeSalesOrderStatus = function(req, res){
 	.error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= appMsg.INTERNALERROR;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		res.send(response);
 	});
@@ -338,7 +338,7 @@ exports.getSalesOrderDetails = function(req, res){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERROR;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
 		});
@@ -369,7 +369,7 @@ function deleteSalesOrderDetailsFn(condition){
 	.error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= appMsg.INTERNALERROR;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		return response;
 	});

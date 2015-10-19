@@ -54,5 +54,5 @@ var saleHeader = model.define('t_sales_hdr', {
 	tableName : 't_sales_hdr'
 });
 
-salesHeader.hasMany(salesDetail, {foreignKey: 'sale_id'});
-module.exports = salesHeader;
+saleHeader.hasMany(saleDetail, {foreignKey: 'sale_id'});
+module.exports = saleHeader;
