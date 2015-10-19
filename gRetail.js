@@ -87,7 +87,8 @@ require('./routes/StockSummaryRoutes.js')(app, server);
 require('./routes/StockTransferRoutes.js')(app, server);
 require('./routes/AccountTransactionRoutes.js')(app, server);
 require('./routes/WishorderListRoutes.js')(app, server);
-require('./routes/RptStockTransfersRoutes.js')(app, server);
+require('./routes/InventoryReportsRoutes.js')(app, server);
+require('./routes/SalesReportsRoutes.js')(app, server);
 
 
 server.listen(app.get('port'), function(){
