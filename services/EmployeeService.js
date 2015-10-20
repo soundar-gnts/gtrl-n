@@ -210,7 +210,6 @@ exports.saveEmployee = function(req, res){
 	}
 	
 	var userdtl = {		     
-			
 			    user_id 		: req.param("userid"),
 				login_id		: req.param("emailid"),
 				user_name		: req.param("firstname")+' '+req.param("lastname"),
@@ -244,6 +243,7 @@ exports.saveEmployee = function(req, res){
 		   employee.create(employeedtl)	
 			.then(function(data){
 				if(req.param("createuseryn")!=null&&req.param("createuseryn").toUpperCase()=='Y'){
+				userdtl.employee_id = data.employee_id;
 				user.upsert(userdtl);
 				}
 				log.info(filename+'>>saveEmployee>>'+appmsg.SAVEMESSAGE);

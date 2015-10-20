@@ -190,3 +190,44 @@ exports.deleteAccountDetails = function(req, res) {
 			res.send(response);
 	}
 }
+
+//To update account balance
+exports.updateAccountBalance = function(accountid,transamount,operation) {
+
+	accounts.findOne({where:[{account_id:accountid}]}).then(function(data){
+	if(data){
+		var currentbalance = 0;
+		var amount = 0;
+		var newbalance=0;
+		if(data.current_balance!=null){
+			currentbalance = data.current_balance;
+		}
+		if(transamount!=null){
+			if(operation!=null && operation=='ADD'){
+				newbalance = currentbalance + transamount;
+			}else{
+				newbalance = currentbalance - transamount;
+			}
+			
+		}
+		accounts.update({current_balance:newbalance},{where : {account_id:accountid}}).error(function(err){
+			
+		});
+		
+		log.info(filename+'>>updateAccountBalance>>'+appmsg.DELETEMESSAGE);
+		response.message = appmsg.DELETEMESSAGE;
+		response.status  = true;
+		response.data	 = accountid;
+		res.send(response);
+	}
+	
+	}).error(function(err){
+		log.info(filename+'>>updateAccountBalance>>');
+		log.error(err);
+		response.status  	= false;
+		response.message 	= appmsg.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		res.send(response);
+});
+
+}
