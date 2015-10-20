@@ -16,4 +16,7 @@
  */
 exports.MODE				= "dev";
 exports.SERVER				= "http://localhost:2000";
-exports.CATEGORYIMAGEFOLDER = "public/images/categoryImages";				// location of category image pic.
+exports.CATEGORYIMAGEFOLDER = "images/categoryImages";				// location of category image pic.
+
+exports.mailid			= "gntstechnologies@gmail.com";
+exports.mailPassword	= "GntS@2014!"; 

@@ -12,6 +12,7 @@
     "sequelize" 		: "*",
     "winston"			: "*",
     "path"				: "*",
-    "crypto"			: "*"
+    "crypto"			: "*",
+    "nodemailer"		: "0.7.1"
   }
 }

@@ -16,16 +16,16 @@
  */
 
 var salesService = require('../services/SalesService.js');
+var saleDtl = require('../models/SaleDtl.js');
 
 module.exports = function(app, server){
 	
 	//header tables
-	app.post('/savesalesdetails',	salesService.saveOrUpdateSales);
-	app.post('/getsalesdetails', 	salesService.getSales);
-	app.post('/changesalesstatus', 	salesService.changeSalesStatus);
-	
+	app.post('/savesalesdetails',	saveOrUpdateSales);
+	app.post('/getsalesdetails', 	getSales);
+		
 	//details tables
-	app.post('/getsalesdatadetails',salesService.getSalesDetails);
+	app.post('/getsaledetails',		getSalesDetails);
 	
 	function saveOrUpdateSales(req, res){
 		
@@ -77,10 +77,10 @@ module.exports = function(app, server){
 					discount_prcnt		: req.param('salesdetails')[i].discountprcnt,
 					tax_id				: req.param('salesdetails')[i].taxid,
 					tax_prnct			: req.param('salesdetails')[i].taxprnct,
-					tax_value			: req.param('salesdetails')[i].taxvalue
-					sale_value			: req.param('salesdetails')[i].salevalue
-					batch_no			: req.param('salesdetails')[i].batchno
-					salesorder_dtl_id	: req.param('salesdetails')[i].salesorderdtlid
+					tax_value			: req.param('salesdetails')[i].taxvalue,
+					sale_value			: req.param('salesdetails')[i].salevalue,
+					batch_no			: req.param('salesdetails')[i].batchno,
+					salesorder_dtl_id	: req.param('salesdetails')[i].salesorderdtlid,
 					discount_value		: req.param('salesdetails')[i].discountvalue
 			}
 			salesDetails.push(salesDetail);
@@ -96,29 +96,120 @@ module.exports = function(app, server){
 			salesDeleteDetailsIds.push(salesDeleteDetailsId);
 		}
 		
-		salesService.saveOrUpdateSalesFn(sales, salesDetails, salesDeleteDetailsIds, , function(response){
-			
+		salesService.saveOrUpdateSalesFn(sales, salesDetails, salesDeleteDetailsIds, function(response){
+			res.send(response);
 		});
 	}
 	
 	function getSales(req, res){
 		
-		salesService.getSalesFn(condition, function(response){
+		var fetchAssociation 	= "";
+		var selectedAttributes 	= "";
+		var condition 			= "";
+		var saleId 				= req.param('saleid');
+		var companyId 			= req.param('companyid');
+		var status				= req.param('status');
+		var storeId				= req.param('storeid');
+		var billNo				= req.param('billno');
+		var customerId			= req.param('customerid');
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : saleDtl}]
+		}
+		
+		if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+			selectedAttributes = ['sale_id','bill_no']
+		}
 			
+		if(companyId != null)
+			condition = "company_id="+companyId;
+		
+		if(saleId!=null)
+			if(condition === "")
+				condition = "sale_id='"+saleId+"'";
+			
+			else
+				condition = condition+" and sale_id='"+saleId+"'";
+			
+		if(status!=null)
+			if(condition === "")
+				condition = "status='"+status+"'";
+			
+			else
+				condition = condition+" and status='"+status+"'";
+			
+		if(storeId!=null)
+			if(condition === "")
+				condition = "store_id='"+storeId+"'";
+			
+			else
+				condition = condition+" and store_id='"+storeId+"'";
+			
+		if(billNo!=null)
+			if(condition === "")
+				condition = "bill_no='"+billNo+"'";
+			
+			else
+				condition = condition+" and sal_ordr_number='"+billNo+"'";
+			
+		if(customerId!=null)
+			if(condition === "")
+				condition = "customer_id='"+customerId+"'";
+			
+			else
+				condition = condition+" and customer_id='"+customerId+"'";
+			
+		salesService.getSalesFn(condition, fetchAssociation, selectedAttributes, function(response){
+			res.send(response);
 		});
+			
 	}
 	
-	function changeSalesStatus(req, res){
-		
-		salesService.changeSalesStatusFn(sale_id, sales, function(response){
-			
-		});
-	}
+//	function changeSalesStatus(req, res){
+//		
+//		salesService.changeSalesStatusFn(sale_id, sales, function(response){
+//			
+//		});
+//	}
 	
 	function getSalesDetails(req, res){
 		
-		salesService.getSalesDetailsFn(condition, function(response){
-			
+		var response = {
+				status	: Boolean,
+				message : String,
+				data	: String
+		}
+		
+		var selectedAttributes 	= "";
+		var condition 			= "";
+		var saleDtlId 			= req.param('sale_dtlid');
+		var saleId 				= req.param('sale_id');
+		var status				= req.param('status');
+		var batchNo			= req.param('batch_no')
+		
+		if(req.param('isfulllist')=='p')
+			selectedAttributes=['salesorder_dtl_id','salesorder_id']
+		
+		if(saleId != null)
+			condition = "sale_id="+saleId;
+		
+		if(saleDtlId!=null)
+			if(condition === "")
+				condition = "sale_dtlid='"+saleDtlId+"'";
+		
+			else
+				condition = condition+" and sale_dtlid='"+saleDtlId+"'";
+		
+		if(batchNo!=null)
+			if(condition === "")
+				condition = "batch_no='"+batchNo+"'";
+		
+			else
+				condition = condition+" and batch_no='"+batchNo+"'";
+		
+		
+		salesService.getSalesDetailsFn(condition, selectedAttributes, function(response){
+			res.send(response);
 		});
 	}
 	

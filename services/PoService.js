@@ -21,6 +21,7 @@ var log 			= require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var poHeader		= require('../models/PoHeader.js');
 var poDetail		= require('../models/PoDetail.js');
+var product		= require('../models/Product.js');
 var supplier	= require('../models/Supplier.js');
 var slnogenService 	= require('../services/SlnoGenService.js');
 
@@ -182,7 +183,10 @@ exports.getPo = function(req, res){
 	var supplierId			= req.param('supplierid');
 	
 	if(req.param('fetchassociation')=='y'){
-		fetchAssociation = [{model : poDetail},{model : supplier, attributes : ['supplier_code']}]
+		fetchAssociation = [{
+								model : poDetail, include : {model : product, attributes : ['prod_code', 'prod_name']}
+							},
+		                    {model : supplier, attributes : ['supplier_code']}]
 	}
 	
 	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){

@@ -219,7 +219,7 @@ exports.login = function(req, res){
 		       		   
 		       		   
 		],
-		attributes	: ['user_id', 'user_name', 'session_id', 'company_id', 'status']
+		attributes	: ['user_id', 'cust_id', 'user_name', 'session_id', 'company_id', 'status']
 	})
 		.then(function(user){
 			
@@ -379,8 +379,16 @@ exports.forgotPassword = function(req, res){
 			response.status  = false;
 			res.send(response);
 		} else if(data.status == "verified"){
-			data.login_pwd = req.param('loginpwd');
+			var pwd		= common.generateOTP(6);
+			var shasum	= crypto.createHash('sha1');
+			shasum.update(pwd);
+			data.login_pwd = shasum.digest('hex');
 			data.save();
+			var msg = "Your new Password is -"+pwd;
+			
+			common.sendMail(req.param('loginid'), msg, 'Forgot password - gRetail', function(result){
+				concole.log(result);
+			});
 			log.info('Password has been sent to your registered email.');
 			response.message = 'Password has been sent to your registered email.';
 			response.status  = true;

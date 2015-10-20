@@ -37,8 +37,8 @@ exports.saveOrUpdateproductCategory = function(req, res){
 	}
 	
 	var randomNumber = common.generateOTP(6);
-	var file1 = config.CATEGORYIMAGEFOLDER + "/"+randomNumber+'.'+req.files.img.type.split('image/')[1];
-	var file2 = config.CATEGORYIMAGEFOLDER + "/"+'bg-'+randomNumber+'.'+req.files.bgimg.type.split('image/')[1];
+	var file1 = 'public/'+config.CATEGORYIMAGEFOLDER + "/"+randomNumber+'.'+req.files.img.type.split('image/')[1];
+	var file2 = 'public/'+config.CATEGORYIMAGEFOLDER + "/"+'bg-'+randomNumber+'.'+req.files.bgimg.type.split('image/')[1];
 	
 	var productCategory = {
 			

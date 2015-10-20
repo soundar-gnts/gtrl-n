@@ -15,8 +15,10 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
+var model		= require('../config/sequelize.js');
+var dataTypes	= require('sequelize');
+var productImage= require('../models/ProductImage.js');
+
 var product = model.define('m_product', {
 
 	prod_id : {
@@ -67,4 +69,6 @@ var product = model.define('m_product', {
 	freezeTableName : true,
 	tableName : 'm_product'
 });
+
+product.hasMany(productImage,	{foreignKey : 'prod_id'});
 module.exports = product;

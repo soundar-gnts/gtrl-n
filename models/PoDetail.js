@@ -16,7 +16,7 @@
 
 var model		= require('../config/sequelize.js');
 var dataTypes	= require('sequelize');
-//var poHeader	= require('../models/PoHeader.js');
+var product		= require('../models/Product.js');
 
 var poDetail = model.define('t_po_dtl', {
 
@@ -46,5 +46,5 @@ var poDetail = model.define('t_po_dtl', {
 	tableName : 't_po_dtl'
 });
 
-//poDetail.belongsTo(poHeader, {foreignKey : 'po_id', targetKey : 'po_id'});
+poDetail.hasOne(product, 	{foreignKey: 'prod_id'});
 module.exports = poDetail;

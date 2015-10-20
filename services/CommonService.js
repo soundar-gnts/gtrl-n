@@ -15,8 +15,47 @@
  * 
  */
 
+var config = require('../config/config.js');
+var log				= require('../config/logger').logger;
 
 //generate OTP
 exports.generateOTP = function(digit){
 	return(Math.random().toString().substr(2,digit));
+}
+
+exports.sendMail = function(toAdd, msg, sub, callback){
+	
+	var nodemailer	= require('nodemailer');
+	var fromAdd		= config.mailid;
+	var password	= config.mailPassword;
+	var transporter	= nodemailer.createTransport("SMTP",{
+	    //service: 'Yahoo',
+	    auth: {
+	        user: fromAdd,
+	        pass: password
+	    }
+	});
+	var mailOptions = {
+	    from	: fromAdd,	// sender address
+	    to		: toAdd,	// list of receivers
+	    subject	: sub,		// Subject line
+	    //text	: msg
+	    html	: msg		// html body
+	};
+	// send mail with defined transport object
+	transporter.sendMail(mailOptions, function(error, info){
+	    if(error){
+	    	log.error(error);
+	    	reply.success = false;
+	    	reply.msg = error;
+	    	callback(reply);
+	    } else{
+	    	log.info(info);
+	    	reply.success = true;
+	    	reply.msg = info;
+	    	callback(reply);
+	    }
+	   
+	});
+		
 }

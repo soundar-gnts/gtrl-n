@@ -16,6 +16,8 @@
 
 var model		= require('../config/sequelize.js');
 var dataTypes	= require('sequelize');
+var product		= require('../models/Product.js');
+
 
 var soDetail = model.define('t_salesorder_dtl', {
 
@@ -43,4 +45,5 @@ var soDetail = model.define('t_salesorder_dtl', {
 	tableName : 't_salesorder_dtl'
 });
 
+soDetail.hasOne(product, {foreignKey : 'prod_id', targetKey : 'product_id'});
 module.exports = soDetail;

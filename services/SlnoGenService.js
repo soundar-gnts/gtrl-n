@@ -163,3 +163,26 @@ exports.getSlnoValue=function(companyid,storeid,refkey,autogenyn,status, callbac
 		}
 	});
 }
+exports.getSlnoValu=function(condition, callback){
+	
+	var sl = {
+			slid : String,
+			sno : String	
+		}
+	slnogen.findOne({
+		where : [condition],
+		attributes: ['slno_id','prefix_key','prefix_cncat','suffix_key','suffix_cncat','curr_seqno']
+		
+	}).then(function(result) {
+		if(result){
+			sl.slid = result.slno_id;
+			sl.sno = result.prefix_key+""+result.prefix_cncat+""+result.suffix_key+""+result.suffix_cncat+""+result.curr_seqno;
+			callback(sl);
+		}
+		else{
+			sl.sno = null;
+			sl.slid = null;
+			callback(sl);
+		}
+	});
+}

@@ -21,13 +21,16 @@ var log 		= require('../config/logger').logger;
 var appMsg		= require('../config/Message.js');
 var soHeader	= require('../models/SalesOrderHeader.js');
 var soDetail	= require('../models/SalesOrderDetail.js');
+var product		= require('../models/Product.js');
+var productImage= require('../models/ProductImage.js');
 var common		= require('../services/CommonService.js');
+var slnogenService = require('../services/SlnoGenService.js');
 
 //insert or update Sales order details
 exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDeleteDetailsIds, res){
 	log.info(fileName+'.saveOrUpdateSalesOrderFn');
 	
-	var refkey = 'SO_NO';
+	var refkey = 'ODER_NO';
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -62,47 +65,32 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDelet
 			res.send(response);
 		});
 	} else{
-		
-		//send otp to mobile number
-		
-//		slnogenService.getSlnoValue(salesOrder.company_id, req.param('storeid'), refkey, 'y', 'Active', function(slno){
-//			if(sl == null){
-
-				salesOrder.otp_code			= common.generateOTP(4);
-//				salesOrder.sal_ordr_number	= sl.sno;
-				soHeader.create(salesOrder)
-				.then(function(data){
-					
-					for(var i = 0; i < salesDetails.length; i++){
-						salesDetails[i].salesorder_id = data.salesorder_id;
-						saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
-					}
-					slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
-					log.info(appMsg.SALESORDERSAVESUCCESS);
-					response.message	= appMsg.SALESORDERSAVESUCCESS;
-					response.data  		= data.salesorder_id;
-					response.status 	= true;
-					res.send(response);
-				})
-				.error(function(err){
-					log.error(err);
-					response.status  	= false;
-					response.message 	= appMsg.INTERNALERRORMESSAGE;
-					response.data  		= err;
-					res.send(response);
-				});
 				
-//			} else{
-//			log.info('Sales order saved successfully.');
-//			response.message	= 'Sales order saved successfully.';
-//			response.data  		= data.salesorder_id;
-//			response.status 	= true;
-//			res.send(response);}
-		
-		
-	}
+		salesOrder.otp_code			= common.generateOTP(4);
+		soHeader.create(salesOrder)
+			.then(function(data){
+					
+				for(var i = 0; i < salesDetails.length; i++){
+					salesDetails[i].salesorder_id = data.salesorder_id;
+					saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
+				}
+				
+				log.info(appMsg.SALESORDERSAVESUCCESS);
+				response.message	= appMsg.SALESORDERSAVESUCCESS;
+				response.data  		= data.salesorder_id;
+				response.status 	= true;
+				res.send(response);
+			})
+			.error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
+				response.data  		= err;
+				res.send(response);
+			});
 	
-}
+	
+}}
 
 function saveOrUpdateSalesOrderDetailsFn(salesDetail) {
 	log.info(fileName+'.saveOrUpdateSalesOrderDetailsFn');
@@ -138,8 +126,12 @@ exports.getSalesOrder = function(req, res){
 	var otpCode				= req.param('otpcode');
 	var customerId			= req.param('customerid');
 	
-	if(req.param('fetchassociation')=='yes'){
-		fetchAssociation = [{model : soDetail}]
+	if(req.param('fetchassociation')=='y'){
+		fetchAssociation = [{
+				model : soDetail,
+				include : {model : product, attributes : ['prod_name', 'prod_desc', 'mrp'], include : {model : productImage, attributes : ['product_image']}}
+								
+		}]
 	}
 	
 	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
@@ -231,12 +223,34 @@ exports.salesOrderOtpVerification = function(req, res){
 	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
 	.then(function(soHeaderDet){
 		if(soHeaderDet.otp_code == req.param('otpcode')){
-			soHeaderDet.status			= 'Pending';
-			soHeaderDet.save();
-			log.info('OTP has been verified successfully.');
-			response.status  	= true;
-			response.message 	= 'OTP has been verified successfully.';
-			res.send(response);
+			var slNoCondition = {
+					company_id 			: salesOrder.company_id,
+					ref_key 			: refkey,
+					autogen_yn 			: 'y',
+					status 				: 'Active'
+			}
+			slnogenServic.getSlnoValue(slNoCondition, function(sl){
+				console.log(sl);
+				soHeaderDet.sal_ordr_number	= sl.sno;
+				soHeaderDet.status			= 'Pending';
+				soHeaderDet.save()
+				.then(function(data){
+					slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
+					log.info('OTP has been verified successfully.');
+					response.status  	= true;
+					response.message 	= 'OTP has been verified successfully.';
+					res.send(response);
+				})
+				.error(function(err){
+					log.error(err);
+					response.status  	= false;
+					response.message 	= appMsg.INTERNALERRORMESSAGE;
+					response.data  		= err;
+					res.send(response);
+				});
+				
+			});
+			
 		} else{
 			
 			log.info('Invalid OTP.');

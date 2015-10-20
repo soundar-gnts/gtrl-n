@@ -19,10 +19,9 @@ var response = {
 		message : String,
 		data	: String
 };
-var appmsg			= require('../config/Message.js');
+var appMsg			= require('../config/Message.js');
 var path = require('path');
-var filename=path.basename(__filename);
-//
+var fileName=path.basename(__filename);
 var saleDtl = require('../models/SaleDtl.js');
 var saleHdr = require('../models/SaleHeader.js');
 
@@ -38,7 +37,6 @@ exports.getSaleDetail=function(productid,batchno,callback){
 exports.saveOrUpdateSalesFn = function(sales, salesDetails, salesDeleteDetailsIds, callback){
 	log.info(fileName+'.saveOrUpdateSalesFn');
 	
-	//var refkey = 'SO_NO';
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -79,11 +77,12 @@ exports.saveOrUpdateSalesFn = function(sales, salesDetails, salesDeleteDetailsId
 			callback(response);
 		});
 	} else{
-				
+		console.log(sales)
 		saleHdr.create(sales)
 		.then(function(data){
-				
+				console.log(data)
 			for(var i = 0; i < salesDetails.length; i++){
+				console.log(data.sale_id);
 				salesDetails[i].sale_id = data.sale_id;
 				saveOrUpdateSaleDetailsFn(salesDetails[i], function(result){
 					if(!result.status)
@@ -162,14 +161,68 @@ function deleteSaleDetailsFn(condition, callback){
 	});
 }
 
-exports.getSalesFn = function(condition, callback){
+exports.getSalesFn = function(condition, fetchAssociation, selectedAttributes, callback){
 	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	saleHdr.findAll({
+		where				: [condition],
+		include				: fetchAssociation,
+		attributes			: selectedAttributes
+	})
+		.then(function(saleHdrs){
+			if(saleHdrs.length == 0){
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
+				response.status  = false;
+				callback(response);
+			} else{
+				log.info('About '+saleHdrs.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+saleHdrs.length+' results.';
+				response.data 		= saleHdrs;
+				callback(response);
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
 }
 
-exports.changeSalesStatusFn = function(sale_id, sales, callback){
-	
-}
-
-exports.getSalesDetailsFn = function(condition, callback){
+exports.getSalesDetailsFn = function(condition, selectedAttributes, callback){
+	saleDtl.findAll({
+		where 		: [condition],
+		attributes	: selectedAttributes
+		
+	})
+	.then(function(saleDtls){
+		if(saleDtls.length == 0){
+			log.info(appMsg.LISTNOTFOUNDMESSAGE);
+			response.message = appMsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			callback(response);
+		} else{
+			log.info('About '+saleDtls.length+' results.');
+			response.status  	= true;
+			response.message 	= 'About '+saleDtls.length+' results.';
+			response.data 		= saleDtls;
+			callback(response);
+		}
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		callback(response);
+	});
 	
 }
