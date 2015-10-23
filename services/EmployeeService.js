@@ -120,68 +120,7 @@ exports.getEmployeeDetails = function(req, res) {
 	});
 }
 
-/*// To Save Employee
-exports.saveEmployee= function(req, res) {
-	employee.upsert({
-		employee_id			: req.param("employeeid"),
-		company_id			: req.param("companyid"),
-		employee_code 		: req.param("employeecode"),
-		first_name 			: req.param("firstname"),
-		last_name 			: req.param("lastname"),
-		primary_phone 		: req.param("primaryphone"),
-		dob 				: req.param("dob"),
-		gender 				: req.param("gender"),
-		department 			: req.param("department"),
-		store_id 			: req.param("storeid"),
-		rm_employee_id 		: req.param("rmemployeeid"),
-		user_id 			: req.param("userid"),
-		status 				: req.param("status"),
-		last_updated_dt 	: req.param("lastupdateddt"),
-		last_updated_by 	: req.param("lastupdatedby"),
-		email_id 			: req.param("emailid"),
-		create_user_yn 		: req.param("createuseryn")
-	})
-	.then(function(p) {
-		if(req.param("createuseryn")!=null&&req.param("createuseryn").toUpperCase()=='Y'){
-		user.create({
-			login_id		: req.param("emailid"),
-			user_name		: req.param("firstname")+' '+req.param("lastname"),
-			login_pwd		: commonService.generateOTP(4),
-			employee_id		: p.employee_id,
-			status			: 'Active',
-			company_id		: req.param("companyid"),
-			otp_code		: commonService.generateOTP(6),
-			last_updated_dt	: req.param("lastupdateddt"),
-		    last_updated_by	: req.param("lastupdatedby")
-		}).error(function(err){
-			
-		});
-		}
-
-		if(p){
-			log.info(filename+'>>saveEmployee>>'+appmsg.SAVEMESSAGE);
-			response.message = appmsg.SAVEMESSAGE;
-			response.status  = true;
-			res.send(response);
-		}
-		else{
-			log.info(filename+'>>saveEmployee>>'+appmsg.UPDATEMESSAGE);
-			response.message = appmsg.UPDATEMESSAGE;
-			response.status  = true;
-			res.send(response);
-		}
-		
-	}).error(function(err){
-			log.info(filename+'>>saveEmployee>>');
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
-			res.send(response);
-	});
-}
-*/
-//insert or update Purchase order details
+//To Save Employee
 exports.saveEmployee = function(req, res){
 	
 	var response = {

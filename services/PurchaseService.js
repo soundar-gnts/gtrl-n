@@ -190,50 +190,56 @@ exports.getPurchaseDetails = function(req, res) {
 		res.send(response);
 	});
 }
+//insert or update Purchase Return details
 
-
-
-
-// To Save/Update Purchase Details
-exports.savePurchaseHdrDetails = function(req, res) {
-	var refkey = 'BILL_NO';
-		if(req.param("status")!='Deleted'){
-			/*slnogenService.getSlnoValue(req.param('companyid'), req.param('storeid'), refkey, 'y', 'Active', function(sl){
-				console.log(sl.sno);
-				slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
-			});*/
-		purchasehdr.create({
-			purchase_id					: req.param("purchaseid"),
-			po_id 						: req.param("poid"),
-			company_id 					: req.param("companyid"),
-			invoice_no 					: req.param("invoiceno"),
-			invoice_date 				: req.param("invoicedate"),
-			store_id 					: req.param("storeid"),
-			document_type 				: req.param("documenttype"),
-			batch_no 					: req.param("batchno"),
-			supplier_id 				: req.param("supplierid"),
-			payment_date 				: req.param("paymentdate"),
-			invoice_amount 				: req.param("invoiceamount"),
-			outstanding_amount 			: req.param("outstandingamount"),
-			grn_type 					: req.param("grntype"),
-			payment_mode 				: req.param("paymentmode"),
-			discount_prcnt 				: req.param("discountprcnt"),
-			discount_value 				: req.param("discountvalue"),
-			cancel_remark 				: req.param("cancelremark"),
-			status 						: req.param("status"),
-			action_remarks 				: req.param("actionremarks"),
-			actioned_by 				: req.param("actionedby"),
-			actioned_dt 				: req.param("actioneddt"),
-			last_updated_dt 			: req.param("lastupdateddt"),
-			last_updated_by 			: req.param("lastupdatedby")
-			
-		}).then(function(p){
-			
-			if(req.param('purchasedtlslist')!=null){
-			for(var i=0;i<req.param('purchasedtlslist').length;i++){
-				purchasedtl.upsert({
-					purchase_dtlid 			: req.param('purchasedtlslist')[i].purchasedtlid,
-					purchase_id 			: p.purchase_id,
+exports.savePurchaseHdrDetails = function(req, res){
+	 	 
+	 	var response = {
+				 		status	: Boolean,
+				 		message : String,
+				 		data	: String				 			
+	 					}
+	 	
+	 	var purchasehdrdtl 	 = { 		
+	 			
+	 			purchase_id					: req.param("purchaseid"),
+				po_id 						: req.param("poid"),
+				company_id 					: req.param("companyid"),
+				invoice_no 					: req.param("invoiceno"),
+				invoice_date 				: req.param("invoicedate"),
+				store_id 					: req.param("storeid"),
+				document_type 				: req.param("documenttype"),
+				batch_no 					: req.param("batchno"),
+				supplier_id 				: req.param("supplierid"),
+				payment_date 				: req.param("paymentdate"),
+				invoice_amount 				: req.param("invoiceamount"),
+				outstanding_amount 			: req.param("outstandingamount"),
+				grn_type 					: req.param("grntype"),
+				payment_mode 				: req.param("paymentmode"),
+				discount_prcnt 				: req.param("discountprcnt"),
+				discount_value 				: req.param("discountvalue"),
+				cancel_remark 				: req.param("cancelremark"),
+				status 						: req.param("status"),
+				action_remarks 				: req.param("actionremarks"),
+				actioned_by 				: req.param("actionedby"),
+				actioned_dt 				: req.param("actioneddt"),
+				last_updated_dt 			: req.param("lastupdateddt"),
+				last_updated_by 			: req.param("lastupdatedby")
+	 						}
+	 	
+	 	var purchaseDetails = [];
+	 	var detailsLength = 0;	
+	 	
+	 	if(req.param('purchasedtlslist') != null)
+		
+		detailsLength = req.param('purchasedtlslist').length;
+	
+	 	for(var i = 0; i < detailsLength; i++){
+		
+	 		var purchasedetails = {
+	 				
+	 				purchase_dtlid 			: req.param('purchasedtlslist')[i].purchasedtlid,
+					purchase_id 			: req.param("purchaseid"),
 					product_id 				: req.param('purchasedtlslist')[i].productid,
 					invoice_qty 			: req.param('purchasedtlslist')[i].invoiceqty,
 					rate 					: req.param('purchasedtlslist')[i].rate,
@@ -246,57 +252,89 @@ exports.savePurchaseHdrDetails = function(req, res) {
 					purchase_value			: req.param('purchasedtlslist')[i].purchasevalue,
 					mrp						: req.param('purchasedtlslist')[i].mrp,
 					discount_value			: req.param('purchasedtlslist')[i].discountvalue
-					
-				}).then(function(data){
-					
-					console.log("yes...");
-		
-				}).error(function(err) {
-					res.send(err);
-				});
-				if(req.param("status")!=null&&req.param("status")=='Approved'){
-				//To update stock ledger and summary
-				stockLedgerService.insertStockLedger(
-						req.param('purchasedtlslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
-						req.param('purchasedtlslist')[i].invoiceqty,0,req.param('purchasedtlslist')[i].uomid,req.param("invoiceno"),
-						req.param("invoicedate"),"Purchase Goods -Invoice Number : "+req.param("invoiceno")+'-'+req.param("actionremarks"));
-				//To Insert Row in product Serail Codes
-				productSerialCodesService.insertProductSerialCodes(req.param("companyid"),p.purchase_id,req.param('purchasedtlslist')[i].productid,
-						req.param("storeid"),req.param("batchno"),req.param('purchasedtlslist')[i].eanserialno,
-						req.param('purchasedtlslist')[i].storeserialno);
-				
-				//For Update balance qty in Purchase order details.
-				poService.updatePODetailBalanceQty(p.po_id,req.param('purchasedtlslist')[i].productid,
-						req.param('purchasedtlslist')[i].invoiceqty,'DELETE');
-				
-				}
-	
-			}
-			}
-			if(req.param("status")!=null&&req.param("status")=='Approved'){
-			//To update account payable
-			accountPayablesService.insertAccountPayables(req.param("companyid"),req.param("storeid"),new Date(),null,req.param("invoiceno"),
-					req.param("invoicedate"),p.purchase_id,req.param("invoiceamount"),
-					"Purchase Goods -Invoice Number : "+req.param("invoiceno")+'-'+req.param("actionremarks"),
-					p.supplier_id,req.param("lastupdateddt"),req.param("lastupdatedby"));
-			
-			}
-				log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.SAVEMESSAGE);
-				response.message = appmsg.SAVEMESSAGE;
-				response.status  = true;
-				response.data	 = "";
-				res.send(response);
-			
-			
-		}).error(function(err){
-			log.info(filename+'>>savePurchaseHdrDetails>>');
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appmsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			res.send(response);
-		});
-		}else{
+	 		}
+	 		purchaseDetails.push(purchasedetails);
+	 	}
+	 	if(req.param("status")!='Deleted'){
+				 	if(req.param('purchaseid')!=null){
+				 		
+				 		purchasehdr.upsert(purchasehdrdtl)
+				 		.then(function(data){ 		
+			 			
+			 			for(var i = 0; i < purchaseDetails.length; i++){
+			 							
+			 				saveOrUpdatePurchase(purchaseDetails[i]);
+			 				
+			 				if(req.param("status")!=null&&req.param('status')=='Approved')
+			 		 		{
+			 					//To update stock ledger and summary
+			 					stockLedgerService.insertStockLedger(
+			 							req.param('purchasedtlslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
+			 							req.param('purchasedtlslist')[i].invoiceqty,0,req.param('purchasedtlslist')[i].uomid,req.param("invoiceno"),
+			 							req.param("invoicedate"),"Purchase Goods -Invoice Number : "+req.param("invoiceno")+'-'+req.param("actionremarks"));
+			 					//To Insert Row in product Serail Codes
+			 					productSerialCodesService.insertProductSerialCodes(req.param("companyid"),req.param("purchaseid"),req.param('purchasedtlslist')[i].productid,
+			 							req.param("storeid"),req.param("batchno"),req.param('purchasedtlslist')[i].eanserialno,
+			 							req.param('purchasedtlslist')[i].storeserialno);
+			 					
+			 					//For Update balance qty in Purchase order details.
+			 					poService.updatePODetailBalanceQty(req.param("poid"),req.param('purchasedtlslist')[i].productid,
+			 							req.param('purchasedtlslist')[i].invoiceqty,'DELETE');
+			 		 		}
+			 			}
+			 			if(req.param("status")!=null&&req.param("status")=='Approved'){		 		
+			 	
+			 				//To update account payable
+			 				accountPayablesService.insertAccountPayables(req.param("companyid"),req.param("storeid"),new Date(),null,req.param("invoiceno"),
+			 						req.param("invoicedate"),req.param("purchaseid"),req.param("invoiceamount"),
+			 						"Purchase Goods -Invoice Number : "+req.param("invoiceno")+'-'+req.param("actionremarks"),
+			 						req.param("supplierid"),req.param("lastupdateddt"),req.param("lastupdatedby"));	
+			 			
+			 			}
+			 			log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.UPDATEMESSAGE);
+			 			response.message 	= appmsg.UPDATEMESSAGE;
+			 			response.data  		= req.param('purchaseid');
+			 			response.status  	= true;
+			 			res.send(response);
+			 			
+			 		})
+			 		.error(function(err){
+			 			log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.INTERNALERRORMESSAGE);
+			 			log.error(err);
+			 			response.status  	= false;
+			 			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			 			response.data  		= err;
+			 			res.send(response);
+			 		});
+					} else { 	
+						purchasehdr.create(purchasehdrdtl).then(function(data){
+				 			
+				 			for(var i = 0; i < detailsLength; i++){
+				 				
+				 				purchaseDetails[i].purchase_id = data.purchase_id; 			
+
+				 				saveOrUpdatePurchase(purchaseDetails[i]);
+				 				
+				 			}
+				 		
+				 			log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.SAVEMESSAGE);
+				 			response.message	= appmsg.SAVEMESSAGE;
+				 			response.data  		= data.purchase_id;
+				 			response.status 	= true;
+				 			res.send(response);
+				 		})
+				 		.error(function(err){
+				 			log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.INTERNALERRORMESSAGE);
+				 			log.error(err);
+				 			response.status  	= false;
+				 			response.message 	= appmsg.INTERNALERRORMESSAGE;
+				 			response.data  		= err;
+				 			res.send(response);
+				 		});
+				 		
+				 		
+				 	}
+	 	}else{
 			
 			if(req.param('purchasedtlslist')!=null){
 				getSalesCount(req.param('purchasedtlslist'),req.param("batchno"), function(count){
@@ -346,9 +384,9 @@ exports.savePurchaseHdrDetails = function(req, res) {
 				
 				
 			}
-		
 		}
 }
+
 
 function getSalesCount(purchasedtlslist, batchNo, callback){
 	var count = 0;
@@ -435,5 +473,15 @@ function deletePurchaseHeader(purchaseid) {
 	}
 }
 
-
+//To Save or Update PurchaseHdr Detail
+function saveOrUpdatePurchase(purchasedetails) {
+	 console.log(purchasedetails);
+	 purchasedtl.upsert(purchasedetails)
+	 
+		.then(function(data){
+			
+		}).error(function(err){
+			log.error(err);
+		});
+	}
 

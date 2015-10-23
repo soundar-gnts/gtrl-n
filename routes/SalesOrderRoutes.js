@@ -24,7 +24,8 @@ module.exports = function(app, server){
 	app.post('/getsalesorderdetails', 		soService.getSalesOrder);
 	app.post('/salesorderotpverification', 	soService.salesOrderOtpVerification);
 	app.post('/changesalesorderstatus', 	soService.changeSalesOrderStatus);
-		
+	app.post('/otpverification', 			soService.OtpVerification);
+	
 	function saveOrUpdateSalesOrder(req, res){
 		
 		var salesDetails			= [];

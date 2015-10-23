@@ -17,6 +17,8 @@
 
 var model 				= require('../config/sequelize.js');
 var dataTypes			= require('sequelize');
+var purchaseReturnDtl	= require('../models/PurchaseReturnDtl.js');
+
 var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 
 	return_id : {
@@ -50,4 +52,5 @@ var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 	freezeTableName  : true,
 	tableName		 : 't_purchase_return_hdr'
 });
+purchaseReturnHdr.hasMany(purchaseReturnDtl, {foreignKey: 'return_id'});
 module.exports = purchaseReturnHdr;

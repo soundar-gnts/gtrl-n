@@ -42,4 +42,5 @@ var purchaseReturnDtl	= model.define('t_purchase_return_dtl', {
 	freezeTableName : true,
 	tableName : 't_purchase_return_dtl'
 });
+
 module.exports = purchaseReturnDtl;

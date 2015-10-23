@@ -34,17 +34,22 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 		
 		exports.getPurchaseReturnHdrList = function(req, res) {
 			
-			var attr 		= 	"";
-			var condition 	=	"";
-			var returnid	=	req.param("returnid");
-			var companyid	=	req.param("companyid");
-			var poid		=	req.param("poid");
-			var storeid		=	req.param("storeid");
-			var retrunrefno	=	req.param("retrunrefno");
-			var supplierid	=	req.param("supplierid");
-			var status		=	req.param("status");
+			var fetchAssociation 	=   "";
+			var attr 				= 	"";
+			var condition 			=	"";
+			var returnid			=	req.param("returnid");
+			var companyid			=	req.param("companyid");
+			var poid				=	req.param("poid");
+			var storeid				=	req.param("storeid");
+			var retrunrefno			=	req.param("retrunrefno");
+			var supplierid			=	req.param("supplierid");
+			var status				=	req.param("status");
 			
-			
+			if(req.param('fetchassociation')=='y'){
+				fetchAssociation = [{
+										model : purchaseReturnDtl
+									}]
+			}
 			if(returnid!=null){
 				condition ="return_id="+returnid;
 			}
@@ -102,7 +107,7 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 				attr=['return_id','store_id','supplier_id','retrun_ref_no'];
 			}
 			
-			purchaseReturnHdr.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
+			purchaseReturnHdr.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr,include: fetchAssociation,})
 			
 			.then(function(result) {
 				if(result.length === 0){
@@ -129,8 +134,7 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 				res.send(response);
 			});
 		}
-		
-		
+			
 //To get Purchase Return Detail table List 
 		
 		exports.getPurchaseReturnDtl = function(req, res) {

@@ -91,43 +91,55 @@ exports.getWishorderList = function(req, res) {
 	});
 }
 
-
-// To Save Save/Update Wishorder List Details
-exports.saveWishorderList = function(req, res) {
-	wishorderlist.upsert({
-		wish_id					: req.param("wishid"),
-		company_id 				: req.param("companyid"),
-		customer_id 			: req.param("customerid"),
-		product_id 				: req.param("productid"),
-		status 					: req.param("status"),
-		rating 					: req.param("rating")
-		
-		
-	}).then(function(data){
-		if(data){
-			log.info(filename+'>>saveWishorderList>>'+appmsg.SAVEMESSAGE);
-			response.message = appmsg.SAVEMESSAGE;
-			response.status  = true;
-			response.data	 = "";
-			res.send(response);
-		}
-		else{
+//To  Save/Update Wishorder List Details
+exports.saveWishorderList = function(req, res){	
+	var response = {
+					 status	: Boolean,
+					 message : String,
+					 data	: String
+					};	
+	var wishlist = {
+					wish_id					: req.param("wishid"),
+					company_id 				: req.param("companyid"),
+					customer_id 			: req.param("customerid"),
+					product_id 				: req.param("productid"),
+					status 					: req.param("status"),
+					rating 					: req.param("rating")
+				   };							
+	
+	if(req.param('wishid')!=null){
+	
+		wishorderlist.upsert(wishlist)
+		.then(function(data){						
 			log.info(filename+'>>saveWishorderList>>'+appmsg.UPDATEMESSAGE);
 			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
-			response.data	 = "";
-			res.send(response);
-		}
-		
-	}).error(function(err){
-			log.info(filename+'>>saveWishorderList>>');
+			res.send(response);			
+		})
+		.error(function(err){
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			res.send(response);
-	});
-		
+		});
+	} else{	
+		wishorderlist.create(wishlist)
+		    	.then(function(data){
+				log.info(filename+'>>saveWishorderList>>'+appmsg.SAVEMESSAGE);
+				response.message = appmsg.SAVEMESSAGE;
+				response.status  = true;
+				response.wishid  = data.wish_id;
+				res.send(response);
+			})
+			.error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= appmsg.INTERNALERRORMESSAGE;
+				response.data  		= err;
+				res.send(response);
+			});	
+	}
 }
 
 //For Show wishlist products
