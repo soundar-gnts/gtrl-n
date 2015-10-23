@@ -30,6 +30,7 @@ var product = model.define('m_product', {
 	company_id 		: dataTypes.INTEGER,
 	prod_code 		: dataTypes.STRING,
 	prod_name 		: dataTypes.STRING,
+	prod_image		: dataTypes.STRING,
 	prod_desc 		: dataTypes.STRING,
 	manufg_id 		: dataTypes.INTEGER,
 	brand_id 		: dataTypes.INTEGER,

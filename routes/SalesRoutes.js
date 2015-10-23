@@ -27,6 +27,10 @@ module.exports = function(app, server){
 	//details tables
 	app.post('/getsaledetails',		getSalesDetails);
 	
+	// slaes delivery details table
+	app.post('/getsalesdeliverydetails',		getSalesDeliveryDetails);
+	app.post('/savesalesdeliverydetails',		saveOrUpdateSalesDeliveryDetails);
+	
 	function saveOrUpdateSales(req, res){
 		
 		var salesDetails			= [];
@@ -174,12 +178,6 @@ module.exports = function(app, server){
 	
 	function getSalesDetails(req, res){
 		
-		var response = {
-				status	: Boolean,
-				message : String,
-				data	: String
-		}
-		
 		var selectedAttributes 	= "";
 		var condition 			= "";
 		var saleDtlId 			= req.param('sale_dtlid');
@@ -209,6 +207,81 @@ module.exports = function(app, server){
 		
 		
 		salesService.getSalesDetailsFn(condition, selectedAttributes, function(response){
+			res.send(response);
+		});
+	}
+	
+	function saveOrUpdateSalesDeliveryDetails(req, res){
+		var salesDeliveryDetail = {
+				delivery_dtlid		: req.param('deliverydtlid'),
+				sale_id				: req.param('saleid'),
+				cust_id				: req.param('custid'),
+				customer_name		: req.param('customername'),
+				delivery_address	: req.param('deliveryaddress'),
+				city_id				: req.param('cityid'),
+				landmark			: req.param('landmark'),
+				mobile_no			: req.param('mobileno'),
+				plan_delivery_dt	: req.param('plandeliverydt'),
+				plan_delivery_time	: req.param('plandeliverytime'),
+				deli_employee_id	: req.param('deliemployeeid'),
+				exp_delivery_dt		: req.param('expdeliverydt'),
+				exp_delivery_time	: req.param('expdeliverytime'),
+				act_delivery_dt		: req.param('actdeliverydt'),
+				act_delivery_time	: req.param('actdeliverytime'),
+				receiver_name		: req.param('receivername'),
+				receiver_phone		: req.param('receiverphone'),
+				receiver_signature	: req.param('receiversignature'),
+				status				: req.param('status'),
+				undeliver_reason	: req.param('undeliverreason'),
+				remarks				: req.param('remarks'),
+				post_code			: req.param('postcode'),
+				salesorder_id		: req.param('salesorderid')
+		}
+		
+		salesService.saveOrUpdateSalesDeliveryDetailsFn(salesDeliveryDetail, function(response){
+			res.send(response)
+		});
+	}
+	
+	function getSalesDeliveryDetails(req, res){
+		
+		var selectedAttributes 	= "";
+		var condition 			= "";
+		var deliveryDetId		= req.param('deliverydtlid');
+		var saleId				= req.param('saleid');
+		var salesOrderId		= req.param('salesorderid');
+		var status				= req.param('status');
+		var batchNo			
+		
+		if(req.param('isfulllist')=='p')
+			selectedAttributes=['delivery_dtlid','sale_id', 'customer_name', 'delivery_address']
+		
+		if(deliveryDetId != null)
+			condition = "delivery_dtlid="+deliveryDetId;
+		
+		if(saleId!=null)
+			if(condition === "")
+				condition = "sale_id='"+saleId+"'";
+		
+			else
+				condition = condition+" and sale_id='"+saleId+"'";
+		
+		if(salesOrderId!=null)
+			if(condition === "")
+				condition = "salesorder_id='"+salesOrderId+"'";
+		
+			else
+				condition = condition+" and salesorder_id='"+salesOrderId+"'";
+		
+		if(status!=null)
+			if(condition === "")
+				condition = "status='"+status+"'";
+		
+			else
+				condition = condition+" and status='"+status+"'";
+		
+		
+		salesService.getSalesDeliveryDetailsFn(condition, selectedAttributes, function(response){
 			res.send(response);
 		});
 	}

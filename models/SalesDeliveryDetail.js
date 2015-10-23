@@ -17,7 +17,7 @@
 
 var model = require('../config/sequelize.js');
 var dataTypes = require('sequelize');
-var product = model.define('t_sales_delivery_dtl', {
+var sDelivery = model.define('t_sales_delivery_dtl', {
 
 	delivery_dtlid : {
 		type : dataTypes.INTEGER,
@@ -53,4 +53,4 @@ var product = model.define('t_sales_delivery_dtl', {
 	freezeTableName : true,
 	tableName : 't_sales_delivery_dtl'
 });
-module.exports = product;
+module.exports = sDelivery;

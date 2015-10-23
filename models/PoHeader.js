@@ -50,5 +50,5 @@ var poHeader = model.define('t_po_hdr', {
 });
 
 poHeader.hasMany(poDetail, 	{foreignKey: 'po_id'});
-poHeader.hasOne(supplier, 	{foreignKey: 'supplier_id'});
+poHeader.belongsTo(supplier, 	{foreignKey: 'supplier_id'});
 module.exports = poHeader;

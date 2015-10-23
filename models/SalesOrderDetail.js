@@ -45,5 +45,5 @@ var soDetail = model.define('t_salesorder_dtl', {
 	tableName : 't_salesorder_dtl'
 });
 
-soDetail.hasOne(product, {foreignKey : 'prod_id', targetKey : 'product_id'});
+soDetail.belongsTo(product, {foreignKey : 'product_id'});
 module.exports = soDetail;

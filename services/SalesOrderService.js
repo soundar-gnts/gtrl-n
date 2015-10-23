@@ -28,8 +28,11 @@ var slnogenService = require('../services/SlnoGenService.js');
 
 //insert or update Sales order details
 exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDeleteDetailsIds, res){
-	log.info(fileName+'.saveOrUpdateSalesOrderFn');
 	
+	
+	log.info(fileName+'.saveOrUpdateSalesOrderFn');
+	console.log(salesOrder);
+	console.log(salesDetails);
 	var refkey = 'ODER_NO';
 	var response = {
 			status	: Boolean,
@@ -129,7 +132,7 @@ exports.getSalesOrder = function(req, res){
 	if(req.param('fetchassociation')=='y'){
 		fetchAssociation = [{
 				model : soDetail,
-				include : {model : product, attributes : ['prod_name', 'prod_desc', 'mrp'], include : {model : productImage, attributes : ['product_image']}}
+				include : {model : product, attributes : ['prod_name', 'prod_desc', 'prod_image', 'mrp'], include : {model : productImage, attributes : ['product_image']}}
 								
 		}]
 	}
@@ -139,7 +142,7 @@ exports.getSalesOrder = function(req, res){
 	}
 	
 	if(companyId != null)
-		condition = "company_id="+companyId;
+		condition = "t_salesorder_hdr.company_id="+companyId;
 	
 	if(soId!=null)
 		if(condition === "")
@@ -150,10 +153,10 @@ exports.getSalesOrder = function(req, res){
 	
 	if(status!=null)
 		if(condition === "")
-			condition = "status='"+status+"'";
+			condition = "t_salesorder_hdr.status='"+status+"'";
 	
 		else
-			condition = condition+" and status='"+status+"'";
+			condition = condition+" and t_salesorder_hdr.status='"+status+"'";
 	
 	if(storeId!=null)
 		if(condition === "")

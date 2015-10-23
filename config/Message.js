@@ -60,3 +60,6 @@ exports.USERACCESSTREEEDITSUCCESS = 'User access tree editted successfully.';
 
 exports.USERGROUPSAVESUCCESS = 'User group saved successfully.';
 exports.USERGROUPEDITSUCCESS = 'User group editted successfully.';
+
+exports.SALESDELIVERYDETAILSSAVESUCCESS = 'Sale delivery details saved successfully.';
+exports.SALESDELIVERYDETAILSEDITSUCCESS = 'Sale delivery details editted successfully.';

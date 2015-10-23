@@ -46,5 +46,5 @@ var poDetail = model.define('t_po_dtl', {
 	tableName : 't_po_dtl'
 });
 
-poDetail.hasOne(product, 	{foreignKey: 'prod_id'});
+poDetail.belongsTo(product, 	{foreignKey: 'prod_id'});
 module.exports = poDetail;

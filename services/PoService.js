@@ -43,23 +43,23 @@ exports.saveOrUpdatePo = function(req, res){
 	
 	var purchaseOrder = {
 			po_id			: req.param('poid'),
-			company_id		: req.param('companyid'),
+			company_id		: parseInt(req.param('companyid')),
 			po_no			: req.param('pono'),
 			po_date			: req.param('podate'),
-			store_id		: req.param('storeid'),
-			supplier_id		: req.param('supplierid'),
+			store_id		: parseInt(req.param('storeid')),
+			supplier_id		: parseInt(req.param('supplierid')),
 			invoice_addr	: req.param('invoiceaddr'),
 			shipping_addr	: req.param('shippingaddr'),
 			po_remark		: req.param('poremark'),
-			basic_total		: req.param('basictotal'),
-			total_value		: req.param('totalvalue'),
-			total_tax		: req.param('totaltax'),
-			total_discount	: req.param('totaldiscount'),
+			basic_total		: parseFloat(req.param('basictotal')),
+			total_value		: parseFloat(req.param('totalvalue')),
+			total_tax		: parseFloat(req.param('totaltax')),
+			total_discount	: parseFloat(req.param('totaldiscount')),
 			status 			: req.param('status'),
 			last_updated_dt	: req.param('lastupdateddt'),
 			last_updated_by	: req.param('lastupdatedby')
 	}
-	
+	console.log(purchaseOrder);
 	if(req.param('purchasedetails') != null)
 		detailsLength = req.param('purchasedetails').length;
 	
@@ -68,18 +68,18 @@ exports.saveOrUpdatePo = function(req, res){
 				po_id			: req.param('poid'),
 				po_dtlid		: req.param('purchasedetails')[i].podtlid,
 				manufg_id		: req.param('purchasedetails')[i].manufgid,
-				prod_id			: req.param('purchasedetails')[i].prodid,
-				po_qty			: req.param('purchasedetails')[i].poqty,
-				bal_qty			: req.param('purchasedetails')[i].balqty,
-				uom_id			: req.param('purchasedetails')[i].uomid,
-				rate			: req.param('purchasedetails')[i].rate,
-				basic_value		: req.param('purchasedetails')[i].basicvalue,
-				discount_prcnt	: req.param('purchasedetails')[i].discountprcnt,
-				tax_id			: req.param('purchasedetails')[i].taxid,
-				tax_prnct		: req.param('purchasedetails')[i].taxprnct,
-				tax_value		: req.param('purchasedetails')[i].taxvalue,
-				purchase_value	: req.param('purchasedetails')[i].purchasevalue,
-				discount_value	: req.param('purchasedetails')[i].discountvalue
+				prod_id			: parseInt(req.param('purchasedetails')[i].prodid),
+				po_qty			: parseInt(req.param('purchasedetails')[i].poqty),
+				bal_qty			: parseInt(req.param('purchasedetails')[i].balqty),
+				uom_id			: parseInt(req.param('purchasedetails')[i].uomid),
+				rate			: parseFloat(req.param('purchasedetails')[i].rate),
+				basic_value		: parseFloat(req.param('purchasedetails')[i].basicvalue),
+				discount_prcnt	: parseFloat(req.param('purchasedetails')[i].discountprcnt),
+				tax_id			: parseInt(req.param('purchasedetails')[i].taxid),
+				tax_prnct		: parseFloat(req.param('purchasedetails')[i].taxprnct),
+				tax_value		: parseFloat(req.param('purchasedetails')[i].taxvalue),
+				purchase_value	: parseFloat(req.param('purchasedetails')[i].purchasevalue),
+				discount_value	: parseFloat(req.param('purchasedetails')[i].discountvalue)
 		}
 		purchaseDetails.push(purchaseDetail);
 	}
@@ -206,10 +206,10 @@ exports.getPo = function(req, res){
 	
 	if(status!=null)
 		if(condition === "")
-			condition = "status='"+status+"'";
+			condition = "t_po_hdr.status='"+status+"'";
 	
 		else
-			condition = condition+" and status='"+status+"'";
+			condition = condition+" and t_po_hdr.status='"+status+"'";
 	
 	if(storeId!=null)
 		if(condition === "")

@@ -13,17 +13,13 @@
  * 0.1				19-10-2015	Haris K.A.			
  * 
  */
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var appMsg			= require('../config/Message.js');
-var path = require('path');
-var fileName=path.basename(__filename);
-var saleDtl = require('../models/SaleDtl.js');
-var saleHdr = require('../models/SaleHeader.js');
+var log					= require('../config/logger').logger;
+var appMsg				= require('../config/Message.js');
+var path	 			= require('path');
+var fileName			= path.basename(__filename);
+var saleDtl 			= require('../models/SaleDtl.js');
+var saleHdr 			= require('../models/SaleHeader.js');
+var salesDeliveryDetail = require('../models/SalesDeliveryDetail.js');
 
 exports.getSaleDetail=function(productid,batchno,callback){
 	console.log(productid);
@@ -65,7 +61,7 @@ exports.saveOrUpdateSalesFn = function(sales, salesDetails, salesDeleteDetailsId
 			
 			log.info(appMsg.SALESEDITSUCCESS);
 			response.message 	= appMsg.SALESEDITSUCCESS;
-			response.data  		= salesOrder.salesorder_id;
+			response.data  		= data.salesorder_id;
 			response.status  	= true;
 			callback(response);
 			
@@ -77,7 +73,7 @@ exports.saveOrUpdateSalesFn = function(sales, salesDetails, salesDeleteDetailsId
 			callback(response);
 		});
 	} else{
-		console.log(sales)
+		
 		saleHdr.create(sales)
 		.then(function(data){
 				console.log(data)
@@ -118,7 +114,7 @@ function saveOrUpdateSaleDetailsFn(saleDetail, callback){
 	log.info(fileName+'.saveOrUpdateSaleDetailsFn');
 	saleDtl.upsert(saleDetail)
 	.then(function(data){
-		log.error('Sale detail saved');
+		log.info('Sale detail saved');
 		response.status  	= true;
 		callback(response);
 	}).error(function(err){
@@ -198,6 +194,12 @@ exports.getSalesFn = function(condition, fetchAssociation, selectedAttributes, c
 }
 
 exports.getSalesDetailsFn = function(condition, selectedAttributes, callback){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
 	saleDtl.findAll({
 		where 		: [condition],
 		attributes	: selectedAttributes
@@ -214,6 +216,83 @@ exports.getSalesDetailsFn = function(condition, selectedAttributes, callback){
 			response.status  	= true;
 			response.message 	= 'About '+saleDtls.length+' results.';
 			response.data 		= saleDtls;
+			callback(response);
+		}
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		callback(response);
+	});
+	
+}
+
+exports.saveOrUpdateSalesDeliveryDetailsFn = function(salesDelvryDetail, callback){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	if(salesDelvryDetail.delivery_dtlid != null){
+		salesDeliveryDetail.upsert(salesDelvryDetail)
+		.then(function(data){
+			log.info(appMsg.SALESDELIVERYDETAILSEDITSUCCESS);
+			response.message 	= appMsg.SALESDELIVERYDETAILSEDITSUCCESS;
+			response.data  		= salesDelvryDetail.delivery_dtlid;
+			response.status  	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	} else{
+		salesDeliveryDetail.create(salesDelvryDetail)
+		.then(function(data){
+			log.info(appMsg.SALESDELIVERYDETAILSSAVESUCCESS);
+			response.message 	= appMsg.SALESDELIVERYDETAILSSAVESUCCESS;
+			response.data  		= data.delivery_dtlid;
+			response.status  	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	}
+}
+
+exports.getSalesDeliveryDetailsFn = function(condition, selectedAttributes, callback){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	salesDeliveryDetail.findAll({
+		where 		: [condition],
+		attributes	: selectedAttributes
+		
+	})
+	.then(function(saleDelvery){
+		if(saleDelvery.length == 0){
+			log.info(appMsg.LISTNOTFOUNDMESSAGE);
+			response.message = appMsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			callback(response);
+		} else{
+			log.info('About '+saleDelvery.length+' results.');
+			response.status  	= true;
+			response.message 	= 'About '+saleDelvery.length+' results.';
+			response.data 		= saleDelvery;
 			callback(response);
 		}
 	})
