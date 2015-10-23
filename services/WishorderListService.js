@@ -21,9 +21,10 @@ var response = {
 		data	: String
 };
 var appmsg			= require('../config/Message.js');
+var sequelize		= require('../config/sequelize.js');
 
-var path = require('path');
-var filename=path.basename(__filename);
+var path 			= require('path');
+var filename		= path.basename(__filename);
 
 // To get Wishorder List based on user param
 exports.getWishorderList = function(req, res) {
@@ -129,4 +130,51 @@ exports.saveWishorderList = function(req, res) {
 		
 }
 
+//For Show wishlist products
+exports.getWishList = function(req, res) {
+	var status = null;
+	if(req.param("status")!=null){
+		status = req.param("status");
+	}
+	
+	if(req.param("companyid")!=null&&req.param("customerid")!=null){
+	sequelize.query("select  p.prod_name prodname ,p.prod_code prodcode,p.mrp mrp,w.rating rating," +
+			" w.product_id productid,w.customer_id customerid," +
+			"(select i.product_image from m_product_image i where i. prod_id = w.product_id LIMIT 1 ) productimage " +
+			"from t_wishorder_list w,m_product p " +
+			"where p.prod_id 		= w.product_id " +
+			" and w.status like COALESCE('"+status+"','%')"+
+			" and w.customer_id 	= "+req.param("customerid")+
+			" and w.company_id 		= "+req.param("companyid"), { type: sequelize.QueryTypes.SELECT})
+
+	.then(function(result) {
+		if(result.length === 0){
+			log.info(filename+'>> getWishList >> '+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			response.data	 = req.param("customerid");
+			res.send(response);
+		} else{
+			log.info(filename+'>> getWishList >> '+'About '+result.length+' results.');		
+			response.status  	= true;
+			response.message 	= 'About '+result.length+' results.';
+			response.data 		= result;
+			res.send(response);
+		}
+	}).error(function(err){
+			log.info(filename+'>> getWishList >> '+appmsg.INTERNALERRORMESSAGE);
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
+	});
+	}else{
+			log.info(filename+'>> getWishList >> '+appmsg.INTERNALERRORMESSAGE);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= req.param("customerid");
+			res.send(response);
+	}
+};
 

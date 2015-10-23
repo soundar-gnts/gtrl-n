@@ -140,14 +140,14 @@ exports.saveAccounts = function(req, res) {
 			log.info(filename+'>>saveAccounts>>'+appmsg.SAVEMESSAGE);
 			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
-			response.data	 = "";
+			response.data	 = req.param("accountid");
 			res.send(response);
 		}
 		else{
 			log.info(filename+'>>saveAccounts>>'+appmsg.UPDATEMESSAGE);
 			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
-			response.data	 = "";
+			response.data	 = req.param("accountid");
 			res.send(response);
 		}
 		
@@ -171,7 +171,7 @@ exports.deleteAccountDetails = function(req, res) {
 			log.info(filename+'>>deleteAccountDetails>>'+appmsg.DELETEMESSAGE);
 			response.message = appmsg.DELETEMESSAGE;
 			response.status  = true;
-			response.data	 = "";
+			response.data	 = req.param("accountid");
 			res.send(response);
 		}
 		
@@ -185,14 +185,14 @@ exports.deleteAccountDetails = function(req, res) {
 	});
 	}else{
 			response.status  	= false;
-			response.message 	= 'JSON Error - Key Not found';
-			response.data  		= "";
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= req.param("accountid");
 			res.send(response);
 	}
 }
 
 //To update account balance
-exports.updateAccountBalance = function(accountid,transamount,operation) {
+exports.updateAccountBalance = function(accountid,transamount,crdr) {
 
 	accounts.findOne({where:[{account_id:accountid}]}).then(function(data){
 	if(data){
@@ -203,7 +203,7 @@ exports.updateAccountBalance = function(accountid,transamount,operation) {
 			currentbalance = data.current_balance;
 		}
 		if(transamount!=null){
-			if(operation!=null && operation=='ADD'){
+			if(crdr!=null && crdr.toUpperCase()=='D'){
 				newbalance = currentbalance + transamount;
 			}else{
 				newbalance = currentbalance - transamount;
@@ -214,11 +214,11 @@ exports.updateAccountBalance = function(accountid,transamount,operation) {
 			
 		});
 		
-		log.info(filename+'>>updateAccountBalance>>'+appmsg.DELETEMESSAGE);
-		response.message = appmsg.DELETEMESSAGE;
+		log.info(filename+'>>updateAccountBalance>>'+appmsg.UPDATEMESSAGE);
+		response.message = appmsg.UPDATEMESSAGE;
 		response.status  = true;
 		response.data	 = accountid;
-		res.send(response);
+		//res.send(response);
 	}
 	
 	}).error(function(err){
@@ -227,7 +227,7 @@ exports.updateAccountBalance = function(accountid,transamount,operation) {
 		response.status  	= false;
 		response.message 	= appmsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
-		res.send(response);
+		//res.send(response);
 });
 
 }

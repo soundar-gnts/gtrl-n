@@ -18,5 +18,6 @@ var wishorderListService = require('../services/WishorderListService.js');
 module.exports = function(app, server) {
 	app.post('/getwishorderlist', wishorderListService.getWishorderList);
 	app.post('/savewishorderlist', wishorderListService.saveWishorderList);
+	app.post('/getwishlist', wishorderListService.getWishList);
 }
 

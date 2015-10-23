@@ -24,6 +24,8 @@ var appmsg			= require('../config/Message.js');
 var path = require('path');
 var filename=path.basename(__filename);
 
+var accountsService = require('../services/AccountsService.js');
+
 // To get Account Txns List based on user param
 exports.getaccounttransDetails = function(req, res) {
 	var attr 			= "";
@@ -168,6 +170,9 @@ exports.saveaccounttrans = function(req, res) {
 		last_updated_by 		: req.param("lastupdatedby")
 		
 	}).then(function(data){
+		
+		accountsService.updateAccountBalance(req.param("accountid"),req.param("transamount"),req.param("crdr"));
+		
 		if(data){
 			log.info(filename+'>>saveaccounttxns>>'+appmsg.SAVEMESSAGE);
 			response.message = appmsg.SAVEMESSAGE;
