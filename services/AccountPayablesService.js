@@ -104,9 +104,6 @@ exports.getAccountPayablesDetails = function(req, res) {
 	});
 }
 
-
-
-
 // To Save Save/Update AccountPayables Details
 exports.saveAccountPayables = function(req, res) {
 	accountpayables.upsert({
@@ -154,36 +151,32 @@ exports.saveAccountPayables = function(req, res) {
 	});
 		
 }
-
+//For Insert New record in Account Payable Table
 exports.insertAccountPayables = function(companyid,storeid,entrydate,accountid,billno,billdate,grnno,invoiceamount,
 		remarks,supplierid,lastupdateddt,lastupdatedby) {
 	var accpay={
-		company_id 				: companyid,
-		store_id 				: storeid,
-		entry_date 				: entrydate,
-		account_id 				: accountid,
-		bill_no 				: billno,
-		bill_date 				: billdate,
-		grn_no 					: grnno,
-		invoice_amount 			: invoiceamount,
-		paid_amount 			: 0,
-		balance_amount 			: invoiceamount,
-		remarks 				: remarks,
-		prepared_by 			: null,
-		actioned_by 			: null,
-		status 					: 'Pending',
-		last_updated_dt 		: lastupdateddt,
-		last_updated_by 		: lastupdatedby
-		
-	};
-	
-	
+				company_id 				: companyid,
+				store_id 				: storeid,
+				entry_date 				: entrydate,
+				account_id 				: accountid,
+				bill_no 				: billno,
+				bill_date 				: billdate,
+				grn_no 					: grnno,
+				invoice_amount 			: invoiceamount,
+				paid_amount 			: 0,
+				balance_amount 			: invoiceamount,
+				remarks 				: remarks,
+				prepared_by 			: null,
+				actioned_by 			: null,
+				status 					: 'Pending',
+				last_updated_dt 		: lastupdateddt,
+				last_updated_by 		: lastupdatedby
+			};
 	
 	accounts.findOne({where:[{supplier_id:supplierid,status:'Active'}]})
 	.then(function(result){
-		console.log("result--->"+result.account_id);
 		if(result!=null){
-			accpay.account_id=result.account_id;
+			accpay.account_id	=	result.account_id;
 			accountpayables.create(accpay).then(function(data){
 			}).error(function(err){
 				log.error(err);
@@ -212,25 +205,23 @@ exports.insertAccountPayables = function(companyid,storeid,entrydate,accountid,b
 				last_updated_by 			: lastupdateddt
 				
 			}).then(function(data){
-				accpay.account_id=data.account_id;
+				accpay.account_id	=	data.account_id;
 				accountpayables.create(accpay).then(function(data){
 				}).error(function(err){
+					log.info(filename+'>>insertAccountPayables>>');
 					log.error(err);
 					console.log("Error--1->"+err);
 				});
 					
 			}).error(function(err){
+				log.info(filename+'>>insertAccountPayables>>');
+				log.error(err);
 				console.log("Error--2->"+err);
 			});
-				
 
 		}
 		
 	});
-	
-	
-	
-	
 }
 
 

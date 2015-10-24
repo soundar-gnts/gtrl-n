@@ -16,15 +16,16 @@
 var accounts 			= require('../models/Accounts.js');
 var accountreceivables  = require('../models/AccountReceivables.js');
 var log 				= require('../config/logger').logger;
-var appMsg				= require('../config/Message.js');
+var appmsg				= require('../config/Message.js');
 var response  			= {
 							status	: Boolean,
 							message : String,
 							data	: String
-							};
+						  };
+var path 				= require('path');
+var filename			= path.basename(__filename);
 
 // To get Account Receivable List based on user param
-
 exports.getAccountReceivableDetails = function(req, res) {
 	
 	var condition 		= "";
@@ -79,34 +80,33 @@ exports.getAccountReceivableDetails = function(req, res) {
 	
 	.then(function(result) {
 		if(result.length === 0){
-			log.info('No data found.');
-			response.message = appMsg.LISTNOTFOUNDMESSAGE;
-			response.status  = false;
-			response.data	 = "";
+			log.info(filename+'>> getAccountReceivableDetails >>'+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message 	= appmsg.LISTNOTFOUNDMESSAGE;
+			response.status  	= false;
+			response.data	 	= "";
 			res.send(response);
 		} else{
 			
-			log.info('About '+result.length+' results.');
+			log.info(filename+'>> getAccountReceivableDetails >>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			res.send(response);
 		}
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>> getAccountReceivableDetails >>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
 }
 
 // To Save Save/Update AccountReceivable Details
-
 exports.saveAccountReceivables = function(req, res) {
 	
 	accountreceivables.upsert({
-
 		accrcble_id				: req.param("accrcbleid"),
 		company_id 				: req.param("companyid"),
 		store_id 				: req.param("storeid"),
@@ -126,33 +126,34 @@ exports.saveAccountReceivables = function(req, res) {
 		
 	}).then(function(data){
 		if(data){
-			log.info('Saved Successfully.');
-			response.message = 'Saved Successfully.';
-			response.status  = true;
-			response.data	 = "";
+			log.info(filename+'>> saveAccountReceivables >>'+appmsg.SAVEMESSAGE);
+			response.message 	= appmsg.SAVEMESSAGE;
+			response.status  	= true;
+			response.data	 	= "";
 			res.send(response);
 		}
 		else{
-			log.info('Updated Successfully.');
-			response.message = 'Updated Successfully.';
-			response.status  = true;
-			response.data	 = "";
+			log.info(filename+'>> saveAccountReceivables >>'+appmsg.UPDATEMESSAGE);
+			response.message 	= appmsg.UPDATEMESSAGE;
+			response.status  	= true;
+			response.data	 	= "";
 			res.send(response);
 		}
 		
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		res.send(response);
+			log.info(filename+'>> saveAccountReceivables >>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
 	});
-		
+	
+	
 }
-
+//For Insert New Record in Account Receivable Table
 exports.insertAccountReceivable = function(supplierid,companyid,storeid,entrydate,accountid,invoiceno,
 		invoicedate,invoiceamount,outstandingamount,remarks,lastupdateddt,lastupdatedby) {
-	console.log("asda");
 	console.log(supplierid);
 	var paidamnt = invoiceamount - outstandingamount
 	var accreceive={

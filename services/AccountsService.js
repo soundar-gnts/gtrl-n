@@ -13,17 +13,20 @@
  * 
  * 
  */
-var accounts = require('../models/Accounts.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var appmsg			= require('../config/Message.js');
-
-var path = require('path');
-var filename=path.basename(__filename);
+var accounts 			= require('../models/Accounts.js');
+var log 				= require('../config/logger').logger;
+var response 			= {
+							status	: Boolean,
+							message : String,
+							data	: String
+							};
+var appmsg				= require('../config/Message.js');
+var path 				= require('path');
+var filename			= path.basename(__filename);
+var accounttxns 		= require('../models/AccountTransactions.js');
+var accounttxnsbills 	= require('../models/AccountTxnsBills.js');
+var accountreceivables  = require('../models/AccountReceivables.js');
+var accountpayables 	= require('../models/AccountPayables.js');
 
 // To get Account List based on user param
 exports.getAccountsDetails = function(req, res) {
@@ -228,6 +231,151 @@ exports.updateAccountBalance = function(accountid,transamount,crdr) {
 		response.message 	= appmsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		//res.send(response);
+});
+
+}
+
+//To Save Vendor/Customer Payable/Receivable
+exports.saveVendorCustomerTxns = function(req, res) {
+
+	var accountid		=req.param("accountid");
+	var companyid		=req.param("companyid");
+	var storeid			=req.param("storeid");
+	var refno			=req.param("refno");
+	var entrydate		=req.param("entrydate");
+	var transamount		=req.param("transamount");
+	var paymentmode		=req.param("paymentmode");
+	var crdr			=req.param("crdr");
+	var remarks			=req.param("remarks");
+	var transtypeid		=req.param("transtypeid");
+	var lastupdateddt	=req.param("lastupdateddt");
+	var lastupdatedby	=req.param("lastupdatedby");
+	
+	var txnstatus			='Pending';
+	
+	accounts.findOne({where:[{account_id:accountid}]}).then(function(data){
+	if(data){
+		var currentbalance = 0;
+		var amount = 0;
+		var newbalance=0;
+		if(data.current_balance!=null){
+			currentbalance = data.current_balance;
+		}
+		if(transamount!=null){
+			if(crdr!=null && crdr.toUpperCase()=='D'){
+				newbalance = currentbalance + transamount;
+			}else{
+				newbalance = currentbalance - transamount;
+			}
+			
+		}
+		//For Insert New Record in Account Transactions
+		accounttxns.create({
+			company_id 				: companyid,
+			store_id 				: storeid,
+			entry_date 				: entrydate,
+			account_id 				: accountid,
+			trans_type_id 			: transtypeid,
+			open_balance 			: currentbalance,
+			trans_amount 			: transamount,
+			close_balance 			: newbalance,
+			payment_mode 			: paymentmode,
+			ref_no					: refno,
+			ref_date				: entrydate,
+			txn_remarks				: remarks,
+			status 					: 'Pending',
+			last_updated_dt 		: lastupdateddt,
+			last_updated_by 		: lastupdatedby
+			
+		}).then(function(data){
+			
+			//For insert new record in account txns bills table
+			accounttxnsbills.create({
+				acctxn_id 					: data.acctxn_id,
+				account_id 					: accountid,
+				ref_no 						: refno,
+				ref_date 					: entrydate,
+				paid_amount 				: transamount,
+				status 						: 'Active'
+				
+			}).then(function(data){
+				
+			}).error(function(err){});
+			
+			console.log("data.balance_amount-transamount==="+data.balance_amount-transamount)
+					
+			if(crdr!=null && crdr.toUpperCase()=='C'){
+				
+			//For update balance and paid amount
+			accountpayables.findOne({where:[{account_id:accountid,store_id:storeid}]}).then(function(data){
+				if(data){
+					console.log("txnstatus=1=>"+txnstatus);
+					accountpayables.update({paid_amount:data.paid_amount+transamount,balance_amount:data.balance_amount-transamount,status:txnstatus},
+							{where : {account_id:accountid,store_id:storeid}}).then(function() {
+								if(data.balance_amount-transamount<=0){
+									txnstatus ='Paid';
+									console.log("txnstatus=1=>"+txnstatus);
+									accountpayables.update({status:txnstatus},
+											{where : {account_id:accountid,store_id:storeid}}).then(function() {}).error(function(err){
+										
+									});
+								
+								}
+								
+							}).error(function(err){
+						
+					});
+				}
+			});
+		}else{
+			//For update balance and paid amount
+			accountreceivables.findOne({where:[{account_id:accountid,store_id:storeid}]}).then(function(data){
+				if(data){
+					console.log("txnstatus=2=>"+txnstatus);
+					accountreceivables.update({paid_amount:data.paid_amount+transamount,balance_amount:data.balance_amount-transamount,status:txnstatus},
+							{where : {account_id:accountid,store_id:storeid}}).then(function() {
+								if(data.balance_amount-transamount<=0){
+									txnstatus ='Paid';
+									console.log("txnstatus=1=>"+txnstatus);
+									accountreceivables.update({status:txnstatus},
+											{where : {account_id:accountid,store_id:storeid}}).then(function() {}).error(function(err){
+										
+									});
+								
+								}
+								
+							}).error(function(err){
+						
+					});
+				}
+			});
+		}
+				
+			
+		}).error(function(err){
+			
+		});
+			
+		//For update account balance
+		accounts.update({current_balance:newbalance},{where : {account_id:accountid}}).error(function(err){
+			
+		});
+		
+		
+		log.info(filename+'>>saveVendorCustomerTransactions>>'+appmsg.UPDATEMESSAGE);
+		response.message = appmsg.UPDATEMESSAGE;
+		response.status  = true;
+		response.data	 = accountid;
+		res.send(response);
+	}
+	
+	}).error(function(err){
+		log.info(filename+'>>saveVendorCustomerTransactions>>');
+		log.error(err);
+		response.status  	= false;
+		response.message 	= appmsg.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		res.send(response);
 });
 
 }

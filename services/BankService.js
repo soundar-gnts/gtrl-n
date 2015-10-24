@@ -14,27 +14,27 @@
  * 
  */
 
-var bank = require('../models/Bank.js');
-var bankBranch = require('../models/BankBranch.js');
-var appMsg		= require('../config/Message.js');
-var log = require('../config/logger').logger;
-var path = require('path');
-var fileName=path.basename(__filename);
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
+var bank 			= require('../models/Bank.js');
+var bankBranch 		= require('../models/BankBranch.js');
+var appMsg			= require('../config/Message.js');
+var log 			= require('../config/logger').logger;
+var path 			= require('path');
+var fileName		= path.basename(__filename);
+var response 		= {
+						status	: Boolean,
+						message : String,
+						data	: String
+					};
 
 // To Get Bank full LIST
 exports.getBankDetails = function(req, res) {
 	var conditionQuery 		= "";
 	var attr 				= "";
-	var companyId			=req.param("companyid");
-	var bankName			=req.param("bankname");
-	var status		=req.param("status");
-	var bankId=req.param("bankid");
-	var bankCode=req.param("bankcode");
+	var companyId			= req.param("companyid");
+	var bankName			= req.param("bankname");
+	var status				= req.param("status");
+	var bankId				= req.param("bankid");
+	var bankCode			= req.param("bankcode");
 	if(bankId!=null){
 		conditionQuery ="bank_id="+bankId;
 		}
@@ -102,18 +102,18 @@ exports.getBankDetails = function(req, res) {
 
 //To Get Bank Branchfull LIST
 exports.getBankBranchDetails = function(req, res) {
-	var conditionQuery = "";
-	var attr 	= "";
-	var companyId=req.param("companyid");
-	var branchName=req.param("branchname");
-	var status=req.param("status");
-	var bankId=req.param("bankid");
-	var branchId=req.param("branchid");
-	var branchCode=req.param("branchcode");
-	var stateId=req.param("stateid");
-	var cityId=req.param("cityid");
-	var emailId=req.param("email_id");
-    var ifscCode=req.param("ifsccode");
+	var conditionQuery 		= "";
+	var attr 				= "";
+	var companyId			= req.param("companyid");
+	var branchName			= req.param("branchname");
+	var status				= req.param("status");
+	var bankId				= req.param("bankid");
+	var branchId			= req.param("branchid");
+	var branchCode			= req.param("branchcode");
+	var stateId				= req.param("stateid");
+	var cityId				= req.param("cityid");
+	var emailId				= req.param("emailid");
+    var ifscCode			= req.param("ifsccode");
 
 	if(bankId!=null){
 		conditionQuery ="bank_id="+bankId;
@@ -228,8 +228,9 @@ var val={		bank_id      :req.param("bankid"),
 				company_id   :req.param("companyid"),
 				status 	     :req.param("status"),
 				last_updated_dt:req.param("updateddate"),
-				last_updated_by:req.param("updatedby")};
-		if(req.param("bankid")===null){
+				last_updated_by:req.param("updatedby")
+			};
+if(req.param("bankid")===null){
 	 bank.create(val).then(function(p){
 			for(var i=0;i<req.param('bankbranchlist').length;i++){
 	bankBranch.upsert({

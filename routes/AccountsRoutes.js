@@ -20,6 +20,7 @@ module.exports = function(app, server) {
 	app.post('/getaccountsdetails', accountsService.getAccountsDetails);
 	app.post('/saveaccounts', accountsService.saveAccounts);
 	app.post('/deleteaccountdetails', accountsService.deleteAccountDetails);
+	app.post('/savevendorcustomertxns', accountsService.saveVendorCustomerTxns);
 	
 }
 
