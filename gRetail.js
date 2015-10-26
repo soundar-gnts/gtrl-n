@@ -55,7 +55,7 @@ require('./routes/UserGroupRoutes.js')(app, server);
 require('./routes/UserAccessTreeRoutes.js')(app, server);
 require('./routes/ScreenTreeRoutes.js')(app, server);
 require('./routes/PoRoutes.js')(app, server);
-//require('./routes/SalesOrderRoutes.js')(app, server);
+require('./routes/SalesOrderRoutes.js')(app, server);
 require('./routes/SalesRoutes.js')(app, server);
 
 require('./routes/StateRoutes.js')(app, server);
@@ -91,6 +91,7 @@ require('./routes/WishorderListRoutes.js')(app, server);
 require('./routes/InventoryReportsRoutes.js')(app, server);
 require('./routes/SalesReportsRoutes.js')(app, server);
 require('./routes/AccountTxnsBillsRoutes.js')(app, server);
+require('./routes/SalesPymtDtlRoutes.js')(app, server);
 
 
 server.listen(app.get('port'), function(){

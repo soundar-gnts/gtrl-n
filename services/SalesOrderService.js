@@ -27,6 +27,7 @@ var common			= require('../services/CommonService.js');
 var slnogenService	= require('../services/SlnoGenService.js');
 var productService	= require('../services/ProductService.js');
 var taxService		= require('../services/TaxService.js');
+var salesPymtDtlService = require('../services/SalesPymtDtlService.js');
 
 //insert or update Sales order details
 exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDeleteDetailsIds, res){
@@ -305,11 +306,18 @@ exports.changeSalesOrderStatus = function(req, res){
 	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
 	.then(function(soHeaderDet){
 		
-		soHeaderDet.status			= req.param('status');
-		soHeaderDet.delivery_remark = req.param('deliveryremark');
-		soHeaderDet.last_updated_by = req.param('lastupdatedby');
-		soHeaderDet.last_updated_dt = req.param('lastupdateddt');
-		soHeaderDet.save();
+		soHeader.update({status:req.param('status'),delivery_remark:req.param('deliveryremark'),
+			last_updated_by:req.param('lastupdatedby'),last_updated_dt:req.param('lastupdateddt')},
+				{where : {salesorder_id:req.param('salesorderid')}}).error(function(err){
+			
+		});
+		
+		//For Sales Payment Details
+		if(req.param('status')!=null&&req.param('status').toLowerCase()=='confirmed'){
+		salesPymtDtlService.addSalesPymtDetails(req.param('saleid'),req.param('billtype'),req.param('paymentmode')
+				,req.param('cardtypeid'),req.param('cardno'),req.param('approvalno'),req.param('voucherid'),req.param('paidamount'));
+		}
+		
 		log.info('Sales order is '+req.param('status'));
 		response.status  	= true;
 		response.message 	= 'Sales order is '+req.param('status');

@@ -332,10 +332,10 @@ exports.savePurchaseHdrDetails = function(req, res){
 				 			res.send(response);
 				 		});
 				 		
-				 		
 				 	}
 	 	}else{
 			
+	 		var noofrows = 0;
 			if(req.param('purchasedtlslist')!=null){
 				getSalesCount(req.param('purchasedtlslist'),req.param("batchno"), function(count){
 					console.log("before if count-->"+count);
@@ -361,9 +361,13 @@ exports.savePurchaseHdrDetails = function(req, res){
 							//for delete purchase details
 							deletePurchaseDetails(req.param('purchasedtlslist')[i].purchasedtlid);
 							
+							noofrows++;
+						    if (noofrows == req.param('purchasedtlslist').length){
+						    	 //For Delete Purchase Account
+									deletePurchaseHeader(req.param("purchaseid"));
+						    }
+				
 						}
-						//For Delete Purchase Account
-						deletePurchaseHeader(req.param("purchaseid"));
 						
 						log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.DELETEMESSAGE);
 						response.message = appmsg.DELETEMESSAGE;
@@ -379,10 +383,7 @@ exports.savePurchaseHdrDetails = function(req, res){
 						res.send(response);
 					}
 					
-					
 				});
-				
-				
 			}
 		}
 }
@@ -421,21 +422,22 @@ exports.updatePurchaseStatus = function(req, res) {
 		
 	}).then(function(data){
 		if(data){
-			log.info(appmsg.SAVEMESSAGE);
+			log.info(filename+'>>updatePurchaseStatus>>'+appmsg.SAVEMESSAGE);
 			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
-			response.data	 = "";
+			response.data	 = req.param("purchaseid");
 			res.send(response);
 		}
 		else{
-			log.info(appmsg.UPDATEMESSAGE);
+			log.info(filename+'>>updatePurchaseStatus>>'+appmsg.UPDATEMESSAGE);
 			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
-			response.data	 = "";
+			response.data	 = req.param("purchaseid");
 			res.send(response);
 		}
 		
 	}).error(function(err){
+		log.info(filename+'>>updatePurchaseStatus>>');
 		log.error(err);
 		response.status  	= false;
 		response.message 	= appmsg.INTERNALERRORMESSAGE;
@@ -443,9 +445,10 @@ exports.updatePurchaseStatus = function(req, res) {
 		res.send(response);
 	});
 	}else{
+		log.info(filename+'>>updatePurchaseStatus>>');
 		response.status  	= false;
-		response.message 	= 'Error - Key Not found';
-		response.data  		= "";
+		response.message 	= appmsg.INTERNALERRORMESSAGE;
+		response.data  		= req.param("purchaseid");
 		res.send(response);
 	}
 }
