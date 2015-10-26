@@ -16,23 +16,99 @@
  */
 
 var soService	= require('../services/SalesOrderService.js');
+var soDetail	= require('../models/SalesOrderDetail.js');
+var product		= require('../models/Product.js');
+var productImage= require('../models/ProductImage.js');
 
 module.exports = function(app, server){
 	
 	//SalesOrder header tables
 	app.post('/savesalesorderdetails',		saveOrUpdateSalesOrder);
-	app.post('/getsalesorderdetails', 		soService.getSalesOrder);
+	app.post('/getsalesorderdetails', 		getSalesOrder);
 	app.post('/salesorderotpverification', 	soService.salesOrderOtpVerification);
 	app.post('/changesalesorderstatus', 	soService.changeSalesOrderStatus);
-	app.post('/otpverification', 			soService.OtpVerification);
+	app.post('/otpverification', 			soService.salesOrderOtpVerification);
+	
+	function getSalesOrder(req, res){
+		
+		var fetchAssociation 	= "";
+		var selectedAttributes 	= "";
+		var condition 			= "";
+		var soId 				= req.param('salesorderid');
+		var companyId 			= req.param('companyid');
+		var status				= req.param('status');
+		var storeId				= req.param('storeid');
+		var salesOrderNumber	= req.param('salordrnumber');
+		var otpCode				= req.param('otpcode');
+		var customerId			= req.param('customerid');
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{
+					model : soDetail,
+					include : {model : product, attributes : ['prod_name', 'prod_desc', 'prod_image', 'mrp'], include : {model : productImage, attributes : ['product_image']}}
+									
+			}]
+		}
+		
+		if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+			selectedAttributes = ['salesorder_id','sal_ordr_number']
+		}
+		
+		if(companyId != null)
+			condition = "t_salesorder_hdr.company_id="+companyId;
+		
+		if(soId!=null)
+			if(condition === "")
+				condition = "t_salesorder_hdr.salesorder_id='"+soId+"'";
+		
+			else
+				condition = condition+" and t_salesorder_hdr.salesorder_id='"+soId+"'";
+		
+		if(status!=null)
+			if(condition === "")
+				condition = "t_salesorder_hdr.status='"+status+"'";
+		
+			else
+				condition = condition+" and t_salesorder_hdr.status='"+status+"'";
+		
+		if(storeId!=null)
+			if(condition === "")
+				condition = "store_id='"+storeId+"'";
+		
+			else
+				condition = condition+" and store_id='"+storeId+"'";
+		
+		if(salesOrderNumber!=null)
+			if(condition === "")
+				condition = "sal_ordr_number='"+salesOrderNumber+"'";
+		
+			else
+				condition = condition+" and sal_ordr_number='"+salesOrderNumber+"'";
+		
+		if(otpCode!=null)
+			if(condition === "")
+				condition = "otp_code='"+otpCode+"'";
+		
+			else
+				condition = condition+" and otp_code='"+otpCode+"'";
+		
+		if(customerId!=null)
+			if(condition === "")
+				condition = "customer_id='"+customerId+"'";
+		
+			else
+				condition = condition+" and customer_id='"+customerId+"'";
+		
+		soService.getSalesOrderFn(condition, selectedAttributes, fetchAssociation, function(result){
+			res.send(result)
+		});
+		
+	}
 	
 	function saveOrUpdateSalesOrder(req, res){
 		
-		var salesDetails			= [];
-		var detailsLength			= 0;
-		var salesDeleteDetailsIds	= [];
-		var salesDelDetailsLength	= 0;
-				
+		var condition 			= "";
+		
 		var salesOrder = {
 				salesorder_id		: req.param('salesorderid'),
 				customer_id			: req.param('customerid'),
@@ -55,27 +131,24 @@ module.exports = function(app, server){
 				otp_code			: req.param('otpcode')
 		}
 		
-		
-		if(req.param('salesdetails') != null)
-			detailsLength = req.param('salesdetails').length;
-		
-		for(var i = 0; i < detailsLength; i++){
-			var salesDetail = {
-				salesorder_dtl_id	: req.param('salesdetails')[i].salesorderdtlid,
-				salesorder_id		: req.param('salesorderid'),
-				product_id			: req.param('salesdetails')[i].productid,
-				uom_id				: req.param('salesdetails')[i].uomid,
-				rate				: req.param('salesdetails')[i].rate,
-				order_qty			: req.param('salesdetails')[i].orderqty,
-				order_value			: req.param('salesdetails')[i].ordervalue,
-				discount_prcnt		: req.param('salesdetails')[i].discountprcnt,
-				tax_ptcnt			: req.param('salesdetails')[i].taxptcnt,
-				tax_value			: req.param('salesdetails')[i].taxvalue,
-				basic_value			: req.param('salesdetails')[i].basicvalue,
-				discount_value		: req.param('salesdetails')[i].discountvalue
-			}
-			salesDetails.push(salesDetail);
+		var salesDeleteDetailsIds	= [];
+		var salesDelDetailsLength	= 0;
+					
+		var salesDetail = {
+			salesorder_dtl_id	: req.param('salesdetails')[0].salesorderdtlid,
+			salesorder_id		: salesOrder.salesorder_id,
+			product_id			: req.param('salesdetails')[0].productid,
+			uom_id				: req.param('salesdetails')[0].uomid,
+			rate				: req.param('salesdetails')[0].rate,
+			order_qty			: req.param('salesdetails')[0].orderqty || '1',
+			order_value			: req.param('salesdetails')[0].ordervalue,
+			discount_prcnt		: req.param('salesdetails')[0].discountprcnt,
+			tax_ptcnt			: req.param('salesdetails')[0].taxptcnt,
+			tax_value			: req.param('salesdetails')[0].taxvalue,
+			basic_value			: req.param('salesdetails')[0].basicvalue,
+			discount_value		: req.param('salesdetails')[0].discountvalue
 		}
+			
 		
 		if(req.param('salesdeletedetails') != null)
 			salesDelDetailsLength = req.param('salesdeletedetails').length;
@@ -87,8 +160,7 @@ module.exports = function(app, server){
 			salesDeleteDetailsIds.push(salesDeleteDetailsId);
 		}
 		
-		var response = soService.saveOrUpdateSalesOrderFn(salesOrder, salesDetails, salesDeleteDetailsIds, res);
-		
+		var response = soService.saveOrUpdateSalesOrderFn(salesOrder, salesDetail, salesDeleteDetailsIds, res);
 	}
 	
 	//SalesOrder details tables

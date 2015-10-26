@@ -215,7 +215,7 @@ exports.getProductsList=function(req,res){
 		}
 	}
 	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
-		attr=['prod_id','prod_code','prod_name','uom_id'];
+		attr=['prod_id','prod_code','prod_name','uom_id','max_discount','sell_tax_id'];
 	}
 	product.findAll({where : [condition],attributes: attr}).then(function(result){
 		if(result.length === 0){
@@ -425,3 +425,40 @@ exports.getProductBrands=function(req,res){
 	});
 }
 
+var getProduct = function(condition, selectedAttributes, fetchAssociation, callback){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+
+	
+	product.findAll({
+		where				: [condition],
+		include				: fetchAssociation,
+		attributes			: selectedAttributes
+	})
+		.then(function(prodct){
+			if(prodct.length == 0){
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
+				response.status  = false;
+				callback(response);
+			} else{
+				log.info('About '+prodct.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+prodct.length+' results.';
+				response.data 		= prodct;
+				callback(response);
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+}
+
+exports.getProduct = getProduct;

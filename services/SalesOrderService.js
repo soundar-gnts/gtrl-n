@@ -15,24 +15,23 @@
  * 
  */
 
-var path = require('path');
-var fileName=path.basename(__filename);
-var log 		= require('../config/logger').logger;
-var appMsg		= require('../config/Message.js');
-var soHeader	= require('../models/SalesOrderHeader.js');
-var soDetail	= require('../models/SalesOrderDetail.js');
-var product		= require('../models/Product.js');
-var productImage= require('../models/ProductImage.js');
-var common		= require('../services/CommonService.js');
-var slnogenService = require('../services/SlnoGenService.js');
+var path			= require('path');
+var fileName		= path.basename(__filename);
+var log 			= require('../config/logger').logger;
+var appMsg			= require('../config/Message.js');
+var soHeader		= require('../models/SalesOrderHeader.js');
+var soDetail		= require('../models/SalesOrderDetail.js');
+var product			= require('../models/Product.js');
+var productImage	= require('../models/ProductImage.js');
+var common			= require('../services/CommonService.js');
+var slnogenService	= require('../services/SlnoGenService.js');
+var productService	= require('../services/ProductService.js');
+var taxService		= require('../services/TaxService.js');
 
 //insert or update Sales order details
 exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDeleteDetailsIds, res){
 	
-	
 	log.info(fileName+'.saveOrUpdateSalesOrderFn');
-	console.log(salesOrder);
-	console.log(salesDetails);
 	var refkey = 'ODER_NO';
 	var response = {
 			status	: Boolean,
@@ -51,12 +50,37 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDelet
 				deleteSalesOrderDetailsFn("salesorder_dtl_id='"+salesDeleteDetailsIds[i].salesorder_dtl_id+"'");
 			
 			//update/save new sales details into sales order table.
-			for(var i = 0; i < salesDetails.length; i++)
-				saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
+			var condition					= "prod_id='"+salesDetails.product_id+"'";
+			productService.getProduct(condition, '', '', function(proDetails){
+				console.log(salesDetails);
+				console.log('proDetails');
+				console.log(proDetails.data[0]);
+				salesDetails.discount_prcnt	= proDetails.data[0].max_discount;
+				console.log('salesDetails.discount_prcnt : '+salesDetails.discount_prcnt);
+				salesDetails.basic_value		= parseInt(proDetails.data[0].mrp) * parseInt(salesDetails.order_qty);
+				console.log('salesDetails.basic_value : '+salesDetails.basic_value);
+				salesDetails.discount_value	= proDetails.data[0].max_discount/100*salesDetails.basic_value;
+				console.log('salesDetails.discount_value : '+salesDetails.discount_value);
+				salesDetails.order_value		= salesDetails.basic_value - salesDetails.discount_value;
+				console.log('salesDetails.order_value : '+salesDetails.order_value);
+				var condition					= "tax_id='"+proDetails.data[0].sell_tax_id+"'";
+				console.log('proDetails.data.sell_tax_id : '+proDetails.data[0].sell_tax_id);
+				taxService.getTax(condition, '', function(taxDetails){
+					console.log('taxDetails');
+					console.log(taxDetails);
+					salesDetails.tax_ptcnt		= taxDetails.data[0].cst;
+					console.log('salesDetails.tax_ptcnt : '+salesDetails.tax_ptcnt);
+					salesDetails.tax_value		= taxDetails.data[0].cst/100*salesDetails.basic_value;
+					console.log('salesDetails[i].tax_value : '+salesDetails.tax_value);
+					saveOrUpdateSalesOrderDetailsFn(salesDetails);
+				});
+				
+			});
+				
 			
 			log.info(appMsg.SALESORDEREDITSUCCESS);
 			response.message 	= appMsg.SALESORDEREDITSUCCESS;
-			response.data  		= salesOrder.salesorder_id;
+			response.data  		= data;
 			response.status  	= true;
 			res.send(response);
 			
@@ -69,31 +93,95 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDelet
 		});
 	} else{
 				
-		salesOrder.otp_code			= common.generateOTP(4);
-		soHeader.create(salesOrder)
-			.then(function(data){
+		var condition = "status='draft' and customer_id='"+salesOrder.customer_id+"'";
+		getSalesOrder(condition, '', '', function(result){
+			if(result.status){
+				console.log(result.data[0].salesorder_id);
+				salesDetails.salesorder_id = result.data[0].salesorder_id;
+				console.log('salesDetails.product_id : '+salesDetails.product_id);
+				var condition					= "prod_id='"+salesDetails.product_id+"'";
+				productService.getProduct(condition, '', '', function(proDetails){
+					console.log(salesDetails);
+					console.log('proDetails');
+					console.log(proDetails.data[0]);
+					salesDetails.discount_prcnt	= proDetails.data[0].max_discount;
+					console.log('salesDetails.discount_prcnt : '+salesDetails.discount_prcnt);
+					salesDetails.basic_value		= parseInt(proDetails.data[0].mrp) * parseInt(salesDetails.order_qty);
+					console.log('salesDetails.basic_value : '+salesDetails.basic_value);
+					salesDetails.discount_value	= proDetails.data[0].max_discount/100*salesDetails.basic_value;
+					console.log('salesDetails.discount_value : '+salesDetails.discount_value);
+					salesDetails.order_value		= salesDetails.basic_value - salesDetails.discount_value;
+					console.log('salesDetails.order_value : '+salesDetails.order_value);
+					var condition					= "tax_id='"+proDetails.data[0].sell_tax_id+"'";
+					console.log('proDetails.data.sell_tax_id : '+proDetails.data[0].sell_tax_id);
+					taxService.getTax(condition, '', function(taxDetails){
+						console.log('taxDetails');
+						console.log(taxDetails);
+						salesDetails.tax_ptcnt		= taxDetails.data[0].cst;
+						console.log('salesDetails.tax_ptcnt : '+salesDetails.tax_ptcnt);
+						salesDetails.tax_value		= taxDetails.data[0].cst/100*salesDetails.basic_value;
+						console.log('salesDetails[i].tax_value : '+salesDetails.tax_value);
+						saveOrUpdateSalesOrderDetailsFn(salesDetails);
+					});
 					
-				for(var i = 0; i < salesDetails.length; i++){
-					salesDetails[i].salesorder_id = data.salesorder_id;
-					saveOrUpdateSalesOrderDetailsFn(salesDetails[i]);
-				}
+				});
 				
 				log.info(appMsg.SALESORDERSAVESUCCESS);
 				response.message	= appMsg.SALESORDERSAVESUCCESS;
-				response.data  		= data.salesorder_id;
+				response.data  		= result.data.salesorder_id;
 				response.status 	= true;
 				res.send(response);
-			})
-			.error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= appMsg.INTERNALERRORMESSAGE;
-				response.data  		= err;
-				res.send(response);
-			});
-	
-	
-}}
+			} else{
+				salesOrder.otp_code			= common.generateOTP(4);
+				soHeader.create(salesOrder)
+					.then(function(data){
+							
+						salesDetails.salesorder_id = data.salesorder_id;
+						console.log('salesDetails.product_id : '+salesDetails.product_id);
+						var condition					= "prod_id='"+salesDetails.product_id+"'";
+						productService.getProduct(condition, '', '', function(proDetails){
+							console.log(salesDetails);
+							console.log('proDetails');
+							console.log(proDetails.data[0]);
+							salesDetails.discount_prcnt	= proDetails.data[0].max_discount;
+							console.log('salesDetails.discount_prcnt : '+salesDetails.discount_prcnt);
+							salesDetails.basic_value		= parseInt(proDetails.data[0].mrp) * parseInt(salesDetails.order_qty);
+							console.log('salesDetails.basic_value : '+salesDetails.basic_value);
+							salesDetails.discount_value	= proDetails.data[0].max_discount/100*salesDetails.basic_value;
+							console.log('salesDetails.discount_value : '+salesDetails.discount_value);
+							salesDetails.order_value		= salesDetails.basic_value - salesDetails.discount_value;
+							console.log('salesDetails.order_value : '+salesDetails.order_value);
+							var condition					= "tax_id='"+proDetails.data[0].sell_tax_id+"'";
+							console.log('proDetails.data.sell_tax_id : '+proDetails.data[0].sell_tax_id);
+							taxService.getTax(condition, '', function(taxDetails){
+								console.log('taxDetails');
+								console.log(taxDetails);
+								salesDetails.tax_ptcnt		= taxDetails.data[0].cst;
+								console.log('salesDetails.tax_ptcnt : '+salesDetails.tax_ptcnt);
+								salesDetails.tax_value		= taxDetails.data[0].cst/100*salesDetails.basic_value;
+								console.log('salesDetails[i].tax_value : '+salesDetails.tax_value);
+								saveOrUpdateSalesOrderDetailsFn(salesDetails);
+							});
+							
+						});
+						
+						log.info(appMsg.SALESORDERSAVESUCCESS);
+						response.message	= appMsg.SALESORDERSAVESUCCESS;
+						response.data  		= data.salesorder_id;
+						response.status 	= true;
+						res.send(response);
+					})
+					.error(function(err){
+						log.error(err);
+						response.status  	= false;
+						response.message 	= appMsg.INTERNALERRORMESSAGE;
+						response.data  		= err;
+						res.send(response);
+					});
+			}
+		});
+	}
+}
 
 function saveOrUpdateSalesOrderDetailsFn(salesDetail) {
 	log.info(fileName+'.saveOrUpdateSalesOrderDetailsFn');
@@ -110,7 +198,7 @@ function saveOrUpdateSalesOrderDetailsFn(salesDetail) {
 }
 
 //get all Sales order details
-exports.getSalesOrder = function(req, res){
+var getSalesOrder = function(condition, selectedAttributes, fetchAssociation, callback){
 	log.info(fileName+'.getSalesOrder');
 	var response = {
 			status	: Boolean,
@@ -118,73 +206,6 @@ exports.getSalesOrder = function(req, res){
 			data	: String
 	}
 
-	var fetchAssociation 	= "";
-	var selectedAttributes 	= "";
-	var condition 			= "";
-	var soId 				= req.param('salesorderid');
-	var companyId 			= req.param('companyid');
-	var status				= req.param('status');
-	var storeId				= req.param('storeid');
-	var salesOrderNumber	= req.param('salordrnumber');
-	var otpCode				= req.param('otpcode');
-	var customerId			= req.param('customerid');
-	
-	if(req.param('fetchassociation')=='y'){
-		fetchAssociation = [{
-				model : soDetail,
-				include : {model : product, attributes : ['prod_name', 'prod_desc', 'prod_image', 'mrp'], include : {model : productImage, attributes : ['product_image']}}
-								
-		}]
-	}
-	
-	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
-		selectedAttributes = ['salesorder_id','sal_ordr_number']
-	}
-	
-	if(companyId != null)
-		condition = "t_salesorder_hdr.company_id="+companyId;
-	
-	if(soId!=null)
-		if(condition === "")
-			condition = "t_salesorder_hdr.salesorder_id='"+soId+"'";
-	
-		else
-			condition = condition+" and t_salesorder_hdr.salesorder_id='"+soId+"'";
-	
-	if(status!=null)
-		if(condition === "")
-			condition = "t_salesorder_hdr.status='"+status+"'";
-	
-		else
-			condition = condition+" and t_salesorder_hdr.status='"+status+"'";
-	
-	if(storeId!=null)
-		if(condition === "")
-			condition = "store_id='"+storeId+"'";
-	
-		else
-			condition = condition+" and store_id='"+storeId+"'";
-	
-	if(salesOrderNumber!=null)
-		if(condition === "")
-			condition = "sal_ordr_number='"+salesOrderNumber+"'";
-	
-		else
-			condition = condition+" and sal_ordr_number='"+salesOrderNumber+"'";
-	
-	if(otpCode!=null)
-		if(condition === "")
-			condition = "otp_code='"+otpCode+"'";
-	
-		else
-			condition = condition+" and otp_code='"+otpCode+"'";
-	
-	if(customerId!=null)
-		if(condition === "")
-			condition = "customer_id='"+customerId+"'";
-	
-		else
-			condition = condition+" and customer_id='"+customerId+"'";
 	
 	soHeader.findAll({
 		where				: [condition],
@@ -196,13 +217,13 @@ exports.getSalesOrder = function(req, res){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
-				res.send(response);
+				callback(response);
 			} else{
 				log.info('About '+soDtls.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+soDtls.length+' results.';
 				response.data 		= soDtls;
-				res.send(response);
+				callback(response);
 			}
 		})
 		.error(function(err){
@@ -210,10 +231,10 @@ exports.getSalesOrder = function(req, res){
 			response.status  	= false;
 			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
 }
-
+exports.getSalesOrderFn = getSalesOrder;
 //OTP Verification
 exports.salesOrderOtpVerification = function(req, res){
 	log.info(fileName+'.salesOrderOtpVerification');
