@@ -13,27 +13,27 @@
  * 
  * 
  */
-var slnogenService 	= require('../services/SlnoGenService.js');
-var purchasehdr = require('../models/PurchaseHdr.js');
-var purchasedtl = require('../models/PurchaseDtl.js');
-var log = require('../config/logger').logger;
-var slnogenService 	= require('../services/SlnoGenService.js');
+var slnogenService 				= require('../services/SlnoGenService.js');
+var purchasehdr 				= require('../models/PurchaseHdr.js');
+var purchasedtl 				= require('../models/PurchaseDtl.js');
+var log 						= require('../config/logger').logger;
+var slnogenService 				= require('../services/SlnoGenService.js');
 
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var appmsg			= require('../config/Message.js');
+var response 					= {
+									status	: Boolean,
+									message : String,
+									data	: String
+								};
+var appmsg						= require('../config/Message.js');
 
-var stockLedgerService = require('../services/StockLedgerService.js');
-var accountPayablesService = require('../services/AccountPayablesService.js');
-var productSerialCodesService = require('../services/ProductSerialCodesService.js');
-var poService = require('../services/PoService.js');
-var salesService = require('../services/SalesService.js');
+var stockLedgerService 			= require('../services/StockLedgerService.js');
+var accountPayablesService 		= require('../services/AccountPayablesService.js');
+var productSerialCodesService 	= require('../services/ProductSerialCodesService.js');
+var poService 					= require('../services/PoService.js');
+var salesService 				= require('../services/SalesService.js');
 
-var path = require('path');
-var filename=path.basename(__filename);
+var path 						= require('path');
+var filename					= path.basename(__filename);
 
 // To get Purchase Header List based on user param
 exports.getPurchaseHdrDetails = function(req, res) {

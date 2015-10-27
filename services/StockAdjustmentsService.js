@@ -13,17 +13,17 @@
  * 
  * 
  */
-var stockadjustments = require('../models/StockAdjustments.js');
-var log = require('../config/logger').logger;
-var path = require('path');
-var fileName=path.basename(__filename);
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String  
-};
-var stockLedgerService = require('../services/StockLedgerService.js');
-var appMsg			= require('../config/Message.js');
+var stockadjustments 		= require('../models/StockAdjustments.js');
+var log 					= require('../config/logger').logger;
+var path 					= require('path');
+var fileName				= path.basename(__filename);
+var response 				= {
+								status	: Boolean,
+								message : String,
+								data	: String  
+								};
+var stockLedgerService 		= require('../services/StockLedgerService.js');
+var appMsg					= require('../config/Message.js');
 
 // To get Stock Adjustments List based on user param
 exports.getStockAdjustmentsDetails = function(req, res) {

@@ -13,16 +13,16 @@
  * 
  * 
  */
-var slnogen = require('../models/SlnoGen.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var appMsg			= require('../config/Message.js');
-var path = require('path');
-var fileName=path.basename(__filename);
+var slnogen 			= require('../models/SlnoGen.js');
+var log 				= require('../config/logger').logger;
+var response 			= {
+							status	: Boolean,
+							message : String,
+							data	: String
+							};
+var appMsg				= require('../config/Message.js');
+var path 				= require('path');
+var fileName			= path.basename(__filename);
 // To get full Serial No Generation List
 exports.getSlnoGenDetails = function(req, res) {
 	var attr 			= "";

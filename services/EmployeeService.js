@@ -13,20 +13,20 @@
  * 
  * 
  */
-var employee = require('../models/Employee.js');
-var user = require('../models/User.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var commonService 	= require('../services/CommonService.js');
-var appmsg			= require('../config/Message.js');
-var slnogenService 	= require('../services/SlnoGenService.js');
+var employee 			= require('../models/Employee.js');
+var user 				= require('../models/User.js');
+var log 				= require('../config/logger').logger;
+var response 			= {
+							status	: Boolean,
+							message : String,
+							data	: String
+							};
+var commonService 		= require('../services/CommonService.js');
+var appmsg				= require('../config/Message.js');
+var slnogenService 		= require('../services/SlnoGenService.js');
 
-var path = require('path');
-var filename=path.basename(__filename);
+var path 				= require('path');
+var filename			= path.basename(__filename);
 
 // To get full Employee List
 exports.getEmployeeDetails = function(req, res) {

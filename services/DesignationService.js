@@ -14,16 +14,16 @@
  * 
  */
 
-var designation = require('../models/Designation.js');
-var appMsg		= require('../config/Message.js');
-var log = require('../config/logger').logger;
-var path = require('path');
-var fileName=path.basename(__filename);
-var response 	= {
-						status	: Boolean,
-						message : String,
-						data	: String
-					};
+var designation 			= require('../models/Designation.js');
+var appMsg					= require('../config/Message.js');
+var log 					= require('../config/logger').logger;
+var path 					= require('path');
+var fileName				= path.basename(__filename);
+var response 				= {
+								status	: Boolean,
+								message : String,
+								data	: String
+								};
 // To Get Bank full LIST
 exports.getDesignDetails = function(req, res) {
 	var conditionQuery		 = "";
@@ -92,25 +92,25 @@ designation.findAll({where : [conditionQuery],attributes: attr,order: [['last_up
 exports.saveDesignDetails = function(req,res){
 
 	designation.upsert({
-		designation_id   		 :req.param("designationid"),
-		designation_name 		 :req.param("designationname"), 
-			     	company_id	 :req.param("companyid"),
-				  status 	  	 :req.param("status"),
-				last_updated_dt	 :req.param("updateddate"),
-				last_updated_by	 :req.param("updatedby")} ).then(function(err){
+		designation_id   		:req.param("designationid"),
+		designation_name 		:req.param("designationname"), 
+		company_id	 			:req.param("companyid"),
+		status 	  	 			:req.param("status"),
+		last_updated_dt	 		:req.param("updateddate"),
+		last_updated_by	 		:req.param("updatedby")} ).then(function(err){
 
-					if(err){
+			if(err){
 						log.info(fileName+'.saveDesignDetails - '+appMsg.SAVEMESSAGE);
 						response.message = appMsg.SAVEMESSAGE;
 						response.status  = true;
 						res.send(response);
-					}
-					else{
+				}
+				else{
 						log.info(fileName+'.saveDesignDetails - '+appMsg.UPDATEMESSAGE);
 						response.message = appMsg.UPDATEMESSAGE;
 						response.status  = true;
 						res.send(response);
-					}
+				}
 					
 				}).error(function(err){
 					log.error(fileName+'.saveDesignDetails - ');

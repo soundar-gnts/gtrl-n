@@ -13,18 +13,18 @@
  * 
  * 
  */
-var stockledger = require('../models/StockLedger.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var appmsg			= require('../config/Message.js');
+var stockledger 		= require('../models/StockLedger.js');
+var log 				= require('../config/logger').logger;
+var response 			= {
+							status	: Boolean,
+							message : String,
+							data	: String
+							};
+var appmsg				= require('../config/Message.js');
 var stockSummaryService = require('../services/StockSummaryService.js');
 
-var path = require('path');
-var filename=path.basename(__filename);
+var path 				= require('path');
+var filename			= path.basename(__filename);
 
 
 // To get StockLedger List based on user param

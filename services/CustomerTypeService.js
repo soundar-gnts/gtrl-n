@@ -13,17 +13,17 @@
  * 
  * 
  */
-var customertype = require('../models/CustomerType.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var appmsg			= require('../config/Message.js');
+var customertype 		= require('../models/CustomerType.js');
+var log 				= require('../config/logger').logger;
+var response 			= {
+							status	: Boolean,
+							message : String,
+							data	: String
+							};
+var appmsg				= require('../config/Message.js');
 
-var path = require('path');
-var filename=path.basename(__filename);
+var path 				= require('path');
+var filename			= path.basename(__filename);
 
 // To get Customer Type List based on user param
 exports.getCustomerTypeDetails = function(req, res) {

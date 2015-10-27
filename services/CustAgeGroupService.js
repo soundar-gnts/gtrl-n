@@ -13,17 +13,17 @@
  * 
  * 
  */
-var custagegroup = require('../models/CustAgeGroup.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var appmsg			= require('../config/Message.js');
+var custagegroup 		= require('../models/CustAgeGroup.js');
+var log 				= require('../config/logger').logger;
+var response 			= {
+							status	: Boolean,
+							message : String,
+							data	: String
+						};
+var appmsg				= require('../config/Message.js');
 
-var path = require('path');
-var filename=path.basename(__filename);
+var path 				= require('path');
+var filename			= path.basename(__filename);
 
 // To get Customer Age Group based on user param
 exports.getCustAgeGroupDetails = function(req, res) {

@@ -13,17 +13,16 @@
  * 
  * 
  */
-var stocksummary = require('../models/StockSummary.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
+var stocksummary 	= require('../models/StockSummary.js');
+var log 			= require('../config/logger').logger;
+var response 		= {
+						status	: Boolean,
+						message : String,
+						data	: String
+						};
 var appmsg			= require('../config/Message.js');
-
-var path = require('path');
-var filename=path.basename(__filename);
+var path 			= require('path');
+var filename		= path.basename(__filename);
 
 // To get Stock Summary List based on user param
 exports.getStockSummaryDetails = function(req, res) {

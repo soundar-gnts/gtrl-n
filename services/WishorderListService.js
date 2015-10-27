@@ -150,7 +150,7 @@ exports.getWishList = function(req, res) {
 	}
 	
 	if(req.param("companyid")!=null&&req.param("customerid")!=null){
-	sequelize.query("select  w.wish_id,p.prod_name prodname ,p.prod_code prodcode,p.mrp mrp,w.rating rating," +
+	sequelize.query("select  w.wish_id wishid,p.prod_name prodname ,p.prod_code prodcode,p.mrp mrp,w.rating rating," +
 			" w.product_id productid,w.customer_id customerid," +
 			"(select i.product_image from m_product_image i where i. prod_id = w.product_id LIMIT 1 ) productimage " +
 			"from t_wishorder_list w,m_product p " +

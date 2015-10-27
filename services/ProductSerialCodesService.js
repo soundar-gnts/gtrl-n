@@ -13,17 +13,17 @@
  * 
  * 
  */
-var productserialcodes = require('../models/ProductSerialCodes.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var appmsg			= require('../config/Message.js');
+var productserialcodes 	= require('../models/ProductSerialCodes.js');
+var log 				= require('../config/logger').logger;
+var response 			= {
+							status	: Boolean,
+							message : String,
+							data	: String
+							};
+var appmsg				= require('../config/Message.js');
 
-var path = require('path');
-var filename=path.basename(__filename);
+var path 				= require('path');
+var filename			= path.basename(__filename);
 
 // To get Product Serial Codes List based on user param
 exports.getProductSerialCodesDetails = function(req, res) {

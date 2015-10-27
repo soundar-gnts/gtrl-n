@@ -14,22 +14,22 @@
  * 
  */
 
-var product = require('../models/Product.js');
-var productspec = require('../models/ProductSpec.js');
-var productimage = require('../models/ProductImage.js');
-var productbrand = require('../models/ProdBrand.js');
-var log = require('../config/logger').logger;
-var appMsg			= require('../config/Message.js');
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
+var product 			= require('../models/Product.js');
+var productspec 		= require('../models/ProductSpec.js');
+var productimage 		= require('../models/ProductImage.js');
+var productbrand 		= require('../models/ProdBrand.js');
+var log 				= require('../config/logger').logger;
+var appMsg				= require('../config/Message.js');
+var response 			= {
+							status	: Boolean,
+							message : String,
+							data	: String
+							};
 
-var appmsg			= require('../config/Message.js');
+var appmsg				= require('../config/Message.js');
 
-var path = require('path');
-var filename=path.basename(__filename);
+var path 				= require('path');
+var filename			= path.basename(__filename);
 
 // To save product details
 exports.saveProduct = function(req, res) {
