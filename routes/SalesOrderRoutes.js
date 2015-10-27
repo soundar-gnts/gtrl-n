@@ -28,6 +28,7 @@ module.exports = function(app, server){
 	app.post('/salesorderotpverification', 	soService.salesOrderOtpVerification);
 	app.post('/changesalesorderstatus', 	soService.changeSalesOrderStatus);
 	app.post('/otpverification', 			soService.salesOrderOtpVerification);
+	app.post('/getsalesorderdatadetails', 	getSalesOrderDetails);
 	
 	function getSalesOrder(req, res){
 		
@@ -133,21 +134,23 @@ module.exports = function(app, server){
 		
 		var salesDeleteDetailsIds	= [];
 		var salesDelDetailsLength	= 0;
-					
-		var salesDetail = {
-			salesorder_dtl_id	: req.param('salesdetails')[0].salesorderdtlid,
-			salesorder_id		: salesOrder.salesorder_id,
-			product_id			: req.param('salesdetails')[0].productid,
-			uom_id				: req.param('salesdetails')[0].uomid,
-			rate				: req.param('salesdetails')[0].rate,
-			order_qty			: req.param('salesdetails')[0].orderqty || '1',
-			order_value			: req.param('salesdetails')[0].ordervalue,
-			discount_prcnt		: req.param('salesdetails')[0].discountprcnt,
-			tax_ptcnt			: req.param('salesdetails')[0].taxptcnt,
-			tax_value			: req.param('salesdetails')[0].taxvalue,
-			basic_value			: req.param('salesdetails')[0].basicvalue,
-			discount_value		: req.param('salesdetails')[0].discountvalue
+		if(req.param('salesdetails') != null){
+			var salesDetail = {
+					salesorder_dtl_id	: req.param('salesdetails')[0].salesorderdtlid,
+					salesorder_id		: salesOrder.salesorder_id,
+					product_id			: req.param('salesdetails')[0].productid,
+					uom_id				: req.param('salesdetails')[0].uomid,
+					rate				: req.param('salesdetails')[0].rate,
+					order_qty			: req.param('salesdetails')[0].orderqty || '1',
+					order_value			: req.param('salesdetails')[0].ordervalue,
+					discount_prcnt		: req.param('salesdetails')[0].discountprcnt,
+					tax_ptcnt			: req.param('salesdetails')[0].taxptcnt,
+					tax_value			: req.param('salesdetails')[0].taxvalue,
+					basic_value			: req.param('salesdetails')[0].basicvalue,
+					discount_value		: req.param('salesdetails')[0].discountvalue
+				}
 		}
+		
 			
 		
 		if(req.param('salesdeletedetails') != null)
@@ -164,6 +167,47 @@ module.exports = function(app, server){
 	}
 	
 	//SalesOrder details tables
-	app.post('/getsalesorderdatadetails', 		soService.getSalesOrderDetails);
+	
+	function getSalesOrderDetails(req, res){
+		
+		var fetchAssociation 	= "";
+		var selectedAttributes 	= "";
+		var condition 			= "";
+		var soDetailsId 		= req.param('salesorderdtlid');
+		var soId 				= req.param('salesorderid');
+		var status				= req.param('status');
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{
+					model : product, attributes : ['prod_name', 'prod_desc', 'prod_image', 'mrp'], include : {model : productImage, attributes : ['product_image']}
+									
+			}]
+		}
+		
+		if(req.param('isfulllist')=='p')
+			selectedAttributes=['salesorder_dtl_id','salesorder_id']
+		
+		if(soId != null)
+			condition = "salesorder_id="+soId;
+		
+		if(soDetailsId!=null)
+			if(condition === "")
+				condition = "salesorder_dtl_id='"+soDetailsId+"'";
+		
+			else
+				condition = condition+" and salesorder_dtl_id='"+soDetailsId+"'";
+		
+		if(status!=null)
+			if(condition === "")
+				condition = "t_salesorder_dtl.status='"+status+"'";
+		
+			else
+				condition = condition+" and t_salesorder_dtl.status='"+status+"'";
+		
+		
+		soService.getSalesOrderDetails(condition, selectedAttributes, fetchAssociation, function(result){
+			res.send(result)
+		});
+	}
 	
 }

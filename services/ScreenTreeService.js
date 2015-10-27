@@ -23,7 +23,7 @@ var screenTree = require('../models/ScreenTree.js');
 
 
 //insert or update Uom
-exports.saveOrUpdateScreenTree = function(req, res){
+var saveOrUpdateScreenTree = function(sTree, callback){
 	log.info(fileName+'.saveOrUpdateScreenTree');
 	
 	var response = {
@@ -32,23 +32,18 @@ exports.saveOrUpdateScreenTree = function(req, res){
 			data	: String
 	}
 	
-	screenTree.upsert({
-		screen_id		: req.param('screenid'),
-		screen_name		: req.param('screenname'),
-		status 			: req.param('status'),
-		last_updated_dt	: req.param("lastupdateddt"),
-		last_updated_by	: req.param('lastupdatedby'),
-	}).then(function(data){
+	screenTree.upsert(sTree)
+	.then(function(data){
 		if(data){
 			log.info(appMsg.SCREENTREESAVESUCCESS);
 			response.message = appMsg.SCREENTREESAVESUCCESS;
 			response.status  = true;
-			res.send(response);
+			callback(response);
 		} else{
 			log.info(appMsg.SCREENTREEEDITSUCCESS);
 			response.message = appMsg.SCREENTREEEDITSUCCESS;
 			response.status  = true;
-			res.send(response);
+			callback(response);
 		}
 		
 	}).error(function(err){
@@ -56,13 +51,13 @@ exports.saveOrUpdateScreenTree = function(req, res){
 		response.status  	= false;
 		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
-		res.send(response);
+		callback(response);
 	});
 }
 
 
 //get all Uom
-exports.getScreenTree = function(req, res){
+var getScreenTree = function(condition, selectedAttributes, callback){
 	log.info(fileName+'.getScreenTree');
 	
 	var response = {
@@ -71,34 +66,7 @@ exports.getScreenTree = function(req, res){
 			data	: String
 	}
 
-	var condition 	= "";
-	var screenId 	= req.param('screenid');
-	var status		= req.param('status');
-	var screeName 	= req.param('screenname');
-	var selectedAttributes	= "";
 	
-	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
-		selectedAttributes = ['screen_id','screen_name']
-	}
-	
-	if(screenId!=null)
-		if(condition === "")
-			condition = "screen_id='"+screenId+"'";
-	
-	
-	if(status!=null)
-		if(condition === "")
-			condition = "status='"+status+"'";
-	
-		else
-			condition = condition+" and status='"+status+"'";
-	
-	if(screeName!=null)
-		if(condition === "")
-			condition = "screen_name='"+screeName+"'";
-	
-		else
-			condition = condition+" and screen_name='"+screeName+"'";
 	
 	screenTree.findAll({
 		where		: [condition],
@@ -110,13 +78,13 @@ exports.getScreenTree = function(req, res){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
-				res.send(response);
+				callback(response);
 			} else{
 				log.info('About '+screenTrees.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+screenTrees.length+' results.';
 				response.data 		= screenTrees;
-				res.send(response);
+				callback(response);
 			}
 		})
 		.error(function(err){
@@ -124,6 +92,11 @@ exports.getScreenTree = function(req, res){
 			response.status  	= false;
 			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
+}
+
+module.exports = {
+		saveOrUpdateScreenTree	: saveOrUpdateScreenTree,
+		getScreenTree			: getScreenTree
 }

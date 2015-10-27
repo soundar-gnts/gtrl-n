@@ -74,6 +74,11 @@ exports.saveOrUpdateSalesFn = function(sales, salesDetails, salesDeleteDetailsId
 		});
 	} else{
 		
+//		stockLedgerService.insertStockLedger(
+//					req.param('purchasedtlslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
+//					req.param('purchasedtlslist')[i].invoiceqty,0,req.param('purchasedtlslist')[i].uomid,req.param("invoiceno"),
+//					req.param("invoicedate"),"Purchase Goods -Invoice Number : "+req.param("invoiceno")+'-'+req.param("actionremarks"));
+//		
 		saleHdr.create(sales)
 		.then(function(data){
 				console.log(data)

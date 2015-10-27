@@ -17,6 +17,8 @@ var slnogenService 	= require('../services/SlnoGenService.js');
 var purchasehdr = require('../models/PurchaseHdr.js');
 var purchasedtl = require('../models/PurchaseDtl.js');
 var log = require('../config/logger').logger;
+var slnogenService 	= require('../services/SlnoGenService.js');
+
 var response = {
 		status	: Boolean,
 		message : String,
@@ -193,7 +195,7 @@ exports.getPurchaseDetails = function(req, res) {
 //insert or update Purchase Return details
 
 exports.savePurchaseHdrDetails = function(req, res){
-	 	 
+		var refkey = 'BILL_NO';
 	 	var response = {
 				 		status	: Boolean,
 				 		message : String,
@@ -306,31 +308,47 @@ exports.savePurchaseHdrDetails = function(req, res){
 			 			response.data  		= err;
 			 			res.send(response);
 			 		});
-					} else { 	
-						purchasehdr.create(purchasehdrdtl).then(function(data){
-				 			
-				 			for(var i = 0; i < detailsLength; i++){
-				 				
-				 				purchaseDetails[i].purchase_id = data.purchase_id; 			
+					} else {
+						
+						var slNoCondition = {
+								company_id 			: req.param("companyid"),
+								ref_key 			: refkey,
+								autogen_yn 			: 'Y',
+								status 				: 'Active'
+						}
+						slnogenService.getSlnoValu(slNoCondition, function(sl){
+							purchasehdrdtl.invoice_no = sl.sno;
+							purchasehdr.create(purchasehdrdtl).then(function(data){
+					 			
+					 			for(var i = 0; i < detailsLength; i++){
+					 				
+					 				purchaseDetails[i].purchase_id = data.purchase_id; 			
 
-				 				saveOrUpdatePurchase(purchaseDetails[i]);
-				 				
-				 			}
-				 		
-				 			log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.SAVEMESSAGE);
-				 			response.message	= appmsg.SAVEMESSAGE;
-				 			response.data  		= data.purchase_id;
-				 			response.status 	= true;
-				 			res.send(response);
-				 		})
-				 		.error(function(err){
-				 			log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.INTERNALERRORMESSAGE);
-				 			log.error(err);
-				 			response.status  	= false;
-				 			response.message 	= appmsg.INTERNALERRORMESSAGE;
-				 			response.data  		= err;
-				 			res.send(response);
-				 		});
+					 				saveOrUpdatePurchase(purchaseDetails[i]);
+					 				
+					 			}
+					 		
+					 			slnogenService.updateSequenceNo(sl.slid, req.param('lastupdateddt'), req.param('lastupdatedby'));
+					 			log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.SAVEMESSAGE);
+					 			response.message	= appmsg.SAVEMESSAGE;
+					 			var purchase = {
+					 					purchase_id : data.purchase_id,
+										invoice_no : sl.sno
+								}
+					 			response.data  		= purchase;
+					 			response.status 	= true;
+					 			res.send(response);
+					 		})
+					 		.error(function(err){
+					 			log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.INTERNALERRORMESSAGE);
+					 			log.error(err);
+					 			response.status  	= false;
+					 			response.message 	= appmsg.INTERNALERRORMESSAGE;
+					 			response.data  		= err;
+					 			res.send(response);
+					 		});
+						});
+						
 				 		
 				 	}
 	 	}else{

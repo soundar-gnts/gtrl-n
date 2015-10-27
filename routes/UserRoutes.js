@@ -27,6 +27,6 @@ module.exports = function(app, server){
 	app.post('/otpverification',userService.userOTPVerification);
 	app.post('/resendotp',		userService.resendOTP);
 	app.post('/forgotpassword',	userService.forgotPassword);
-	
+	//app.post('/c',	userService.getAllCustomer);
 }
 
