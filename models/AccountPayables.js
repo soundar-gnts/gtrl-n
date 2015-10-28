@@ -15,9 +15,9 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var accountpayables = model.define('t_account_payables', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var accountpayables 	= model.define('t_account_payables', {
 
 	accpayble_id : {
 		type 			: dataTypes.INTEGER,
@@ -47,4 +47,4 @@ var accountpayables = model.define('t_account_payables', {
 	freezeTableName 	: true,
 	tableName 			: 't_account_payables'
 });
-module.exports = accountpayables;
+module.exports 			= accountpayables;

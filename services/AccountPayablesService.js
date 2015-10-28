@@ -13,19 +13,19 @@
  * 
  * 
  */
-var accountpayables = require('../models/AccountPayables.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var appmsg			= require('../config/Message.js');
-var accounts = require('../models/Accounts.js');
-var commonService = require('../services/CommonService.js');
+var accountpayables 	= require('../models/AccountPayables.js');
+var log 				= require('../config/logger').logger;
+var response			= {
+							status	: Boolean,
+							message : String,
+							data	: String
+							};
+var appmsg				= require('../config/Message.js');
+var accounts 			= require('../models/Accounts.js');
+var commonService 		= require('../services/CommonService.js');
 
-var path = require('path');
-var filename=path.basename(__filename);
+var path 				= require('path');
+var filename			=path.basename(__filename);
 
 // To get Account Payables List based on user param
 exports.getAccountPayablesDetails = function(req, res) {

@@ -42,8 +42,8 @@ var accountRecevables	 = model.define('t_account_receivables', {
 	last_updated_by		: dataTypes.STRING,
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 't_account_receivables'
+	timestamps 			: false,
+	freezeTableName 	: true,
+	tableName 			: 't_account_receivables'
 });
-module.exports = accountRecevables;
+module.exports 			= accountRecevables;
