@@ -220,6 +220,7 @@ exports.savePurchaseHdrDetails = function(req, res){
 				payment_mode 				: req.param("paymentmode"),
 				discount_prcnt 				: req.param("discountprcnt"),
 				discount_value 				: req.param("discountvalue"),
+				tax_value 					: req.param("taxvalue"),
 				cancel_remark 				: req.param("cancelremark"),
 				status 						: req.param("status"),
 				action_remarks 				: req.param("actionremarks"),

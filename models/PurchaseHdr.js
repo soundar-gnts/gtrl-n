@@ -40,6 +40,7 @@ var purchasehdr = model.define('t_purchase_hdr', {
 	payment_mode		: dataTypes.STRING,
 	discount_prcnt		: dataTypes.INTEGER,
 	discount_value		: dataTypes.INTEGER,
+	tax_value			: dataTypes.INTEGER,
 	cancel_remark		: dataTypes.STRING,
 	status				: dataTypes.STRING,
 	action_remarks		: dataTypes.STRING,

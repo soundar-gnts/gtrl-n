@@ -27,7 +27,7 @@ module.exports = function(app, server){
 	app.post('/getsalesorderdetails', 		getSalesOrder);
 	app.post('/salesorderotpverification', 	soService.salesOrderOtpVerification);
 	app.post('/changesalesorderstatus', 	soService.changeSalesOrderStatus);
-	app.post('/otpverification', 			soService.salesOrderOtpVerification);
+	app.post('/checkoutotpverification', 	soService.salesOrderOtpVerification);
 	app.post('/getsalesorderdatadetails', 	getSalesOrderDetails);
 	
 	function getSalesOrder(req, res){
@@ -114,7 +114,7 @@ module.exports = function(app, server){
 				salesorder_id		: req.param('salesorderid'),
 				customer_id			: req.param('customerid'),
 				total_tax			: req.param('totaltax'),
-				Order_value			: req.param('ordervalue'),
+				Order_value			: parseFloat(req.param('ordervalue')||'0'),
 				total_qty			: req.param('totalqty'),
 				delivery_type		: req.param('deliverytype'),
 				delivery_remark		: req.param('deliveryremark'),

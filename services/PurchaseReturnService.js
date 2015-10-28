@@ -246,47 +246,44 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 //insert or update Purchase Return details
  
  exports.saveOrUpdatePurchaseReturn = function(req, res){
-	 
-	 
-	 	var response	 = {
-				 			status	: Boolean,
-				 			message : String,
-				 			data	: String				 			
-	 						}
+	 var response = {
+			 status	: Boolean,
+			message : String,
+			data	: String				 			
+	 	}
 	 	
-	 	var returnhdr 	 = { 			
-				 			return_id			: req.param('returnid'),
-							company_id			: req.param('companyid'),
-							po_id 				: req.param('poid'),
-							retrun_ref_no 		: req.param('retrunrefno'),
-							return_date 		: req.param('returndate'),
-							store_id 			: req.param('storeid'),
-							supplier_id 		: req.param('supplierid'),
-							amount_payble 		: req.param('amountpayble'),
-							outstanding_amount 	: req.param('outstandingamount'),
-							return_type 		: req.param('returntype'),
-							payment_mode 		: req.param('paymentmode'),
-							discount_prcnt 		: req.param('discountprcnt'),
-							discount_value 		: req.param('discountvalue'),
-							return_reason 		: req.param('returnreason'),
-							cancel_remark 		: req.param('cancelremark'),
-							status		   		: req.param('status'),
-							last_updated_dt		: req.param('lastupdateddt'),
-							last_updated_by		: req.param('lastupdatedby'),
-							batch_no            : req.param('batchno'),
-	 						}
+	 var purchseReturnHdr = {
+			return_id			: req.param('returnid'),
+			company_id			: req.param('companyid'),
+			po_id 				: req.param('poid'),
+			retrun_ref_no 		: req.param('retrunrefno'),
+			return_date 		: req.param('returndate'),
+			store_id 			: req.param('storeid'),
+			supplier_id 		: req.param('supplierid'),
+			amount_payble 		: req.param('amountpayble'),
+			outstanding_amount 	: req.param('outstandingamount'),
+			return_type 		: req.param('returntype'),
+			payment_mode 		: req.param('paymentmode'),
+			discount_prcnt 		: req.param('discountprcnt'),
+			discount_value 		: req.param('discountvalue'),
+			return_reason 		: req.param('returnreason'),
+			cancel_remark 		: req.param('cancelremark'),
+			status		   		: req.param('status'),
+			last_updated_dt		: req.param('lastupdateddt'),
+			last_updated_by		: req.param('lastupdatedby'),
+			batch_no            : req.param('batchno'),
+	 	}
 	 	
-	 	var returnDetails = [];
-	 	var detailsLength = 0;
+	 	var purchaseReturnDetails = [];
+	 	var purchaseReturnDetailsLength = 0;
 	
 	 	
 	 	if(req.param('returnlist') != null)
- 		
- 		detailsLength = req.param('returnlist').length;
+	 		purchaseReturnDetailsLength = req.param('returnlist').length;
  	
-	 	for(var i = 0; i < detailsLength; i++){
+	 	for(var i = 0; i < purchaseReturnDetailsLength; i++){
  		
-	 		var purchasereturndtl = {
+	 		var purchaseReturnDetail = {
  				
  				return_dtlid		: req.param('returnlist')[i].returndtlid,
 				return_id			: req.param('returnid'),
@@ -302,82 +299,74 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 				tax_prnct 			: req.param('returnlist')[i].taxprnct,
 				tax_value 			: req.param('returnlist')[i].taxvalue,
 	 		}
-	 		returnDetails.push(purchasereturndtl);
+	 		purchaseReturnDetails.push(purchaseReturnDetail);
 	 	}
 	 	if(req.param("status")!='Deleted'){
-				 	if(req.param('returnid')!=null){
+	 		if(req.param('returnid')!=null){
 				 		
-				 		purchaseReturnHdr.upsert(returnhdr)
-				 		.then(function(data){ 		
+	 			purchaseReturnHdr.upsert(returnhdr)
+					.then(function(data){ 		
 			 			
-			 			for(var i = 0; i < returnDetails.length; i++){
-			 							
-			 				saveOrUpdateReturn(returnDetails[i]);
+			 		for(var i = 0; i < returnDetails.length; i++){
+			 			saveOrUpdateReturn(returnDetails[i]);
 			 				
-			 				if(req.param("status")!=null&&req.param('status')=='Approved')
-			 		 		{
+			 			if(req.param("status")!=null&&req.param('status')=='Approved'){
+			 				
 				 				//To update stock ledger and summary
-				 		 		stockLedgerService.insertStockLedger(
-				 		 				req.param('returnlist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
-				 		 				0,req.param('returnlist')[i].returnqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
-				 		 				,"Purchase Return - Invoice Number :"+req.param("batchno")+'-'+req.param("returnreason"));
+				 		 	stockLedgerService.insertStockLedger(
+				 		 		req.param('returnlist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
+				 		 		0,req.param('returnlist')[i].returnqty,req.param('returnlist')[i].uomid,req.param("retrunrefno"),req.param("returndate")
+				 		 		,"Purchase Return - Invoice Number :"+req.param("batchno")+'-'+req.param("returnreason"));
 				 		 		
 				 		 		
 				 		 		//To update product serial number status as 'Deleted'
-				 		 		productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('returnid'),req.param('returnlist')[i].productid,
+				 		 	productSerialCodesService.updateProductSerialCodes(req.param("companyid"),req.param('returnid'),req.param('returnlist')[i].productid,
 				 						req.param("storeid"),req.param("batchno"),'Returned');
-			 		 		}
-			 			}
-			 			if(req.param("status")!=null&&req.param("status")=='Approved'){		 		
-			 	
+			 		 	}
+			 		}
+			 		if(req.param("status")!=null&&req.param("status")=='Approved'){		 		
 			 			accountReceivable.insertAccountReceivable(req.param("supplierid"),req.param("companyid"),req.param("storeid"),new Date(),null,req.param("retrunrefno"),
-			 						req.param("returndate"),req.param("amountpayble"),req.param("outstandingamount"),req.param("returnreason"),req.param("lastupdateddt")
-			 						,req.param("lastupdatedby"));	
+			 				req.param("returndate"),req.param("amountpayble"),req.param("outstandingamount"),req.param("returnreason"),req.param("lastupdateddt")
+			 				,req.param("lastupdatedby"));	
+			 		}
+			 		log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.UPDATEMESSAGE);
+			 		response.message 	= appMsg.UPDATEMESSAGE;
+			 		response.data  		= req.param('returnid');
+			 		response.status  	= true;
+			 		res.send(response);
 			 			
-			 			}
-			 			log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.UPDATEMESSAGE);
-			 			response.message 	= appMsg.UPDATEMESSAGE;
-			 			response.data  		= req.param('returnid');
-			 			response.status  	= true;
-			 			res.send(response);
-			 			
-			 		})
-			 		.error(function(err){
-			 			log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.INTERNALERRORMESSAGE);
-			 			log.error(err);
-			 			response.status  	= false;
-			 			response.message 	= appMsg.INTERNALERRORMESSAGE;
-			 			response.data  		= err;
-			 			res.send(response);
-			 		});
-			 	} else { 	
- 		purchaseReturnHdr.create(returnhdr).then(function(data){
- 			
- 			for(var i = 0; i < detailsLength; i++){
+			 	})
+			 	.error(function(err){
+			 		log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.INTERNALERRORMESSAGE);
+			 		log.error(err);
+			 		response.status  	= false;
+			 		response.message 	= appMsg.INTERNALERRORMESSAGE;
+			 		response.data  		= err;
+			 		res.send(response);
+			 	});
+	 		} else { 	
+	 			purchaseReturnHdr.create(returnhdr).then(function(data){
+	 				for(var i = 0; i < detailsLength; i++){
+	 					returnDetails[i].return_id = data.return_id; 			
+	 					saveOrUpdateReturn(returnDetails[i]);
  				
- 				returnDetails[i].return_id = data.return_id; 			
-
- 				saveOrUpdateReturn(returnDetails[i]);
- 				
- 			}
+	 				}
  		
- 			log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.SAVEMESSAGE);
- 			response.message	= appMsg.SAVEMESSAGE;
- 			response.data  		= data.return_id;
- 			response.status 	= true;
- 			res.send(response);
- 		})
- 		.error(function(err){
- 			log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.INTERNALERRORMESSAGE);
- 			log.error(err);
- 			response.status  	= false;
- 			response.message 	= appMsg.INTERNALERRORMESSAGE;
- 			response.data  		= err;
- 			res.send(response);
- 		});
- 		
- 		
- 	}
+	 				log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.SAVEMESSAGE);
+	 				response.message	= appMsg.SAVEMESSAGE;
+	 				response.data  		= data.return_id;
+	 				response.status 	= true;
+	 				res.send(response);
+	 			})
+	 			.error(function(err){
+	 				log.info(fileName+'.saveOrUpdatePurchaseReturn - '+appMsg.INTERNALERRORMESSAGE);
+	 				log.error(err);
+	 				response.status  	= false;
+	 				response.message 	= appMsg.INTERNALERRORMESSAGE;
+	 				response.data  		= err;
+	 				res.send(response);
+	 			});
+	 		}
 	 	}else{
 			if(req.param('returnlist')!=null){
 				for(var i=0;i<req.param('returnlist').length;i++){
@@ -410,16 +399,18 @@ var productSerialCodesService = require('../services/ProductSerialCodesService.j
 		}
 
  }
- function saveOrUpdateReturn(purchasereturndtl) {
-	 console.log(purchasereturndtl);
-	 purchaseReturnDtl.upsert(purchasereturndtl)
-	 
-		.then(function(data){
-			
-		}).error(function(err){
-			log.error(err);
-		});
-	}
+ 
+function saveOrUpdateReturn(purchasereturndtl, callback){
+	console.log(purchasereturndtl);
+	purchaseReturnDtl.upsert(purchasereturndtl)
+	.then(function(data){
+		log.error(err);
+	 	callback(true);
+	}).error(function(err){
+		log.error(err);
+		callback(false);
+	});
+}
  
  
 //To Delete PurchaseReturn Detail

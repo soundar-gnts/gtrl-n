@@ -186,7 +186,7 @@ exports.getPo = function(req, res){
 		fetchAssociation = [{
 								model : poDetail, include : {model : product, attributes : ['prod_code', 'prod_name']}
 							},
-		                    {model : supplier, attributes : ['supplier_code']}]
+		                    {model : supplier, attributes : ['supplier_code','supplier_id']}]
 	}
 	
 	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){

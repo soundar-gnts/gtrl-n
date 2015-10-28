@@ -80,10 +80,12 @@ exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDelet
 					});
 					
 				});
+			} else{
+				// is checkout need sms module}
 			}
 			log.info(appMsg.SALESORDEREDITSUCCESS);
 			response.message 	= appMsg.SALESORDEREDITSUCCESS;
-			response.data  		= data;
+			response.data  		= salesOrder.salesorder_id;
 			response.status  	= true;
 			res.send(response);
 			
@@ -250,42 +252,52 @@ exports.salesOrderOtpVerification = function(req, res){
 	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
 	.then(function(soHeaderDet){
 		var refkey = 'ODER_NO';
-		if(soHeaderDet.otp_code == req.param('otpcode')){
-			var slNoCondition = {
-					company_id 			: salesOrder.company_id,
-					ref_key 			: refkey,
-					autogen_yn 			: 'y',
-					status 				: 'Active'
-			}
-			slnogenServic.getSlnoValu(slNoCondition, function(sl){
-				console.log(sl);
-				soHeaderDet.sal_ordr_number	= sl.sno;
-				soHeaderDet.status			= 'Pending';
-				soHeaderDet.save()
-				.then(function(data){
-					slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
-					log.info('OTP has been verified successfully.');
-					response.status  	= true;
-					response.message 	= 'OTP has been verified successfully.';
-					res.send(response);
-				})
-				.error(function(err){
-					log.error(err);
-					response.status  	= false;
-					response.message 	= appMsg.INTERNALERRORMESSAGE;
-					response.data  		= err;
-					res.send(response);
+		if(soHeaderDet.status == 'cart'){
+			if(soHeaderDet.otp_code == req.param('otpcode')){
+				var slNoCondition = {
+						company_id 			: req.param('companyid'),
+						ref_key 			: refkey,
+						autogen_yn 			: 'Y',
+						status 				: 'Active'
+				}
+				slnogenService.getSlnoValu(slNoCondition, function(sl){
+					console.log(sl);
+					soHeaderDet.sal_ordr_number	= sl.sno;
+					soHeaderDet.status			= 'Pending';
+					soHeaderDet.save()
+					.then(function(data){
+						slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
+						log.info('OTP has been verified successfully.');
+						response.status  	= true;
+						response.message 	= 'OTP has been verified successfully.';
+						response.data  		= data;
+						res.send(response);
+					})
+					.error(function(err){
+						log.error(err);
+						response.status  	= false;
+						response.message 	= appMsg.INTERNALERRORMESSAGE;
+						response.data  		= err;
+						res.send(response);
+					});
+					
 				});
 				
-			});
-			
+			} else{
+				
+				log.info('Invalid OTP.');
+				response.status  	= false;
+				response.message 	= 'Invalid OTP.';
+				res.send(response);
+			}
 		} else{
-			
-			log.info('Invalid OTP.');
-			response.status  	= false;
-			response.message 	= 'Invalid OTP.';
+			log.info('OTP has been verified successfully.');
+			response.status  	= true;
+			response.message 	= 'OTP has been verified successfully.';
+			response.data  		= soHeaderDet;
 			res.send(response);
 		}
+		
 		
 	})
 	.error(function(err){

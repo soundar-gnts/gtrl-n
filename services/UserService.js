@@ -320,7 +320,7 @@ exports.resendOTP = function(req, res){
 			response.message = 'You are not an existing user. Please Signup for further processing.';
 			response.status  = true;
 			res.send(response);
-			reply.success = false
+			
 			
 		} else if(data.status == "verified"){
 			log.info('Your account has been already activated.');
