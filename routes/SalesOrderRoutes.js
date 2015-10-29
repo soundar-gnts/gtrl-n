@@ -28,6 +28,7 @@ module.exports = function(app, server){
 	app.post('/salesorderotpverification', 	soService.salesOrderOtpVerification);
 	app.post('/changesalesorderstatus', 	soService.changeSalesOrderStatus);
 	app.post('/checkoutotpverification', 	soService.salesOrderOtpVerification);
+	//app.post('/resendcheckoutotp', 			soService.resendCheckoutOtp);
 	app.post('/getsalesorderdatadetails', 	getSalesOrderDetails);
 	
 	function getSalesOrder(req, res){

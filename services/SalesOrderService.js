@@ -309,6 +309,29 @@ exports.salesOrderOtpVerification = function(req, res){
 	});
 }
 
+//resendCheckoutOtp
+//exports.resendCheckoutOtp = function(req, res){
+//	var response = {
+//			status	: Boolean,
+//			message : String,
+//			data	: String
+//	}
+//	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
+//	.then(function(data){
+//		if(data){
+//			
+//		} else{
+//			
+//		}
+//	})
+//	.error(function(err){
+//		log.error(err);
+//		response.status  	= false;
+//		response.message 	= appMsg.INTERNALERRORMESSAGE;
+//		response.data  		= err;
+//		res.send(response);
+//	});
+//}
 // Approve, Cancel and Reject service for sales_order_hdr table
 exports.changeSalesOrderStatus = function(req, res){
 	log.info(fileName+'.changeSalesOrderStatus');

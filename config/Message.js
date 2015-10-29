@@ -34,6 +34,9 @@ exports.PRODUCTCATEGORYEDITSUCCESS = 'Product category editted successfully.';
 exports.SALESORDERSAVESUCCESS = 'Sales order saved successfully.';
 exports.SALESORDEREDITSUCCESS = 'Sales order editted successfully.';
 
+exports.SALESORDERDETAILSSAVESUCCESS = 'Sales order details saved successfully.';
+exports.SALESORDERDETAILSEDITSUCCESS = 'Sales order details editted successfully.';
+
 exports.SALESSAVESUCCESS = 'Sale saved successfully.';
 exports.SALESEDITSUCCESS = 'Sale editted successfully.';
 
