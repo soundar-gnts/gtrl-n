@@ -450,8 +450,21 @@ exports.updatePODetailBalanceQty=function(poid,prodid,qty,mode){
 			}else{
 				balqty = balqty+qty;
 			}
-			poDetail.update({bal_qty:balqty},{where : {po_dtlid:result.po_dtlid}}).error(function(err){
-				
+			poDetail.update({bal_qty:balqty},{where : {po_dtlid:result.po_dtlid}}).then(function(data){
+				poDetail.sum('bal_qty', { where: { po_id: poid } }).then(function(sum) {
+					console.log(fileName+'>>updatePODetailBalanceQty>> Sum of bal qty--->'+sum);
+					if(sum<=0){
+						poHeader.update({status:'Closed'},{where : {po_id:poid}}).then(function(data){}).error(function(err){
+							console.log(err);
+						});
+					}
+					
+				}).error(function(err){
+					console.log(err);
+				});
+								
+			}).error(function(err){
+				console.log(err);
 			});
 			
 		}

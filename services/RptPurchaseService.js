@@ -23,7 +23,7 @@ var response  			= { status	: Boolean,
 							};
 var sequelize			 = require('../config/sequelize.js');
 
-
+//For Individual purchase report
 exports.getPurchaseRptDetails = function(req, res) {
 
 	if(req.param("purchaseid")!=null){
@@ -72,3 +72,80 @@ exports.getPurchaseRptDetails = function(req, res) {
 			res.send(response);
 	}
 };
+
+//For Purchase Summary Report based on duration, store, customer, customer age group, customer group
+exports.getPurchaseSummaryDetails = function(req, res) {
+	
+	var storeid 		= null;
+	var supplierid 		= null;
+	var paymentmode 	= "%";
+	var batchno			= "%";
+	var status			= "%";
+	
+	if(req.param("storeid")!=null){
+		storeid			= req.param("storeid");
+	}
+	if(req.param("supplierid")!=null){
+		supplierid		= req.param("supplierid");
+	}
+	if(req.param("paymentmode")!=null){
+		paymentmode		= req.param("paymentmode");
+	}
+	if(req.param("batchno")!=null){
+		batchno			= req.param("batchno");
+	}
+	if(req.param("status")!=null){
+		status			= req.param("status");
+	}
+	
+	if(req.param("companyid")!=null){
+		
+		var query  = "select ph.invoice_date,ph.invoice_no,st.store_code,st.store_name,ph.batch_no,sup.supplier_code, " +
+				"sup.supplier_name,ph.invoice_amount,ph.outstanding_amount,ph.payment_mode,ph.discount_value, ph.tax_value " +
+				"from t_purchase_hdr ph,m_store st,m_supplier sup " +
+				"where st.store_id 		= ph.Store_id " +
+				"and sup.supplier_id 	= ph.supplier_id " +
+				"and ph.company_id 		like COALESCE("+req.param("companyid")+",'%') " +
+				"and ph.store_id 		like COALESCE("+storeid+",'%') " +
+				"and ph.supplier_id 	like COALESCE("+supplierid+",'%') " +
+				"and ph.payment_mode 	like COALESCE('"+paymentmode+"','%') " +
+				"and ph.batch_no 		like COALESCE('"+batchno+"','%') " +
+				"and ph.status 			like COALESCE('"+status+"','%') ";
+		
+		if(req.param("startdate")!=null&&req.param("enddate")!=null){
+		query += "and ph.invoice_date 	between '"+req.param("startdate")+"' and '"+req.param("enddate")+"' " ;
+		}
+		
+	sequelize.query(query, { type: sequelize.QueryTypes.SELECT})
+
+	.then(function(result) {
+		if(result.length === 0){
+			log.info(filename+'>> getPurchaseSummeryDetails >> '+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			response.data	 = req.param("companyid");
+			res.send(response);
+		} else{
+			log.info(filename+'>> getPurchaseSummeryDetails >> '+'About '+result.length+' results.');		
+			response.status  	= true;
+			response.message 	= 'About '+result.length+' results.';
+			response.data 		= result;
+			res.send(response);
+		}
+	}).error(function(err){
+			log.info(filename+'>> getPurchaseSummeryDetails >> '+appmsg.INTERNALERRORMESSAGE);
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
+	});
+	}else{
+			log.info(filename+'>> getPurchaseSummeryDetails >> '+appmsg.INTERNALERRORMESSAGE);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= req.param("companyid");
+			res.send(response);
+	}
+};
+

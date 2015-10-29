@@ -24,7 +24,10 @@ module.exports = function(app, server) {
 	app.post('/getstocktransferrptdetails', rptStockTransfersService.getStockTransferRptDetails);
 	app.post('/getpurchasererurnrptdetails', rptPurchaseReturnService.getPurchaseRerurnRptDetails);
 	app.post('/getpurchaseorderrptdetails', rptPurchaseOrderService.getPurchaseOrderRptDetails);
+	//For Purchase 
 	app.post('/getpurchaserptdetails', rptPurchaseService.getPurchaseRptDetails);
+	app.post('/getpurchasesummarydetails', rptPurchaseService.getPurchaseSummaryDetails);
+	
 	//For stock summery and ledger
 	app.post('/getstocksummeryrptdetails', rptInventoryService.getStockSummeryRptDetails);
 	app.post('/getstockledgerrptdetails', rptInventoryService.getStockLedgerRptDetails);

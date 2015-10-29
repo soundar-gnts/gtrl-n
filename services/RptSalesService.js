@@ -23,7 +23,7 @@ var response  			= { status	: Boolean,
 							};
 var sequelize			 = require('../config/sequelize.js');
 
-
+//For Sales Report
 exports.getSalesRptDetails = function(req, res) {
 
 	if(req.param("saleid")!=null){
@@ -67,6 +67,77 @@ exports.getSalesRptDetails = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= req.param("saleid");
+			res.send(response);
+	}
+};
+
+//For Sales Summary Report based on duration, store, customer, customer age group, customer group
+exports.getSalesSummeryDetails = function(req, res) {
+	
+	var storeid 		= null;
+	var customerid 		= null;
+	var custgroupid 	= null;
+	var agegroupid		= null;
+	
+	if(req.param("storeid")!=null){
+		storeid			= req.param("storeid");
+	}
+	if(req.param("customerid")!=null){
+		customerid		= req.param("customerid");
+	}
+	if(req.param("custgroupid")!=null){
+		custgroupid		= req.param("custgroupid");
+	}
+	if(req.param("agegroupid")!=null){
+		agegroupid		= req.param("agegroupid");
+	}
+	
+	if(req.param("companyid")!=null){
+		
+		var query  = "select sh.sale_id,sh.bill_no,sh.bill_date,sh.basic_total,sh.total_tax,sh.discount_value," +
+		"sh.bill_value,s.store_code,s.store_name,c.cust_code,c.cus_first_name,c.cus_last_name " +
+		"from t_sales_hdr sh,m_store s,m_customer c  where " +
+		"sh.store_id 		= s.store_id " +
+		"and sh.customer_id = c.cust_id "+
+		"and sh.store_id 	like COALESCE("+storeid+",'%') " +
+		"and sh.customer_id like COALESCE("+customerid+",'%') " +
+		"and c.cust_group_id like COALESCE("+custgroupid+",'%') " +
+		"and c.age_group_id like COALESCE("+agegroupid+",'%') " +
+		"and sh.company_id 	like COALESCE("+req.param("companyid")+",'%') ";
+		
+		if(req.param("startdate")!=null&&req.param("enddate")!=null){
+		query += "and sh.bill_date 	between '"+req.param("startdate")+"' and '"+req.param("enddate")+"' " ;
+		}
+		
+	sequelize.query(query, { type: sequelize.QueryTypes.SELECT})
+
+	.then(function(result) {
+		if(result.length === 0){
+			log.info(filename+'>> getSalesSummeryDetails >> '+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			response.data	 = req.param("companyid");
+			res.send(response);
+		} else{
+			log.info(filename+'>> getSalesSummeryDetails >> '+'About '+result.length+' results.');		
+			response.status  	= true;
+			response.message 	= 'About '+result.length+' results.';
+			response.data 		= result;
+			res.send(response);
+		}
+	}).error(function(err){
+			log.info(filename+'>> getSalesSummeryDetails >> '+appmsg.INTERNALERRORMESSAGE);
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
+	});
+	}else{
+			log.info(filename+'>> getSalesSummeryDetails >> '+appmsg.INTERNALERRORMESSAGE);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= req.param("companyid");
 			res.send(response);
 	}
 };
