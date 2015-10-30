@@ -19,19 +19,62 @@ var soService	= require('../services/SalesOrderService.js');
 var soDetail	= require('../models/SalesOrderDetail.js');
 var product		= require('../models/Product.js');
 var productImage= require('../models/ProductImage.js');
+var appMsg		= require('../config/Message.js');
+var common		= require('../services/CommonService.js');
 
 module.exports = function(app, server){
 	
 	//SalesOrder header tables
-	app.post('/savesalesorderdetails',		saveOrUpdateSalesOrder);
-	app.post('/getsalesorderdetails', 		getSalesOrder);
+	app.post('/addtocart',					addToCartFn);
+	app.post('/getsalesorderdetails', 		getSalesOrderFn);
+	app.post('/getsalesorderdatadetails', 	getSalesOrderDetailsFn);
+	app.post('/savesalesorderdetails',		saveOrUpdateSalesOrderFn);
 	app.post('/salesorderotpverification', 	soService.salesOrderOtpVerification);
 	app.post('/changesalesorderstatus', 	soService.changeSalesOrderStatus);
-	app.post('/checkoutotpverification', 	soService.salesOrderOtpVerification);
-	//app.post('/resendcheckoutotp', 			soService.resendCheckoutOtp);
-	app.post('/getsalesorderdatadetails', 	getSalesOrderDetails);
 	
-	function getSalesOrder(req, res){
+	function addToCartFn(req, res){
+		
+		var salesOrder = {
+				customer_id			: req.param('customerid'),
+				company_id			: req.param('companyid'),
+				Order_value			: parseFloat(req.param('ordervalue')||'0'),
+				total_qty			: req.param('totalqty'),
+				status 				: req.param('status'),
+				last_updated_dt		: req.param('lastupdateddt'),
+				last_updated_by		: req.param('lastupdatedby'),
+		}
+		
+		var salesDetail = {
+				salesorder_dtl_id	: req.param('salesdetails')[0].salesorderdtlid,
+				product_id			: req.param('salesdetails')[0].productid,
+				uom_id				: req.param('salesdetails')[0].uomid,
+				order_qty			: '1'
+			}
+		
+		
+		var salesDetails = [];
+		salesDetails.push(salesDetail);
+		var condition = "status='cart' and customer_id='"+req.param('customerid')+"'";
+		soService.getSalesOrder(condition, '', '', function(result){
+			if(result.status){
+				console.log('cart have');
+				salesOrder.salesorder_id = result.data[0].salesorder_id
+				soService.saveOrUpdateSalesOrder(salesOrder, salesDetails, null, function(data){
+					res.send(data);
+				});
+			} else if(result.message == appMsg.LISTNOTFOUNDMESSAGE){
+				console.log('cart have not');
+				salesOrder.otp_code			= common.generateOTP(4);
+				soService.saveOrUpdateSalesOrder(salesOrder, salesDetails, null, function(data){
+					res.send(data);
+				});
+			} else{
+				res.send(result);
+			}
+		});
+	}
+	
+	function getSalesOrderFn(req, res){
 		
 		var fetchAssociation 	= "";
 		var selectedAttributes 	= "";
@@ -101,75 +144,15 @@ module.exports = function(app, server){
 			else
 				condition = condition+" and customer_id='"+customerId+"'";
 		
-		soService.getSalesOrderFn(condition, selectedAttributes, fetchAssociation, function(result){
+		soService.getSalesOrder(condition, selectedAttributes, fetchAssociation, function(result){
 			res.send(result)
 		});
 		
 	}
 	
-	function saveOrUpdateSalesOrder(req, res){
-		
-		var condition 			= "";
-		
-		var salesOrder = {
-				salesorder_id		: req.param('salesorderid'),
-				customer_id			: req.param('customerid'),
-				total_tax			: req.param('totaltax'),
-				Order_value			: parseFloat(req.param('ordervalue')||'0'),
-				total_qty			: req.param('totalqty'),
-				delivery_type		: req.param('deliverytype'),
-				delivery_remark		: req.param('deliveryremark'),
-				status 				: req.param('status'),
-				last_updated_dt		: req.param('lastupdateddt'),
-				last_updated_by		: req.param('lastupdatedby'),
-				shipping_addr		: req.param('shippingaddr'),
-				company_id			: req.param('companyid'),
-				shipng_adrs_city	: req.param('shipngadrscity'),
-				shipping_addr_state	: req.param('shippingaddrstate'),
-				shipping_addr_pincde: req.param('shippingaddrpincde'),
-				shipping_addr_name	: req.param('shippingaddrname'),
-				exptdelv_date		: req.param('exptdelvdate'),
-				shipping_mobilnum	: req.param('shippingmobilnum'),
-				otp_code			: req.param('otpcode')
-		}
-		
-		var salesDeleteDetailsIds	= [];
-		var salesDelDetailsLength	= 0;
-		if(req.param('salesdetails') != null){
-			var salesDetail = {
-					salesorder_dtl_id	: req.param('salesdetails')[0].salesorderdtlid,
-					salesorder_id		: salesOrder.salesorder_id,
-					product_id			: req.param('salesdetails')[0].productid,
-					uom_id				: req.param('salesdetails')[0].uomid,
-					rate				: req.param('salesdetails')[0].rate,
-					order_qty			: req.param('salesdetails')[0].orderqty || '1',
-					order_value			: req.param('salesdetails')[0].ordervalue,
-					discount_prcnt		: req.param('salesdetails')[0].discountprcnt,
-					tax_ptcnt			: req.param('salesdetails')[0].taxptcnt,
-					tax_value			: req.param('salesdetails')[0].taxvalue,
-					basic_value			: req.param('salesdetails')[0].basicvalue,
-					discount_value		: req.param('salesdetails')[0].discountvalue
-				}
-		}
-		
-			
-		
-		if(req.param('salesdeletedetails') != null)
-			salesDelDetailsLength = req.param('salesdeletedetails').length;
-		
-		for(var i = 0; i < salesDelDetailsLength; i++){
-			var salesDeleteDetailsId = {
-				salesorder_dtl_id	: req.param('salesdeletedetails')[i].salesorderdtlid,
-			}
-			salesDeleteDetailsIds.push(salesDeleteDetailsId);
-		}
-		
-		var response = soService.saveOrUpdateSalesOrderFn(salesOrder, salesDetail, salesDeleteDetailsIds, res);
-	}
+//SalesOrder details tables
 	
-	//SalesOrder details tables
-	
-	function getSalesOrderDetails(req, res){
+	function getSalesOrderDetailsFn(req, res){
 		
 		var fetchAssociation 	= "";
 		var selectedAttributes 	= "";
@@ -210,5 +193,75 @@ module.exports = function(app, server){
 			res.send(result)
 		});
 	}
+	
+	function saveOrUpdateSalesOrderFn(req, res){
+		
+		var condition 			= "";
+		
+			
+		var salesOrder = {
+				salesorder_id		: req.param('salesorderid'),
+				customer_id			: req.param('customerid'),
+				total_tax			: req.param('totaltax'),
+				total_qty			: req.param('totalqty'),
+				delivery_type		: req.param('deliverytype'),
+				delivery_remark		: req.param('deliveryremark'),
+				status 				: req.param('status'),
+				last_updated_dt		: req.param('lastupdateddt'),
+				last_updated_by		: req.param('lastupdatedby'),
+				shipping_addr		: req.param('shippingaddr'),
+				company_id			: req.param('companyid'),
+				shipng_adrs_city	: req.param('shipngadrscity'),
+				shipping_addr_state	: req.param('shippingaddrstate'),
+				shipping_addr_pincde: req.param('shippingaddrpincde'),
+				shipping_addr_name	: req.param('shippingaddrname'),
+				shipping_mobilnum	: req.param('shippingmobilnum'),
+				otp_code			: req.param('otpcode'),
+				land_mark			: req.param('landmark'),
+				available_hours		: req.param('availablehours')
+		}
+		if(req.param('ordervalue') != null)
+			salesOrder.Order_value = parseFloat(req.param('ordervalue'));
+		
+		var salesDetails	= [];
+		var salesDetailsLength	= 0;
+		var salesDeleteDetailsIds	= [];
+		var salesDelDetailsLength	= 0;
+		
+		if(req.param('salesdetails') != null)
+			req.param('salesdetails').forEach(function(salesdetails){
+				var salesDetail = {
+						salesorder_dtl_id	: salesdetails.salesorderdtlid,
+						salesorder_id		: salesOrder.salesorder_id,
+						product_id			: salesdetails.productid,
+						uom_id				: salesdetails.uomid,
+						rate				: salesdetails.rate,
+						order_qty			: salesdetails.orderqty || '1',
+						order_value			: salesdetails.ordervalue,
+						discount_prcnt		: salesdetails.discountprcnt,
+						tax_ptcnt			: salesdetails.taxptcnt,
+						tax_value			: salesdetails.taxvalue,
+						basic_value			: salesdetails.basicvalue,
+						discount_value		: salesdetails.discountvalue
+					}
+					salesDetails.push(salesDetail)
+			});
+		
+		if(req.param('salesdeletedetails') != null)
+			req.param('salesdeletedetails').forEach(function(salesdeletedetails){
+				var salesDeleteDetailsId = {
+						salesorder_dtl_id	: salesdeletedetails.salesorderdtlid,
+					}
+					salesDeleteDetailsIds.push(salesDeleteDetailsId);
+			});
+		
+		
+		
+		soService.saveOrUpdateSalesOrder(salesOrder, salesDetails, salesDeleteDetailsIds, function(result){
+			res.send(result);
+		});
+	}
+	
+	
 	
 }

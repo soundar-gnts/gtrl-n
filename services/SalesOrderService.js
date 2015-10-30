@@ -28,181 +28,10 @@ var slnogenService	= require('../services/SlnoGenService.js');
 var productService	= require('../services/ProductService.js');
 var taxService		= require('../services/TaxService.js');
 var salesPymtDtlService = require('../services/SalesPymtDtlService.js');
+var refkey = 'ODER_NO';
 
-//insert or update Sales order details
-exports.saveOrUpdateSalesOrderFn = function(salesOrder, salesDetails, salesDeleteDetailsIds, res){
-	
-	log.info(fileName+'.saveOrUpdateSalesOrderFn');
-	
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String
-	}
-	if(salesOrder.salesorder_id != null){
-		console.log("Edit cart");
-		console.log(salesOrder);
-		console.log(salesDetails);
-		soHeader.upsert(salesOrder)
-		.then(function(data){
-			
-			log.info(salesDeleteDetailsIds.length+' Sales detail is going to remove.');
-			//log.info(salesDetails.length+' Sales detail is going to update');
-			
-			//delete sales details from sales order detail table.
-			for(var i = 0; i < salesDeleteDetailsIds.length; i++)
-				deleteSalesOrderDetailsFn("salesorder_dtl_id='"+salesDeleteDetailsIds[i].salesorder_dtl_id+"'");
-			
-			//update/save new sales details into sales order table.
-			if(salesDetails != null){
-				var condition					= "prod_id='"+salesDetails.product_id+"'";
-				productService.getProduct(condition, '', '', function(proDetails){
-					console.log('proDetails');
-					//console.log(proDetails.data[0]);
-					salesDetails.discount_prcnt	= proDetails.data[0].max_discount;
-					//console.log('salesDetails.discount_prcnt : '+salesDetails.discount_prcnt);
-					salesDetails.basic_value		= parseInt(proDetails.data[0].mrp) * parseInt(salesDetails.order_qty);
-					//console.log('salesDetails.basic_value : '+salesDetails.basic_value);
-					salesDetails.discount_value	= proDetails.data[0].max_discount/100*salesDetails.basic_value;
-					//console.log('salesDetails.discount_value : '+salesDetails.discount_value);
-					salesDetails.order_value		= salesDetails.basic_value - salesDetails.discount_value;
-					//console.log('salesDetails.order_value : '+salesDetails.order_value);
-					var condition					= "tax_id='"+proDetails.data[0].sell_tax_id+"'";
-					//console.log('proDetails.data.sell_tax_id : '+proDetails.data[0].sell_tax_id);
-					taxService.getTax(condition, '', function(taxDetails){
-						console.log('taxDetails');
-						//console.log(taxDetails);
-						salesDetails.tax_ptcnt		= taxDetails.data[0].cst;
-						//console.log('salesDetails.tax_ptcnt : '+salesDetails.tax_ptcnt);
-						salesDetails.tax_value		= taxDetails.data[0].cst/100*salesDetails.basic_value;
-						//console.log('salesDetails[i].tax_value : '+salesDetails.tax_value);
-						saveOrUpdateSalesOrderDetailsFn(salesDetails);
-					});
-					
-				});
-			} else{
-				// is checkout need sms module}
-			}
-			log.info(appMsg.SALESORDEREDITSUCCESS);
-			response.message 	= appMsg.SALESORDEREDITSUCCESS;
-			response.data  		= salesOrder.salesorder_id;
-			response.status  	= true;
-			res.send(response);
-			
-		}).error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			res.send(response);
-		});
-	} else{
-		console.log('add cart')
-		var condition = "status='cart' and customer_id='"+salesOrder.customer_id+"'";
-		getSalesOrder(condition, '', '', function(result){
-			if(result.status){
-				console.log('Cart have')
-				console.log(result.data[0].salesorder_id);
-				salesDetails.salesorder_id = result.data[0].salesorder_id;
-				//console.log('salesDetails.product_id : '+salesDetails.product_id);
-				var condition					= "prod_id='"+salesDetails.product_id+"'";
-				productService.getProduct(condition, '', '', function(proDetails){
-					console.log('proDetails');
-					//console.log(proDetails.data[0]);
-					salesDetails.discount_prcnt	= proDetails.data[0].max_discount;
-					//console.log('salesDetails.discount_prcnt : '+salesDetails.discount_prcnt);
-					salesDetails.basic_value		= parseInt(proDetails.data[0].mrp) * parseInt(salesDetails.order_qty);
-					//console.log('salesDetails.basic_value : '+salesDetails.basic_value);
-					salesDetails.discount_value	= proDetails.data[0].max_discount/100*salesDetails.basic_value;
-					//console.log('salesDetails.discount_value : '+salesDetails.discount_value);
-					salesDetails.order_value		= salesDetails.basic_value - salesDetails.discount_value;
-					//console.log('salesDetails.order_value : '+salesDetails.order_value);
-					var condition					= "tax_id='"+proDetails.data[0].sell_tax_id+"'";
-					//console.log('proDetails.data.sell_tax_id : '+proDetails.data[0].sell_tax_id);
-					taxService.getTax(condition, '', function(taxDetails){
-						console.log('taxDetails');
-						//console.log(taxDetails);
-						salesDetails.tax_ptcnt		= taxDetails.data[0].cst;
-						//console.log('salesDetails.tax_ptcnt : '+salesDetails.tax_ptcnt);
-						salesDetails.tax_value		= taxDetails.data[0].cst/100*salesDetails.basic_value;
-						//console.log('salesDetails[i].tax_value : '+salesDetails.tax_value);
-						saveOrUpdateSalesOrderDetailsFn(salesDetails);
-					});
-					
-				});
-				
-				log.info(appMsg.SALESORDERSAVESUCCESS);
-				response.message	= appMsg.SALESORDERSAVESUCCESS;
-				response.data  		= result.data[0].salesorder_id;
-				response.status 	= true;
-				res.send(response);
-			} else{
-				console.log('Cart have not')
-				salesOrder.otp_code			= common.generateOTP(4);
-				soHeader.create(salesOrder)
-					.then(function(data){
-							
-						salesDetails.salesorder_id = data.salesorder_id;
-						console.log('salesDetails.product_id : '+salesDetails.product_id);
-						var condition					= "prod_id='"+salesDetails.product_id+"'";
-						productService.getProduct(condition, '', '', function(proDetails){
-							console.log('proDetails');
-							//console.log(proDetails.data[0]);
-							salesDetails.discount_prcnt	= proDetails.data[0].max_discount;
-							//console.log('salesDetails.discount_prcnt : '+salesDetails.discount_prcnt);
-							salesDetails.basic_value		= parseInt(proDetails.data[0].mrp) * parseInt(salesDetails.order_qty);
-							//console.log('salesDetails.basic_value : '+salesDetails.basic_value);
-							salesDetails.discount_value	= proDetails.data[0].max_discount/100*salesDetails.basic_value;
-							//console.log('salesDetails.discount_value : '+salesDetails.discount_value);
-							salesDetails.order_value		= salesDetails.basic_value - salesDetails.discount_value;
-							//console.log('salesDetails.order_value : '+salesDetails.order_value);
-							var condition					= "tax_id='"+proDetails.data[0].sell_tax_id+"'";
-							//console.log('proDetails.data.sell_tax_id : '+proDetails.data[0].sell_tax_id);
-							taxService.getTax(condition, '', function(taxDetails){
-								console.log('taxDetails');
-								//console.log(taxDetails);
-								salesDetails.tax_ptcnt		= taxDetails.data[0].cst;
-								//console.log('salesDetails.tax_ptcnt : '+salesDetails.tax_ptcnt);
-								salesDetails.tax_value		= taxDetails.data[0].cst/100*salesDetails.basic_value;
-								//console.log('salesDetails[i].tax_value : '+salesDetails.tax_value);
-								saveOrUpdateSalesOrderDetailsFn(salesDetails);
-							});
-							
-						});
-						
-						log.info(appMsg.SALESORDERSAVESUCCESS);
-						response.message	= appMsg.SALESORDERSAVESUCCESS;
-						response.data  		= data.salesorder_id;
-						response.status 	= true;
-						res.send(response);
-					})
-					.error(function(err){
-						log.error(err);
-						response.status  	= false;
-						response.message 	= appMsg.INTERNALERRORMESSAGE;
-						response.data  		= err;
-						res.send(response);
-					});
-			}
-		});
-	}
-}
 
-function saveOrUpdateSalesOrderDetailsFn(salesDetail) {
-	log.info(fileName+'.saveOrUpdateSalesOrderDetailsFn');
-	soDetail.upsert(salesDetail)
-	.then(function(data){
-		log.info('Sales order details saved.');
-	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
-		response.data  		= err;
-		res.send(response);
-	});
-}
-
-//get all Sales order details
+//get Sales order header
 var getSalesOrder = function(condition, selectedAttributes, fetchAssociation, callback){
 	log.info(fileName+'.getSalesOrder');
 	var response = {
@@ -239,139 +68,8 @@ var getSalesOrder = function(condition, selectedAttributes, fetchAssociation, ca
 			callback(response);
 		});
 }
-exports.getSalesOrderFn = getSalesOrder;
-//OTP Verification
-exports.salesOrderOtpVerification = function(req, res){
-	log.info(fileName+'.salesOrderOtpVerification');
-	
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String
-	}
-	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
-	.then(function(soHeaderDet){
-		var refkey = 'ODER_NO';
-		if(soHeaderDet.status == 'cart'){
-			if(soHeaderDet.otp_code == req.param('otpcode')){
-				var slNoCondition = {
-						company_id 			: req.param('companyid'),
-						ref_key 			: refkey,
-						autogen_yn 			: 'Y',
-						status 				: 'Active'
-				}
-				slnogenService.getSlnoValu(slNoCondition, function(sl){
-					console.log(sl);
-					soHeaderDet.sal_ordr_number	= sl.sno;
-					soHeaderDet.status			= 'Pending';
-					soHeaderDet.save()
-					.then(function(data){
-						slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
-						log.info('OTP has been verified successfully.');
-						response.status  	= true;
-						response.message 	= 'OTP has been verified successfully.';
-						response.data  		= data;
-						res.send(response);
-					})
-					.error(function(err){
-						log.error(err);
-						response.status  	= false;
-						response.message 	= appMsg.INTERNALERRORMESSAGE;
-						response.data  		= err;
-						res.send(response);
-					});
-					
-				});
-				
-			} else{
-				
-				log.info('Invalid OTP.');
-				response.status  	= false;
-				response.message 	= 'Invalid OTP.';
-				res.send(response);
-			}
-		} else{
-			log.info('OTP has been verified successfully.');
-			response.status  	= true;
-			response.message 	= 'OTP has been verified successfully.';
-			response.data  		= soHeaderDet;
-			res.send(response);
-		}
-		
-		
-	})
-	.error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
-		response.data  		= err;
-		res.send(response);
-	});
-}
 
-//resendCheckoutOtp
-//exports.resendCheckoutOtp = function(req, res){
-//	var response = {
-//			status	: Boolean,
-//			message : String,
-//			data	: String
-//	}
-//	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
-//	.then(function(data){
-//		if(data){
-//			
-//		} else{
-//			
-//		}
-//	})
-//	.error(function(err){
-//		log.error(err);
-//		response.status  	= false;
-//		response.message 	= appMsg.INTERNALERRORMESSAGE;
-//		response.data  		= err;
-//		res.send(response);
-//	});
-//}
-// Approve, Cancel and Reject service for sales_order_hdr table
-exports.changeSalesOrderStatus = function(req, res){
-	log.info(fileName+'.changeSalesOrderStatus');
-	
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String
-	}
-	soHeader.findOne({where : {salesorder_id : req.param('salesorderid')}})
-	.then(function(soHeaderDet){
-		
-		soHeader.update({status:req.param('status'),delivery_remark:req.param('deliveryremark'),
-			last_updated_by:req.param('lastupdatedby'),last_updated_dt:req.param('lastupdateddt')},
-				{where : {salesorder_id:req.param('salesorderid')}}).error(function(err){
-			
-		});
-		
-		//For Sales Payment Details
-		if(req.param('status')!=null&&req.param('status').toLowerCase()=='confirmed'){
-		salesPymtDtlService.addSalesPymtDetails(req.param('saleid'),req.param('billtype'),req.param('paymentmode')
-				,req.param('cardtypeid'),req.param('cardno'),req.param('approvalno'),req.param('voucherid'),req.param('paidamount'));
-		}
-		
-		log.info('Sales order is '+req.param('status'));
-		response.status  	= true;
-		response.message 	= 'Sales order is '+req.param('status');
-		res.send(response);
-		
-	})
-	.error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
-		response.data  		= err;
-		res.send(response);
-	});
-}
-
-//get all Sales order details
+//get Sales order details
 var getSalesOrderDetails = function(condition, selectedAttributes, fetchAssociation, callback){
 	log.info(fileName+'.getSalesOrderDetails');
 
@@ -409,9 +107,95 @@ var getSalesOrderDetails = function(condition, selectedAttributes, fetchAssociat
 			callback(response);
 		});
 }
-exports.getSalesOrderDetails = getSalesOrderDetails;
 
-function deleteSalesOrderDetailsFn(condition){
+//save or update salesorder header
+var saveOrUpdateSalesOrderHeader = function(salesOrder, callback){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	if(salesOrder.salesorder_id != null){
+		soHeader.upsert(salesOrder)
+		.then(function(data){
+			log.info(appMsg.SALESORDEREDITSUCCESS);
+			response.message 	= appMsg.SALESORDEREDITSUCCESS;
+			response.data  		= salesOrder.salesorder_id;
+			response.status  	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	} else{
+		soHeader.create(salesOrder)
+		.then(function(data){
+			log.info(appMsg.SALESORDERSAVESUCCESS);
+			response.message	= appMsg.SALESORDERSAVESUCCESS;
+			response.data  		= data.salesorder_id;
+			response.status 	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	}
+}
+
+//save or update sales order details function
+var saveOrUpdateSalesOrderDetails = function(salesDetail, callback) {
+
+	log.info(fileName+'.saveOrUpdateSalesOrderDetailsFn');
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	if(salesDetail.salesorder_dtl_id != null){
+		soDetail.upsert(salesDetail)
+		.then(function(data){
+			log.info(appMsg.SALESORDERSAVESUCCESS);
+			response.message	= appMsg.SALESORDERDETAILSEDITSUCCESS;
+			response.data  		= salesDetail.salesorder_id;
+			response.status 	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	} else{
+		soDetail.create(salesDetail)
+		.then(function(data){
+			log.info(appMsg.SALESORDERSAVESUCCESS);
+			response.message	= appMsg.SALESORDERDETAILSSAVESUCCESS;
+			response.data  		= data.salesorder_id;
+			response.status 	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	}
+}
+
+//delete sales order details
+var deleteSalesOrderDetailsFn = function(condition, callback){
 	log.info(fileName+'.deleteSalesOrderDetailsFn');
 	var response = {
 			status	: Boolean,
@@ -425,18 +209,195 @@ function deleteSalesOrderDetailsFn(condition){
 			log.info(data+' Sales details removed.');
 			response.status  	= true;
 			response.message 	= data+' Sales details removed.';
+			callback(response);
 		} else{
 			log.info('No Sales details found.');
 			response.status  	= true;
 			response.message 	= 'No Sales details found.';
+			callback(response);
 		}
-		return response;
+		
 	})
 	.error(function(err){
 		log.error(err);
 		response.status  	= false;
 		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
-		return response;
+		callback(response);
 	});
 }
+
+//add to cart edit cart add and edit sales order details
+var saveOrUpdateSalesOrder = function(salesOrder, salesDetails, salesDeleteDetailsIds, callback){
+	saveOrUpdateSalesOrderHeader(salesOrder, function(header){
+		if(header.status){
+			console.log('header.status'+header.status);
+			//log.info(salesDeleteDetailsIds.length+' Sales detail is going to remove.');
+			//log.info(salesDetails.length+' Sales detail is going to update');
+			
+			if(salesDeleteDetailsIds != null)
+				salesDeleteDetailsIds.forEach(function(salesDelDetail){
+					deleteSalesOrderDetailsFn("salesorder_dtl_id='"+salesDelDetail.salesorder_dtl_id+"'", function(result){
+						log.info(result);
+					});
+				});
+			
+			if(salesDetails != null)
+				salesDetails.forEach(function(salesDetail){
+					
+					salesDetail.salesorder_id = header.data;
+					var pdCondition					= "prod_id='"+salesDetail.product_id+"'";
+					productService.getProduct(pdCondition, '', '', function(proDetails){
+						
+						console.log('proDetails');
+						
+						//salesDetail.discount_prcnt	= proDetails.data[0].max_discount;
+						//console.log('salesDetail.discount_prcnt : '+salesDetail.discount_prcnt);
+						salesDetail.rate = proDetails.data[0].mrp;
+						salesDetail.basic_value		= parseInt(proDetails.data[0].mrp) * parseInt(salesDetail.order_qty);
+						console.log('salesDetail.basic_value : '+salesDetail.basic_value);
+						//salesDetail.discount_value	= proDetails.data[0].max_discount/100*salesDetail.basic_value;
+						//console.log('salesDetail.discount_value : '+salesDetail.discount_value);
+						//salesDetail.order_value		= salesDetail.basic_value - salesDetail.discount_value;
+						salesDetail.order_value		= salesDetail.basic_value;
+						console.log('salesDetail.order_value : '+salesDetail.order_value);
+						var taxCondition					= "tax_id='"+proDetails.data[0].sell_tax_id+"'";
+						console.log('proDetails.data.sell_tax_id : '+proDetails.data[0].sell_tax_id);
+						taxService.getTax(taxCondition, '', function(taxDetails){
+							console.log('taxDetails');
+							salesDetail.tax_ptcnt		= taxDetails.data[0].cst;
+							console.log('salesDetail.tax_ptcnt : '+salesDetail.tax_ptcnt);
+							salesDetail.tax_value		= taxDetails.data[0].cst/100*salesDetail.basic_value;
+							console.log('salesDetails[i].tax_value : '+salesDetail.tax_value);
+							saveOrUpdateSalesOrderDetails(salesDetail, function(detail){
+								console.log(detail);
+							});
+							
+						});
+					});
+				});
+				
+			
+			callback(header);
+		} else{
+			console.log('header.status'+header.status);
+			callback(header);
+		}
+	});
+}
+
+//OTP Verification
+var salesOrderOtpVerification = function(req, res){
+	log.info(fileName+'.salesOrderOtpVerification');
+	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	var condition = "salesorder_id='"+req.param('salesorderid')+"'";
+	getSalesOrder(condition, '', '', function(result){
+		if(result.status){
+			if(result.data[0].otp_code == req.param('otpcode')){
+				var p = {
+						salesorderid		: result.data[0].salesorder_id,
+						salordrnumber		: result.data[0].sal_ordr_number,
+						shipngadrscity		: result.data[0].shipng_adrs_city,
+						shippingaddrstate	: result.data[0].shipping_addr_state,
+						shippingaddr_pincde	: result.data[0].shipping_addr_pincde,
+						shippingaddr_name	: result.data[0].shipping_addr_name,
+						shippingmobilnum	: result.data[0].shipping_mobilnum,
+						landmark			: result.data[0].land_mark
+						
+				}
+				if(result.data[0].status == 'cart'){
+					
+					var slNoCondition = {
+							company_id 			: req.param('companyid'),
+							ref_key 			: refkey,
+							autogen_yn 			: 'Y',
+							status 				: 'Active'
+					}
+					slnogenService.getSlnoValu(slNoCondition, function(sl){
+						result.data[0].sal_ordr_number	= sl.sno;
+						result.data[0].status			= 'Pending';
+						saveOrUpdateSalesOrderHeader(result.data[0].dataValues, function(data){
+							slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
+							log.info('OTP has been verified successfully.');
+							response.status  	= true;
+							response.message 	= 'OTP has been verified successfully.';
+							p.salesorderid		= sl.no;
+							response.data  		= p;
+							res.send(response);
+						});
+					});
+				}
+				log.info('Your OTP has been already verified.');
+				response.status  	= true;
+				response.message 	= 'Your OTP has been already verified.';
+				response.data  		= p;
+				console.log(response);
+				res.send(response);
+				
+			} else{
+				log.info('Invalid OTP.');
+				response.status  	= false;
+				response.message 	= 'Invalid OTP.';
+				res.send(response);
+			}
+			
+		} else{
+			res.send(result);
+		}
+	});
+}
+
+// Approve, Cancel and Reject service for sales_order_hdr table
+var changeSalesOrderStatus = function(req, res){
+	log.info(fileName+'.changeSalesOrderStatus');
+	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	var salesOrder = {
+		salesorder_id		: req.param('salesorderid'),
+		status 				: req.param('status'),
+		last_updated_dt		: req.param('lastupdateddt'),
+		last_updated_by		: req.param('lastupdatedby'),
+	}
+	
+	saveOrUpdateSalesOrderHeader(salesOrder, function(result){
+		if(result.status){
+			//TO DO : need clarification
+//			if(salesOrder.status.toLowerCase()=='confirmed'){
+//				salesPymtDtlService.addSalesPymtDetails(req.param('saleid'),
+//														req.param('billtype'),
+//														req.param('paymentmode'),
+//														req.param('cardtypeid'),
+//														req.param('cardno'),
+//														req.param('approvalno'),
+//														req.param('voucherid'),
+//														req.param('paidamount'));
+//			}
+			log.info('Sales order is '+req.param('status'));
+			response.status  	= true;
+			response.message 	= 'Sales order is '+req.param('status');
+			res.send(response);
+		} else{
+			res.send(result);
+		}
+		
+	});
+}
+
+module.exports = {
+		getSalesOrder				: getSalesOrder,
+		getSalesOrderDetails		: getSalesOrderDetails,
+		saveOrUpdateSalesOrder		: saveOrUpdateSalesOrder,
+		salesOrderOtpVerification	: salesOrderOtpVerification,
+		changeSalesOrderStatus		: changeSalesOrderStatus
+}
+
