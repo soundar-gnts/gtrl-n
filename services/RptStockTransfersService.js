@@ -23,7 +23,7 @@ var response  			= { status	: Boolean,
 							};
 var sequelize			 = require('../config/sequelize.js');
 
-
+//For Individual Stock Transfer Report
 exports.getStockTransferRptDetails = function(req, res) {
 
 	if(req.param("transferid")!=null){
@@ -69,3 +69,77 @@ exports.getStockTransferRptDetails = function(req, res) {
 			res.send(response);
 	}
 };
+
+
+//For Stock Transfer Summary Report based on duration, store,supplier,status
+exports.getStockTransferSummaryDetails = function(req, res) {
+	
+	var fromstoreid 	= null;
+	var tostoreid 		= null;
+	var transferctgry	= "%";
+	var status			= "%";
+	
+	if(req.param("fromstoreid")!=null){
+		fromstoreid		= req.param("fromstoreid");
+	}
+	if(req.param("tostoreid")!=null){
+		tostoreid		= req.param("tostoreid");
+	}
+	if(req.param("transferctgry")!=null){
+		transferctgry	= req.param("transferctgry");
+	}
+	if(req.param("status")!=null){
+		status			= req.param("status");
+	}
+	
+	if(req.param("companyid")!=null){
+		
+		var query  = "SELECT th.transfer_id,th.transfer_refno,th.transfer_date,fs.store_code from_store_code, " +
+				"fs.store_name from_store_name ,ts.store_code to_store_code,ts.store_name to_store_name, " +
+				"th.transfer_ctgry,th.transfer_remarks,th.transfer_Status,th.basic_total,th.total_tax, th.total_value " +
+				"FROM t_stock_transfer_hdr th,m_store fs,m_store ts " +
+				"where fs.store_id = th.from_Store_id " +
+				"and ts.store_id = th.to_store_id " +
+				"and th.company_id 		like COALESCE("+req.param("companyid")+",'%') " +
+				"and th.from_Store_id	like COALESCE("+fromstoreid+",'%') " +
+				"and th.to_store_id 	like COALESCE("+tostoreid+",'%') " +
+				"and th.transfer_ctgry	like COALESCE('"+transferctgry+"','%') " +
+				"and th.transfer_Status	like COALESCE('"+status+"','%') ";
+		
+				if(req.param("startdate")!=null&&req.param("enddate")!=null){
+				query += "and th.transfer_date 	between '"+req.param("startdate")+"' and '"+req.param("enddate")+"' " ;
+				}
+		
+	sequelize.query(query, { type: sequelize.QueryTypes.SELECT})
+
+	.then(function(result) {
+		if(result.length === 0){
+			log.info(filename+'>> getStockTransferSummaryDetails >> '+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			response.data	 = req.param("companyid");
+			res.send(response);
+		} else{
+			log.info(filename+'>> getStockTransferSummaryDetails >> '+'About '+result.length+' results.');		
+			response.status  	= true;
+			response.message 	= 'About '+result.length+' results.';
+			response.data 		= result;
+			res.send(response);
+		}
+	}).error(function(err){
+			log.info(filename+'>> getStockTransferSummaryDetails >> '+appmsg.INTERNALERRORMESSAGE);
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
+	});
+	}else{
+			log.info(filename+'>> getStockTransferSummaryDetails >> '+appmsg.INTERNALERRORMESSAGE);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= req.param("companyid");
+			res.send(response);
+	}
+};
+

@@ -89,17 +89,23 @@ exports.getStockLedgerRptDetails = function(req, res) {
 	}
 	
 	if(req.param("companyid")!=null){
-	sequelize.query("select leg.ledger_date,prod.prod_code,prod.prod_name,st.store_code,st.store_name, " +
-			"leg.batch_no,leg.open_qty,leg.in_qty,leg.out_qty,leg.close_qty,uom.uom_name, " +
-			"leg.ref_no,leg.ref_date,leg.ref_remarks " +
-			"from t_stock_ledger leg,m_product prod,m_store st,m_uom uom " +
-			"where prod.prod_id 	= leg.product_id " +
-			"and st.store_id 		= leg.store_id " +
-			"and uom.uom_id 		= leg.uom_id " +
-			"and leg.company_id 	like COALESCE("+req.param("companyid")+",'%') " +
-			"and leg.store_id 		like COALESCE("+storeid+",'%') " +
-			"and leg.product_id 	like COALESCE("+productid+",'%') " +
-			"order by leg.stock_ledid desc", { type: sequelize.QueryTypes.SELECT})
+		var query ="select leg.ledger_date,prod.prod_code,prod.prod_name,st.store_code,st.store_name, " +
+		"leg.batch_no,leg.open_qty,leg.in_qty,leg.out_qty,leg.close_qty,uom.uom_name, " +
+		"leg.ref_no,leg.ref_date,leg.ref_remarks " +
+		"from t_stock_ledger leg,m_product prod,m_store st,m_uom uom " +
+		"where prod.prod_id 	= leg.product_id " +
+		"and st.store_id 		= leg.store_id " +
+		"and uom.uom_id 		= leg.uom_id " +
+		"and leg.company_id 	like COALESCE("+req.param("companyid")+",'%') " +
+		"and leg.store_id 		like COALESCE("+storeid+",'%') " +
+		"and leg.product_id 	like COALESCE("+productid+",'%') ";
+		if(req.param("startdate")!=null&&req.param("enddate")!=null){
+		query += "and leg.ledger_date 	between '"+req.param("startdate")+"' and '"+req.param("enddate")+"' " ;
+		}
+		
+		query +=" order by leg.stock_ledid desc";
+		
+	sequelize.query(query, { type: sequelize.QueryTypes.SELECT})
 
 	.then(function(result) {
 		if(result.length === 0){

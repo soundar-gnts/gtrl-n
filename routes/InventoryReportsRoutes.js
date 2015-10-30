@@ -21,9 +21,18 @@ var rptPurchaseService 			= require('../services/RptPurchaseService.js');
 var rptInventoryService 		= require('../services/RptInventoryService.js');
 
 module.exports = function(app, server) {
+	//For Stock Transfer
 	app.post('/getstocktransferrptdetails', rptStockTransfersService.getStockTransferRptDetails);
+	app.post('/getstocktransfersummarydetails', rptStockTransfersService.getStockTransferSummaryDetails);
+	
+	//For Purchase Return
 	app.post('/getpurchasererurnrptdetails', rptPurchaseReturnService.getPurchaseRerurnRptDetails);
+	app.post('/getpurchasereturnsummarydetails', rptPurchaseReturnService.getPurchaseReturnSummaryDetails);
+	
+	//For Purchase order
 	app.post('/getpurchaseorderrptdetails', rptPurchaseOrderService.getPurchaseOrderRptDetails);
+	app.post('/getpurchaseordersummarydetails', rptPurchaseOrderService.getPurchaseOrderSummaryDetails);
+	
 	//For Purchase 
 	app.post('/getpurchaserptdetails', rptPurchaseService.getPurchaseRptDetails);
 	app.post('/getpurchasesummarydetails', rptPurchaseService.getPurchaseSummaryDetails);
