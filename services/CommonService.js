@@ -15,8 +15,13 @@
  * 
  */
 
-var config = require('../config/config.js');
+var config 			= require('../config/config.js');
 var log				= require('../config/logger').logger;
+var response 		= {
+						status	: Boolean,
+						message : String,
+						data	: String
+					 };
 
 //generate OTP
 exports.generateOTP = function(digit){
@@ -46,14 +51,14 @@ exports.sendMail = function(toAdd, msg, sub, callback){
 	transporter.sendMail(mailOptions, function(error, info){
 	    if(error){
 	    	log.error(error);
-	    	reply.success = false;
-	    	reply.msg = error;
-	    	callback(reply);
+	    	response.status = false;
+	    	response.message = error;
+	    	callback(response);
 	    } else{
 	    	log.info(info);
-	    	reply.success = true;
-	    	reply.msg = info;
-	    	callback(reply);
+	    	response.status = true;
+	    	response.message = info;
+	    	callback(response);
 	    }
 	   
 	});
