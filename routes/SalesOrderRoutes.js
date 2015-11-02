@@ -19,7 +19,8 @@ var soService	= require('../services/SalesOrderService.js');
 var soDetail	= require('../models/SalesOrderDetail.js');
 var product		= require('../models/Product.js');
 var productImage= require('../models/ProductImage.js');
-var appMsg		= require('../config/Message.js');
+var APPMSG		= require('../config/Message.js');
+var CONSTANT	= require('../config/Constants.js');
 var common		= require('../services/CommonService.js');
 
 module.exports = function(app, server){
@@ -54,7 +55,7 @@ module.exports = function(app, server){
 		
 		var salesDetails = [];
 		salesDetails.push(salesDetail);
-		var condition = "status='cart' and customer_id='"+req.param('customerid')+"'";
+		var condition = "status='"+CONSTANT.STATUSCART+"' and customer_id='"+req.param('customerid')+"'";
 		soService.getSalesOrder(condition, '', '', function(result){
 			if(result.status){
 				console.log('cart have');
@@ -62,7 +63,7 @@ module.exports = function(app, server){
 				soService.saveOrUpdateSalesOrder(salesOrder, salesDetails, null, function(data){
 					res.send(data);
 				});
-			} else if(result.message == appMsg.LISTNOTFOUNDMESSAGE){
+			} else if(result.message == APPMSG.LISTNOTFOUNDMESSAGE){
 				console.log('cart have not');
 				salesOrder.otp_code			= common.generateOTP(4);
 				soService.saveOrUpdateSalesOrder(salesOrder, salesDetails, null, function(data){

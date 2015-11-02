@@ -111,8 +111,8 @@ exports.saveWishorderList = function(req, res){
 	
 		wishorderlist.upsert(wishlist)
 		.then(function(data){						
-			log.info(filename+'>>saveWishorderList>>'+appmsg.UPDATEMESSAGE);
-			response.message = appmsg.UPDATEMESSAGE;
+			log.info(filename+'>>saveWishorderList>>'+appmsg.WISHLISTREMOVESUCCESS);
+			response.message = appmsg.WISHLISTREMOVESUCCESS;
 			response.status  = true;
 			res.send(response);			
 		})
@@ -124,10 +124,20 @@ exports.saveWishorderList = function(req, res){
 			res.send(response);
 		});
 	} else{	
-		wishorderlist.create(wishlist)
+		
+		wishorderlist.findOne({where : {customer_id : wishlist.customer_id, product_id : wishlist.product_id, company_id : wishlist.company_id, status : 'Active'}})
+		.then(function(d){
+			if(d){
+				log.info(filename+'>>saveWishorderList>>'+appmsg.WISHLISTALREADYSAVESUCCESS);
+				response.message = appmsg.WISHLISTALREADYSAVESUCCESS;
+				response.status  = false;
+				response.wishid  = d.wish_id;
+				res.send(response);
+			} else{
+				wishorderlist.create(wishlist)
 		    	.then(function(data){
-				log.info(filename+'>>saveWishorderList>>'+appmsg.SAVEMESSAGE);
-				response.message = appmsg.SAVEMESSAGE;
+				log.info(filename+'>>saveWishorderList>>'+appmsg.WISHLISTSAVESUCCESS);
+				response.message = appmsg.WISHLISTSAVESUCCESS;
 				response.status  = true;
 				response.wishid  = data.wish_id;
 				res.send(response);
@@ -139,6 +149,18 @@ exports.saveWishorderList = function(req, res){
 				response.data  		= err;
 				res.send(response);
 			});	
+			}
+			
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
+		});
+		
+		
 	}
 }
 

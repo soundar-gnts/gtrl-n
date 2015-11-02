@@ -28,6 +28,9 @@ exports.PAYMENTTYPEEDITSUCCESS = 'Payment type editted successfully.';
 exports.POSAVESUCCESS = 'Purchase order saved successfully.';
 exports.POEDITSUCCESS = 'Purchase order editted successfully.';
 
+exports.PODETAILSAVESUCCESS = 'Purchase order details saved successfully.';
+exports.PODETAILEDITSUCCESS = 'Purchase order details editted successfully.';
+
 exports.PRODUCTCATEGORYSAVESUCCESS = 'Product category saved successfully.';
 exports.PRODUCTCATEGORYEDITSUCCESS = 'Product category editted successfully.';
 
@@ -66,3 +69,8 @@ exports.USERGROUPEDITSUCCESS = 'User group editted successfully.';
 
 exports.SALESDELIVERYDETAILSSAVESUCCESS = 'Sale delivery details saved successfully.';
 exports.SALESDELIVERYDETAILSEDITSUCCESS = 'Sale delivery details editted successfully.';
+
+exports.WISHLISTSAVESUCCESS		= 'Wishlist added successfully.';
+exports.WISHLISTALREADYSAVESUCCESS		= 'Wishlist already added.';
+exports.WISHLISTEDITSUCCESS		= 'Wishlist editted successfully.';
+exports.WISHLISTREMOVESUCCESS	= 'Wishlist removed successfully.';

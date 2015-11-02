@@ -15,21 +15,23 @@
  * 
  */
 
-var path			= require('path');
-var fileName		= path.basename(__filename);
-var log 			= require('../config/logger').logger;
-var appMsg			= require('../config/Message.js');
-var soHeader		= require('../models/SalesOrderHeader.js');
-var soDetail		= require('../models/SalesOrderDetail.js');
-var product			= require('../models/Product.js');
-var productImage	= require('../models/ProductImage.js');
-var common			= require('../services/CommonService.js');
-var slnogenService	= require('../services/SlnoGenService.js');
-var productService	= require('../services/ProductService.js');
-var taxService		= require('../services/TaxService.js');
-var salesPymtDtlService = require('../services/SalesPymtDtlService.js');
-var refkey = 'ODER_NO';
+var path				= require('path');
+var fileName			= path.basename(__filename);
+var log 				= require('../config/logger').logger;
+var APPMSG				= require('../config/Message.js');
+var CONSTANT			= require('../config/Constants.js');
 
+var soHeader			= require('../models/SalesOrderHeader.js');
+var soDetail			= require('../models/SalesOrderDetail.js');
+var product				= require('../models/Product.js');
+var productImage		= require('../models/ProductImage.js');
+
+var slnogenService		= require('../services/SlnoGenService.js');
+var productService		= require('../services/ProductService.js');
+var taxService			= require('../services/TaxService.js');
+var salesPymtDtlService = require('../services/SalesPymtDtlService.js');
+
+var common				= require('../services/CommonService.js');
 
 //get Sales order header
 var getSalesOrder = function(condition, selectedAttributes, fetchAssociation, callback){
@@ -48,8 +50,8 @@ var getSalesOrder = function(condition, selectedAttributes, fetchAssociation, ca
 	})
 		.then(function(soDtls){
 			if(soDtls.length == 0){
-				log.info(appMsg.LISTNOTFOUNDMESSAGE);
-				response.message = appMsg.LISTNOTFOUNDMESSAGE;
+				log.info(APPMSG.LISTNOTFOUNDMESSAGE);
+				response.message = APPMSG.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				callback(response);
 			} else{
@@ -63,7 +65,7 @@ var getSalesOrder = function(condition, selectedAttributes, fetchAssociation, ca
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			callback(response);
 		});
@@ -87,8 +89,8 @@ var getSalesOrderDetails = function(condition, selectedAttributes, fetchAssociat
 	})
 		.then(function(soDetls){
 			if(soDetls.length == 0){
-				log.info(appMsg.LISTNOTFOUNDMESSAGE);
-				response.message = appMsg.LISTNOTFOUNDMESSAGE;
+				log.info(APPMSG.LISTNOTFOUNDMESSAGE);
+				response.message = APPMSG.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				callback(response);
 			} else{
@@ -102,7 +104,7 @@ var getSalesOrderDetails = function(condition, selectedAttributes, fetchAssociat
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			callback(response);
 		});
@@ -110,6 +112,7 @@ var getSalesOrderDetails = function(condition, selectedAttributes, fetchAssociat
 
 //save or update salesorder header
 var saveOrUpdateSalesOrderHeader = function(salesOrder, callback){
+	log.info(fileName+'.saveOrUpdateSalesOrderHeader');
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -118,8 +121,8 @@ var saveOrUpdateSalesOrderHeader = function(salesOrder, callback){
 	if(salesOrder.salesorder_id != null){
 		soHeader.upsert(salesOrder)
 		.then(function(data){
-			log.info(appMsg.SALESORDEREDITSUCCESS);
-			response.message 	= appMsg.SALESORDEREDITSUCCESS;
+			log.info(APPMSG.SALESORDEREDITSUCCESS);
+			response.message 	= APPMSG.SALESORDEREDITSUCCESS;
 			response.data  		= salesOrder.salesorder_id;
 			response.status  	= true;
 			callback(response);
@@ -127,15 +130,15 @@ var saveOrUpdateSalesOrderHeader = function(salesOrder, callback){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			callback(response);
 		});
 	} else{
 		soHeader.create(salesOrder)
 		.then(function(data){
-			log.info(appMsg.SALESORDERSAVESUCCESS);
-			response.message	= appMsg.SALESORDERSAVESUCCESS;
+			log.info(APPMSG.SALESORDERSAVESUCCESS);
+			response.message	= APPMSG.SALESORDERSAVESUCCESS;
 			response.data  		= data.salesorder_id;
 			response.status 	= true;
 			callback(response);
@@ -143,7 +146,7 @@ var saveOrUpdateSalesOrderHeader = function(salesOrder, callback){
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			callback(response);
 		});
@@ -153,7 +156,7 @@ var saveOrUpdateSalesOrderHeader = function(salesOrder, callback){
 //save or update sales order details function
 var saveOrUpdateSalesOrderDetails = function(salesDetail, callback) {
 
-	log.info(fileName+'.saveOrUpdateSalesOrderDetailsFn');
+	log.info(fileName+'.saveOrUpdateSalesOrderDetails');
 	var response = {
 			status	: Boolean,
 			message : String,
@@ -162,8 +165,8 @@ var saveOrUpdateSalesOrderDetails = function(salesDetail, callback) {
 	if(salesDetail.salesorder_dtl_id != null){
 		soDetail.upsert(salesDetail)
 		.then(function(data){
-			log.info(appMsg.SALESORDERSAVESUCCESS);
-			response.message	= appMsg.SALESORDERDETAILSEDITSUCCESS;
+			log.info(APPMSG.SALESORDERSAVESUCCESS);
+			response.message	= APPMSG.SALESORDERDETAILSEDITSUCCESS;
 			response.data  		= salesDetail.salesorder_id;
 			response.status 	= true;
 			callback(response);
@@ -171,15 +174,15 @@ var saveOrUpdateSalesOrderDetails = function(salesDetail, callback) {
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			callback(response);
 		});
 	} else{
 		soDetail.create(salesDetail)
 		.then(function(data){
-			log.info(appMsg.SALESORDERSAVESUCCESS);
-			response.message	= appMsg.SALESORDERDETAILSSAVESUCCESS;
+			log.info(APPMSG.SALESORDERSAVESUCCESS);
+			response.message	= APPMSG.SALESORDERDETAILSSAVESUCCESS;
 			response.data  		= data.salesorder_id;
 			response.status 	= true;
 			callback(response);
@@ -187,7 +190,7 @@ var saveOrUpdateSalesOrderDetails = function(salesDetail, callback) {
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			callback(response);
 		});
@@ -221,7 +224,7 @@ var deleteSalesOrderDetailsFn = function(condition, callback){
 	.error(function(err){
 		log.error(err);
 		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
+		response.message 	= APPMSG.INTERNALERRORMESSAGE;
 		response.data  		= err;
 		callback(response);
 	});
@@ -229,6 +232,7 @@ var deleteSalesOrderDetailsFn = function(condition, callback){
 
 //add to cart edit cart add and edit sales order details
 var saveOrUpdateSalesOrder = function(salesOrder, salesDetails, salesDeleteDetailsIds, callback){
+	log.info(fileName+'.saveOrUpdateSalesOrder');
 	saveOrUpdateSalesOrderHeader(salesOrder, function(header){
 		if(header.status){
 			console.log('header.status'+header.status);
@@ -307,37 +311,44 @@ var salesOrderOtpVerification = function(req, res){
 						shippingaddr_pincde	: result.data[0].shipping_addr_pincde,
 						shippingaddr_name	: result.data[0].shipping_addr_name,
 						shippingmobilnum	: result.data[0].shipping_mobilnum,
-						landmark			: result.data[0].land_mark
+						landmark			: result.data[0].land_mark,
+						shippingaddr		: result.data[0].shipping_addr,
+						availablehours		: result.data[0].available_hours
 						
 				}
 				if(result.data[0].status == 'cart'){
 					
 					var slNoCondition = {
 							company_id 			: req.param('companyid'),
-							ref_key 			: refkey,
+							ref_key 			: CONSTANT.SHOPPING_APP_ORDER_NO,
 							autogen_yn 			: 'Y',
 							status 				: 'Active'
 					}
 					slnogenService.getSlnoValu(slNoCondition, function(sl){
+						console.log(sl.sno);
 						result.data[0].sal_ordr_number	= sl.sno;
 						result.data[0].status			= 'Pending';
+						
 						saveOrUpdateSalesOrderHeader(result.data[0].dataValues, function(data){
 							slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
 							log.info('OTP has been verified successfully.');
 							response.status  	= true;
 							response.message 	= 'OTP has been verified successfully.';
-							p.salesorderid		= sl.no;
+							p.salordrnumber		= sl.sno;
+							console.log(p)
 							response.data  		= p;
 							res.send(response);
 						});
 					});
+				} else{
+					log.info('Your OTP has been already verified.');
+					response.status  	= true;
+					response.message 	= 'Your OTP has been already verified.';
+					response.data  		= p;
+					console.log(response);
+					res.send(response);
 				}
-				log.info('Your OTP has been already verified.');
-				response.status  	= true;
-				response.message 	= 'Your OTP has been already verified.';
-				response.data  		= p;
-				console.log(response);
-				res.send(response);
+				
 				
 			} else{
 				log.info('Invalid OTP.');
