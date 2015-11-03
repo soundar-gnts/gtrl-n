@@ -15,8 +15,12 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
+var supplier	= require('../models/Supplier.js');
+var purchasedtl = require('../models/PurchaseDtl.js');
+var poHeader			= require('../models/PoHeader.js');
+
+var model		= require('../config/sequelize.js');
+var dataTypes	= require('sequelize');
 var purchasehdr = model.define('t_purchase_hdr', {
 
 	purchase_id : {
@@ -53,4 +57,7 @@ var purchasehdr = model.define('t_purchase_hdr', {
 	freezeTableName 	: true,
 	tableName 			: 't_purchase_hdr'
 });
+purchasehdr.hasMany(purchasedtl, 	{foreignKey: 'purchase_id'});
+purchasehdr.belongsTo(supplier, 	{foreignKey: 'supplier_id'});
+purchasehdr.belongsTo(poHeader, 	{foreignKey: 'po_id'});
 module.exports = purchasehdr;

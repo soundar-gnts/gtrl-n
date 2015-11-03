@@ -15,6 +15,8 @@
  * 
  */
 
+var CONSTANT			= require('../config/Constants.js');
+
 var poService	= require('../services/PoService.js');
 var poDetail	= require('../models/PoDetail.js');
 var product		= require('../models/Product.js');
@@ -143,7 +145,10 @@ module.exports = function(app, server){
 				total_discount	: parseFloat(req.param('totaldiscount')),
 				status 			: req.param('status'),
 				last_updated_dt	: req.param('lastupdateddt'),
-				last_updated_by	: req.param('lastupdatedby')
+				last_updated_by	: req.param('lastupdatedby'),
+				terms_condition	: req.param('termscondition'),
+				payment_terms	: req.param('paymentterms'),
+				payment_mode	: req.param('paymentmode'),
 		}
 		
 		if(req.param('purchasedetails') != null)
@@ -175,10 +180,27 @@ module.exports = function(app, server){
 					}
 					purchaseDeleteDetailsIds.push(purchaseDeleteDetailsId);
 			});
+		if(req.param("autogenyn") == 'y' && req.param('status') == CONSTANT.STATUSPENDING && req.param('pono') == null){
+			var slNoCondition = {
+					company_id 			: poHdr.company_id,
+					ref_key 			: CONSTANT.PURCHASE_NO,
+					autogen_yn 			: 'Y',
+					status 				: 'Active'
+			}
+			slnogenService.getSlnoValu(slNoCondition, function(sl){
+				
+				purchaseOrder.po_no = sl.sno;
+				poService.saveOrUpdatePo(sl.slid, purchaseOrder, purchaseDetails, purchaseDeleteDetailsIds, function(response){
+					res.send(response);
+				});
+					
+			});
+		} else{
+			poService.saveOrUpdatePo(null, purchaseOrder, purchaseDetails, purchaseDeleteDetailsIds, function(response){
+				res.send(response);
+			});
+		}
 		
-		poService.saveOrUpdatePo(req.param("autogenyn"), purchaseOrder, purchaseDetails, purchaseDeleteDetailsIds, function(response){
-			res.send(response);
-		});
 	}
 	
 	function changePoStatus(req, res){

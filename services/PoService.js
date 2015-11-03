@@ -28,7 +28,7 @@ var supplier			= require('../models/Supplier.js');
 
 var slnogenService 		= require('../services/SlnoGenService.js');
 
-//get all Purchase order details
+//get all Purchase order header details
 var getPo = function(condition, selectedAttributes, fetchAssociation, callback){
 	log.info(fileName+'.getPo');
 	var response = {
@@ -64,7 +64,7 @@ var getPo = function(condition, selectedAttributes, fetchAssociation, callback){
 	});
 }
 
-//get all Product details
+//get all Purchase order detail details
 var getPoDetails = function(condition, selectedAttributes, callback){
 
 	log.info(fileName+'.getPoDetails');
@@ -103,13 +103,15 @@ var getPoDetails = function(condition, selectedAttributes, callback){
 }
 
 // save or update poHeader function
-var saveOrUpdatePoHeader = function(autogenyn, poHdr, callback){
+var saveOrUpdatePoHeader = function(poHdr, callback){
+	
 	log.info(fileName+'.saveOrUpdatePoHeader');
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
+	//if purchase order id exist then update otherwise create poheader table 
 	if(poHdr.po_id != null){
 		poHeader.upsert(poHdr)
 		.then(function(data){
@@ -127,32 +129,21 @@ var saveOrUpdatePoHeader = function(autogenyn, poHdr, callback){
 			callback(response);
 		});
 	} else{
-		
-		var slNoCondition = {
-				company_id 			: poHdr.company_id,
-				ref_key 			: CONSTANT.PURCHASE_NO,
-				autogen_yn 			: autogenyn,
-				status 				: 'Active'
-		}
-		slnogenService.getSlnoValu(slNoCondition, function(sl){
-			poHdr.po_no = poHdr.po_no || sl.sno;
-			poHeader.create(poHdr)
-			.then(function(data){
-				if(sl.slid != null)
-					slnogenService.updateSequenceNo(sl.slid, poHdr.last_updated_dt, poHdr.last_updated_by);
-				log.info(APPMSG.POSAVESUCCESS);
-				response.message	= APPMSG.POSAVESUCCESS;
-				response.data  		= data.po_id;
-				response.status 	= true;
-				callback(response);
-			})
-			.error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= APPMSG.INTERNALERRORMESSAGE;
-				response.data  		= err;
-				callback(response);
-			});
+		poHeader.create(poHdr)
+		.then(function(data){
+			log.info(APPMSG.POSAVESUCCESS);
+			response.message	= APPMSG.POSAVESUCCESS;
+			response.data  		= data.po_id;
+			response.status 	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+			
 		});
 	}
 }
@@ -166,6 +157,7 @@ var saveOrUpdatePoDetails = function(poDtl, callback) {
 			message : String,
 			data	: String
 	}
+	//if purchase details id exist then update otherwise create poDetail table 
 	if(poDtl.po_dtlid != null){
 		poDetail.upsert(poDtl)
 		.then(function(data){
@@ -234,7 +226,7 @@ var deletePoDetails = function(condition, callback){
 }
 
 //insert or update Purchase order details
-var saveOrUpdatePo = function(autogenyn, purchaseOrder, purchaseDetails, purchaseDeleteDetailsIds, callback){
+var saveOrUpdatePo = function(slid, purchaseOrder, purchaseDetails, purchaseDeleteDetailsIds, callback){
 	log.info(fileName+'.saveOrUpdatePo');
 	var response = {
 			status	: Boolean,
@@ -242,12 +234,17 @@ var saveOrUpdatePo = function(autogenyn, purchaseOrder, purchaseDetails, purchas
 			data	: String
 	}
 	
-	saveOrUpdatePoHeader(autogenyn, purchaseOrder, function(header){
+	saveOrUpdatePoHeader(purchaseOrder, function(header){
+		//if true data inserted/updated successfully else error
 		if(header.status){
+			//if slid exist, serial number generated so need to update slnoGen table 
+			if(slid != null)
+				slnogenService.updateSequenceNo(slid, poHdr.last_updated_dt, poHdr.last_updated_by);
 			console.log('header.status : '+header.status);
 			//log.info(salesDeleteDetailsIds.length+' Sales detail is going to remove.');
 			//log.info(salesDetails.length+' Sales detail is going to update');
 			
+			//if delete details id exist need to hard delete in poDetail Table
 			if(purchaseDeleteDetailsIds != null)
 				purchaseDeleteDetailsIds.forEach(function(poDelDetail){
 					deletePoDetails("po_dtlid='"+poDelDetail.po_dtlid+"'", function(result){
@@ -255,6 +252,7 @@ var saveOrUpdatePo = function(autogenyn, purchaseOrder, purchaseDetails, purchas
 					});
 				});
 			
+			//if purchase details exist need to add/update in poDetail Table
 			if(purchaseDetails != null)
 				purchaseDetails.forEach(function(purchaseDetail){
 					purchaseDetail.po_id = header.data;
@@ -275,21 +273,35 @@ var saveOrUpdatePo = function(autogenyn, purchaseOrder, purchaseDetails, purchas
 // Cancel, Approve and Reject service (po_hdr)
 var changePoStatus = function(purchaseOrder, callback){
 	log.info(fileName+'.changePoStatus');
-	
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
-	saveOrUpdatePoHeader('N', purchaseOrder, function(result){
-		if(result.status){
-			log.info('Purchase order is '+purchaseOrder.status);
-			response.status  	= true;
-			response.message 	= 'Purchase order is '+purchaseOrder.status;
-			callback(result);
+	var condition = "po_id='"+purchaseOrder.po_id+"'";
+	getPo(condition, '', '', function(data){
+		//if true data exist else error
+		if(data.status){
+			//if approved cannot do rejection & cancel operation else can
+			if(data.data[0].status == CONSTANT.STATUSAPPROVED && (purchaseOrder.status == CONSTANT.STATUSREJECTED||purchaseOrder.status == CONSTANT.STATUSCANCELLED)){
+				log.info('Purchase order is already'+CONSTANT.STATUSAPPROVED);
+				response.status  	= true;
+				response.message 	= 'Purchase order is already'+CONSTANT.STATUSAPPROVED;
+				callback(result);
+			} else
+				saveOrUpdatePoHeader(purchaseOrder, function(result){
+					if(result.status){
+						log.info('Purchase order is '+purchaseOrder.status);
+						response.status  	= true;
+						response.message 	= 'Purchase order is '+purchaseOrder.status;
+						callback(result);
+					} else
+						callback(result);
+				});
 		} else
-			callback(result);
+			callback(data);
 	});
+	
 }
 
 //For update balance qty

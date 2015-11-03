@@ -41,7 +41,10 @@ var poHeader = model.define('t_po_hdr', {
 	total_discount	: dataTypes.DOUBLE,
 	status 			: dataTypes.STRING,
 	last_updated_dt	: dataTypes.DATE,
-	last_updated_by	: dataTypes.STRING
+	last_updated_by	: dataTypes.STRING,
+	terms_condition	: dataTypes.STRING,
+	payment_terms	: dataTypes.STRING,
+	payment_mode	: dataTypes.STRING
 
 }, {
 	timestamps : false,
