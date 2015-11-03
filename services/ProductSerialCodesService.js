@@ -172,23 +172,19 @@ exports.insertProductSerialCodes = function(companyid,grnid,productid,storeid,ba
 		
 }
 //To Update Product Serial Code Storeid.
-
 exports.updateProductSerialStoreid= function(companyid,productid,storeid,batchid) {
-	
-		var serialcode = {
-							company_id 				: companyid,			
+			var serialcode = {	company_id 				: companyid,			
 							product_id 				: productid,						
 							batch_id 				: batchid,
 						 }
 		productserialcodes.update({store_id : storeid},{where : [serialcode]})
 		.error(function(err){
-			
-	});	
-	
+			log.info(filename+'>> updateProductSerialStoreid >>');
+			log.error(err);
+		});	
 }
 
 //To Update Product Serial Status.
-
 exports.updateProductSerialCodes = function(companyid,grnid,productid,storeid,batchid,status) {
 	
 		var serialcode = {

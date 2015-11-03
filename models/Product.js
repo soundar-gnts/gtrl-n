@@ -63,12 +63,13 @@ var product = model.define('m_product', {
 	online_yn 		: dataTypes.STRING,
 	corporate_yn 	: dataTypes.STRING,
 	wholesale_yn 	: dataTypes.STRING,
-	ean_num_yn 		: dataTypes.STRING
+	ean_num_yn 		: dataTypes.STRING,
+	last_seq_no		: dataTypes.INTEGER
 
 }, {
-	timestamps : false,
+	timestamps 		: false,
 	freezeTableName : true,
-	tableName : 'm_product'
+	tableName 		: 'm_product'
 });
 
 product.hasMany(productImage,	{foreignKey : 'prod_id'});

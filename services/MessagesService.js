@@ -102,39 +102,24 @@ exports.getMessagesDetails = function(req, res) {
 
 
 // To Save/Update Messages
-exports.saveMessages = function(req, res) {
-	messages.upsert({
-		msg_id					: req.param("msgid"),
-		company_id 				: req.param("companyid"),
-		msg_type 				: req.param("msgtype"),
-		msg_sender 				: req.param("msgsender"),
-		msg_receivers 			: req.param("msgreceivers"),
-		msg_cc 					: req.param("msgcc"),
-		msg_subject 			: req.param("msgsubject"),
-		msg_body 				: req.param("msgbody"),
-		client_ip 				: req.param("clientip"),
-		user_id 				: req.param("userid"),
-		msg_response 			: req.param("msgresponse"),
-		msg_status 				: req.param("msgstatus"),
-		msg_sent_dt 			: req.param("msgsentdt")
-		
-	}).then(function(data){
+exports.saveMessages = function(messageobj,callback) {
+	messages.upsert(messageobj).then(function(data){
 		if(data){
 			log.info(filename+'>> saveMessages >>'+appmsg.SAVEMESSAGE);
 			response.message 	= appmsg.SAVEMESSAGE;
 			response.status  	= true;
-			response.data		= req.param("msgid");
-			res.send(response);
+			response.data		= messageobj.msg_id;
+			callback(response);
 		}
 		else{
 			log.info(filename+'>> saveMessages >>'+appmsg.UPDATEMESSAGE);
 			response.message 	= appmsg.UPDATEMESSAGE;
 			response.status  	= true;
-			response.data		= req.param("msgid");
-			res.send(response);
+			response.data		= messageobj.msg_id;
+			callback(response);
 		}
 		//For Send a E-Mail.
-		commonService.sendMail(req.param("msgreceivers"), req.param("msgbody"), req.param("msgsubject"), function(result){
+		commonService.sendMail(messageobj.msg_receivers, messageobj.msg_body, messageobj.msg_subject, function(result){
 			console.log(result);
 			log.info(filename+'>> saveMessages >>'+result);
 		});
@@ -145,7 +130,7 @@ exports.saveMessages = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 		
 }

@@ -14,8 +14,7 @@
  * 
  */
 var slnogenService 				= require('../services/SlnoGenService.js');
-var slnogenService 				= require('../services/SlnoGenService.js');
-
+var constants					= require('../config/Constants.js');
 var purchasehdr 				= require('../models/PurchaseHdr.js');
 var purchasedtl 				= require('../models/PurchaseDtl.js');
 var product						= require('../models/Product.js');
@@ -93,10 +92,9 @@ exports.getPurchaseDetails = function(condition, selectedAttributes, callback) {
 		callback(response);
 	});
 }
-//insert or update Purchase Return details
-
+//insert or update Purchase details
 exports.savePurchaseHdrDetails = function(purchasehdrdtl, purchaseDetails, callback){
-		var refkey = 'BILL_NO';
+		var refkey = constants.PUR_BILL_NO;
 	 	var response = {
 				 		status	: Boolean,
 				 		message : String,
@@ -115,7 +113,7 @@ exports.savePurchaseHdrDetails = function(purchasehdrdtl, purchaseDetails, callb
 			 							
 			 				saveOrUpdatePurchase(purchaseDetails[i]);
 			 				
-			 				if((purchasehdrdtl.status!=null&&(purchasehdrdtl.status=='Approved')
+			 				if(purchasehdrdtl.status!=null&&purchasehdrdtl.status=='Approved')
 			 		 		{
 			 					//To update stock ledger and summary
 			 					stockLedgerService.insertStockLedger(
@@ -143,7 +141,7 @@ exports.savePurchaseHdrDetails = function(purchasehdrdtl, purchaseDetails, callb
 			 			}
 			 			log.info(filename+'>>savePurchaseHdrDetails>>'+appmsg.UPDATEMESSAGE);
 			 			response.message 	= appmsg.UPDATEMESSAGE;
-			 			response.data  		= req.param('purchaseid');
+			 			response.data  		= purchasehdrdtl.purchase_id;
 			 			response.status  	= true;
 			 			callback(response);
 			 			
@@ -156,6 +154,8 @@ exports.savePurchaseHdrDetails = function(purchasehdrdtl, purchaseDetails, callb
 			 			response.data  		= err;
 			 			callback(response);
 			 		});
+				 		
+				 		
 					} else {
 						
 						var slNoCondition = {
@@ -168,7 +168,7 @@ exports.savePurchaseHdrDetails = function(purchasehdrdtl, purchaseDetails, callb
 							purchasehdrdtl.invoice_no = sl.sno;
 							purchasehdr.create(purchasehdrdtl).then(function(data){
 					 			
-					 			for(var i = 0; i < detailsLength; i++){
+					 			for(var i = 0; i < purchaseDetails.length; i++){
 					 				
 					 				purchaseDetails[i].purchase_id = data.purchase_id; 			
 
@@ -254,7 +254,7 @@ exports.savePurchaseHdrDetails = function(purchasehdrdtl, purchaseDetails, callb
 		}
 }
 
-
+//Find a product SOLD or NOT
 function getSalesCount(purchasedtlslist, batchNo, callback){
 	var count = 0;
 	for(var i=0;i<purchasedtlslist.length;i++){
@@ -320,7 +320,7 @@ function deletePurchaseDetails(purchasedtlid) {
 	});
 	}
 }
-//To Delete Purchase Detail
+//To Delete Purchase Header
 function deletePurchaseHeader(purchaseid) {
 	console.log("purchaseid-"+purchaseid);
 	if(purchaseid!=null){
@@ -334,7 +334,7 @@ function deletePurchaseHeader(purchaseid) {
 
 //To Save or Update PurchaseHdr Detail
 function saveOrUpdatePurchase(purchasedetails) {
-	 console.log(purchasedetails);
+	 console.log("purchasedetails-->"+purchasedetails);
 	 purchasedtl.upsert(purchasedetails)
 	 
 		.then(function(data){

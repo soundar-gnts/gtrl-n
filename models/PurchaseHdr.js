@@ -51,7 +51,9 @@ var purchasehdr = model.define('t_purchase_hdr', {
 	actioned_by			: dataTypes.STRING,
 	actioned_dt			: dataTypes.DATE,
 	last_updated_dt		: dataTypes.DATE,
-	last_updated_by		: dataTypes.STRING
+	last_updated_by		: dataTypes.STRING,
+	payment_terms		: dataTypes.STRING,
+	terms_condition		: dataTypes.STRING
 }, {
 	timestamps 			: false,
 	freezeTableName 	: true,
