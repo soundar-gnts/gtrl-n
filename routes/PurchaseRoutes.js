@@ -20,8 +20,19 @@ var purchasedtl 				= require('../models/PurchaseDtl.js');
 var product						= require('../models/Product.js');
 var supplier					= require('../models/Supplier.js');
 var poDetail					= require('../models/PoDetail.js');
+var response 					= {
+									status	: Boolean,
+									message : String,
+									data	: String
+								 };
 
-var purchaseService = require('../services/PurchaseService.js');
+var purchaseService 			= require('../services/PurchaseService.js');
+var path 						= require('path');
+var filename					= path.basename(__filename);
+var log 						= require('../config/logger').logger;
+var messagesService 			= require('../services/MessagesService.js');
+var config 						= require('../config/config.js');
+
 module.exports = function(app, server) {
 	//For purchase header
 	app.post('/getpurchasehdrdetails',	getPurchaseHdrDetails);
@@ -29,6 +40,7 @@ module.exports = function(app, server) {
 	app.post('/savepurchasehdrdetails', savePurchaseHdrDetails);
 	app.post('/updatepurchasestatus',	updatePurchaseStatus);
 	
+	//For get purchase header based on user param
 	function getPurchaseHdrDetails(req, res){
 		var fetchAssociation	= "";
 		var selectedAttributes 	= "";
@@ -125,6 +137,7 @@ module.exports = function(app, server) {
 			res.send(response);
 		});
 	}
+	//For get purchase details
 	function getPurchaseDetails(req, res){
 		
 		var condition = "";
@@ -153,6 +166,7 @@ module.exports = function(app, server) {
 			res.send(response);
 		});
 	}
+	//For save purchsase header and details
 	function savePurchaseHdrDetails(req, res){
 		var purchasehdrdtl 	 = { 		
 	 			
@@ -210,14 +224,51 @@ module.exports = function(app, server) {
 		 		purchaseDetails.push(purchaseDtl);
 	 		});
 	
+	 	if(req.param("purchaseid")==null){
+	 		purchaseService.savePurchaseHdrDetails(purchasehdrdtl, purchaseDetails, function(response){
+				res.send(response);
+			});
+	 	}else{	 	
+	 	purchasehdr.findOne({where:[{purchase_id:req.param("purchaseid")}]})
+		.then(function(result){
+			console.log("result.status-->"+result.status);
+			log.info(filename+'>> savePurchaseHdrDetails >> Current Status-->'+result.status);
+			if(result.status!=null&&result.status=='Approved'){
+				
+				response.status  	= false;
+				response.message 	= 'Once approved, '+req.param("status")+' not possible';
+				response.data 		= req.param("purchaseid");
+				res.send(response);
+			}else{
+				purchaseService.savePurchaseHdrDetails(purchasehdrdtl, purchaseDetails, function(response){
+								
+					//For Sent a Message
+					if(req.param("status")!=null&&req.param("status")!='Draft'){
+						var messageobj={	
+								company_id 				: req.param("companyid"),
+								msg_type 				: 'N',
+								msg_sender 				: config.PURCHASE_EMAIL,
+								msg_receivers 			: config.PURCHASE_EMAIL,
+								msg_subject 			: 'Reg - Purchase - '+req.param("status"),
+								msg_body 				: 'Purchase Ref No : '+req.param("invoiceno")+'\nStatus :'+req.param("status"),
+								client_ip 				: req.connection.remoteAddress,
+								user_id 				: req.param("userid"),
+								msg_status 				: 'Pending',
+								msg_sent_dt 			: new Date()
+							};
+						messagesService.saveMessages(messageobj, function(result){
+						});
+					}
+					res.send(response);
+				});
+			}
+		});
+	 	}
 	 	
 		
-	 		
-	 
-		purchaseService.savePurchaseHdrDetails(purchasehdrdtl, purchaseDetails, function(response){
-			res.send(response);
-		});
 	}
+	
+	//For Update Purchase Header Status
 	function updatePurchaseStatus(req, res){
 		var purchaseHeader = {
 				purchase_id					: req.param("purchaseid"),

@@ -24,6 +24,7 @@ var appmsg				= require('../config/Message.js');
 
 var path 				= require('path');
 var filename			= path.basename(__filename);
+var product 			= require('../models/Product.js');
 
 // To get Product Serial Codes List based on user param
 exports.getProductSerialCodesDetails = function(req, res) {
@@ -151,25 +152,49 @@ exports.saveProductSerialCodes = function(req, res) {
 
 //To Insert New Product Serial.
 exports.insertProductSerialCodes = function(companyid,grnid,productid,storeid,batchid,eanserialno,storeserialno) {
-	productserialcodes.create({
-		company_id 				: companyid,
-		grn_id 					: grnid,
-		product_id 				: productid,
-		store_id 				: storeid,
-		batch_id 				: batchid,
-		ean_serialno 			: eanserialno,
-		store_serialno 			: storeserialno,
-		status 					: 'Available',
-		print_status 			: 'Not Printed'
+	
+	//For get product earn serial number
+	product.findOne({where:[{prod_id:productid}]})
+	.then(function(result){
 		
-	}).then(function(data){
+		//To get EARNSERIALNO
+		if(result.ean_num_yn!=null&&result.ean_num_yn.toUpperCase()=='Y'){
+			if(result.last_seq_no==null){
+				eanserialno = '1';
+			}else{
+				eanserialno = result.last_seq_no.toString();
+			}
+			
+		}
+		productserialcodes.create({
+			company_id 				: companyid,
+			grn_id 					: grnid,
+			product_id 				: productid,
+			store_id 				: storeid,
+			batch_id 				: batchid,
+			ean_serialno 			: eanserialno,
+			store_serialno 			: storeserialno,
+			status 					: 'Available',
+			print_status 			: 'Not Printed'
+			
+		}).then(function(data){
+			
+			//For update product serial sequence number
+			console.log("eanserialno-->"+eanserialno);
+			if(result.ean_num_yn!=null&&result.ean_num_yn=='Y'){
+			product.update({last_seq_no:parseInt(eanserialno)+1},{where : {prod_id:productid}}).error(function(err){
+				
+			});
+			}
+			
+		}).error(function(err){
+			log.info(filename+'>>insertProductSerialCodes>>');
+			log.error(err);
+			
+		});
 		
-	}).error(function(err){
-		log.info(filename+'>>insertProductSerialCodes>>');
-		log.error(err);
 		
 	});
-		
 }
 //To Update Product Serial Code Storeid.
 exports.updateProductSerialStoreid= function(companyid,productid,storeid,batchid) {

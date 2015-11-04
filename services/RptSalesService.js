@@ -141,3 +141,115 @@ exports.getSalesSummeryDetails = function(req, res) {
 			res.send(response);
 	}
 };
+
+//For Sales Order Report
+exports.getSalesOrderRptDetails = function(req, res) {
+
+	if(req.param("salesorderid")!=null){
+	sequelize.query("SELECT st.store_code,st.store_name,cu.cust_code,cu.cus_first_name,cu.cus_last_name, " +
+			"sh.total_tax,sh.order_value,sh.total_qty,sh.delivery_type,sh.delivery_remark, " +
+			"sh.status,sh.shipping_addr,sh.sal_ordr_number,sh.shipng_adrs_city,sh.shipping_addr_state, " +
+			"sh.shipping_addr_pincde,sh.shipping_addr_name,sh.shipping_mobilnum,sh.land_mark, " +
+			"pr.prod_code,pr.prod_name,u.uom_name,sd.rate,sd.order_qty,sd.order_value d_order_value, " +
+			"sd.discount_prcnt,sd.discount_value,sd.tax_ptcnt,sd.tax_value,sd.basic_value " +
+			"FROM t_salesorder_hdr sh,t_salesorder_dtl sd,m_store st,m_customer cu,m_product pr, m_uom u " +
+			"where sh.salesorder_id = sd.salesorder_id " +
+			"and st.store_id 		= sh.store_id " +
+			"and cu.cust_id 		= sh.customer_id " +
+			"and pr.prod_id 		= sd.product_id " +
+			"and u.uom_id 			= sd.uom_id " +
+			"and sh.salesorder_id 	= "+req.param("salesorderid"), { type: sequelize.QueryTypes.SELECT})
+
+	.then(function(result) {
+		if(result.length === 0){
+			log.info(filename+'>> getSalesOrderRptDetails >> '+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			response.data	 = req.param("salesorderid");
+			res.send(response);
+		} else{
+			log.info(filename+'>> getSalesOrderRptDetails >> '+'About '+result.length+' results.');		
+			response.status  	= true;
+			response.message 	= 'About '+result.length+' results.';
+			response.data 		= result;
+			res.send(response);
+		}
+	}).error(function(err){
+			log.info(filename+'>> getSalesOrderRptDetails >> '+appmsg.INTERNALERRORMESSAGE);
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
+	});
+	}else{
+			log.info(filename+'>> getSalesOrderRptDetails >> '+appmsg.INTERNALERRORMESSAGE);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= req.param("salesorderid");
+			res.send(response);
+	}
+};
+//For Sales Order Summary Report based on user param
+exports.getSalesOrderSummeryDetails = function(req, res) {
+	
+	var storeid 		= null;
+	var customerid 		= null;
+	var status 			= "%";
+	
+	if(req.param("storeid")!=null){
+		storeid			= req.param("storeid");
+	}
+	if(req.param("customerid")!=null){
+		customerid		= req.param("customerid");
+	}
+	if(req.param("status")!=null){
+		status			= req.param("status");
+	}
+		
+	if(req.param("companyid")!=null){
+		
+		var query  = "SELECT st.store_code,st.store_name,cu.cust_code,cu.cus_first_name,cu.cus_last_name, " +
+				"sh.total_tax,sh.order_value,sh.total_qty,sh.delivery_type,sh.delivery_remark, " +
+				"sh.status,sh.shipping_addr,sh.sal_ordr_number,sh.shipng_adrs_city,sh.shipping_addr_state, " +
+				"sh.shipping_addr_pincde,sh.shipping_addr_name,sh.shipping_mobilnum,sh.land_mark " +
+				"FROM t_salesorder_hdr sh,m_store st,m_customer cu " +
+				"where st.store_id 	= sh.store_id " +
+				"and cu.cust_id 	= sh.customer_id " +
+				"and sh.store_id 	like COALESCE("+storeid+",'%') " +
+				"and sh.customer_id like COALESCE("+customerid+",'%') " +
+				"and sh.status 		like COALESCE('"+status+"','%')  " +
+				"and sh.company_id 	like COALESCE("+req.param("companyid")+",'%') ";
+		
+	sequelize.query(query, { type: sequelize.QueryTypes.SELECT})
+
+	.then(function(result) {
+		if(result.length === 0){
+			log.info(filename+'>> getSalesOrderSummeryDetails >> '+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			response.data	 = req.param("companyid");
+			res.send(response);
+		} else{
+			log.info(filename+'>> getSalesOrderSummeryDetails >> '+'About '+result.length+' results.');		
+			response.status  	= true;
+			response.message 	= 'About '+result.length+' results.';
+			response.data 		= result;
+			res.send(response);
+		}
+	}).error(function(err){
+			log.info(filename+'>> getSalesOrderSummeryDetails >> '+appmsg.INTERNALERRORMESSAGE);
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			res.send(response);
+	});
+	}else{
+			log.info(filename+'>> getSalesOrderSummeryDetails >> '+appmsg.INTERNALERRORMESSAGE);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= req.param("companyid");
+			res.send(response);
+	}
+};

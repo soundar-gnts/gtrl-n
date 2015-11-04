@@ -33,6 +33,7 @@ var appmsg						= require('../config/Message.js');
 
 var stockLedgerService 			= require('../services/StockLedgerService.js');
 var accountPayablesService 		= require('../services/AccountPayablesService.js');
+var accountReceivableService 	= require('../services/AccountReceivableService.js');
 var productSerialCodesService 	= require('../services/ProductSerialCodesService.js');
 var poService 					= require('../services/PoService.js');
 var salesService 				= require('../services/SalesService.js');
@@ -211,26 +212,32 @@ exports.savePurchaseHdrDetails = function(purchasehdrdtl, purchaseDetails, callb
 						for(var i=0;i<purchaseDetails.length;i++){
 							
 							//For Update balance qty in Purchase order details.
-							poService.updatePODetailBalanceQty(purchasehdrdtl.po_id,purchaseDetails[i].productid,
-									purchaseDetails[i].invoiceqty,'ADD');
+							poService.updatePODetailBalanceQty(purchasehdrdtl.po_id,purchaseDetails[i].product_id,
+									purchaseDetails[i].invoice_qty,'ADD');
 							
 							//To update stock ledger and summary
 							stockLedgerService.insertStockLedger(
-									purchaseDetails[i].productid,purchasehdrdtl.company_id,purchasehdrdtl.store_id,purchasehdrdtl.batch_no,0,
-									purchaseDetails[i].invoiceqty,purchaseDetails[i].uomid,purchasehdrdtl.invoice_no,
+									purchaseDetails[i].product_id,purchasehdrdtl.company_id,purchasehdrdtl.store_id,purchasehdrdtl.batch_no,0,
+									purchaseDetails[i].invoice_qty,purchaseDetails[i].uom_id,purchasehdrdtl.invoice_no,
 									purchasehdrdtl.invoice_date,"Delete Purchase Entry -Invoice Number : "+purchasehdrdtl.invoice_no+'-'+purchasehdrdtl.action_remarks);
 						
 							//To update product serial number status as 'Deleted'
 							productSerialCodesService.updateProductSerialCodes(purchasehdrdtl.company_id,purchasehdrdtl.purchase_id
-									,purchaseDetails[i].productid,purchasehdrdtl.store_id,purchasehdrdtl.batch_no,'Deleted');
+									,purchaseDetails[i].product_id,purchasehdrdtl.store_id,purchasehdrdtl.batch_no,'Deleted');
 							
 							//for delete purchase details
-							deletePurchaseDetails(purchaseDetails[i].purchasedtlid);
+							deletePurchaseDetails(purchaseDetails[i].purchase_dtlid);
 							
 							noofrows++;
 						    if (noofrows == purchaseDetails.length){
 						    	 //For Delete Purchase Account
 									deletePurchaseHeader(purchasehdrdtl.purchase_id);
+								//For  Account Receivable 
+								accountReceivableService.insertAccountReceivable(purchasehdrdtl.supplier_id,purchasehdrdtl.company_id,
+										purchasehdrdtl.store_id,new Date(),null,purchasehdrdtl.invoice_no,purchasehdrdtl.invoice_date,
+										purchasehdrdtl.invoice_amount,purchasehdrdtl.invoice_amount,'Purchase Deleted - Ref No :'+purchasehdrdtl.invoice_no,
+										purchasehdrdtl.last_updated_dt,purchasehdrdtl.last_updated_by);		
+									
 						    }
 				
 						}

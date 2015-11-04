@@ -17,7 +17,12 @@
 var rptSalesService 	= require('../services/RptSalesService.js');
 
 module.exports = function(app, server) {
+	//For Sales Reports
 	app.post('/getsalesrptdetails', rptSalesService.getSalesRptDetails);
 	app.post('/getsalessummerydetails', rptSalesService.getSalesSummeryDetails);
+	
+	//For Sales order Reports
+	app.post('/getsalesorderrptdetails', rptSalesService.getSalesOrderRptDetails);
+	app.post('/getsalesorderdummerydetails', rptSalesService.getSalesOrderSummeryDetails);
 }
 
