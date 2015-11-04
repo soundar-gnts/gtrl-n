@@ -30,6 +30,7 @@ var slnogenService		= require('../services/SlnoGenService.js');
 var productService		= require('../services/ProductService.js');
 var taxService			= require('../services/TaxService.js');
 var salesPymtDtlService = require('../services/SalesPymtDtlService.js');
+var messageService 		= require('../services/MessagesService.js');
 
 var common				= require('../services/CommonService.js');
 
@@ -118,6 +119,7 @@ var saveOrUpdateSalesOrderHeader = function(salesOrder, callback){
 			message : String,
 			data	: String
 	}
+	//if sales order header id exist then update, else create new entry
 	if(salesOrder.salesorder_id != null){
 		soHeader.upsert(salesOrder)
 		.then(function(data){
@@ -162,6 +164,7 @@ var saveOrUpdateSalesOrderDetails = function(salesDetail, callback) {
 			message : String,
 			data	: String
 	}
+	//if sales order detail id exist then update, else create new entry
 	if(salesDetail.salesorder_dtl_id != null){
 		soDetail.upsert(salesDetail)
 		.then(function(data){
@@ -234,11 +237,13 @@ var deleteSalesOrderDetailsFn = function(condition, callback){
 var saveOrUpdateSalesOrder = function(salesOrder, salesDetails, salesDeleteDetailsIds, callback){
 	log.info(fileName+'.saveOrUpdateSalesOrder');
 	saveOrUpdateSalesOrderHeader(salesOrder, function(header){
+		//if condition is true inserted successfully, else there is an error while inserting header
 		if(header.status){
-			console.log('header.status'+header.status);
+			log.info('header.status'+header.status);
 			//log.info(salesDeleteDetailsIds.length+' Sales detail is going to remove.');
-			//log.info(salesDetails.length+' Sales detail is going to update');
+			//log.info(salesDetails.length+' Sales detail is going to update/save');
 			
+			//check any selected product is need to remove, if yes then remove
 			if(salesDeleteDetailsIds != null)
 				salesDeleteDetailsIds.forEach(function(salesDelDetail){
 					deleteSalesOrderDetailsFn("salesorder_dtl_id='"+salesDelDetail.salesorder_dtl_id+"'", function(result){
@@ -246,6 +251,7 @@ var saveOrUpdateSalesOrder = function(salesOrder, salesDetails, salesDeleteDetai
 					});
 				});
 			
+			//check any selected product need to edit or is there any new product, if yes then edit/create
 			if(salesDetails != null)
 				salesDetails.forEach(function(salesDetail){
 					
@@ -300,9 +306,15 @@ var salesOrderOtpVerification = function(req, res){
 			data	: String
 	}
 	var condition = "salesorder_id='"+req.param('salesorderid')+"'";
+	
 	getSalesOrder(condition, '', '', function(result){
 		if(result.status){
-			if(result.data[0].otp_code == req.param('otpcode')){
+			if(result.data[0].status == CONSTANT.STATUSCANCELLED){
+				log.info('Your Order is '+CONSTANT.STATUSCANCELLED);
+				response.status  	= true;
+				response.message 	= 'Your Order is '+CONSTANT.STATUSCANCELLED;
+				res.send(response);
+			} else if(result.data[0].otp_code == req.param('otpcode')){
 				var p = {
 						salesorderid		: result.data[0].salesorder_id,
 						salordrnumber		: result.data[0].sal_ordr_number,
@@ -316,7 +328,7 @@ var salesOrderOtpVerification = function(req, res){
 						availablehours		: result.data[0].available_hours
 						
 				}
-				if(result.data[0].status == 'cart'){
+				if(result.data[0].status == CONSTANT.STATUSCART){
 					
 					var slNoCondition = {
 							company_id 			: req.param('companyid'),
@@ -327,33 +339,31 @@ var salesOrderOtpVerification = function(req, res){
 					slnogenService.getSlnoValu(slNoCondition, function(sl){
 						console.log(sl.sno);
 						result.data[0].sal_ordr_number	= sl.sno;
-						result.data[0].status			= 'Pending';
+						result.data[0].status			= CONSTANT.STATUSPENDING;
 						
 						saveOrUpdateSalesOrderHeader(result.data[0].dataValues, function(data){
 							slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
-							log.info('OTP has been verified successfully.');
+							log.info(APPMSG.SALESORDEROTPVERIFICATIONSUCCESS);
 							response.status  	= true;
-							response.message 	= 'OTP has been verified successfully.';
+							response.message 	= APPMSG.SALESORDEROTPVERIFICATIONSUCCESS;
 							p.salordrnumber		= sl.sno;
-							console.log(p)
 							response.data  		= p;
 							res.send(response);
 						});
 					});
 				} else{
-					log.info('Your OTP has been already verified.');
+					log.info(APPMSG.SALESORDEROTPVERIFICATIONALREADYSUCCESS);
 					response.status  	= true;
-					response.message 	= 'Your OTP has been already verified.';
+					response.message 	= APPMSG.SALESORDEROTPVERIFICATIONALREADYSUCCESS;
 					response.data  		= p;
-					console.log(response);
 					res.send(response);
 				}
 				
 				
 			} else{
-				log.info('Invalid OTP.');
+				log.info(APPMSG.SALESORDEROTPVERIFICATIONFAILURE);
 				response.status  	= false;
-				response.message 	= 'Invalid OTP.';
+				response.message 	= APPMSG.SALESORDEROTPVERIFICATIONFAILURE;
 				res.send(response);
 			}
 			
@@ -373,35 +383,73 @@ var changeSalesOrderStatus = function(req, res){
 			data	: String
 	}
 	
-	var salesOrder = {
+	var salesOdr = {
 		salesorder_id		: req.param('salesorderid'),
 		status 				: req.param('status'),
 		last_updated_dt		: req.param('lastupdateddt'),
 		last_updated_by		: req.param('lastupdatedby'),
 	}
 	
-	saveOrUpdateSalesOrderHeader(salesOrder, function(result){
-		if(result.status){
-			//TO DO : need clarification
-//			if(salesOrder.status.toLowerCase()=='confirmed'){
-//				salesPymtDtlService.addSalesPymtDetails(req.param('saleid'),
-//														req.param('billtype'),
-//														req.param('paymentmode'),
-//														req.param('cardtypeid'),
-//														req.param('cardno'),
-//														req.param('approvalno'),
-//														req.param('voucherid'),
-//														req.param('paidamount'));
-//			}
-			log.info('Sales order is '+req.param('status'));
-			response.status  	= true;
-			response.message 	= 'Sales order is '+req.param('status');
-			res.send(response);
+	var condition = "salesorder_id='"+salesOrder.salesorder_id+"'";
+	getSalesOrder(condition,'','', function(salesOrder){
+		if(salesOrder.status){
+			//check if the order is Approved/Delivered. if yes, cannot cancelled else can Cancelled/Rejected/Approved.
+			if(salesOdr.status == CONSTANT.STATUSCANCELLED && (salesOrder.data[0].status == CONSTANT.STATUSAPPROVED|| salesOrder.data[0].status == CONSTANT.STATUSDELIVERED)){
+				log.info('Sales order is '+salesOrder.data[0].status+'. So that you cannot '+salesOdr.status);
+				response.status  	= true;
+				response.message 	= 'Sales order is '+salesOrder.data[0].status+'. So that you cannot '+salesOdr.status;
+				res.send(response);
+			} else{
+				saveOrUpdateSalesOrderHeader(salesOdr, function(result){
+					
+					if(result.status){
+//						TO DO : need clarification
+//						if(salesOrder.status.toLowerCase()=='confirmed'){
+//							salesPymtDtlService.addSalesPymtDetails(req.param('saleid'),
+//																	req.param('billtype'),
+//																	req.param('paymentmode'),
+//																	req.param('cardtypeid'),
+//																	req.param('cardno'),
+//																	req.param('approvalno'),
+//																	req.param('voucherid'),
+//																	req.param('paidamount'));
+//						}
+						
+						if(salesOdr.status == CONSTANT.STATUSCANCELLED || salesOdr.status == CONSTANT.STATUSAPPROVED || salesOdr.status == CONSTANT.STATUSREJECTED){
+							var msgObj = {
+									company_id 			: salesOrder.data[0].company_id,
+									//msg_type			: dataTypes.STRING,
+									//msg_sender			: dataTypes.STRING,
+									//msg_receivers		: dataTypes.STRING,
+									//msg_cc				: dataTypes.STRING,
+									//msg_subject			: dataTypes.STRING,
+									//msg_body			: dataTypes.STRING,
+									//client_ip			: dataTypes.STRING,
+									//user_id				: dataTypes.INTEGER,
+									//msg_response		: dataTypes.STRING,
+									//msg_status			: dataTypes.STRING,
+									//msg_sent_dt			: dataTypes.DATE
+
+							}
+							messageService.saveMessages(msgObj, function(rslt){
+								log.info(rslt);
+							});
+						}
+						log.info('Sales order is '+req.param('status'));
+						response.status  	= true;
+						response.message 	= 'Sales order is '+req.param('status');
+						res.send(response);
+					} else{
+						res.send(result);
+					}
+					
+				});
+			}
 		} else{
-			res.send(result);
+			res.send(salesOrder);
 		}
-		
 	});
+	
 }
 
 module.exports = {

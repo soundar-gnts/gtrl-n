@@ -26,36 +26,7 @@ var path 			= require('path');
 var filename		= path.basename(__filename);
 
 // To get Push Notification List based on user param
-exports.getPushNotificationDetails = function(req, res) {
-	var condition 			= "";
-	var pushid				= req.param("pushid");
-	var companyid			= req.param("companyid");
-	var phoneno				= req.param("phoneno");
-	var userid				= req.param("userid");
-	if(pushid!=null){
-		condition ="push_id="+pushid;
-	}
-	if(companyid!=null){
-		if(condition === ""){
-			condition="company_id='"+companyid+"'";
-		}else {
-			condition=condition+" and company_id='"+companyid+"'";
-		}
-	}
-	if(phoneno!=null){
-		if(condition === ""){
-			condition="phone_no='"+phoneno+"'";
-		}else {
-			condition=condition+" and phone_no='"+phoneno+"'";
-		}
-	}
-	if(userid!=null){
-		if(condition === ""){
-			condition="user_id='"+userid+"'";
-		}else {
-			condition=condition+" and user_id='"+userid+"'";
-		}
-	}
+exports.getPushNotificationDetails = function(condition, callback) {
 	
 	pushnotification.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
@@ -63,14 +34,14 @@ exports.getPushNotificationDetails = function(req, res) {
 			response.message 	= appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  	= false;
 			response.data	 	= "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(filename+'>>getPushNotificationDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 			log.info(filename+'>>getPushNotificationDetails>>');
@@ -78,7 +49,7 @@ exports.getPushNotificationDetails = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 }
 
@@ -86,31 +57,22 @@ exports.getPushNotificationDetails = function(req, res) {
 
 
 // To Save/Update Push Notification
-exports.savePushNotification = function(req, res) {
-	pushnotification.upsert({
-		push_id					: req.param("pushid"),
-		company_id 				: req.param("companyid"),
-		phone_no 				: req.param("phoneno"),
-		message 				: req.param("message"),
-		ref_date 				: req.param("refdate"),
-		user_id 				: req.param("userid"),
-		last_updated_dt 		: req.param("lastupdateddt"),
-		last_updated_by 		: req.param("lastupdatedby")
-		
-	}).then(function(data){
+exports.savePushNotification = function(pushNotfictn, callback) {
+	pushnotification.upsert(pushNotfictn)
+	.then(function(data){
 		if(data){
 			log.info(filename+'>>savePushNotification>>'+appmsg.SAVEMESSAGE);
 			response.message 	= appmsg.SAVEMESSAGE;
 			response.status  	= true;
-			response.data		= req.param("pushid");
-			res.send(response);
+			response.data		= data.push_id;
+			callback(response);
 		}
 		else{
 			log.info(filename+'>>savePushNotification>>'+appmsg.UPDATEMESSAGE);
 			response.message 	= appmsg.UPDATEMESSAGE;
 			response.status  	= true;
-			response.data		= req.param("pushid");
-			res.send(response);
+			response.data		= pushNotfictn.push_id;
+			callback(response);
 		}
 		
 	}).error(function(err){
@@ -119,21 +81,21 @@ exports.savePushNotification = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 		
 }
 
 //To Delete Push Notification
-exports.deletePushNotification = function(req, res) {
-	if(req.param("pushid")!=null){
-		pushnotification.destroy({where:{push_id	: req.param("pushid")}})
+exports.deletePushNotification = function(condition, callback) {
+	
+	pushnotification.destroy({where:[condition]})
 		.then(function(data){
 			log.info(filename+'>> deletePushNotification >>'+appmsg.DELETEMESSAGE);
 			response.message 	= appmsg.DELETEMESSAGE;
 			response.status  	= true;
-			response.data		= req.param("pushid");
-			res.send(response);
+			//response.data		= req.param("pushid");
+			callback(response);
 			
 		}).error(function(err){
 			log.info(filename+'>> deletePushNotification >>');
@@ -141,13 +103,7 @@ exports.deletePushNotification = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
-		}else{
-			log.info(filename+'>> deletePushNotification >>');
-			response.status  	= false;
-			response.message 	= appmsg.INTERNALERRORMESSAGE;
-			response.data  		= req.param("pushid");
-			res.send(response);
-		}
+		
 }

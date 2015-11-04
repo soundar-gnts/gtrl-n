@@ -27,6 +27,7 @@ var product				= require('../models/Product.js');
 var supplier			= require('../models/Supplier.js');
 
 var slnogenService 		= require('../services/SlnoGenService.js');
+var messageService 		= require('../services/MessagesService.js');
 
 //get all Purchase order header details
 var getPo = function(condition, selectedAttributes, fetchAssociation, callback){
@@ -291,6 +292,28 @@ var changePoStatus = function(purchaseOrder, callback){
 			} else
 				saveOrUpdatePoHeader(purchaseOrder, function(result){
 					if(result.status){
+						
+						if(purchaseOrder.status == CONSTANT.STATUSCANCELLED || purchaseOrder.status == CONSTANT.STATUSAPPROVED || purchaseOrder.status == CONSTANT.STATUSREJECTED || purchaseOrder.status == CONSTANT.STATUSPENDING){
+							var msgObj = {
+									company_id 			: data.data[0].company_id,
+									//msg_type			: dataTypes.STRING,
+									//msg_sender			: dataTypes.STRING,
+									//msg_receivers		: dataTypes.STRING,
+									//msg_cc				: dataTypes.STRING,
+									//msg_subject			: dataTypes.STRING,
+									//msg_body			: dataTypes.STRING,
+									//client_ip			: dataTypes.STRING,
+									//user_id				: dataTypes.INTEGER,
+									//msg_response		: dataTypes.STRING,
+									//msg_status			: dataTypes.STRING,
+									//msg_sent_dt			: dataTypes.DATE
+
+							}
+							messageService.saveMessages(msgObj, function(rslt){
+								log.info(rslt);
+							});
+						}
+						
 						log.info('Purchase order is '+purchaseOrder.status);
 						response.status  	= true;
 						response.message 	= 'Purchase order is '+purchaseOrder.status;

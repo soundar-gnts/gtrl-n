@@ -34,8 +34,12 @@ exports.PODETAILEDITSUCCESS = 'Purchase order details editted successfully.';
 exports.PRODUCTCATEGORYSAVESUCCESS = 'Product category saved successfully.';
 exports.PRODUCTCATEGORYEDITSUCCESS = 'Product category editted successfully.';
 
-exports.SALESORDERSAVESUCCESS = 'Sales order saved successfully.';
-exports.SALESORDEREDITSUCCESS = 'Sales order editted successfully.';
+exports.SALESORDERSAVESUCCESS					= 'Sales order saved successfully.';
+exports.SALESORDEREDITSUCCESS					= 'Sales order editted successfully.';
+exports.SALESORDEROTPVERIFICATIONSUCCESS		= 'OTP has been verified successfully.';
+exports.SALESORDEROTPVERIFICATIONALREADYSUCCESS = 'Your OTP has been already verified.';
+exports.SALESORDEROTPVERIFICATIONFAILURE		= 'Invalid OTP.';
+
 
 exports.SALESORDERDETAILSSAVESUCCESS = 'Sales order details saved successfully.';
 exports.SALESORDERDETAILSEDITSUCCESS = 'Sales order details editted successfully.';

@@ -25,7 +25,7 @@ module.exports = function(app, server){
 	app.post('/getsalesdetails', 	getSales);
 		
 	//details tables
-	app.post('/getsaledetails',		getSalesDetails);
+	app.post('/getsalesdatadetails',		getSalesDetails);
 	
 	// slaes delivery details table
 	app.post('/getsalesdeliverydetails',		getSalesDeliveryDetails);

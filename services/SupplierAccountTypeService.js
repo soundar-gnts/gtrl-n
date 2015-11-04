@@ -27,26 +27,20 @@ var response = {
 }
 
 //insert or update upplier Account Type
-exports.saveOrUpdateSupplierAccountType = function(req, res){
+exports.saveOrUpdateSupplierAccountType = function(supplierAccType, callback){
 	log.info(fileName+'.saveOrUpdateSupplierAccountType');
-	suppAccType.upsert({
-		supp_acct_id	: req.param('suppacctid'),
-		supp_acct_name	: req.param('suppacctname'),
-		company_id 		: req.param('companyid'),
-		status 			: req.param('status'),
-		last_updated_dt	: req.param("lastupdateddt"),
-		last_updated_by	: req.param('lastupdatedby'),
-	}).then(function(data){
+	suppAccType.upsert(supplierAccType)
+	.then(function(data){
 		if(data){
 			log.info(appMsg.SUPPLIERACCOUNTTYPESAVESUCCESS);
 			response.message = appMsg.SUPPLIERACCOUNTTYPESAVESUCCESS;
 			response.status  = true;
-			res.send(response);
+			callback(response);
 		} else{
 			log.info(appMsg.SUPPLIERACCOUNTTYPEEDITSUCCESS);
 			response.message = appMsg.SUPPLIERACCOUNTTYPEEDITSUCCESS;
 			response.status  = true;
-			res.send(response);
+			callback(response);
 		}
 		
 	}).error(function(err){
@@ -54,49 +48,15 @@ exports.saveOrUpdateSupplierAccountType = function(req, res){
 		response.status  	= false;
 		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
-		res.send(response);
+		callback(response);
 	});
 }
 
 
 //get all upplier Account Type
-exports.getSupplierAccountType = function(req, res){
+exports.getSupplierAccountType = function(condition, selectedAttributes, callback){
 	log.info(fileName+'.getSupplierAccountType');
 
-	var condition 	= "";
-	var suppAcctId	= req.param('suppacctid')
-	var companyId 	= req.param('companyid');
-	var status		= req.param('status');
-	var name 		= req.param('suppacctname');
-	var selectedAttributes	= "";
-	
-	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
-		selectedAttributes = ['supp_acct_id','supp_acct_name']
-	}
-	
-	if(companyId != null)
-		condition = "company_id="+companyId;
-	
-	if(suppAcctId!=null)
-		if(condition === "")
-			condition = "supp_acct_id='"+suppAcctId+"'";
-	
-		else
-			condition = condition+" and supp_acct_id='"+suppAcctId+"'";
-	
-	if(status!=null)
-		if(condition === "")
-			condition = "status='"+status+"'";
-	
-		else
-			condition = condition+" and status='"+status+"'";
-	
-	if(name!=null)
-		if(condition === null)
-			condition = "supp_acct_name='"+name+"'";
-	
-		else
-			condition = condition+" and supp_acct_name='"+name+"'";
 	
 	suppAccType.findAll({
 		where		: [condition],
@@ -108,13 +68,13 @@ exports.getSupplierAccountType = function(req, res){
 				log.info(fileName+'.getSupplierAccountType - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
-				res.send(response);
+				callback(response);
 			} else{
 				log.info(fileName+'.getSupplierAccountType - About '+supAccType.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+supAccType.length+' results.';
 				response.data 		= supAccType;
-				res.send(response);
+				callback(response);
 			}
 		})
 		.error(function(err){
@@ -122,6 +82,6 @@ exports.getSupplierAccountType = function(req, res){
 			response.status  	= false;
 			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
 }
