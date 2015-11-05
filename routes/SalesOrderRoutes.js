@@ -41,32 +41,43 @@ module.exports = function(app, server){
 				Order_value			: parseFloat(req.param('ordervalue')||'0'),
 				total_qty			: req.param('totalqty'),
 				status 				: req.param('status'),
+				order_type			: req.param('ordertype'),
 				last_updated_dt		: req.param('lastupdateddt'),
 				last_updated_by		: req.param('lastupdatedby'),
 		}
 		
-		var salesDetail = {
-				salesorder_dtl_id	: req.param('salesdetails')[0].salesorderdtlid,
-				product_id			: req.param('salesdetails')[0].productid,
-				uom_id				: req.param('salesdetails')[0].uomid,
-				order_qty			: '1'
-			}
-		
-		
 		var salesDetails = [];
-		salesDetails.push(salesDetail);
+		if(req.param('salesdetails') != null){
+			
+			req.param('salesdetails').forEach(function(sDetail){
+				var salesDetail = {
+						salesorder_dtl_id	: sDetail.salesorderdtlid,
+						product_id			: sDetail.productid,
+						uom_id				: sDetail.uomid,
+						order_qty			: sDetail.orderqty || '1',
+						status				: sDetail.status
+				}
+				salesDetails.push(salesDetail);
+			});
+		}
+		
+		
+		
+		
+		
 		var condition = "status='"+CONSTANT.STATUSCART+"' and customer_id='"+req.param('customerid')+"'";
 		soService.getSalesOrder(condition, '', '', function(result){
 			if(result.status){
 				console.log('cart have');
-				salesOrder.salesorder_id = result.data[0].salesorder_id
-				soService.saveOrUpdateSalesOrder(salesOrder, salesDetails, null, function(data){
+				salesOrder.salesorder_id = result.data[0].salesorder_id;
+				salesOrder.Order_value = result.data[0].Order_value + parseInt(salesOrder.Order_value);
+				soService.saveOrUpdateSalesOrder(null, salesOrder, salesDetails, null, function(data){
 					res.send(data);
 				});
 			} else if(result.message == APPMSG.LISTNOTFOUNDMESSAGE){
 				console.log('cart have not');
 				salesOrder.otp_code			= common.generateOTP(4);
-				soService.saveOrUpdateSalesOrder(salesOrder, salesDetails, null, function(data){
+				soService.saveOrUpdateSalesOrder(null, salesOrder, salesDetails, null, function(data){
 					res.send(data);
 				});
 			} else{
@@ -146,6 +157,7 @@ module.exports = function(app, server){
 				condition = condition+" and customer_id='"+customerId+"'";
 		
 		soService.getSalesOrder(condition, selectedAttributes, fetchAssociation, function(result){
+			
 			res.send(result)
 		});
 		
@@ -212,6 +224,7 @@ module.exports = function(app, server){
 				last_updated_by		: req.param('lastupdatedby'),
 				shipping_addr		: req.param('shippingaddr'),
 				company_id			: req.param('companyid'),
+				sal_ordr_number		: req.param('salordrnumber'),
 				shipng_adrs_city	: req.param('shipngadrscity'),
 				shipping_addr_state	: req.param('shippingaddrstate'),
 				shipping_addr_pincde: req.param('shippingaddrpincde'),
@@ -219,10 +232,13 @@ module.exports = function(app, server){
 				shipping_mobilnum	: req.param('shippingmobilnum'),
 				otp_code			: req.param('otpcode'),
 				land_mark			: req.param('landmark'),
-				available_hours		: req.param('availablehours')
+				available_hours		: req.param('availablehours'),
+				order_type			: req.param('ordertype')
 		}
 		if(req.param('ordervalue') != null)
 			salesOrder.Order_value = parseFloat(req.param('ordervalue'));
+		console.log('..............');
+		console.log(salesOrder.Order_value);
 		
 		var salesDetails	= [];
 		var salesDetailsLength	= 0;
@@ -245,22 +261,42 @@ module.exports = function(app, server){
 						basic_value			: salesdetails.basicvalue,
 						discount_value		: salesdetails.discountvalue
 					}
-					salesDetails.push(salesDetail)
+				console.log(salesDetail.order_qty);
+				console.log(salesDetail.rate);
+				salesOrder.Order_value += ((parseInt(salesDetail.order_qty)-parseInt(req.param('pqty')||'0'))*parseInt(salesDetail.rate));
+				salesDetails.push(salesDetail)
 			});
 		
 		if(req.param('salesdeletedetails') != null)
 			req.param('salesdeletedetails').forEach(function(salesdeletedetails){
 				var salesDeleteDetailsId = {
 						salesorder_dtl_id	: salesdeletedetails.salesorderdtlid,
+						rate				: salesdeletedetails.rate,
 					}
-					salesDeleteDetailsIds.push(salesDeleteDetailsId);
+				salesOrder.Order_value -= parseInt(salesdeletedetails.rate);
+				salesDeleteDetailsIds.push(salesDeleteDetailsId);
 			});
 		
+		if(salesOrder.sal_ordr_number == null && salesOrder.order_type == 'POS' && salesOrder.status == CONSTANT.STATUSPENDING){
+			var slNoCondition = {
+					company_id 			: salesOrder.company_id,
+					ref_key 			: CONSTANT.SHOPPING_APP_ORDER_NO,
+					autogen_yn 			: 'Y',
+					status 				: 'Active'
+			}
+			slnogenService.getSlnoValu(slNoCondition, function(sl){
+				salesOrder.sal_ordr_number = sl.sno;
+				soService.saveOrUpdateSalesOrder(sl.slid, salesOrder, salesDetails, salesDeleteDetailsIds, function(result){
+					res.send(result);
+				});
+			});
+		} else{
+			soService.saveOrUpdateSalesOrder(null, salesOrder, salesDetails, salesDeleteDetailsIds, function(result){
+				res.send(result);
+			});
+		}
 		
 		
-		soService.saveOrUpdateSalesOrder(salesOrder, salesDetails, salesDeleteDetailsIds, function(result){
-			res.send(result);
-		});
 	}
 	
 	

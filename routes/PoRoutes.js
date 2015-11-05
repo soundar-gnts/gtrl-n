@@ -22,6 +22,8 @@ var poDetail	= require('../models/PoDetail.js');
 var product		= require('../models/Product.js');
 var supplier	= require('../models/Supplier.js');
 
+var slnogenService 		= require('../services/SlnoGenService.js');
+
 module.exports = function(app, server){
 	
 	app.post('/getpodetails', 			getPo);
@@ -37,6 +39,7 @@ module.exports = function(app, server){
 		var poId 				= req.param('poid');
 		var companyId 			= req.param('companyid');
 		var status				= req.param('status');
+		var statusprogress		= req.param('statusprogress');
 		var storeId				= req.param('storeid');
 		var supplierId			= req.param('supplierid');
 		
@@ -62,12 +65,12 @@ module.exports = function(app, server){
 			else
 				condition = condition+" and t_po_hdr.po_id='"+poId+"'";
 		
-		if(status!=null)
+		if(status!=null || statusprogress != null)
 			if(condition === "")
-				condition = "t_po_hdr.status='"+status+"'";
+				condition = "t_po_hdr.status='"+status+"' or t_po_hdr.status='"+statusprogress+"'";
 		
 			else
-				condition = condition+" and t_po_hdr.status='"+status+"'";
+				condition = condition+" and t_po_hdr.status='"+status+"' or t_po_hdr.status='"+statusprogress+"'";
 		
 		if(storeId!=null)
 			if(condition === "")
@@ -182,7 +185,7 @@ module.exports = function(app, server){
 			});
 		if(req.param("autogenyn") == 'y' && req.param('status') == CONSTANT.STATUSPENDING && req.param('pono') == null){
 			var slNoCondition = {
-					company_id 			: poHdr.company_id,
+					company_id 			: purchaseOrder.company_id,
 					ref_key 			: CONSTANT.PURCHASE_NO,
 					autogen_yn 			: 'Y',
 					status 				: 'Active'

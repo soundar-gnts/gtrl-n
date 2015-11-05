@@ -44,7 +44,7 @@ var filename					= path.basename(__filename);
 // To get Purchase Header List based on user param
 exports.getPurchaseHdrDetails = function(condition, selectedAttributes, fetchAssociation, callback) {
 	
-	purchasehdr.findAll({where : [condition],include : fetchAssociation,attributes: attr}).then(function(result) {
+	purchasehdr.findAll({where : [condition],include : fetchAssociation,attributes: selectedAttributes}).then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>>getPurchaseHdrDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;

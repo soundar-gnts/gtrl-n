@@ -31,6 +31,7 @@ var productService		= require('../services/ProductService.js');
 var taxService			= require('../services/TaxService.js');
 var salesPymtDtlService = require('../services/SalesPymtDtlService.js');
 var messageService 		= require('../services/MessagesService.js');
+var pushNotfctnService	= require('../services/PushNotificationService.js');
 
 var common				= require('../services/CommonService.js');
 
@@ -168,7 +169,7 @@ var saveOrUpdateSalesOrderDetails = function(salesDetail, callback) {
 	if(salesDetail.salesorder_dtl_id != null){
 		soDetail.upsert(salesDetail)
 		.then(function(data){
-			log.info(APPMSG.SALESORDERSAVESUCCESS);
+			log.info(APPMSG.SALESORDERDETAILSEDITSUCCESS);
 			response.message	= APPMSG.SALESORDERDETAILSEDITSUCCESS;
 			response.data  		= salesDetail.salesorder_id;
 			response.status 	= true;
@@ -184,7 +185,7 @@ var saveOrUpdateSalesOrderDetails = function(salesDetail, callback) {
 	} else{
 		soDetail.create(salesDetail)
 		.then(function(data){
-			log.info(APPMSG.SALESORDERSAVESUCCESS);
+			log.info(APPMSG.SALESORDERDETAILSSAVESUCCESS);
 			response.message	= APPMSG.SALESORDERDETAILSSAVESUCCESS;
 			response.data  		= data.salesorder_id;
 			response.status 	= true;
@@ -234,7 +235,7 @@ var deleteSalesOrderDetailsFn = function(condition, callback){
 }
 
 //add to cart edit cart add and edit sales order details
-var saveOrUpdateSalesOrder = function(salesOrder, salesDetails, salesDeleteDetailsIds, callback){
+var saveOrUpdateSalesOrder = function(slid, salesOrder, salesDetails, salesDeleteDetailsIds, callback){
 	log.info(fileName+'.saveOrUpdateSalesOrder');
 	saveOrUpdateSalesOrderHeader(salesOrder, function(header){
 		//if condition is true inserted successfully, else there is an error while inserting header
@@ -242,6 +243,10 @@ var saveOrUpdateSalesOrder = function(salesOrder, salesDetails, salesDeleteDetai
 			log.info('header.status'+header.status);
 			//log.info(salesDeleteDetailsIds.length+' Sales detail is going to remove.');
 			//log.info(salesDetails.length+' Sales detail is going to update/save');
+			
+			//if slid exist, serial number generated, so need to update slnoGen table 
+			if(slid != null)
+				slnogenService.updateSequenceNo(slid, salesOrder.last_updated_dt, salesOrder.last_updated_by);
 			
 			//check any selected product is need to remove, if yes then remove
 			if(salesDeleteDetailsIds != null)
@@ -403,18 +408,8 @@ var changeSalesOrderStatus = function(req, res){
 				saveOrUpdateSalesOrderHeader(salesOdr, function(result){
 					
 					if(result.status){
-//						TO DO : need clarification
-//						if(salesOrder.status.toLowerCase()=='confirmed'){
-//							salesPymtDtlService.addSalesPymtDetails(req.param('saleid'),
-//																	req.param('billtype'),
-//																	req.param('paymentmode'),
-//																	req.param('cardtypeid'),
-//																	req.param('cardno'),
-//																	req.param('approvalno'),
-//																	req.param('voucherid'),
-//																	req.param('paidamount'));
-//						}
-						
+
+						//insert into message table when status is Cancelled/Approved/Rejected
 						if(salesOdr.status == CONSTANT.STATUSCANCELLED || salesOdr.status == CONSTANT.STATUSAPPROVED || salesOdr.status == CONSTANT.STATUSREJECTED){
 							var msgObj = {
 									company_id 			: salesOrder.data[0].company_id,
@@ -435,6 +430,24 @@ var changeSalesOrderStatus = function(req, res){
 								log.info(rslt);
 							});
 						}
+						
+						//push notification when status is Approved/Rejected/Cancelled.
+						if((salesOdr.status == CONSTANT.STATUSCANCELLED &&  salesOrder.data[0].order_type == 'POS') || salesOdr.status == CONSTANT.STATUSAPPROVED || salesOdr.status == CONSTANT.STATUSREJECTED){
+							var pushNotfictn = {
+								company_id 				: req.param("companyid"),
+								phone_no 				: req.param("phoneno"),
+								message 				: req.param("message"),
+								ref_date 				: req.param("refdate"),
+								user_id 				: req.param("userid"),
+								last_updated_dt 		: req.param("lastupdateddt"),
+								last_updated_by 		: req.param("lastupdatedby")
+						
+							}
+							pushNotfctnService.savePushNotification(pushNotfictn, function(push){
+								log.info(push);
+							});
+						}
+						
 						log.info('Sales order is '+req.param('status'));
 						response.status  	= true;
 						response.message 	= 'Sales order is '+req.param('status');

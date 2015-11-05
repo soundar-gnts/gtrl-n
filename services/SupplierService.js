@@ -15,11 +15,14 @@
  * 
  */
 
-var path = require('path');
-var fileName=path.basename(__filename);
-var log = require('../config/logger').logger;
-var appMsg			= require('../config/Message.js');
-var supplier = require('../models/Supplier.js');
+var path		= require('path');
+var fileName	= path.basename(__filename);
+var log			= require('../config/logger').logger;
+var appMsg		= require('../config/Message.js');
+
+var supplier 	= require('../models/Supplier.js');
+
+
 var response = {
 		status	: Boolean,
 		message : String,
@@ -55,13 +58,14 @@ var saveOrUpdateSupplierDetails = function(supplier, callback){
 
 
 //get all Supplier
-var getSupplier = function(condition, selectedAttributes, callback){
+var getSupplier = function(condition, selectedAttributes, fetchAssociation, callback){
 
 	log.info(fileName+'.getSupplier');
 	
 	supplier.findAll({
 		where		: [condition],
-		attributes	: selectedAttributes
+		attributes	: selectedAttributes,
+		include		: fetchAssociation
 	
 	})
 		.then(function(suppliers){

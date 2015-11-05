@@ -238,9 +238,9 @@ var saveOrUpdatePo = function(slid, purchaseOrder, purchaseDetails, purchaseDele
 	saveOrUpdatePoHeader(purchaseOrder, function(header){
 		//if true data inserted/updated successfully else error
 		if(header.status){
-			//if slid exist, serial number generated so need to update slnoGen table 
+			//if slid exist, serial number generated, so need to update slnoGen table 
 			if(slid != null)
-				slnogenService.updateSequenceNo(slid, poHdr.last_updated_dt, poHdr.last_updated_by);
+				slnogenService.updateSequenceNo(slid, purchaseOrder.last_updated_dt, purchaseOrder.last_updated_by);
 			console.log('header.status : '+header.status);
 			//log.info(salesDeleteDetailsIds.length+' Sales detail is going to remove.');
 			//log.info(salesDetails.length+' Sales detail is going to update');
@@ -293,6 +293,7 @@ var changePoStatus = function(purchaseOrder, callback){
 				saveOrUpdatePoHeader(purchaseOrder, function(result){
 					if(result.status){
 						
+						//insert into message table when status is Pending/Cancelled/Approved/Rejected
 						if(purchaseOrder.status == CONSTANT.STATUSCANCELLED || purchaseOrder.status == CONSTANT.STATUSAPPROVED || purchaseOrder.status == CONSTANT.STATUSREJECTED || purchaseOrder.status == CONSTANT.STATUSPENDING){
 							var msgObj = {
 									company_id 			: data.data[0].company_id,

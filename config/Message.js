@@ -47,6 +47,9 @@ exports.SALESORDERDETAILSEDITSUCCESS = 'Sales order details editted successfully
 exports.SALESSAVESUCCESS = 'Sale saved successfully.';
 exports.SALESEDITSUCCESS = 'Sale editted successfully.';
 
+exports.SALESDETAILSSAVESUCCESS = 'Sale details saved successfully.';
+exports.SALESDETAILSEDITSUCCESS = 'Sale details editted successfully.';
+
 exports.SCREENTREESAVESUCCESS = 'Screen tree saved successfully.';
 exports.SCREENTREEEDITSUCCESS = 'Screen tree editted successfully.';
 

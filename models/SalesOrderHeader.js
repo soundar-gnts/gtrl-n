@@ -45,7 +45,8 @@ var soHeader = model.define('t_salesorder_hdr', {
 	shipping_mobilnum	: dataTypes.STRING,
 	otp_code			: dataTypes.STRING,
 	land_mark			: dataTypes.STRING,
-	available_hours		: dataTypes.STRING
+	available_hours		: dataTypes.STRING,
+	order_type			: dataTypes.STRING
 
 }, {
 	timestamps : false,

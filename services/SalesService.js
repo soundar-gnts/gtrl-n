@@ -21,16 +21,203 @@ var saleDtl 			= require('../models/SaleDtl.js');
 var saleHdr 			= require('../models/SaleHeader.js');
 var salesDeliveryDetail = require('../models/SalesDeliveryDetail.js');
 
-exports.getSaleDetail=function(productid,batchno,callback){
-	console.log(productid);
-	saleDtl.findOne({where:[{product_id:productid,batch_no:batchno}]})
-	.then(function(result){
-		callback(result);
+
+// get sales header function.
+exports.getSales = function(condition, fetchAssociation, selectedAttributes, callback){
+	
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	saleHdr.findAll({
+		where				: [condition],
+		include				: fetchAssociation,
+		attributes			: selectedAttributes
+	})
+		.then(function(saleHdrs){
+			if(saleHdrs.length == 0){
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
+				response.status  = false;
+				callback(response);
+			} else{
+				log.info('About '+saleHdrs.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+saleHdrs.length+' results.';
+				response.data 		= saleHdrs;
+				callback(response);
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+}
+
+//get sales details function
+exports.getSalesDetails = function(condition, selectedAttributes, callback){
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	
+	saleDtl.findAll({
+		where 		: [condition],
+		attributes	: selectedAttributes
+		
+	})
+	.then(function(saleDtls){
+		if(saleDtls.length == 0){
+			log.info(appMsg.LISTNOTFOUNDMESSAGE);
+			response.message = appMsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			callback(response);
+		} else{
+			log.info('About '+saleDtls.length+' results.');
+			response.status  	= true;
+			response.message 	= 'About '+saleDtls.length+' results.';
+			response.data 		= saleDtls;
+			callback(response);
+		}
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		callback(response);
+	});
+	
+}
+
+//save or update sales header
+var saveOrUpdateSalesHeader = function(sales, callback){
+	log.info(fileName+'.saveOrUpdateSalesHeader');
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	//if sales header id exist then update, else create new entry
+	if(sales.sale_id != null){
+		saleHdr.upsert(sales)
+		.then(function(data){
+			log.info(APPMSG.SALESEDITSUCCESS);
+			response.message 	= APPMSG.SALESEDITSUCCESS;
+			response.data  		= sales.sale_id;
+			response.status  	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	} else{
+		saleHdr.create(sales)
+		.then(function(data){
+			log.info(APPMSG.SALESSAVESUCCESS);
+			response.message	= APPMSG.SALESSAVESUCCESS;
+			response.data  		= data.sale_id;
+			response.status 	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	}
+}
+
+//save or update sales details function
+var saveOrUpdateSalesDetails = function(salesDetail, callback) {
+
+	log.info(fileName+'.saveOrUpdateSalesDetails');
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	//if sales order detail id exist then update, else create new entry
+	if(salesDetail.sale_dtlid != null){
+		saleDtl.upsert(salesDetail)
+		.then(function(data){
+			log.info(APPMSG.SALESDETAILSEDITSUCCESS);
+			response.message	= APPMSG.SALESDETAILSEDITSUCCESS;
+			response.data  		= salesDetail.salesorder_id;
+			response.status 	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	} else{
+		saleDtl.create(salesDetail)
+		.then(function(data){
+			log.info(APPMSG.SALESDETAILSSAVESUCCESS);
+			response.message	= APPMSG.SALESDETAILSSAVESUCCESS;
+			response.data  		= data.salesorder_id;
+			response.status 	= true;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	}
+}
+
+//delete sale detail function
+var deleteSaleDetails = function(condition, callback){
+	log.info(fileName+'.deleteSaleDetailsFn');
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	saleDtl.destroy({where : [condition]})
+	.then(function(data){
+		
+		if(data >= '1'){
+			log.info(data+' Sale details removed.');
+			response.status  	= true;
+			callback(response);
+		} else{
+			log.info('No Sales details found.');
+			response.status  	= true;
+			callback(response);
+		}
+		
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= appMsg.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		callback(response);
 	});
 }
 
-//
-exports.saveOrUpdateSalesFn = function(sales, salesDetails, salesDeleteDetailsIds, callback){
+//Add and edit sale details
+exports.saveOrUpdateSales = function(sales, salesDetails, salesDeleteDetailsIds, callback){
 	log.info(fileName+'.saveOrUpdateSalesFn');
 	
 	var response = {
@@ -38,6 +225,41 @@ exports.saveOrUpdateSalesFn = function(sales, salesDetails, salesDeleteDetailsId
 			message : String,
 			data	: String
 	}
+	
+	saveOrUpdateSalesHeader(sales, function(response){
+		if(response.status){
+			
+			//check any selected product need to edit or is there any new product, if yes then edit/create
+			if(salesDetails != null){
+				log.info(salesDetails.length+' Sale detail is going to save/update');
+				salesDetails.forEach(function(salesDetail){
+					saveOrUpdateSalesDetails(salesDetail, function(result){
+						log.info(result);
+					})
+				});
+			}
+			
+			//check any selected product is need to remove, if yes then remove
+			if(salesDeleteDetailsIds != null){
+				log.info(salesDetails.length+' Sale detail is going to save/update');
+				salesDeleteDetailsIds.forEach(function(salesDeleteDetailsId){
+					deleteSaleDetails("sale_dtlid='"+salesDeleteDetailsIds.sale_dtlid+"'", function(result){
+						log.info(result);
+					});
+				});
+			}
+			
+//			if(sales.sale_id != null && sales.status == )
+			
+		} else{
+			callback(response);
+		}
+	});
+	
+	
+	
+	
+	
 	if(sales.sale_id != null){
 		saleHdr.upsert(sales)
 		.then(function(data){
@@ -110,6 +332,16 @@ exports.saveOrUpdateSalesFn = function(sales, salesDetails, salesDeleteDetailsId
 	
 }
 
+exports.getSaleDetail=function(productid,batchno,callback){
+	console.log(productid);
+	saleDtl.findOne({where:[{product_id:productid,batch_no:batchno}]})
+	.then(function(result){
+		callback(result);
+	});
+}
+
+
+
 function saveOrUpdateSaleDetailsFn(saleDetail, callback){
 	var response = {
 			status	: Boolean,
@@ -132,107 +364,9 @@ function saveOrUpdateSaleDetailsFn(saleDetail, callback){
 
 }
 
-function deleteSaleDetailsFn(condition, callback){
-	log.info(fileName+'.deleteSaleDetailsFn');
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String
-	}
-	saleDtl.destroy({where : [condition]})
-	.then(function(data){
-		
-		if(data >= '1'){
-			log.info(data+' Sale details removed.');
-			response.status  	= true;
-			callback(response);
-		} else{
-			log.info('No Sales details found.');
-			response.status  	= true;
-			callback(response);
-		}
-		
-	})
-	.error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
-		response.data  		= err;
-		callback(response);
-	});
-}
 
-exports.getSalesFn = function(condition, fetchAssociation, selectedAttributes, callback){
-	
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String
-	}
-	
-	saleHdr.findAll({
-		where				: [condition],
-		include				: fetchAssociation,
-		attributes			: selectedAttributes
-	})
-		.then(function(saleHdrs){
-			if(saleHdrs.length == 0){
-				log.info(appMsg.LISTNOTFOUNDMESSAGE);
-				response.message = appMsg.LISTNOTFOUNDMESSAGE;
-				response.status  = false;
-				callback(response);
-			} else{
-				log.info('About '+saleHdrs.length+' results.');
-				response.status  	= true;
-				response.message 	= 'About '+saleHdrs.length+' results.';
-				response.data 		= saleHdrs;
-				callback(response);
-			}
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			callback(response);
-		});
-}
 
-exports.getSalesDetailsFn = function(condition, selectedAttributes, callback){
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String
-	}
-	
-	saleDtl.findAll({
-		where 		: [condition],
-		attributes	: selectedAttributes
-		
-	})
-	.then(function(saleDtls){
-		if(saleDtls.length == 0){
-			log.info(appMsg.LISTNOTFOUNDMESSAGE);
-			response.message = appMsg.LISTNOTFOUNDMESSAGE;
-			response.status  = false;
-			callback(response);
-		} else{
-			log.info('About '+saleDtls.length+' results.');
-			response.status  	= true;
-			response.message 	= 'About '+saleDtls.length+' results.';
-			response.data 		= saleDtls;
-			callback(response);
-		}
-	})
-	.error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
-		response.data  		= err;
-		callback(response);
-	});
-	
-}
+
 
 exports.saveOrUpdateSalesDeliveryDetailsFn = function(salesDelvryDetail, callback){
 	var response = {
