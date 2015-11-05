@@ -26,6 +26,7 @@ var response  			= {
 							message : String,
 							data	: String
 							};
+var messagesService 	= require('../services/MessagesService.js');
 
 // To get Stock TransferHdr List based on user param
 
@@ -190,129 +191,117 @@ exports.getStocktransferDtl = function(req, res) {
 
 
 // To Save/Update StockTransferHdr and  Detail
-exports.saveTransferDetails = function(req, res){
-		
-		var response    = 	{	status	: Boolean,
-					 			message : String,
-					 			data	: String
-				 			}
-		
-    	var trnsferhdr  =	{
-					 			transfer_id					: req.param("transferid"),
-								company_id 					: req.param("companyid"),
-								transfer_refno 				: req.param("transferrefno"),
-								transfer_date				: req.param("transferdate"),
-								from_Store_id 				: req.param("fromStoreid"),
-								to_store_id 				: req.param("tostoreid"),
-								transfer_ctgry 				: req.param("transferctgry"),
-								transfer_remarks 			: req.param("transferremarks"),	
-								transfer_Status 			: req.param("transferStatus"),
-								basic_total 				: req.param("basictotal"),
-								total_tax 					: req.param("totaltax"),
-								total_value 				: req.param("totalvalue"),
-								action_remarks 				: req.param("actionremarks"),
-								actioned_by 				: req.param("actionedby"),
-								actioned_dt 				: req.param("actioneddt"),
-								transfered_by 				: req.param("transferedby")
-				 			}
-		var transferDetails 	= [];
-		var detailsLength 		= 0;		
-		
-	    if(req.param('stocktranslist') != null){			 		
-		detailsLength = req.param('stocktranslist').length;
-	    }
-			 	
-		for(var i = 0; i < detailsLength; i++){
-			var transferdtl = {	transfer_dtlid 			: req.param('stocktranslist')[i].transferdtlid,
-								transfer_id 			: req.param("transferid"),
-								product_id 				: req.param('stocktranslist')[i].productid,
-								transfer_qty            : req.param('stocktranslist')[i].transferqty,
-								uom_id					: req.param('stocktranslist')[i].uomid,
-								batch_no				: req.param('stocktranslist')[i].batchno,
-								received_qty 			: req.param('stocktranslist')[i].receivedqty,
-								rate 					: req.param('stocktranslist')[i].rate,				
-								basic_value				: req.param('stocktranslist')[i].basicvalue,
-								discount_prcnt			: req.param('stocktranslist')[i].discountprcnt,
-								tax_id					: req.param('stocktranslist')[i].taxid,
-								tax_prnct				: req.param('stocktranslist')[i].taxprnct,
-								tax_value				: req.param('stocktranslist')[i].taxvalue,
-								remarks					: req.param('stocktranslist')[i].remarks,
-								status					: req.param('stocktranslist')[i].status,
-			 			}
-			 				transferDetails.push(transferdtl);
-			 		}
-			 	
-			 	if(req.param('transferid')!=null){
-			 	
-			 		stocktranshdr.upsert(trnsferhdr).then(function(data){ 
-			 		
-			 			for(var i = 0; i < transferDetails.length; i++){
-			 				
-			 				saveOrUpdateTransfer(transferDetails[i]);
-			 			
-			 				//TO DO : Updation in Stock Ledger,Summary both to and from stores
-			 				if(req.param('transferStatus')==='Approved' && transferDetails[i].transfer_qty!=0){
-			 					
-			 					console.log("trans---"+req.param('stocktranslist')[i].transferqty);
-			 					
-			 					//To update stock ledger and summary details on from store
-			 					stockLedgerService.insertStockLedger(req.param('stocktranslist')[i].productid,req.param("companyid"),req.param("fromStoreid")
-			 					,req.param('stocktranslist')[i].batchno,0,req.param('stocktranslist')[i].transferqty,
-			 							req.param('stocktranslist')[i].uomid,req.param("transferrefno"),req.param("transferdate"),
-			 							"Stock Transfer Out - Trans Ref : "+req.param('transferrefno'));
-			 					
-			 					//To update stock ledger and summary details to store
-			 					stockLedgerService.insertStockLedger(req.param('stocktranslist')[i].productid,req.param("companyid")
-			 							,req.param("tostoreid"),req.param('stocktranslist')[i].batchno,req.param('stocktranslist')[i].transferqty,
-			 							0,req.param('stocktranslist')[i].uomid,req.param("transferrefno"),req.param("transferdate"),
-			 							"Stock Transfer In - Trans Ref : "+req.param('transferrefno'));
-			 					
-			 					
-			 					//To update product serial code details 
-			 					productSerialCodes.updateProductSerialStoreid(req.param("companyid"),req.param('stocktranslist')[i].productid,
-				 						req.param("tostoreid"),req.param('stocktranslist')[i].batchno);
-			 				}			 				
-			 			
-			 			}
-			 			log.info(fileName+' >> saveTransferDetails >> '+appMsg.UPDATEMESSAGE);
-						response.message = appMsg.UPDATEMESSAGE;
-						response.status  = true;
-						res.send(response);
-			 			
-			 		})
-			 		.error(function(err){
-			 			log.info(fileName+' >> saveTransferDetails >> '+appMsg.INTERNALERRORMESSAGE);
-						log.error(err);
-						response.status  	= false;
-						response.message 	= appMsg.INTERNALERRORMESSAGE;
-						response.data  		= err;
-						res.send(response);
-			 		});
-			 	} else{
-			 	
-			 		stocktranshdr.create(trnsferhdr)
-			 		.then(function(data){
-			 			for(var i = 0; i < detailsLength; i++){
-			 				transferDetails[i].transfer_id = data.transfer_id;			 			
-			 				saveOrUpdateTransfer(transferDetails[i]);
-			 			}
-			 			log.info(fileName+' >> saveTransferDetails >> '+appMsg.SAVEMESSAGE);
-						response.message = appMsg.SAVEMESSAGE;
-						response.status  = true;
-						res.send(response);
-			 		})
-			 		.error(function(err){
-			 			log.info(fileName+' >> saveTransferDetails >> '+appMsg.INTERNALERRORMESSAGE);
-						log.error(err);
-						response.status  	= false;
-						response.message 	= appMsg.INTERNALERRORMESSAGE;
-						response.data  		= err;
-						res.send(response);
-			 		});
-			 		}
-			 }
+exports.saveTransferDetails = function(slid, trnsferhdr, transferDetails,
+		callback) {
 
-//To Save/Update Stock Transfer Details	 
+	var response = {
+		status 	: Boolean,
+		message : String,
+		data 	: String
+	}
+
+	if (transferDetails != null) {
+		detailsLength = transferDetails.length;
+		console.log("detailsLength-->"+detailsLength);
+	}
+
+	if (trnsferhdr.transfer_id != null) {
+
+		stocktranshdr.upsert(trnsferhdr).then(
+				function(data) {
+
+					for (var i = 0; i < transferDetails.length; i++) {
+
+						saveOrUpdateTransfer(transferDetails[i]);
+
+						// TO DO : Updation in Stock Ledger,Summary both to and
+						// from stores
+						if (trnsferhdr.transfer_Status === 'Approved') {
+
+							console.log("trans---"
+									+ transferDetails[i].transfer_qty);
+
+							// To update stock ledger and summary details on
+							// from store
+							stockLedgerService.insertStockLedger(
+									transferDetails[i].product_id,
+									trnsferhdr.company_id,
+									trnsferhdr.from_Store_id,
+									transferDetails[i].batch_no, 0,
+									transferDetails[i].transfer_qty,
+									transferDetails.uom_id,
+									trnsferhdr.transfer_refno,
+									trnsferhdr.transfer_date,
+									"Stock Transfer Out - Trans Ref : "
+											+ trnsferhdr.transfer_refno);
+
+							// To update stock ledger and summary details to
+							// store
+							stockLedgerService.insertStockLedger(
+									transferDetails[i].product_id,
+									trnsferhdr.company_id,
+									trnsferhdr.to_store_id,
+									transferDetails[i].batch_no,
+									transferDetails[i].transfer_qty, 0,
+									transferDetails[i].uom_id,
+									trnsferhdr.transfer_refno,
+									trnsferhdr.transfer_date,
+									"Stock Transfer In - Trans Ref : "
+											+ trnsferhdr.transfer_refno);
+
+							// To update product serial code details
+							productSerialCodes.updateProductSerialStoreid(
+									trnsferhdr.company_id,
+									transferDetails[i].product_id,
+									trnsferhdr.to_store_id,
+									transferDetails[i].batch_no);
+						}
+
+					}
+
+					log.info(fileName + ' >> saveTransferDetails >> '
+							+ appMsg.UPDATEMESSAGE);
+					response.message = appMsg.UPDATEMESSAGE;
+					response.status = true;
+					callback(response);
+
+				}).error(
+				function(err) {
+					log.info(fileName + ' >> saveTransferDetails >> '
+							+ appMsg.INTERNALERRORMESSAGE);
+					log.error(err);
+					response.status = false;
+					response.message = appMsg.INTERNALERRORMESSAGE;
+					response.data = err;
+					callback(response);
+				});
+	} else {
+
+		stocktranshdr.create(trnsferhdr).then(
+				function(data) {
+					for (var i = 0; i < detailsLength; i++) {
+						transferDetails[i].transfer_id = data.transfer_id;
+						saveOrUpdateTransfer(transferDetails[i]);
+					}
+					log.info(fileName + ' >> saveTransferDetails >> '
+							+ appMsg.SAVEMESSAGE);
+					response.message = appMsg.SAVEMESSAGE;
+					response.status = true;
+					callback(response);
+				}).error(
+				function(err) {
+					log.info(fileName + ' >> saveTransferDetails >> '
+							+ appMsg.INTERNALERRORMESSAGE);
+					log.error(err);
+					response.status = false;
+					response.message = appMsg.INTERNALERRORMESSAGE;
+					response.data = err;
+					callback(response);
+				});
+	}
+}
+
+// To Save/Update Stock Transfer Details
  function saveOrUpdateTransfer(transferdtl) {
 	stocktransdtl.upsert(transferdtl)
 	.then(function(data) {

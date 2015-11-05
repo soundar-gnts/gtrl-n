@@ -22,3 +22,4 @@ exports.mailid			= "gntstechnologies@gmail.com";
 exports.mailPassword	= "GntS@2014!"; 
 
 exports.PURCHASE_EMAIL	= "soundar@gnts.in";
+exports.STOCK_TRANS_EMAIL	= "soundar@gnts.in";
