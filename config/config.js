@@ -21,5 +21,5 @@ exports.CATEGORYIMAGEFOLDER = "images/categoryImages";				// location of categor
 exports.mailid			= "gntstechnologies@gmail.com";
 exports.mailPassword	= "GntS@2014!"; 
 
-exports.PURCHASE_EMAIL	= "soundar@gnts.in";
-exports.STOCK_TRANS_EMAIL	= "soundar@gnts.in";
+exports.PURCHASE_EMAIL	= "soundar1@gnts.in";
+exports.STOCK_TRANS_EMAIL	= "soundar1@gnts.in";

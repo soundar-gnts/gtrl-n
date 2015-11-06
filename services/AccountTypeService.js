@@ -1,6 +1,6 @@
 /**
- * @Filename 		: MessagesService.js
- * @Description 	: To write Business Logic for Messages
+ * @Filename 		: AccountTypeService.js
+ * @Description 	: To write Business Logic for Account Type
  * @Author 			: SOUNDAR C 
  * @Date 			: November 02, 2015
  * 
@@ -13,7 +13,7 @@
  * 
  * 
  */
-var messages		= require('../models/Messages.js');
+var accounttype		= require('../models/AccountType.js');
 var log 			= require('../config/logger').logger;
 var response 		= {
 						status	: Boolean,
@@ -24,28 +24,27 @@ var appmsg			= require('../config/Message.js');
 
 var path 			= require('path');
 var filename		= path.basename(__filename);
-var commonService 	= require('../services/CommonService.js');
 
-// To get Messages List based on user param
-exports.getMessagesDetails = function(condition,callback) {
+// To get Account Type List based on user param
+exports.getAccountTypeDetails = function(condition,callback) {
 	
-	messages.findAll({where : [condition]}).then(function(result) {
+	accounttype.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			log.info(filename+'>>getMessagesDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
+			log.info(filename+'>> getAccountTypeDetails >>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message 	= appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  	= false;
 			response.data	 	= "";
 			callback(response);
 		} else{
 			
-			log.info(filename+'>>getMessagesDetails>>'+'About '+result.length+' results.');
+			log.info(filename+'>> getAccountTypeDetails >>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			callback(response);
 		}
 	}).error(function(err){
-			log.info(filename+'>>getMessagesDetails>>');
+			log.info(filename+'>> getAccountTypeDetails >>');
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
@@ -55,31 +54,26 @@ exports.getMessagesDetails = function(condition,callback) {
 }
 
 
-// To Save/Update Messages
-exports.saveMessages = function(messageobj,callback) {
-	messages.upsert(messageobj).then(function(data){
+// To Save/Update Account Type
+exports.saveAccountType = function(accounttypeobj,callback) {
+	accounttype.upsert(accounttypeobj).then(function(data){
 		if(data){
-			log.info(filename+'>> saveMessages >>'+appmsg.SAVEMESSAGE);
+			log.info(filename+'>> saveAccountType >>'+appmsg.SAVEMESSAGE);
 			response.message 	= appmsg.SAVEMESSAGE;
 			response.status  	= true;
-			response.data		= messageobj.msg_id;
+			response.data		= accounttypeobj.acct_type_id;
 			callback(response);
 		}
 		else{
-			log.info(filename+'>> saveMessages >>'+appmsg.UPDATEMESSAGE);
+			log.info(filename+'>> saveAccountType >>'+appmsg.UPDATEMESSAGE);
 			response.message 	= appmsg.UPDATEMESSAGE;
 			response.status  	= true;
-			response.data		= messageobj.msg_id;
+			response.data		= accounttypeobj.acct_type_id;
 			callback(response);
 		}
-		//For Send a E-Mail.
-		commonService.sendMail(messageobj.msg_receivers, messageobj.msg_body, messageobj.msg_subject, function(result){
-			console.log(result);
-			log.info(filename+'>> saveMessages >>'+result);
-		});
 		
 	}).error(function(err){
-			log.info(filename+'>> saveMessages >>');
+			log.info(filename+'>> saveAccountType >>');
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
@@ -89,19 +83,19 @@ exports.saveMessages = function(messageobj,callback) {
 		
 }
 
-//To Delete Messages
-exports.deleteMessages = function(req, res) {
-	if(req.param("msgid")!=null){
-		messages.destroy({where:{msg_id	: req.param("msgid")}})
+//To Delete Account Type
+exports.deleteAccountType = function(req, res) {
+	if(req.param("accttypeid")!=null){
+		accounttype.destroy({where:{acct_type_id	: req.param("accttypeid")}})
 		.then(function(data){
-			log.info(filename+'>> deleteMessages >>'+appmsg.DELETEMESSAGE);
+			log.info(filename+'>> deleteAccountType >>'+appmsg.DELETEMESSAGE);
 			response.message 	= appmsg.DELETEMESSAGE;
 			response.status  	= true;
-			response.data		= req.param("msgid");
+			response.data		= req.param("accttypeid");
 			res.send(response);
 			
 		}).error(function(err){
-			log.info(filename+'>> deleteMessages >>');
+			log.info(filename+'>> deleteAccountType >>');
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
@@ -109,10 +103,10 @@ exports.deleteMessages = function(req, res) {
 			res.send(response);
 		});
 		}else{
-			log.info(filename+'>> deleteMessages >>');
+			log.info(filename+'>> deleteAccountType >>');
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
-			response.data  		= req.param("msgid");
+			response.data  		= req.param("accttypeid");
 			res.send(response);
 		}
 }

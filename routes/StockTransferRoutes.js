@@ -21,9 +21,125 @@ var slnogenService 			= require('../services/SlnoGenService.js');
 var messagesService 		= require('../services/MessagesService.js');
 
 module.exports = function(app, server){
-	app.post('/getstocktransferhdr', stockTransferService.getStocktransferHdr);
-	app.post('/getstocktransferdtl', stockTransferService.getStocktransferDtl);	
+	app.post('/getstocktransferhdr', getStocktransferHdr);
+	app.post('/getstocktransferdtl', getStocktransferDtl);	
 	app.post('/savetransferdetails', saveTransferDetails);
+	
+//To get Stock TransferDtl List based on user param	
+function getStocktransferDtl(req, res){
+	var condition 		= "";
+	var transferid		= req.param("transferid");
+	var transferdtlid	= req.param("transferdtlid");
+	var productid		= req.param("productid");
+	var batchno			= req.param("batchno");	
+	var status			= req.param("status");
+
+	if(transferdtlid!=null){
+		condition ="transfer_dtlid="+transferdtlid;
+	}
+	
+	if(transferid!=null){
+		if(condition === ""){
+			condition="transfer_id='"+transferid+"'";
+		}else {
+			condition=condition+" and transfer_id='"+transferid+"'";
+		}
+	}
+	
+	if(productid!=null){
+		if(condition === ""){
+			condition="product_id='"+productid+"'";
+		}else {
+			condition=condition+" and product_id='"+productid+"'";
+		}
+	}
+	
+	if(batchno!=null){
+		if(condition === ""){
+			condition="batch_no like '%"+batchno+"%'";
+		}else {
+			condition=condition+" and batch_no like '%"+batchno+"%'";
+		}
+	}
+
+	if(status!=null){
+		if(condition === ""){
+			condition="status='"+status+"'";
+		}else {
+			condition=condition+" and status='"+status+"'";
+		}
+	}
+	
+	stockTransferService.getStocktransferDtl(condition, function(response){
+		res.send(response);
+	});
+	
+}
+	
+// To get Stock TransferHdr List based on user param
+function getStocktransferHdr(req, res){
+	var condition 		= "";
+	var transferid		= req.param("transferid");
+	var transferrefno	= req.param("transferrefno");
+	var companyid		= req.param("companyid");
+	var fromStoreid		= req.param("fromstoreid");
+	var tostoreid		= req.param("tostoreid");
+	var transferctgry	= req.param("transferctgry");
+	var transferStatus	= req.param("transferstatus");
+	
+	if(transferid!=null){
+		condition ="transfer_id="+transferid;
+	}
+	if(companyid!=null){
+		if(condition === ""){
+			condition="company_id='"+companyid+"'";
+		}else {
+			condition=condition+" and company_id='"+companyid+"'";
+		}
+	}
+	if(fromStoreid!=null){
+		if(condition === ""){
+			condition="from_Store_id='"+fromStoreid+"'";
+		}else {
+			condition=condition+" and from_Store_id='"+fromStoreid+"'";
+		}
+	}
+	if(tostoreid!=null){
+		if(condition === ""){
+			condition="to_store_id='"+tostoreid+"'";
+		}else {
+			condition=condition+" and to_store_id='"+tostoreid+"'";
+		}
+	}
+	if(transferrefno!=null){
+		if(condition === ""){
+			condition="transfer_refno like '%"+transferrefno+"%'";
+		}else {
+			condition=condition+" and transfer_refno like '%"+transferrefno+"%'";
+		}
+	}
+	if(transferctgry!=null){
+		if(condition === ""){
+			condition="transfer_ctgry like '%"+transferctgry+"%'";
+		}else {
+			condition=condition+" and transfer_ctgry like '%"+transferctgry+"%'";
+		}
+	}
+	
+	if(transferStatus!=null){
+		if(condition === ""){
+			condition="transfer_Status='"+transferStatus+"'";
+		}else {
+			condition=condition+" and transfer_Status='"+transferStatus+"'";
+		}
+	}
+	
+	stockTransferService.getStocktransferHdr(condition, function(response){
+		res.send(response);
+	});
+}
+	
+	
 	
 //For Save / Update Stock Transfer Details
 function saveTransferDetails(req, res){

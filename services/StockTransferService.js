@@ -29,64 +29,7 @@ var response  			= {
 var messagesService 	= require('../services/MessagesService.js');
 
 // To get Stock TransferHdr List based on user param
-
-exports.getStocktransferHdr = function(req, res) {
-	
-	var condition 		= "";
-	var transferid		= req.param("transferid");
-	var transferrefno	= req.param("transferrefno");
-	var companyid		= req.param("companyid");
-	var fromStoreid		= req.param("fromStoreid");
-	var tostoreid		= req.param("tostoreid");
-	var transferctgry	= req.param("transferctgry");
-	var transferStatus	= req.param("transferStatus");
-	
-	if(transferid!=null){
-		condition ="transfer_id="+transferid;
-	}
-	if(companyid!=null){
-		if(condition === ""){
-			condition="company_id='"+companyid+"'";
-		}else {
-			condition=condition+" and company_id='"+companyid+"'";
-		}
-	}
-	if(fromStoreid!=null){
-		if(condition === ""){
-			condition="from_Store_id='"+fromStoreid+"'";
-		}else {
-			condition=condition+" and from_Store_id='"+fromStoreid+"'";
-		}
-	}
-	if(tostoreid!=null){
-		if(condition === ""){
-			condition="to_store_id='"+tostoreid+"'";
-		}else {
-			condition=condition+" and to_store_id='"+tostoreid+"'";
-		}
-	}
-	if(transferrefno!=null){
-		if(condition === ""){
-			condition="transfer_refno like '%"+transferrefno+"%'";
-		}else {
-			condition=condition+" and transfer_refno like '%"+transferrefno+"%'";
-		}
-	}
-	if(transferctgry!=null){
-		if(condition === ""){
-			condition="transfer_ctgry like '%"+transferctgry+"%'";
-		}else {
-			condition=condition+" and transfer_ctgry like '%"+transferctgry+"%'";
-		}
-	}
-	
-	if(transferStatus!=null){
-		if(condition === ""){
-			condition="transfer_Status='"+transferStatus+"'";
-		}else {
-			condition=condition+" and transfer_Status='"+transferStatus+"'";
-		}
-	}
+exports.getStocktransferHdr = function(condition,callback) {
 	
 	stocktranshdr.findAll({where : [condition],order: [['actioned_dt', 'DESC']]})
 	
@@ -96,14 +39,14 @@ exports.getStocktransferHdr = function(req, res) {
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(fileName+'.getStocktransferHdr - '+'About '+result.length+' results.');		
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 		log.info(fileName+'.getStocktransferHdr - '+appMsg.INTERNALERRORMESSAGE);
@@ -111,57 +54,13 @@ exports.getStocktransferHdr = function(req, res) {
 		response.status  	= false;
 		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
-		res.send(response);
+		callback(response);
 	});
 };
 
 //To get Stock TransferDtl List based on user param
-
-exports.getStocktransferDtl = function(req, res) {
+exports.getStocktransferDtl = function(condition,callback) {
 	
-		var condition 		= "";
-		var transferid		= req.param("transferid");
-		var transferdtlid	= req.param("transferdtlid");
-		var productid		= req.param("productid");
-		var batchno			= req.param("batchno");	
-		var status			= req.param("status");
-	
-		if(transferdtlid!=null){
-			condition ="transfer_dtlid="+transferdtlid;
-		}
-		
-		if(transferid!=null){
-			if(condition === ""){
-				condition="transfer_id='"+transferid+"'";
-			}else {
-				condition=condition+" and transfer_id='"+transferid+"'";
-			}
-		}
-		
-		if(productid!=null){
-			if(condition === ""){
-				condition="product_id='"+productid+"'";
-			}else {
-				condition=condition+" and product_id='"+productid+"'";
-			}
-		}
-		
-		if(batchno!=null){
-			if(condition === ""){
-				condition="batch_no like '%"+batchno+"%'";
-			}else {
-				condition=condition+" and batch_no like '%"+batchno+"%'";
-			}
-		}
-	
-		if(status!=null){
-			if(condition === ""){
-				condition="status='"+status+"'";
-			}else {
-				condition=condition+" and status='"+status+"'";
-			}
-		}
-		
 		stocktransdtl.findAll({where : [condition]})
 		
 		.then(function(result) {
@@ -170,21 +69,21 @@ exports.getStocktransferDtl = function(req, res) {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data	 = "";
-				res.send(response);
+				callback(response);
 			} else{
 				log.info(fileName+'.getStocktransferDtl - '+'About '+result.length+' results.');			
 				response.status  	= true;
 				response.message 	= 'About '+result.length+' results.';
 				response.data 		= result;
-				res.send(response);
+				callback(response);
 			}
 		}).error(function(err){
-			log.info(fileName+'.getStocktransferDtl - '+appMsg.INTERNALERRORMESSAGE);
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			res.send(response);
+				log.info(fileName+'.getStocktransferDtl - '+appMsg.INTERNALERRORMESSAGE);
+				log.error(err);
+				response.status  	= false;
+				response.message 	= appMsg.INTERNALERRORMESSAGE;
+				response.data  		= err;
+				callback(response);
 		});
 	};
 

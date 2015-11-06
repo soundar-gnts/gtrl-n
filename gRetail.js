@@ -94,6 +94,7 @@ require('./routes/AccountTxnsBillsRoutes.js')(app, server);
 require('./routes/SalesPymtDtlRoutes.js')(app, server);
 require('./routes/PushNotificationRoutes.js')(app, server);
 require('./routes/MessagesRoutes.js')(app, server);
+require('./routes/AccountTypeRoutes.js')(app, server);
 
 
 server.listen(app.get('port'), function(){
