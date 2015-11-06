@@ -24,8 +24,8 @@ module.exports = function(app, server) {
 	app.post('/getproductimages', productService.getProductImages);
 	app.post('/getproductbrands', productService.getProductBrands);
 	//For product serial codes.
-	app.post('/getproductserialcodesdetails', productSerialCodesService.getProductSerialCodesDetails);
-	app.post('/saveproductserialcodes', productSerialCodesService.saveProductSerialCodes);
+	//app.post('/getproductserialcodesdetails', productSerialCodesService.getProductSerialCodesDetails);
+	//app.post('/saveproductserialcodes', productSerialCodesService.saveProductSerialCodes);
 	
 	function getProductsList(req, res){
 		var fetchAssociation 	= "";

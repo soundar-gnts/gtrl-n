@@ -330,7 +330,8 @@ var salesOrderOtpVerification = function(req, res){
 						shippingmobilnum	: result.data[0].shipping_mobilnum,
 						landmark			: result.data[0].land_mark,
 						shippingaddr		: result.data[0].shipping_addr,
-						availablehours		: result.data[0].available_hours
+						availablehours		: result.data[0].available_hours,
+						orderdate			: result.data[0].order_date
 						
 				}
 				if(result.data[0].status == CONSTANT.STATUSCART){
@@ -345,14 +346,17 @@ var salesOrderOtpVerification = function(req, res){
 						console.log(sl.sno);
 						result.data[0].sal_ordr_number	= sl.sno;
 						result.data[0].status			= CONSTANT.STATUSPENDING;
-						
+						result.data[0].order_date		= new Date();
 						saveOrUpdateSalesOrderHeader(result.data[0].dataValues, function(data){
 							slnogenService.updateSequenceNo(sl.slid,req.param('lastupdateddt'),req.param('lastupdatedby'));
 							log.info(APPMSG.SALESORDEROTPVERIFICATIONSUCCESS);
 							response.status  	= true;
 							response.message 	= APPMSG.SALESORDEROTPVERIFICATIONSUCCESS;
 							p.salordrnumber		= sl.sno;
+							p.orderdate			= result.data[0].order_date;
 							response.data  		= p;
+							console.log('OTP');
+							console.log(p);
 							res.send(response);
 						});
 					});
@@ -361,6 +365,8 @@ var salesOrderOtpVerification = function(req, res){
 					response.status  	= true;
 					response.message 	= APPMSG.SALESORDEROTPVERIFICATIONALREADYSUCCESS;
 					response.data  		= p;
+					console.log('OTP');
+					console.log(p);
 					res.send(response);
 				}
 				

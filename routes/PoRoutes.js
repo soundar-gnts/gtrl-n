@@ -138,7 +138,7 @@ module.exports = function(app, server){
 				po_no			: req.param('pono'),
 				po_date			: req.param('podate'),
 				store_id		: parseInt(req.param('storeid')),
-				supplier_id		: parseInt(req.param('supplierid')),
+				supplier_id		: req.param('supplierid'),
 				invoice_addr	: req.param('invoiceaddr'),
 				shipping_addr	: req.param('shippingaddr'),
 				po_remark		: req.param('poremark'),
@@ -175,7 +175,9 @@ module.exports = function(app, server){
 				}
 				purchaseDetails.push(purchaseDetail);
 			});
-		
+		console.log(';;;;;;;;;;;;;;;;;');
+		console.log(purchaseOrder);
+		console.log(purchaseDetails);
 		if(req.param('purchasedeletedetails') != null)
 			req.param('purchasedeletedetails').forEach(function(poDeleteDetails){
 				var purchaseDeleteDetailsId = {

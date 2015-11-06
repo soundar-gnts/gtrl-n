@@ -128,7 +128,7 @@ module.exports = function(app, server) {
 			selectedAttributes=['purchase_id','po_id','invoice_no','invoice_amount'];
 		}
 		if(req.param('fetchassociation')=='y'){
-			fetchAssociation = [{model : purchasedtl, include : [{model : product, attributes : ['prod_code', 'prod_name']},{model : poDetail, attributes : ['po_qty']}]},
+			fetchAssociation = [{model : purchasedtl, include : [{model : product, attributes : ['prod_code', 'prod_name']},{model : poDetail, attributes : ['po_qty','bal_qty']}]},
 				{model : supplier, attributes : ['supplier_code','supplier_id']}
 			];
 		}
@@ -193,7 +193,9 @@ module.exports = function(app, server) {
 				actioned_by 				: req.param("actionedby"),
 				actioned_dt 				: req.param("actioneddt"),
 				last_updated_dt 			: req.param("lastupdateddt"),
-				last_updated_by 			: req.param("lastupdatedby")
+				last_updated_by 			: req.param("lastupdatedby"),
+				invoice_addr 			: req.param("invoiceaddr"),
+				shipping_addr 			: req.param("shippingaddr")
 	 						}
 	 	
 	 	var purchaseDetails = [];

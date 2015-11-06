@@ -26,6 +26,80 @@ var path 				= require('path');
 var filename			= path.basename(__filename);
 var product 			= require('../models/Product.js');
 
+//get product serial codes
+exports.getProductSerialCodes = function(condition, selectedAttributes, callback){
+	log.info(filename+'.getProductSerialCodes()');
+	var response 			= {
+			status	: Boolean,
+			message : String,
+			data	: String
+			}
+	productserialcodes.findAll({where : [condition],attributes: selectedAttributes}).then(function(result) {
+		if(result.length === 0){
+			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
+			response.status  = false;
+			response.data	 = "";
+			callback(response);
+		} else{
+			log.info('About '+result.length+' results.');
+			response.status  	= true;
+			response.message 	= 'About '+result.length+' results.';
+			response.data 		= result;
+			callback(response);
+		}
+	}).error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+	});
+}
+
+
+
+
+// To Save Save/Update Account Details
+exports.saveOrUpdateProductSerialCode = function(productSerialCode, callback) {
+	log.info(filename+'>>saveAccounts>>');
+	var response 			= {
+			status	: Boolean,
+			message : String,
+			data	: String
+			}
+	if(productSerialCode.serial_refno != null){
+		accounts.upsert(productSerialCode)
+		.then(function(data){
+			log.info(appmsg.PRODUCTSERIALCODEEDITSUCCESS);
+			response.message = appmsg.PRODUCTSERIALCODEEDITSUCCESS;
+			response.status  = true;
+			response.data	 = productSerialCode.serial_refno;
+		}).error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	} else{
+		accounts.create(productSerialCode)
+		.then(function(data){
+			log.info(appmsg.PRODUCTSERIALCODESAVESUCCESS);
+			response.message = appmsg.PRODUCTSERIALCODESAVESUCCESS;
+			response.status  = true;
+			response.data	 = data.serial_refno;
+		}).error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	}
+}
+
+
 // To get Product Serial Codes List based on user param
 exports.getProductSerialCodesDetails = function(req, res) {
 	var condition 		= "";

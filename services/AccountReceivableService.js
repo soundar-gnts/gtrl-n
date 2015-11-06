@@ -17,81 +17,31 @@ var accounts 			= require('../models/Accounts.js');
 var accountreceivables  = require('../models/AccountReceivables.js');
 var log 				= require('../config/logger').logger;
 var appmsg				= require('../config/Message.js');
-var response  			= {
-							status	: Boolean,
-							message : String,
-							data	: String
-						  };
 var path 				= require('path');
 var filename			= path.basename(__filename);
 
 // To get Account Receivable List based on user param
-exports.getAccountReceivableDetails = function(req, res) {
-	
-	var condition 		= "";
-	var accountid		= req.param("accountid");
-	var accrcbleid		= req.param("accrcbleid");
-	var companyid		= req.param("companyid");
-	var storeid			= req.param("storeid");
-	var invoiceno		= req.param("invoiceno");
-	var status			= req.param("status");
-	
-	
-	if(accrcbleid!=null){
-		condition ="accrcble_id="+accrcbleid;
-	}
-	if(companyid!=null){
-		if(condition === ""){
-			condition="company_id='"+companyid+"'";
-		}else {
-			condition=condition+" and company_id='"+companyid+"'";
+exports.getAccountReceivableDetails = function(condition, selectedAttributes, callback) {
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
 		}
-	}
-	if(accountid!=null){
-		if(condition === ""){
-			condition="account_id='"+accountid+"'";
-		}else {
-			condition=condition+" and account_id='"+accountid+"'";
-		}
-	}
-	if(storeid!=null){
-		if(condition === ""){
-			condition="store_id='"+storeid+"'";
-		}else {
-			condition=condition+" and store_id='"+storeid+"'";
-		}
-	}
-	if(invoiceno!=null){
-		if(condition === ""){
-			condition="invoice_no like '%"+invoiceno+"%'";
-		}else {
-			condition=condition+" and invoice_no like '%"+invoiceno+"%'";
-		}
-	}
-	if(status!=null){
-		if(condition === ""){
-			condition="status='"+status+"'";
-		}else {
-			condition=condition+" and status='"+status+"'";
-		}
-	}
-	
-	accountreceivables.findAll({where : [condition],order: [['last_updated_dt', 'DESC']]})
-	
+	accountreceivables.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes	: selectedAttributes})
 	.then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>> getAccountReceivableDetails >>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message 	= appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  	= false;
 			response.data	 	= "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(filename+'>> getAccountReceivableDetails >>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 			log.info(filename+'>> getAccountReceivableDetails >>');
@@ -99,61 +49,59 @@ exports.getAccountReceivableDetails = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 }
 
 // To Save Save/Update AccountReceivable Details
-exports.saveAccountReceivables = function(req, res) {
+exports.saveOrUpdateAccountReceivable = function(accountReceivable, callback) {
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+		}
+	log.info(filename+'.saveOrUpdateAccountReceivable()');
 	
-	accountreceivables.upsert({
-		accrcble_id				: req.param("accrcbleid"),
-		company_id 				: req.param("companyid"),
-		store_id 				: req.param("storeid"),
-		entry_date 				: req.param("entrydate"),
-		account_id 				: req.param("accountid"),
-		invoice_no 				: req.param("invoiceno"),
-		invoice_date 			: req.param("invoicedate"),	
-		invoice_amount 			: req.param("invoiceamount"),
-		paid_amount 			: req.param("paidamount"),
-		balance_amount 			: req.param("balanceamount"),
-		remarks 				: req.param("remarks"),
-		prepared_by 			: req.param("preparedby"),
-		actioned_by 			: req.param("actionedby"),
-		status 					: req.param("status"),
-		last_updated_dt 		: req.param("lastupdateddt"),
-		last_updated_by 		: req.param("lastupdatedby")
-		
-	}).then(function(data){
-		if(data){
-			log.info(filename+'>> saveAccountReceivables >>'+appmsg.SAVEMESSAGE);
-			response.message 	= appmsg.SAVEMESSAGE;
+	if(accountReceivable.accrcble_id != null){
+		accountreceivables.upsert(accountReceivable)
+		.then(function(data){
+			log.info(appmsg.ACCOUNTRECEIVABLEDITSUCCESS);
+			response.message 	= appmsg.ACCOUNTRECEIVABLEDITSUCCESS;
 			response.status  	= true;
-			response.data	 	= "";
-			res.send(response);
-		}
-		else{
-			log.info(filename+'>> saveAccountReceivables >>'+appmsg.UPDATEMESSAGE);
-			response.message 	= appmsg.UPDATEMESSAGE;
-			response.status  	= true;
-			response.data	 	= "";
-			res.send(response);
-		}
-		
-	}).error(function(err){
-			log.info(filename+'>> saveAccountReceivables >>');
+			response.data	 	= accountReceivable.accrcble_id;
+			callback(response);
+		}).error(function(err){
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
-	});
-	
-	
+			callback(response);
+		});
+	} else{
+		accountreceivables.create(accountReceivable)
+		.then(function(data){
+			log.info(appmsg.ACCOUNTRECEIVABLESAVESUCCESS);
+			response.message 	= appmsg.ACCOUNTRECEIVABLESAVESUCCESS;
+			response.status  	= true;
+			response.data	 	= data.accrcble_id;
+			callback(response);
+		}).error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	}
 }
 //For Insert New Record in Account Receivable Table
 exports.insertAccountReceivable = function(supplierid,companyid,storeid,entrydate,accountid,invoiceno,
 		invoicedate,invoiceamount,outstandingamount,remarks,lastupdateddt,lastupdatedby) {
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+		}
 	console.log(supplierid);
 	var paidamnt = invoiceamount - outstandingamount
 	var accreceive={

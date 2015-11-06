@@ -16,10 +16,10 @@
 var accounts 			= require('../models/Accounts.js');
 var log 				= require('../config/logger').logger;
 var response 			= {
-							status	: Boolean,
-							message : String,
-							data	: String
-							};
+		status	: Boolean,
+		message : String,
+		data	: String
+		};
 var appmsg				= require('../config/Message.js');
 var path 				= require('path');
 var filename			= path.basename(__filename);
@@ -29,72 +29,26 @@ var accountreceivables  = require('../models/AccountReceivables.js');
 var accountpayables 	= require('../models/AccountPayables.js');
 
 // To get Account List based on user param
-exports.getAccountsDetails = function(req, res) {
-	var attr 			= "";
-	var condition 		= "";
-	var accountid		=req.param("accountid");
-	var companyid		=req.param("companyid");
-	var storeid			=req.param("storeid");
-	var accountname		=req.param("accountname");
-	var accountgroup	=req.param("accountgroup");
-	var status			=req.param("status");
-	if(accountid!=null){
-		condition ="account_id="+accountid;
-	}
-	if(companyid!=null){
-		if(condition === ""){
-			condition="company_id='"+companyid+"'";
-		}else {
-			condition=condition+" and company_id='"+companyid+"'";
-		}
-	}
-	if(storeid!=null){
-		if(condition === ""){
-			condition="store_id='"+storeid+"'";
-		}else {
-			condition=condition+" and store_id='"+storeid+"'";
-		}
-	}
-	if(accountname!=null){
-		if(condition === ""){
-			condition="account_name like '%"+accountname+"%'";
-		}else {
-			condition=condition+" and account_name like '%"+accountname+"%'";
-		}
-	}
-	if(accountgroup!=null){
-		if(condition === ""){
-			condition="account_group='"+accountgroup+"'";
-		}else {
-			condition=condition+" and account_group='"+accountgroup+"'";
-		}
-	}
-	
-	if(status!=null){
-		if(condition === ""){
-			condition="status='"+status+"'";
-		}else {
-			condition=condition+" and status='"+status+"'";
-		}
-	}
-	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
-		attr=['account_id','account_group','account_name','current_balance'];
-	}
-	
-	accounts.findAll({where : [condition],attributes: attr}).then(function(result) {
+exports.getAccountsDetails = function(condition, selectedAttributes, callback) {
+	var response 			= {
+			status	: Boolean,
+			message : String,
+			data	: String
+			}
+	accounts.findAll({where : [condition],attributes: selectedAttributes}).then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>>getAccountsDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(filename+'>>getAccountsDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 			log.info(filename+'>>getAccountsDetails>>');
@@ -102,7 +56,7 @@ exports.getAccountsDetails = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 }
 
@@ -110,88 +64,67 @@ exports.getAccountsDetails = function(req, res) {
 
 
 // To Save Save/Update Account Details
-exports.saveAccounts = function(req, res) {
-	accounts.upsert({
-		account_id					: req.param("accountid"),
-		company_id 					: req.param("companyid"),
-		store_id 					: req.param("storeid"),
-		account_group 				: req.param("accountgroup"),
-		account_name 				: req.param("accountname"),
-		account_dt 					: req.param("accountdt"),
-		finance_year 				: req.param("financeyear"),
-		generate_voucher_yn 		: req.param("generatevoucheryn"),
-		employee_id 				: req.param("employeeid"),
-		bank_id 					: req.param("bankid"),
-		bank_branch_id 				: req.param("bankbranchid"),
-		supplier_id 				: req.param("supplierid"),
-		client_id 					: req.param("clientid"),
-		acct_type_id 				: req.param("accttypeid"),
-		od_amoun 					: req.param("odamount"),
-		open_balance 				: req.param("openbalance"),
-		parked_amount 				: req.param("parkedamount"),
-		current_balance 			: req.param("currentbalance"),
-		aproveauth 					: req.param("aproveauth"),
-		parent_account_id 			: req.param("parentaccountid"),
-		selfapprv_yn 				: req.param("selfapprvyn"),
-		remarks 					: req.param("remarks"),
-		status 						: req.param("status"),
-		last_updated_dt 			: req.param("lastupdateddt"),
-		last_updated_by 			: req.param("lastupdatedby")
-		
-	}).then(function(data){
-		if(data){
-			log.info(filename+'>>saveAccounts>>'+appmsg.SAVEMESSAGE);
-			response.message = appmsg.SAVEMESSAGE;
+exports.saveAccounts = function(accounts, callback) {
+	var response 			= {
+			status	: Boolean,
+			message : String,
+			data	: String
+			}
+	if(accounts.account_id != null){
+		accounts.upsert(accounts)
+		.then(function(data){
+			log.info(filename+'>>saveAccounts>>'+appmsg.ACCOUNTEDITSUCCESS);
+			response.message = appmsg.ACCOUNTEDITSUCCESS;
 			response.status  = true;
-			response.data	 = req.param("accountid");
-			res.send(response);
-		}
-		else{
-			log.info(filename+'>>saveAccounts>>'+appmsg.UPDATEMESSAGE);
-			response.message = appmsg.UPDATEMESSAGE;
-			response.status  = true;
-			response.data	 = req.param("accountid");
-			res.send(response);
-		}
-		
-	}).error(function(err){
+			response.data	 = accounts.account_id;
+		}).error(function(err){
 			log.info(filename+'>>saveAccounts>>');
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
-	});
-		
-}
-//To Delete Account Detail
-exports.deleteAccountDetails = function(req, res) {
-	if(req.param("accountid")!=null){
-		accounts.destroy({where:{
-		account_id					: req.param("accountid")		
-	}}).then(function(data){
-		if(data){
-			log.info(filename+'>>deleteAccountDetails>>'+appmsg.DELETEMESSAGE);
-			response.message = appmsg.DELETEMESSAGE;
+			callback(response);
+		});
+	} else{
+		accounts.create(accounts)
+		.then(function(data){
+			log.info(filename+'>>saveAccounts>>'+appmsg.ACCOUNTSAVESUCCESS);
+			response.message = appmsg.ACCOUNTSAVESUCCESS;
 			response.status  = true;
-			response.data	 = req.param("accountid");
-			res.send(response);
-		}
-		
-	}).error(function(err){
-			log.info(filename+'>>deleteAccountDetails>>');
+			response.data	 = data.account_id;
+		}).error(function(err){
+			log.info(filename+'>>saveAccounts>>');
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
-	});
-	}else{
-			response.status  	= false;
-			response.message 	= appmsg.INTERNALERRORMESSAGE;
-			response.data  		= req.param("accountid");
-			res.send(response);
+			callback(response);
+		});
 	}
+}
+//To Delete Account Detail
+exports.deleteAccountDetails = function(condition, callback) {
+	log.info(filename+'.deleteAccountDetails()');
+	accounts.destroy({where:[condition]})
+	.then(function(data){
+		
+		if(data >= '1'){
+			log.info(data+' Account details removed.');
+			response.status  	= true;
+			callback(response);
+		} else{
+			log.info('No Account details found.');
+			response.status  	= true;
+			callback(response);
+		}
+	}).error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= appmsg.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		callback(response);
+	});
+	
 }
 
 //To update account balance

@@ -44,6 +44,15 @@ module.exports = function(app, server){
 				order_type			: req.param('ordertype'),
 				last_updated_dt		: req.param('lastupdateddt'),
 				last_updated_by		: req.param('lastupdatedby'),
+				
+				shipping_addr		: req.param('shippingaddr'),
+				shipng_adrs_city	: req.param('shipngadrscity'),
+				shipping_addr_state	: req.param('shippingaddrstate'),
+				shipping_addr_pincde: req.param('shippingaddrpincde'),
+				shipping_addr_name	: req.param('shippingaddrname'),
+				shipping_mobilnum	: req.param('shippingmobilnum'),
+				land_mark			: req.param('landmark'),
+				available_hours		: req.param('availablehours'),
 		}
 		
 		var salesDetails = [];
@@ -62,7 +71,9 @@ module.exports = function(app, server){
 		}
 		
 		
-		
+		console.log('+++++++');
+		console.log(salesOrder);
+		console.log(salesDetails);
 		
 		
 		var condition = "status='"+CONSTANT.STATUSCART+"' and customer_id='"+req.param('customerid')+"'";
@@ -123,11 +134,11 @@ module.exports = function(app, server){
 		
 		if(status!=null)
 			if(condition === "")
-				condition = "t_salesorder_hdr.status='"+status+"'";
-		
+				condition = "t_salesorder_hdr.status in ("+status+")";
+				
 			else
-				condition = condition+" and t_salesorder_hdr.status='"+status+"'";
-		
+				condition = condition+" and t_salesorder_hdr.status in ("+status+")";
+				
 		if(storeId!=null)
 			if(condition === "")
 				condition = "store_id='"+storeId+"'";
@@ -173,6 +184,7 @@ module.exports = function(app, server){
 		var soDetailsId 		= req.param('salesorderdtlid');
 		var soId 				= req.param('salesorderid');
 		var status				= req.param('status');
+		var customerId			= req.param('customerid');
 		
 		if(req.param('fetchassociation')=='y'){
 			fetchAssociation = [{
@@ -237,8 +249,8 @@ module.exports = function(app, server){
 		}
 		if(req.param('ordervalue') != null)
 			salesOrder.Order_value = parseFloat(req.param('ordervalue'));
-		console.log('..............');
-		console.log(salesOrder.Order_value);
+//		console.log('..............');
+//		console.log(salesOrder.Order_value);
 		
 		var salesDetails	= [];
 		var salesDetailsLength	= 0;
@@ -261,9 +273,11 @@ module.exports = function(app, server){
 						basic_value			: salesdetails.basicvalue,
 						discount_value		: salesdetails.discountvalue
 					}
-				console.log(salesDetail.order_qty);
-				console.log(salesDetail.rate);
-				salesOrder.Order_value += ((parseInt(salesDetail.order_qty)-parseInt(req.param('pqty')||'0'))*parseInt(salesDetail.rate));
+//				console.log('salesDetail.order_qty'+salesDetail.order_qty);
+//				console.log('salesDetail.rate'+salesDetail.rate);
+//				console.log('req.param()'+req.param('pqty'));
+				if(salesDetail.rate != null)
+					salesOrder.Order_value += ((parseInt(salesDetail.order_qty)-parseInt(req.param('pqty')||'0'))*parseInt(salesDetail.rate));
 				salesDetails.push(salesDetail)
 			});
 		
@@ -276,7 +290,9 @@ module.exports = function(app, server){
 				salesOrder.Order_value -= parseInt(salesdeletedetails.rate);
 				salesDeleteDetailsIds.push(salesDeleteDetailsId);
 			});
-		
+//		console.log('+++++++++++');
+//		console.log(salesOrder);
+//		console.log(salesDetails);
 		if(salesOrder.sal_ordr_number == null && salesOrder.order_type == 'POS' && salesOrder.status == CONSTANT.STATUSPENDING){
 			var slNoCondition = {
 					company_id 			: salesOrder.company_id,

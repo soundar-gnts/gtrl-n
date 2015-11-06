@@ -217,7 +217,7 @@ var deleteSaleDetails = function(condition, callback){
 }
 
 //Add and edit sale details
-exports.saveOrUpdateSales = function(sales, salesDetails, salesDeleteDetailsIds, callback){
+exports.saveOrUpdateSales = function(slid, sales, salesDetails, salesDeleteDetailsIds, callback){
 	log.info(fileName+'.saveOrUpdateSalesFn');
 	
 	var response = {
@@ -229,10 +229,16 @@ exports.saveOrUpdateSales = function(sales, salesDetails, salesDeleteDetailsIds,
 	saveOrUpdateSalesHeader(sales, function(response){
 		if(response.status){
 			
+			//if slid exist, serial number generated, so need to update slnoGen table 
+			if(slid != null)
+				slnogenService.updateSequenceNo(slid, sales.last_updated_dt, sales.last_updated_by);
+			
 			//check any selected product need to edit or is there any new product, if yes then edit/create
 			if(salesDetails != null){
 				log.info(salesDetails.length+' Sale detail is going to save/update');
 				salesDetails.forEach(function(salesDetail){
+					if(sales.status == CONSTANT.STATUSBILLED || sales.status == CONSTANT.STATUSAPPROVED)
+						productSerialCodesService.updateProductSerialCodes(sales.company_id, sales.sale_id, salesDetail.product_id, sales.store_id, sales.batch_no, 'Sold');
 					saveOrUpdateSalesDetails(salesDetail, function(result){
 						log.info(result);
 					})
@@ -249,7 +255,29 @@ exports.saveOrUpdateSales = function(sales, salesDetails, salesDeleteDetailsIds,
 				});
 			}
 			
-//			if(sales.sale_id != null && sales.status == )
+			
+			
+			
+			
+						
+			/**TODO
+			 * if sales status is approved/billed
+			 * goto product serial code table then change status sold - completed
+			 * goto salespayment detail table then insert
+			 * stock ledger function
+			**/
+			
+			/**TODO
+			 * if sales type is whole/corporate/mobile and status is approved/deliveryready/delivered
+			 * pushnotification
+			 * message
+			**/
+			
+			/**TODO
+			 * if sales status is deliveryready
+			 * insert/update details into delivery detail table
+			**/
+			
 			
 		} else{
 			callback(response);
@@ -332,6 +360,15 @@ exports.saveOrUpdateSales = function(sales, salesDetails, salesDeleteDetailsIds,
 	
 }
 
+var changeSalesStatus = function(){
+	/**TODO
+	 * if sales type is whole/corporate/mobile and status is approved
+	 * check account table with customer id if not create
+	 * use account id to account receivable table
+	**/ 
+}
+
+
 exports.getSaleDetail=function(productid,batchno,callback){
 	console.log(productid);
 	saleDtl.findOne({where:[{product_id:productid,batch_no:batchno}]})
@@ -339,31 +376,6 @@ exports.getSaleDetail=function(productid,batchno,callback){
 		callback(result);
 	});
 }
-
-
-
-function saveOrUpdateSaleDetailsFn(saleDetail, callback){
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String
-	}
-	log.info(fileName+'.saveOrUpdateSaleDetailsFn');
-	saleDtl.upsert(saleDetail)
-	.then(function(data){
-		log.info('Sale detail saved');
-		response.status  	= true;
-		callback(response);
-	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
-		response.data  		= err;
-		callback(response);
-	});
-
-}
-
 
 
 

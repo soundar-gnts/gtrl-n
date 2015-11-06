@@ -15,95 +15,22 @@
  * 
  */
 
-var salesService = require('../services/SalesService.js');
-var saleDtl = require('../models/SaleDtl.js');
+var salesService	= require('../services/SalesService.js');
+var saleDtl			= require('../models/SaleDtl.js');
+var CONSTANT		= require('../config/Constants.js');
+
+var slnogenService	= require('../services/SlnoGenService.js');
 
 module.exports = function(app, server){
 	
 	//header tables
-	app.post('/savesalesdetails',	saveOrUpdateSales);
 	app.post('/getsalesdetails', 	getSales);
-		
-	//details tables
-	app.post('/getsalesdatadetails',		getSalesDetails);
+	app.post('/getsalesdatadetails',getSalesDetails);
+	app.post('/savesalesdetails',	saveOrUpdateSales);
 	
 	// slaes delivery details table
 	app.post('/getsalesdeliverydetails',		getSalesDeliveryDetails);
 	app.post('/savesalesdeliverydetails',		saveOrUpdateSalesDeliveryDetails);
-	
-	function saveOrUpdateSales(req, res){
-		
-		var salesDetails			= [];
-		var salesDetailsLength		= 0;
-		var salesDeleteDetailsIds	= [];
-		var salesDelDetailsLength	= 0;
-				
-		var sales = {
-				sale_id			: req.param('saleid'),
-				bill_no			: req.param('billno'),
-				bill_date		: req.param('billdate'),
-				store_id		: req.param('storeid'),
-				sale_type		: req.param('saletype'),
-				customer_id		: req.param('customerid'),
-				basic_total		: req.param('basictotal'),
-				total_tax		: req.param('totaltax'),
-				discount_prcnt	: req.param('discountprcnt'),
-				discount_value	: req.param('discountvalue'),
-				bill_value		: req.param('billvalue'),
-				total_qty		: req.param('totalqty'),
-				paid_amount		: req.param('paidamount'),
-				balance_amount	: req.param('balanceamount'),
-				cancel_remark	: req.param('cancelremark'),
-				action_remarks	: req.param('actionremarks'),
-				actioned_by		: req.param('actionedby'),
-				actioned_dt		: req.param('actioneddt'),
-				salesorder_id	: req.param('salesorderid'),
-				company_id		: req.param('companyid'),
-				status 			: req.param('status'),
-				last_updated_dt	: req.param('lastupdateddt'),
-				last_updated_by	: req.param('lastupdatedby')
-		}
-		
-		
-		if(req.param('salesdetails') != null)
-			salesDetailsLength = req.param('salesdetails').length;
-		
-		for(var i = 0; i < salesDetailsLength; i++){
-			var salesDetail = {
-					sale_dtlid			: req.param('salesdetails')[i].saledtlid,
-					sale_id				: req.param('saleid'),
-					product_id			: req.param('salesdetails')[i].productid,
-					sold_qty			: req.param('salesdetails')[i].soldqty,
-					uom_id				: req.param('salesdetails')[i].uomid,
-					return_qty			: req.param('salesdetails')[i].returnqty,
-					rate				: req.param('salesdetails')[i].rate,
-					basic_value			: req.param('salesdetails')[i].basicvalue,
-					discount_prcnt		: req.param('salesdetails')[i].discountprcnt,
-					tax_id				: req.param('salesdetails')[i].taxid,
-					tax_prnct			: req.param('salesdetails')[i].taxprnct,
-					tax_value			: req.param('salesdetails')[i].taxvalue,
-					sale_value			: req.param('salesdetails')[i].salevalue,
-					batch_no			: req.param('salesdetails')[i].batchno,
-					salesorder_dtl_id	: req.param('salesdetails')[i].salesorderdtlid,
-					discount_value		: req.param('salesdetails')[i].discountvalue
-			}
-			salesDetails.push(salesDetail);
-		}
-		
-		if(req.param('salesdeletedetails') != null)
-			salesDelDetailsLength = req.param('salesdeletedetails').length;
-		
-		for(var i = 0; i < salesDelDetailsLength; i++){
-			var salesDeleteDetailsId = {
-				salesorder_dtl_id	: req.param('salesdeletedetails')[i].salesorderdtlid,
-			}
-			salesDeleteDetailsIds.push(salesDeleteDetailsId);
-		}
-		
-		salesService.saveOrUpdateSalesFn(sales, salesDetails, salesDeleteDetailsIds, function(response){
-			res.send(response);
-		});
-	}
 	
 	function getSales(req, res){
 		
@@ -169,13 +96,6 @@ module.exports = function(app, server){
 			
 	}
 	
-//	function changeSalesStatus(req, res){
-//		
-//		salesService.changeSalesStatusFn(sale_id, sales, function(response){
-//			
-//		});
-//	}
-	
 	function getSalesDetails(req, res){
 		
 		var selectedAttributes 	= "";
@@ -183,7 +103,7 @@ module.exports = function(app, server){
 		var saleDtlId 			= req.param('sale_dtlid');
 		var saleId 				= req.param('sale_id');
 		var status				= req.param('status');
-		var batchNo			= req.param('batch_no')
+		var batchNo				= req.param('batch_no')
 		
 		if(req.param('isfulllist')=='p')
 			selectedAttributes=['salesorder_dtl_id','salesorder_id']
@@ -210,6 +130,99 @@ module.exports = function(app, server){
 			res.send(response);
 		});
 	}
+	
+	function saveOrUpdateSales(req, res){
+		
+		var salesDetails			= [];
+		var salesDetailsLength		= 0;
+		var salesDeleteDetailsIds	= [];
+		var salesDelDetailsLength	= 0;
+				
+		var sales = {
+				sale_id			: req.param('saleid'),
+				bill_no			: req.param('billno'),
+				bill_date		: req.param('billdate'),
+				store_id		: req.param('storeid'),
+				sale_type		: req.param('saletype'),
+				customer_id		: req.param('customerid'),
+				basic_total		: req.param('basictotal'),
+				total_tax		: req.param('totaltax'),
+				discount_prcnt	: req.param('discountprcnt'),
+				discount_value	: req.param('discountvalue'),
+				bill_value		: req.param('billvalue'),
+				total_qty		: req.param('totalqty'),
+				paid_amount		: req.param('paidamount'),
+				balance_amount	: req.param('balanceamount'),
+				cancel_remark	: req.param('cancelremark'),
+				action_remarks	: req.param('actionremarks'),
+				actioned_by		: req.param('actionedby'),
+				actioned_dt		: req.param('actioneddt'),
+				salesorder_id	: req.param('salesorderid'),
+				company_id		: req.param('companyid'),
+				status 			: req.param('status'),
+				last_updated_dt	: req.param('lastupdateddt'),
+				last_updated_by	: req.param('lastupdatedby')
+		}
+		
+		
+		if(req.param('salesdetails') != null){
+			log.info(req.param('salesdetails').length+' Sales detail is going to update/save');
+			req.param('salesdetails').forEach(function(sDetail){
+				var salesDetail = {
+						sale_dtlid			: req.param('salesdetails')[i].saledtlid,
+						sale_id				: req.param('saleid'),
+						product_id			: req.param('salesdetails')[i].productid,
+						sold_qty			: req.param('salesdetails')[i].soldqty,
+						uom_id				: req.param('salesdetails')[i].uomid,
+						return_qty			: req.param('salesdetails')[i].returnqty,
+						rate				: req.param('salesdetails')[i].rate,
+						basic_value			: req.param('salesdetails')[i].basicvalue,
+						discount_prcnt		: req.param('salesdetails')[i].discountprcnt,
+						tax_id				: req.param('salesdetails')[i].taxid,
+						tax_prnct			: req.param('salesdetails')[i].taxprnct,
+						tax_value			: req.param('salesdetails')[i].taxvalue,
+						sale_value			: req.param('salesdetails')[i].salevalue,
+						batch_no			: req.param('salesdetails')[i].batchno,
+						salesorder_dtl_id	: req.param('salesdetails')[i].salesorderdtlid,
+						discount_value		: req.param('salesdetails')[i].discountvalue
+				}
+				salesDetails.push(salesDetail);
+			});
+		}
+		
+		if(req.param('salesdeletedetails') != null){
+			log.info(req.param('salesdeletedetails').length+' Sales detail is going to remove.');
+			req.param('salesdeletedetails').forEach(function(sDelDetail){
+				var salesDeleteDetailsId = {
+						salesorder_dtl_id	: req.param('salesdeletedetails')[i].salesorderdtlid,
+					}
+					salesDeleteDetailsIds.push(salesDeleteDetailsId);
+			});
+		}
+		
+		if(sales.bill_no == null && (sales.status == CONSTANT.STATUSPENDING || sales.status == CONSTANT.STATUSBILLED)){
+			var slNoCondition = {
+					company_id 			: req.param('companyid'),
+					ref_key 			: CONSTANT.BILL_NO,
+					autogen_yn 			: 'Y',
+					status 				: 'Active'
+			}
+			slnogenService.getSlnoValu(slNoCondition, function(sl){
+				console.log(sl);
+				sales.bill_no	= sl.sno;
+				salesService.saveOrUpdateSales(sl.slid, sales, salesDetails, salesDeleteDetailsIds, function(response){
+					res.send(response);
+				});
+				
+			});
+		} else{
+			salesService.saveOrUpdateSalesFn(null, sales, salesDetails, salesDeleteDetailsIds, function(response){
+				res.send(response);
+			});
+		}
+	}
+	
+	
 	
 	function saveOrUpdateSalesDeliveryDetails(req, res){
 		var salesDeliveryDetail = {
