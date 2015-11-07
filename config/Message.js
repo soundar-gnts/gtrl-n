@@ -81,3 +81,15 @@ exports.WISHLISTSAVESUCCESS		= 'Wishlist added successfully.';
 exports.WISHLISTALREADYSAVESUCCESS		= 'Wishlist already added.';
 exports.WISHLISTEDITSUCCESS		= 'Wishlist editted successfully.';
 exports.WISHLISTREMOVESUCCESS	= 'Wishlist removed successfully.';
+
+exports.ACCOUNTRECEIVABLESAVESUCCESS = 'Account receivable saved successfully.';
+exports.ACCOUNTRECEIVABLEDITSUCCESS = 'Account receivable editted successfully.';
+
+exports.ACCOUNTSAVESUCCESS = 'Account saved successfully.';
+exports.ACCOUNTEDITSUCCESS = 'Account editted successfully.';
+
+exports.PRODUCTSERIALCODESAVESUCCESS = 'Product serial code saved successfully.';
+exports.PRODUCTSERIALCODEEDITSUCCESS = 'Product serial code editted successfully.';
+
+exports.SALESPAYMENTDETAILSAVESUCCESS = 'Sales payment detail saved successfully.';
+exports.SALESPAYMENTDETAILEDITSUCCESS = 'Sales payment detail editted successfully.';

@@ -194,8 +194,8 @@ module.exports = function(app, server) {
 				actioned_dt 				: req.param("actioneddt"),
 				last_updated_dt 			: req.param("lastupdateddt"),
 				last_updated_by 			: req.param("lastupdatedby"),
-				invoice_addr 			: req.param("invoiceaddr"),
-				shipping_addr 			: req.param("shippingaddr")
+				invoice_addr 				: req.param("invoiceaddr"),
+				shipping_addr 				: req.param("shippingaddr")
 	 						}
 	 	
 	 	var purchaseDetails = [];

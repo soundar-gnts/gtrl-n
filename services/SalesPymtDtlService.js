@@ -26,60 +26,23 @@ var path 			= require('path');
 var filename		= path.basename(__filename);
 
 // To get Sales Payment Details List based on user param
-exports.getSalesPymtDetails = function(req, res) {
-	var condition 			= "";
-	var salepymtid			= req.param("salepymtid");
-	var saleid				= req.param("saleid");
-	var billtype			= req.param("billtype");
-	var cardtypeid			= req.param("cardtypeid");
-	var voucherid			= req.param("voucherid");
-	if(salepymtid!=null){
-		condition ="sale_pymtid="+salepymtid;
-	}
-	if(saleid!=null){
-		if(condition === ""){
-			condition="sale_id='"+saleid+"'";
-		}else {
-			condition=condition+" and sale_id='"+saleid+"'";
-		}
-	}
-	if(billtype!=null){
-		if(condition === ""){
-			condition="bill_type='"+billtype+"'";
-		}else {
-			condition=condition+" and bill_type='"+billtype+"'";
-		}
-	}
-	if(cardtypeid!=null){
-		if(condition === ""){
-			condition="card_type_id='"+cardtypeid+"'";
-		}else {
-			condition=condition+" and card_type_id='"+cardtypeid+"'";
-		}
-	}
+exports.getSalesPymtDetails = function(condition, callback) {
 	
-	if(voucherid!=null){
-		if(condition === ""){
-			condition="voucher_id='"+voucherid+"'";
-		}else {
-			condition=condition+" and voucher_id='"+voucherid+"'";
-		}
-	}
-	
-	salespymtdtl.findAll({where : [condition]}).then(function(result) {
+	salespymtdtl.findAll({where : [condition]})
+	.then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>>getSalesPymtDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message 	= appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  	= false;
 			response.data	 	= "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(filename+'>>getSalesPymtDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 			log.info(filename+'>>getSalesPymtDetails>>');
@@ -87,7 +50,7 @@ exports.getSalesPymtDetails = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 }
 
@@ -95,43 +58,39 @@ exports.getSalesPymtDetails = function(req, res) {
 
 
 // To Save/Update Sales Payment Details
-exports.saveSalesPymtDetails = function(req, res) {
-	salespymtdtl.upsert({
-		sale_pymtid				: req.param("salepymtid"),
-		sale_id 				: req.param("saleid"),
-		bill_type 				: req.param("billtype"),
-		payment_mode 			: req.param("paymentmode"),
-		card_type_id 			: req.param("cardtypeid"),
-		card_no 				: req.param("cardno"),
-		approval_no 			: req.param("approvalno"),
-		voucher_id 				: req.param("voucherid"),
-		paid_amount 			: req.param("paidamount")
-		
-	}).then(function(data){
-		if(data){
-			log.info(filename+'>>saveSalesPymtDetails>>'+appmsg.SAVEMESSAGE);
-			response.message 	= appmsg.SAVEMESSAGE;
+exports.saveSalesPymtDetails = function(salesPymntDetails, callback) {
+	log.info(filename+'>>saveSalesPymtDetails>>');
+	if(	salespymtdtl.sale_pymtid != null){
+		salespymtdtl.upsert(salesPymntDetails)
+		.then(function(data){
+			log.info(appmsg.SALESPAYMENTDETAILEDITSUCCESS);
+			response.message 	= appmsg.SALESPAYMENTDETAILEDITSUCCESS;
 			response.status  	= true;
-			response.data		= req.param("salepymtid");
-			res.send(response);
-		}
-		else{
-			log.info(filename+'>>saveSalesPymtDetails>>'+appmsg.UPDATEMESSAGE);
-			response.message 	= appmsg.UPDATEMESSAGE;
-			response.status  	= true;
-			response.data		= req.param("salepymtid");
-			res.send(response);
-		}
-		
-	}).error(function(err){
-			log.info(filename+'>>saveSalesPymtDetails>>');
+			response.data		= salespymtdtl.sale_pymtid;
+			callback(response);
+		}).error(function(err){
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
-	});
-		
+			callback(response);
+		});
+	} else{
+		salespymtdtl.create(salesPymntDetails)
+		.then(function(data){
+			log.info(appmsg.SALESPAYMENTDETAILSAVESUCCESS);
+			response.message 	= appmsg.SALESPAYMENTDETAILSAVESUCCESS;
+			response.status  	= true;
+			response.data		= data.sale_pymtid;
+			callback(response);
+		}).error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	}
 }
 
 //To add New Record in Sales Payment Details
@@ -157,29 +116,27 @@ exports.addSalesPymtDetails = function(saleid,billtype,paymentmode,cardtypeid,ca
 
 
 //To Delete Sales Payment  Detail
-exports.deleteSalesPymtDetails = function(req, res) {
-	if(req.param("salepymtid")!=null){
-		salespymtdtl.destroy({where:{sale_pymtid	: req.param("salepymtid")}})
+exports.deleteSalesPymtDetails = function(condition, callback) {
+	log.info(filename+'>> deleteSalesPymtDetails >>');
+	
+	salespymtdtl.destroy({where:[condition]})
 		.then(function(data){
-			log.info(filename+'>> deleteSalesPymtDetails >>'+appmsg.DELETEMESSAGE);
-			response.message 	= appmsg.DELETEMESSAGE;
-			response.status  	= true;
-			response.data		= req.param("salepymtid");
-			res.send(response);
+			if(data >= '1'){
+				log.info(data+' Sales payment details removed.');
+				response.status  	= true;
+				callback(response);
+			} else{
+				log.info('No Sales payment details found.');
+				response.status  	= true;
+				callback(response);
+			}
 			
 		}).error(function(err){
-			log.info(filename+'>> deleteSalesPymtDetails >>');
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
-		}else{
-			log.info(filename+'>> deleteSalesPymtDetails >>');
-			response.status  	= false;
-			response.message 	= appmsg.INTERNALERRORMESSAGE;
-			response.data  		= req.param("salepymtid");
-			res.send(response);
-		}
+		
 }

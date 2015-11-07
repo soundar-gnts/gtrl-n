@@ -15,6 +15,15 @@
  * 
  */
 
+//SALES TYPES
+exports.SALES_TYPE_WHOLESALE			= 'Wholesale';
+exports.SALES_TYPE_CORPORATE			= 'Corporate';
+exports.SALES_TYPE_MOBILE				= 'Mobile';
+exports.SALES_TYPE_POS					= 'Pos';
+
+//SALES ORDER TYPES
+exports.SALESORDER_TYPE_MOBILE			= 'Mobile';
+exports.SALESORDER_TYPE_POS				= 'Pos';
 
 // STATUS TYPES
 exports.STATUSCART						= 'Incart';

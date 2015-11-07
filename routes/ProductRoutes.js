@@ -97,6 +97,13 @@ module.exports = function(app, server) {
 			selectedAttributes=['prod_id','prod_code','prod_name','uom_id','max_discount','sell_tax_id'];
 		}
 		
+//		if(req.param('fetchassociation')=='y'){
+//			fetchAssociation = [{
+//									model : poDetail, include : {model : product, attributes : ['prod_code', 'prod_name']}
+//								},
+//			                    {model : supplier, attributes : ['supplier_code','supplier_id']}]
+//		}
+		
 		productService.getProduct(condition, selectedAttributes, '', function(result){
 			res.send(result);
 		});
