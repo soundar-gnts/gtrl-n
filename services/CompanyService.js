@@ -14,11 +14,11 @@
  * 
  */
 
-var company = require('../models/Company.js');
+var company 	= require('../models/Company.js');
 var appMsg		= require('../config/Message.js');
-var log = require('../config/logger').logger;
-var path = require('path');
-var fileName=path.basename(__filename);
+var log 		= require('../config/logger').logger;
+var path 		= require('path');
+var fileName	= path.basename(__filename);
 var response 	= {
 						status	: Boolean,
 						message : String,
@@ -27,129 +27,62 @@ var response 	= {
 	
 
 // To Company full LIST
-exports.getcompanyDetails = function(req, res) {
-	var attr 			= "";
-	var conditionQuery 	= "";
-	var companyId		=req.param("companyid");
-	var conpanyName		=req.param("companyname");
-	var status			=req.param("status");
-	var emailId			=req.param("email_id");
-	var stateId			=req.param("stateid");
-	var cityId			=req.param("cityid");
+exports.getcompanyDetails = function(conditionQuery,attr,callback) {
 	
-	if(companyId!=null){
-		conditionQuery ="company_id="+companyId;
-		}
-	if(conpanyName!=null){
-		if(conditionQuery === ""){
-			conditionQuery ="company_name like '%"+conpanyName+"%'";
-		}else {
-			conditionQuery=conditionQuery+" and company_name like '%"+conpanyName+"%'";
-		}	
-		}
-	
-	if(status!=null){
-		if(conditionQuery === ""){
-			conditionQuery="status='"+status+"'";
-		}else {
-			conditionQuery=conditionQuery+" and status='"+status+"'";
-		}
-	}
-	if(emailId!=null){
-		if(conditionQuery === ""){
-			conditionQuery="email_id like '%"+emailId+"%'";
-		}else {
-			conditionQuery=conditionQuery+" and email_id like '%"+emailId+"%'";
-		}
-		
-	}
-	if(stateId!=null){
-		if(conditionQuery === ""){
-			conditionQuery ="state_id="+stateId;
-		}else {
-			conditionQuery=conditionQuery+" and state_id="+stateId;
-		}	
-		}
-	
-	if(cityId!=null){
-		if(conditionQuery === ""){
-			conditionQuery ="city_id="+cityId;
-		}else {
-			conditionQuery=conditionQuery+" and city_id="+cityId;
-		}	
-		}
-	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
-		attr=['company_id','email_id'];
-	}
 	company.findAll({where : [conditionQuery],attributes: attr,order: [['last_updated_dt', 'DESC']]})
 	.then(function(result){
 		if(result.length === 0){
 			
 			log.info(fileName+'.getcompanyDetails - No data found.');
-			response.message = appMsg.LISTNOTFOUNDMESSAGE;
-			response.status  = false;
-			response.data 	 = "";
-			res.send(response);
+			response.message 	= appMsg.LISTNOTFOUNDMESSAGE;
+			response.status  	= false;
+			response.data 	 	= "";
+			callback(response);
 		} else{
 			
 			log.info(fileName+'.getcompanyDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	})
 	.error(function(err){
-		log.error(fileName+'.getcompanyDetails - ');
-		log.error(err);
-		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
-		response.data  		= err;
-		res.send(response);
+			log.error(fileName+'.getcompanyDetails - ');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
 	});
 };
 
 //To Save Company List
 
-exports.saveCompanyDetails = function(req,res){
-	company.upsert({
-		company_id 			:req.param("companyid"),
-		company_name 		:req.param("companyname"), 
-		address 			:req.param("address"),
-		pincode 	        :req.param("pincode"),
-		landline_no			:req.param("landlineno"), 
-		mobile_no 			:req.param("mobileno"),
-		fax_no 	  			:req.param("faxno"),
-		email_id 			:req.param("emailid"), 
-		contact_person 		:req.param("contactperson"),
-		contact_no 	  		:req.param("contactno"),
-		remarks 			:req.param("remarks"), 
-		status 				:req.param("status"),
-		state_id 			:req.param("stateid"), 
-		city_id				:req.param("cityid"),
-		last_updated_dt		:req.param("updateddate"),
-		last_updated_by		:req.param("updatedby"),
-	}).then(function(err){
+exports.saveCompanyDetails = function(companyobj,callback){
+	company.upsert(companyobj).then(function(err){
 
 		if(err){
 			log.info(fileName+'.saveCompanyDetails - '+appMsg.SAVEMESSAGE);
-			response.message = appMsg.SAVEMESSAGE;
-			response.status  = true;
-			res.send(response);
+			response.message 	= appMsg.SAVEMESSAGE;
+			response.status  	= true;
+			response.data 	 	= "";
+			callback(response);
 		}
 		else{
 			log.info(fileName+'.saveCompanyDetails - '+appMsg.UPDATEMESSAGE);
-			response.message = appMsg.UPDATEMESSAGE;
-			response.status  = true;
-			res.send(response);
+			response.message 	= appMsg.UPDATEMESSAGE;
+			response.status  	= true;
+			response.data 	 	= "";
+			callback(response);
 		}
 		
 	}).error(function(err){
-		log.error(fileName+'.saveCompanyDetails - ');
-		log.error(err);
-		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
-		response.data  		= err;
-		res.send(response);
+			log.error(fileName+'.saveCompanyDetails - ');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
 	});
 }

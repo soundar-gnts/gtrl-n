@@ -14,53 +14,18 @@
  * 
  */
 
-var brand = require('../models/Brand.js');
+var brand 		= require('../models/Brand.js');
 var appMsg		= require('../config/Message.js');
-var log = require('../config/logger').logger;
-var path = require('path');
-var fileName=path.basename(__filename);
-var response 	= {
-						status	: Boolean,
+var log 		= require('../config/logger').logger;
+var path 		= require('path');
+var fileName	=path.basename(__filename);
+var response 	= {		status	: Boolean,
 						message : String,
 						data	: String
-					};
-// To Brand full LIST
-exports.getBrandDetails = function(req, res) {
-	var attr 				= "";
-	var conditionQuery 		= "";
-	var companyId			=req.param("companyid");
-	var brandName			=req.param("brandname");
-	var status				=req.param("status");
-	var brandId				=req.param("brandid");
-	if(brandId!=null){
-		conditionQuery ="brand_id="+brandid;
-		}
-	if(companyId!=null){
-		if(conditionQuery === ""){
-			conditionQuery ="company_id="+companyId;
-		}else {
-			conditionQuery=conditionQuery+" and company_id="+companyId;
-		}	
-		}
+				};
+// To Brand full based on user param
+exports.getBrandDetails = function(conditionQuery,attr,callback) {
 	
-	if(status!=null){
-		if(conditionQuery === ""){
-			conditionQuery="status='"+status+"'";
-		}else {
-			conditionQuery=conditionQuery+" and status='"+status+"'";
-		}
-	}
-	if(brandName!=null){
-		if(conditionQuery === ""){
-			conditionQuery="brand_name='"+brandName+"'";
-		}else {
-			conditionQuery=conditionQuery+" and brand_name like '%"+brandName+"%'";
-		}
-		
-	}
-	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
-		attr=['brand_id','company_id','brand_name'];
-	}
 	brand.findAll({where : [conditionQuery],attributes: attr,order: [['last_updated_dt', 'DESC']]})
 	.then(function(result){
 		if(result.length === 0){
@@ -69,56 +34,48 @@ exports.getBrandDetails = function(req, res) {
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data 	 = "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(fileName+'.getBrandDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	})
 	.error(function(err){
-		log.error(fileName+'.getBrandDetails - ');
-		log.error(err);
-		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
-		response.data  		= err;
-		res.send(response);
+			log.error(fileName+'.getBrandDetails - ');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
 	});
 };
 
 //To Save Brand List
-
-exports.saveBrandDetails = function(req,res){
-	brand.upsert({
-		brand_id   :req.param("brandid"),
-		brand_name :req.param("brandname"), 
-		company_id :req.param("companyid"),
-		status 	   :req.param("status"),
-		last_updated_dt:req.param("updateddate"),
-		last_updated_by:req.param("updatedby"),
-	}).then(function(err){
+exports.saveBrandDetails = function(brandobj,callback){
+	brand.upsert(brandobj).then(function(err){
 		if(err){
 			log.info(fileName+'.saveBrandDetails - '+appMsg.SAVEMESSAGE);
-			response.message = appMsg.SAVEMESSAGE;
-			response.status  = true;
-			res.send(response);
+			response.message 	= appMsg.SAVEMESSAGE;
+			response.status  	= true;
+			callback(response);
 		}
 		else{
 			log.info(fileName+'.saveBrandDetails - '+appMsg.UPDATEMESSAGE);
-			response.message = appMsg.UPDATEMESSAGE;
-			response.status  = true;
-			res.send(response);
+			response.message 	= appMsg.UPDATEMESSAGE;
+			response.status  	= true;
+			callback(response);
 		}
 		
 	}).error(function(err){
-		log.error(fileName+'.saveBrandDetails - ');
-		log.error(err);
-		response.status  	= false;
-		response.message 	= appMsg.INTERNALERRORMESSAGE;
-		response.data  		= err;
-		res.send(response);
+			log.error(fileName+'.saveBrandDetails - ');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
 	});
 }

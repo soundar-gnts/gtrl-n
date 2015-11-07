@@ -25,88 +25,39 @@ var response	= {
 					data	: String
 				  };
 
-//SaveOrUpdate Cardtype Details
-
-	exports.saveOrUpdateCardType = function(req, res){
+//SaveOrUpdate Card Type Details
+exports.saveOrUpdateCardType = function(cardtypeobj,callback){
 		
-		cardtype.upsert({
-			
-			card_type_id		: req.param('cardtypeid'),
-			company_id			: req.param('companyid'),
-			card_type			: req.param('cardtype'),
-			service_charge 		: req.param('servicecharge'),
-			status				: req.param('status'),
-			last_updated_dt		: new Date(),
-			last_updated_by		: req.param('lastupdatedby') 
-			
-			})
+		cardtype.upsert(cardtypeobj)
 			.then(function(data){
 				if(data){
 					log.info(fileName+'.saveOrUpdateCardType - '+appMsg.SAVEMESSAGE);
 					response.message = appMsg.SAVEMESSAGE;
 					response.status  = true;
-					res.send(response);
+					response.data	 = "";
+					callback(response);
 				}
 				else{
 					log.info(fileName+'.saveOrUpdateCardType - '+appMsg.UPDATEMESSAGE);
 					response.message = appMsg.UPDATEMESSAGE;
 					response.status  = true;
-					res.send(response);
+					response.data	 = "";
+					callback(response);
 				}
 				
 				
 			}).error(function(err){
-				log.info(fileName+'.saveOrUpdateCardType - '+appMsg.INTERNALERRORMESSAGE);
-				log.error(err);
-				response.status  	= false;
-				response.message 	= appMsg.INTERNALERRORMESSAGE;
-				response.data  		= err;
-				res.send(response);
+					log.info(fileName+'.saveOrUpdateCardType - '+appMsg.INTERNALERRORMESSAGE);
+					log.error(err);
+					response.status  	= false;
+					response.message 	= appMsg.INTERNALERRORMESSAGE;
+					response.data  		= err;
+					callback(response);
 			});
-	}; 
+}; 
 
-//Card Type LIST
-
-	exports.getCardTypeList = function(req, res) {
-		
-		var attr 			= "";
-		var condition 		= "";
-		var companyId 		= req.param("companyid");
-		var cardTypeId 		= req.param("cardtypeid");
-		var cardType		= req.param("cardtype");
-		var status			= req.param("status");
-		
-		if(companyId!=null){
-			condition ="company_id="+companyId;
-			}
-		
-		if(status!=null){
-			if(condition === ""){
-				condition="status='"+status+"'";
-			}else {
-				condition=condition+" and status='"+status+"'";
-			}
-		}
-		if(cardTypeId!=null){
-			if(condition === ""){
-				condition="card_type_id='"+cardTypeId+"'";
-			}else {
-				condition=condition+" and card_type_id = '"+cardTypeId+"'";
-			}
-			
-		}
-		if(cardType!=null){
-			if(condition === ""){
-				condition="card_type like '%"+cardType+"%'";
-			}else {
-				condition=condition+" and card_type like '%"+cardType+"%'";
-			}
-			
-		}
-		
-		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
-			attr=['card_type_id','card_type'];
-		}
+//Card Type LIST based on user param
+exports.getCardTypeList = function(condition,attr,callback) {
 		
 		cardtype.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
 		
@@ -117,23 +68,23 @@ var response	= {
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
 				response.data 	 = "";
-				res.send(response);
+				callback(response);
 			} else{
 				log.info(fileName+'.getCardTypeList - '+'About '+cardtypelist.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+cardtypelist.length+' results.';
 				response.data 		= cardtypelist;
-				res.send(response);
+				callback(response);
 			}
 			
 		})
 		.error(function(err){
-			log.info(fileName+'.getCardTypeList - '+appMsg.INTERNALERRORMESSAGE);
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
-			res.send(response);
+				log.info(fileName+'.getCardTypeList - '+appMsg.INTERNALERRORMESSAGE);
+				log.error(err);
+				response.status  	= false;
+				response.message 	= 'Internal error.';
+				response.data  		= err;
+				callback(response);
 		});
 	};
 
