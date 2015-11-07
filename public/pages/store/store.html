@@ -1,0 +1,426 @@
+<div class="panel panel-inverse">
+			    <div class="panel-heading">
+			        <div class="panel-heading-btn">
+			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+			        </div>
+			        <h4 class="panel-title">Store</h4>
+			    </div>
+			    <div class="panel-body">
+                                <div class="row">
+                                <div class="col-sm-3 pull-right">
+                                <a href="store#store#modal-addEdit-store" data-toggle="modal" class="btn btn-md btn-success  pull-right ">Add New</a>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12">
+			
+			
+                                        <div class="row">
+                                            <form>
+						<div class="col-xs-3">
+							<label> Store Code: </label> <input ng-change="InitLoad('S')" ng-model="search.storecode" class="form-control input-md" placeholder="Store Code" id="srchstrecodeid" name="srchstrecodevld" type="text">
+						</div>
+
+						<div class="col-xs-3">
+							<label> Store Name: </label> <input ng-change="InitLoad('S')" ng-model="search.storename" class="form-control input-md" placeholder="Store Name" id="srchstrnameid" name="srchstrnamevld" type="text">
+						</div>
+
+						<div class="col-xs-3">
+                                                    <label for="srch_country_status">Status:</label> <select ng-change="InitLoad('S')" ng-model="search.status" id="srchstatusid" name="srchstatusvld" class="form-control">
+								<option value="">Select</option>
+								<option value="Active">Active</option>
+								<option value="Inactive">Inactive</option>
+							</select>
+
+						</div>
+                                                <div class="col-md-3">
+
+							<button type="reset" class="btn btn-sm btn-danger pull-right" style="margin: 20px -5px 0px 0px;">Reset</button>
+                                                        <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin: 20px 5px 0px 0px;">Search</button>
+						</div>
+                                            </form>
+					</div>
+				
+				
+		</div>   
+			    <div class="col-md-12 clearfix"></div>
+			        <div class="table-responsive" style="clear:both;">
+                                <table class="table table-striped table-bordered">
+                                    
+                                    
+                                    	<thead>
+                                    	<tr>
+                                    	<td>ID</td>
+                                    	<td>Name</td>
+                                        <td>Code</td>
+                                        <td>Address</td>
+                                        <td>Mobile</td>
+                                    	<td>Status</td>
+                                    	<td>Last Up.Dt</td>
+                                        <td>Last Up.By</td>
+                                    	<td>Options</td>
+                                    	</tr>
+                                    	</thead>
+                                    	<tbody>
+                                    	<tr ng-repeat="storelist in StoreList | orderBy:'manufg_name' | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit  ">
+                                    	<td>{{storelist.store_id}}</td>
+                                    	<td>{{storelist.store_name}}</td>
+                                        <td>{{storelist.store_code}}</td>
+                                        <td>{{storelist.address}}</td>
+                                         <td>{{storelist.mobile_no}}</td>
+                                    	<td>{{storelist.status}}</td>
+                                    	<td>{{storelist.last_updated_dt | date:'dd-mm-yyyy H:mm' }}</td>
+                                        <td>{{storelist.last_updated_by}}</td>
+                                    	<td>
+                                    	<a href="store#modal-addEdit-store" data-toggle="modal" ng-click="EditStoreProcess(statelist)" class="btn btn-sm btn-info">Edit</a>
+                                    	</td>
+                                    	</tr>
+                                    	</tbody>
+                                    
+                                </table>
+                                
+<div class="pull-right">                                
+<pagination page="currentPage" max-size="noOfPages" total-items="totalItems" items-per-page="entryLimit"></pagination>
+         </div>
+                    </div>
+                </div>
+			   
+                    </div>
+			
+<!-- model box start -->
+	<div class="modal fade custom-model" id="modal-addEdit-store">
+            <div class="modal-dialog panel-model-width">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                   <a  data-dismiss="modal" aria-hidden="true" href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></a>
+                                    <h4 class="modal-title">Manufacturer Add/Update</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form novalidate="novalidate" role="form">
+										<!-- select -->
+
+                                    <div class="col-md-12">
+					<h4 class="form-title">Store Details</h4>
+					
+					
+<!-- 
+												<div class="form-group">
+													<label>Store Code</label> <input
+														class="form-control input-md" type="text"
+														placeholder="Store Code">
+												</div> -->
+                                         <div class="col-md-3">                                                           
+                                            <div class="form-group">
+                                            <label>Store Name</label> <input class="form-control input-md" placeholder="Store Name" id="strnameid" name="strnamevld" value="" type="text"> 
+                                            </div>
+                                         </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group">
+                                            <label>Address</label>
+                                            <textarea class="form-control input-md" type="text" id="straddrid" name="straddrvld"> </textarea>
+                                            </div>
+                                         </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group">
+                                                    <label>Pin Code</label> <input class="form-control input-md" placeholder="Pin Code" id="strpincodeid" name="strpincodevld" type="text">
+                                            </div>
+                                         </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group">
+                                            <label>State Name</label>
+                                            <select class="form-control input-md" id="strstateid" name="strstatevld">
+                                                    <option>Select </option>
+
+
+                                            </select>
+                                            </div>
+                                         </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group">
+                                            <label>City Name</label> 
+                                            <select class="form-control input-md" id="strcityid" name="strcityvld">
+                                            <option>Select </option>
+
+
+                                            </select>
+                                            </div>
+                                         </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group">
+                                            <label>Land Line Number</label> <input class="form-control input-md" placeholder="Land Line Number" id="strlandnoid" name="strlandvld" type="text">
+                                            </div>
+                                         </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group">
+                                            <label>Mobile Number</label> <input class="form-control input-md" placeholder="Mobile Number" id="strmobnoid" name="strmobnovld" type="text">
+                                            </div>
+                                         </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group">
+                                            <label>Email ID</label> <input class="form-control input-md" placeholder="Email ID" id="stremailid" name="stremailvld" type="text">
+                                            </div>
+                                         </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group">
+                                            <label>Contact Person</label> <input class="form-control input-md" placeholder="Contact Person" id="strcntprsnid" name="strcntprsnvld" type="text">
+                                            </div>
+                                         </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group">
+                                            <label>Contact Number</label> <input class="form-control input-md" placeholder="Contact Number" id="strcntnoid" name="strcntnovld" type="text">
+                                            </div>
+                                         </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group">
+                                            <label>Warehouse Name</label> 
+                                            <select class="form-control input-md" id="strwareid" name="strwarevld">
+                                            <option value="">Select </option>
+
+
+
+                                            </select>
+                                            </div>
+                                         </div>
+					
+                                            <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>IS Warehouse </label>
+                                                <div class="radio">
+                                                <label><input name="iswarehouseradio" value="Y" type="radio">YES</label>
+                                                </div>
+                                                <div class="radio">
+                                                <label><input name="iswarehouseradio" value="N" type="radio">NO</label>
+                                                </div>
+                                                </div>
+                                             </div>
+                                         <div class="col-md-3"> 
+                                            <div class="form-group ">
+                                            <label> Discount Percent </label> <input class="form-control input-md" placeholder="Discount Percent" id="strdiscntid" name="strdiscntvld" type="text">
+                                            </div>
+                                         </div>
+                                           <div class="col-md-3">   
+                                                <div class="form-group ">
+                                                <label>DL No</label> <input class="form-control input-md" placeholder="DL No" id="drivingliecnceid" name="drivingliecncevld" type="text">
+                                                </div>
+                                           </div>
+                                             <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>CST No</label> <input class="form-control input-md" placeholder="CST No" id="cstnoid" name="cstnovld" type="text">
+                                                </div>
+                                             </div>
+                                             <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>TIN No</label> <input class="form-control input-md" placeholder="TIN No" id="strtinnoid" name="strtinnovld" type="text">
+                                                </div>
+                                             </div>
+                                             <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Service Tax No</label> <input class="form-control input-md" placeholder="Service Tax No" id="strsrvctaxnoid" name="strsrvctaxnovld" type="text">
+                                                </div>
+                                             </div>
+                                             <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Door Delivery </label>
+                                                <div class="radio">
+                                                <label><input name="doordelivryradio" value="Y" type="radio">YES</label>
+
+                                                <label><input name="doordelivryradio" value="N" type="radio">NO</label>
+                                                </div>
+                                                </div>
+                                             </div>
+                                             <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Stock Check Frequently</label> <input class="form-control input-md" placeholder="Stock Check Frequently" id="stckchckfrqid" name="stckchckfrqvld" type="text">
+                                                </div>
+                                             </div>
+                                             <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Stock Check Daily</label> <input class="form-control input-md" placeholder="Buy Price" id="stckchckdailyid" name="stckchckdailyvld" type="text">
+                                                </div>
+                                             </div>
+                                             <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Region Name</label> 
+                                                <select class="form-control input-md" id="strregnid" name="strregnvld">
+                                                <option value="">Select Region</option>
+
+
+
+                                                </select>
+                                                </div>
+                                             </div>
+					
+
+					
+                                            <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Stock Check SMS</label> <input class="form-control input-md" placeholder="Stock Check SMS" id="stckchksmsid" name="stckchksmsvld" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Stock Check Email</label> <input class="form-control input-md" placeholder="Stock Check Email" id="stckchkemailid" name="stckchkemailvld" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Stock Transfer</label>
+                                                <div class="radio">
+                                                <label><input name="stcktransradio" value="Y" type="radio">YES</label>
+
+                                                <label><input name="stcktransradio" value="N" type="radio">NO</label>
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Stock Receiver</label>
+                                                <div class="radio">
+                                                <label><input name="stckrecivradio" value="Y" type="radio">YES</label>
+
+                                                <label><input name="stckrecivradio" value="N" type="radio">NO</label>
+                                                </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Stock Transfer Level </label> <select class="form-control input-md" id="stcktranslvlid" name="stcktranslvlvld">
+                                                <option value="">Select Transfer Level</option>
+                                                <option value="A">All</option>
+                                                <option value="Z">Zone</option>
+                                                <option value="R">Region</option>
+                                                <option value="S">Store</option>
+                                                </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3"> 
+                                                <div class="form-group">
+                                                <label>Stock Transfer Store </label>
+                                                <select class="form-control input-md" id="stcktranstrid" name="stcktranstrvld">
+                                                <option value="">Select Transfer Store</option>
+
+                                                <option value="6">LPN
+                                                </option>
+
+                                                <option value="5">JPA
+                                                </option>
+
+                                                <option value="4">qw
+                                                </option>
+
+                                                <option value="1">New Spectrum
+                                                </option>
+
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">							
+                                            <div class="form-group">
+						<label>Stock Transfer Region </label> <select class="form-control input-md" id="stcktransrgnid" name="stcktransrgnvld">
+						<option value="">Select Transfer Region</option>
+														
+						<option value="15">delhi
+						</option>
+														
+                                                <option value="14">CBE
+						</option>
+														
+                                                <option value="13">Coimbatore
+						</option>
+														
+						<option value="12">Erode
+						</option>
+														
+						<option value="11">regiomtest
+						</option>
+														
+						<option value="10">Erode
+						</option>
+														
+						<option value="9">asd
+						</option>
+														
+                                                <option value="8">Salem
+                                                </select>
+                                            </div>
+                                        </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Stock Receiver Level </label> 
+                                                    <select class="form-control input-md" id="stckrecvlvlid" name="stckrecvlvlvald">
+                                                    <option value="">Select Receiver Level</option>
+                                                    <option value="A">All</option>
+                                                    <option value="Z">Zone</option>
+                                                    <option value="R">Region</option>
+                                                    <option value="S">Store</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+						<div class="form-group">
+							<label>Stock Receiver Store</label> 
+                                                        <select class="form-control input-md" id="stckrecvstrid" name="stckrecvstrvld">
+							<option value="">Select</option>
+														
+							<option value="6">LPN
+							</option>
+														
+							<option value="5">JPA
+							</option>
+														
+							<option value="4">qw
+							</option>
+														
+							<option value="1">New Spectrum
+							</option>
+														
+							</select>
+						</div>
+                                            </div>
+                                             <div class="col-md-3">
+						<div class="form-group">
+                                                    <label>Stock Receiver Region</label>
+                                                    <select class="form-control input-md" id="stckrecvrgnid" name="stckrevrgnvld"> 
+                                                    <option value="">Select</option>
+
+
+                                                    </select>
+						</div>
+                                             </div>
+                                             <div class="col-md-3">
+						<div class="form-group">
+						<label>Status</label>
+                                                <select class="form-control input-md" id="stckstatusid" name="stckstatusvld">
+														
+						<option value="Active">Active</option>
+						<option value="Inactive">Inactive</option>
+						
+						</select>
+						</div>
+
+
+					</div>
+                                        
+					
+                                    </div>
+                                    <div class="modal-footer clearfix">
+					<button type="submit" class="btn btn-primary">
+
+					<i class="fa fa-save"></i> Save
+					</button>
+					<button type="button" class="btn btn-danger" onclick="clsestorefn();" data-dismiss="modal">
+					<i class="fa fa-times"></i> Close
+					</button>
+											
+                                    </div>
+                            </form>
+                            </div>
+
+                    </div>
+            </div>
+	</div>		
+	<!-- #modal-dialog -->				

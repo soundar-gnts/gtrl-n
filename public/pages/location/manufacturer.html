@@ -1,0 +1,252 @@
+<div class="panel panel-inverse">
+			    <div class="panel-heading">
+			        <div class="panel-heading-btn">
+			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+			        </div>
+			        <h4 class="panel-title">Manufacturer</h4>
+			    </div>
+			    <div class="panel-body">
+                                <div class="row">
+                                <div class="col-sm-3 pull-right">
+                                <a href="manufacturer#modal-addEdit-Manufacturer" data-toggle="modal" class="btn btn-md btn-success  pull-right ">Add New</a>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12">
+			
+			
+			<div class="row">
+                            <form ng-submit="SearchManufacturer()">
+                            <div class="col-xs-3">
+                                <label>Manufacturer Code</label> <input ng-change="InitLoad('S')" ng-model="search.manufactCode" class="form-control input-md" id="manufgsrhcode" placeholder="Manufacturer Code" type="text">
+                            </div>
+
+                            <div class="col-xs-3"> 
+                                <label>Manufacturer Name</label> <input ng-change="InitLoad('S')" ng-model="search.manufactName" class="form-control input-md" id="manufgsrhname" placeholder="Manufacturer Name" type="text">
+                            </div>
+                            <div class="col-xs-3">
+				<label for="srch_country_status">Status:</label>
+                                <select ng-change="InitLoad('S')" id="srhstatus" ng-model="search.manufactStatus" name="srch_country_status" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+				</select>
+
+			</div>
+						
+			<div class="col-md-3"></div>
+
+			<div class="col-md-3">
+                             <button type="reset" class="btn btn-sm btn-danger pull-right" style="margin: 20px -5px 0px 0px;">Reset</button>
+                              <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin: 20px 5px 0px 0px;">Search</button>
+			</div>
+                            </form>			
+                        </div>
+				
+				
+		</div>   
+			    <div class="col-md-12 clearfix"></div>
+			        <div class="table-responsive" style="clear:both;">
+                                <table class="table table-striped table-bordered">
+                                    
+                                    
+                                    	<thead>
+                                    	<tr>
+                                    	<td>ID</td>
+                                    	<td>Name</td>
+                                        <td>Code</td>
+                                        <td>Address</td>
+                                        <td>Mobile</td>
+                                    	<td>Status</td>
+                                    	<td>Last Up.Dt</td>
+                                        <td>Last Up.By</td>
+                                    	<td>Options</td>
+                                    	</tr>
+                                    	</thead>
+                                    	<tbody>
+                                    	<tr ng-repeat="manufacturer in ManufacturerList | orderBy:'manufg_name' | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit  ">
+                                    	<td>{{manufacturer.manufg_id}}</td>
+                                    	<td>{{manufacturer.manufg_name}}</td>
+                                        <td>{{manufacturer.manufg_code}}</td>
+                                        <td>{{manufacturer.address}}</td>
+                                         <td>{{manufacturer.mobile_no}}</td>
+                                    	<td>{{manufacturer.status}}</td>
+                                    	<td>{{manufacturer.last_updated_dt | date:'dd-mm-yyyy H:mm' }}</td>
+                                        <td>{{manufacturer.last_updated_by}}</td>
+                                    	<td>
+                                    	<a href="manufacturer#modal-addEdit-Manufacturer" data-toggle="modal" ng-click="EditManufacturProcess(manufacturer.manufg_id)" class="btn btn-sm btn-info">Edit</a>
+                                    	</td>
+                                    	</tr>
+                                    	</tbody>
+                                    
+                                </table>
+                                
+<div class="pull-right">                                
+<pagination page="currentPage" max-size="noOfPages" total-items="totalItems" items-per-page="entryLimit"></pagination>
+         </div>
+                    </div>
+                </div>
+			   
+			</div>
+<!-- model box start -->
+	<div class="modal fade custom-model" id="modal-addEdit-Manufacturer">
+            <div class="modal-dialog panel-model-width">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                   <a  data-dismiss="modal" aria-hidden="true" href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></a>
+                                    <h4 class="modal-title">Manufacturer Add/Update</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form ng-submit="UpdateorSaveManufacturer()"  id="manufacturerAddUpdate" >
+                                    <div class="col-md-12" style="margin-top: 15px;">
+				
+				<div class="col-md-3">
+				<div class="form-group ">
+						<label>Office Type</label> 
+							<label>Status</label> 
+                                                        <select class="form-control input-md" id="txtofficetype" ng-model="form.officetype" name="officeTypevalid" title="select OfficeType">
+							<option value="">Select</option>
+							<option value="HO">Head Office</option>
+							<option value="BO">Branch Office</option>
+							<option value="CF">CF</option>
+						</select>
+				<!-- 		<input class="form-control input-md"
+							type="text" placeholder="Office Type" name="officeTypevalid" id="txtofficetype" > -->
+					</div>
+                                </div>
+                                <div class="col-md-3">
+					<div class="form-group ">
+                                            <input ng-model="form.manufgid" id="txtmanufname" name="txtmanufnamevld" type="hidden">
+						<label>Manufacturer Name</label> <input ng-model="form.manufgname" class="form-control input-md" placeholder="Manufacturer Name" id="txtmanufname" name="txtmanufnamevld" type="text">
+					</div>
+                                </div>
+                                <div class="col-md-3">
+					<div class="form-group ">
+						<label>Manufacturer Code</label> <input ng-model="form.manufgcode" class="form-control input-md" placeholder="Manufacturer Name" id="txtmanufcode" name="txtmanufcode" type="text">
+					</div>
+                                </div>
+                                <div class="col-md-3">
+						<div class="form-group ">
+							<label>Parent</label>
+                                                        <select  on-change="" placeholder="" class="form-control"  options="AllActiveStateList" 
+                                                                 ng-model="form.parentid"  ng-options="manufacturer.manufg_id as manufacturer.manufg_name 
+                                                                 for manufacturer in AllActiveManufacturer">
+                                                            <option value="">--</option>
+
+                                                        </select>
+							 
+						</div>
+                                </div>
+                                <div class="col-md-3">
+						<div class="form-group ">
+							<label>Company</label>
+                                                         <select  on-change="" placeholder="" class="form-control"  options="AllActiveCompany" 
+                                                                 ng-model="form.companyid"  ng-options="company.company_id as company.company_name 
+                                                                 for company in AllActiveCompany">
+                                                            
+                                                        </select>
+							
+						</div>
+                                </div>
+                                <div class="col-md-3">
+						<div class="form-group ">
+							<label>State Name</label>
+                                                        <select  on-change="" placeholder="Select State" class="form-control"  options="AllActiveStateList" ng-model="form.stateid"  ng-options="states.state_id as states.state_name for states in AllActiveStateList">
+
+                                                        </select>
+							 
+						</div>
+                                </div>
+                                    <div class="col-md-3">
+                                            <div class="form-group ">
+							<label>City Name</label>
+                                                        <select id="cityname" name="addcitynamevld"  on-change="" placeholder="Select City" class="form-control" options="AllActiveCityList" 
+                                                 ng-model="form.cityid"  ng-options="city.city_id as city.city_name for city in AllActiveCityList">
+								
+                                                    </select>
+							 
+                                            </div>
+                                    </div>
+                                    <div class="col-md-3">
+					<div class="form-group ">
+						<label>Contact Number</label> <input ng-model="form.contactno" class="form-control input-md" placeholder="Contact Number" id="txtcontnum" name="txtcontnumvld" minlength="10" maxlength="10" type="text">
+					</div>
+                                    </div>
+                                    <div class="col-md-3">
+					<div class="form-group ">
+						<label>Landline Number</label> <input ng-model="form.landlineno" class="form-control input-md" placeholder="Landline Number" id="txtlandlineno" name="txtlandlinenovld" minlength="10" maxlength="10" type="text">
+					</div>
+                                    </div>
+
+				
+					
+                    
+                          <div class="col-md-3">
+                            <div class="form-group ">
+                                                   <label>Mobile Number</label> <input ng-model="form.mobileno" class="form-control input-md" placeholder="Mobile Number" id="txtmobnum" name="txtmobnumvld" minlength="10" maxlength="10" type="text"> 
+                           </div>
+                          </div>
+                          <div class="col-md-3">
+					<div class="form-group ">
+						<label>Fax Number</label> <input ng-model="form.faxno" class="form-control input-md" placeholder="Fax Number" id="txtfaxnum" name="txtfaxnumvld" maxlength="15" type="text">
+					</div>	
+                          </div>
+                          <div class="col-md-3">
+	                 <div class="form-group ">
+						<label>Pincode</label> <input ng-model="form.pincode" class="form-control input-md" placeholder="Pincode" id="txtpincode" name="txtpincodevld" maxlength="6" type="text">
+					</div>
+                          </div>
+                          <div class="col-md-3">
+					<div class="form-group ">
+						<label>Email Id</label> <input ng-model="form.emailid" class="form-control input-md" placeholder="Email ID" id="txtemailid" name="txtemailidvld" type="email">
+					</div>
+                          </div>
+                          <div class="col-md-3">
+					<div class="form-group ">
+						<label>Contact Person</label> <input ng-model="form.contactperson" class="form-control input-md" placeholder="Contact Person" id="txtcontactperson" type="text">
+					</div>			
+				
+                          </div>
+                          <div class="col-md-3">
+					<div class="form-group">
+						<label>Address</label>
+						<textarea ng-model="form.address" class="form-control input-md" id="address" name="addressvld"></textarea>
+					</div>
+                          </div>
+                          <div class="col-md-3">
+					<div class="form-group ">
+						<label>Remarks</label>
+						<textarea ng-model="form.remarks" class="form-control input-md" id="remarks" name="remarksvld"></textarea>
+					</div>
+                          </div>
+                          <div class="col-md-3">
+				
+
+					<div class="form-group ">
+				
+						<label>Status</label> 
+						<select ng-model="form.status" class="form-control input-md" id="status" name="manufstatusvld" title="ple select the status">
+							<option value="Active">Active</option>
+							<option value="Inactive">Inactive</option>
+							
+						</select>
+					</div>
+                          </div>
+			
+	</div>
+				
+<div class="modal-footer clearfix" id="sveclsebtn">
+    <button type="button" id="addclosebtn" onclick="closefn();" class="btn btn-danger pull-right" data-dismiss="modal"> <i class="fa fa-times"></i> Close</button>
+    <button type="submit" class="btn btn-primary pull-right" style="margin-right: 10px;"><i class="fa fa-save"></i> Save  </button>
+</div>
+			
+			</form> 
+                            </div>
+
+                    </div>
+            </div>
+	</div>		
+	<!-- #modal-dialog -->	
+        

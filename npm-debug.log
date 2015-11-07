@@ -1,0 +1,474 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'angular-data-table' ]
+2 info using npm@2.10.1
+3 info using node@v0.12.4
+4 verbose install initial load of C:\Sara\22.Projects\Kepler_HCMOne\gRetail\package.json
+5 verbose installManyTop reading scoped package data from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\body-parser\package.json
+6 verbose installManyTop reading scoped package data from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\crypto\package.json
+7 verbose installManyTop reading scoped package data from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\ejs\package.json
+8 verbose installManyTop reading scoped package data from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\express\package.json
+9 verbose installManyTop reading scoped package data from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\fs\package.json
+10 verbose installManyTop reading scoped package data from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\nodemailer\package.json
+11 verbose installManyTop reading scoped package data from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\path\package.json
+12 verbose installManyTop reading scoped package data from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\sequelize\package.json
+13 verbose installManyTop reading scoped package data from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\winston\package.json
+14 info package.json crypto@0.0.3 crypto is also the name of a node core module.
+15 info package.json crypto@0.0.3 No license field.
+16 info package.json fs@0.0.2 fs is also the name of a node core module.
+17 info package.json fs@0.0.2 No description
+18 info package.json fs@0.0.2 No repository field.
+19 info package.json fs@0.0.2 No README data
+20 info package.json express@3.2.6 No license field.
+21 info package.json nodemailer@0.7.1 No license field.
+22 info package.json path@0.12.7 path is also the name of a node core module.
+23 verbose readDependencies loading dependencies from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\package.json
+24 silly cache add args [ 'angular-data-table@*', null ]
+25 verbose cache add spec angular-data-table@*
+26 silly cache add parsed spec { raw: 'angular-data-table@*',
+26 silly cache add   scope: null,
+26 silly cache add   name: 'angular-data-table',
+26 silly cache add   rawSpec: '*',
+26 silly cache add   spec: '*',
+26 silly cache add   type: 'range' }
+27 silly addNamed angular-data-table@*
+28 verbose addNamed "*" is a valid semver range for angular-data-table
+29 silly addNameRange { name: 'angular-data-table', range: '*', hasData: false }
+30 silly mapToRegistry name angular-data-table
+31 silly mapToRegistry using default registry
+32 silly mapToRegistry registry https://registry.npmjs.org/
+33 silly mapToRegistry uri https://registry.npmjs.org/angular-data-table
+34 verbose addNameRange registry:https://registry.npmjs.org/angular-data-table not in flight; fetching
+35 verbose request uri https://registry.npmjs.org/angular-data-table
+36 verbose request no auth needed
+37 info attempt registry request try #1 at 1:18:18 PM
+38 verbose request id f530da712760473f
+39 verbose etag "CMBSMKAFBRS9DWM04NJ0NEWSF"
+40 http request GET https://registry.npmjs.org/angular-data-table
+41 http 304 https://registry.npmjs.org/angular-data-table
+42 silly get cb [ 304,
+42 silly get   { date: 'Fri, 30 Oct 2015 07:48:18 GMT',
+42 silly get     via: '1.1 varnish',
+42 silly get     'cache-control': 'max-age=60',
+42 silly get     etag: '"CMBSMKAFBRS9DWM04NJ0NEWSF"',
+42 silly get     age: '1',
+42 silly get     connection: 'keep-alive',
+42 silly get     'x-served-by': 'cache-nrt6130-NRT',
+42 silly get     'x-cache': 'MISS',
+42 silly get     'x-cache-hits': '0',
+42 silly get     'x-timer': 'S1446191298.750902,VS0,VE1158',
+42 silly get     vary: 'Accept' } ]
+43 verbose etag https://registry.npmjs.org/angular-data-table from cache
+44 verbose get saving angular-data-table to C:\Users\saravanakumar\AppData\Roaming\npm-cache\registry.npmjs.org\angular-data-table\.cache.json
+45 silly addNameRange number 2 { name: 'angular-data-table', range: '*', hasData: true }
+46 silly addNameRange versions [ 'angular-data-table',
+46 silly addNameRange   [ '0.0.1',
+46 silly addNameRange     '0.0.2',
+46 silly addNameRange     '0.0.3',
+46 silly addNameRange     '0.0.4',
+46 silly addNameRange     '0.0.5',
+46 silly addNameRange     '0.0.6',
+46 silly addNameRange     '0.0.8',
+46 silly addNameRange     '0.0.11',
+46 silly addNameRange     '0.0.12',
+46 silly addNameRange     '0.0.13',
+46 silly addNameRange     '0.0.14',
+46 silly addNameRange     '0.0.16',
+46 silly addNameRange     '0.0.17',
+46 silly addNameRange     '0.0.18',
+46 silly addNameRange     '0.0.19',
+46 silly addNameRange     '0.0.20',
+46 silly addNameRange     '0.0.21',
+46 silly addNameRange     '0.0.22',
+46 silly addNameRange     '0.0.23',
+46 silly addNameRange     '0.0.24',
+46 silly addNameRange     '0.0.25',
+46 silly addNameRange     '0.0.26',
+46 silly addNameRange     '0.0.27',
+46 silly addNameRange     '0.0.28',
+46 silly addNameRange     '0.0.29',
+46 silly addNameRange     '0.0.31',
+46 silly addNameRange     '0.0.35',
+46 silly addNameRange     '0.1.0',
+46 silly addNameRange     '0.1.3',
+46 silly addNameRange     '0.2.0',
+46 silly addNameRange     '0.3.0',
+46 silly addNameRange     '0.3.1',
+46 silly addNameRange     '0.3.2',
+46 silly addNameRange     '0.3.3',
+46 silly addNameRange     '0.3.4',
+46 silly addNameRange     '0.3.5',
+46 silly addNameRange     '0.3.6',
+46 silly addNameRange     '0.3.7',
+46 silly addNameRange     '0.3.8',
+46 silly addNameRange     '0.3.9',
+46 silly addNameRange     '0.3.11',
+46 silly addNameRange     '0.3.12',
+46 silly addNameRange     '0.3.14',
+46 silly addNameRange     '0.3.16',
+46 silly addNameRange     '0.3.17' ] ]
+47 silly addNamed angular-data-table@0.3.17
+48 verbose addNamed "0.3.17" is a plain semver version for angular-data-table
+49 silly cache afterAdd angular-data-table@0.3.17
+50 verbose afterAdd C:\Users\saravanakumar\AppData\Roaming\npm-cache\angular-data-table\0.3.17\package\package.json not in flight; writing
+51 verbose afterAdd C:\Users\saravanakumar\AppData\Roaming\npm-cache\angular-data-table\0.3.17\package\package.json written
+52 silly install resolved [ { name: 'angular-data-table',
+52 silly install resolved     title: 'AngularJS Data-Table',
+52 silly install resolved     description: 'A feature-rich but lightweight ES6 AngularJS Data Table crafted for large data sets!',
+52 silly install resolved     version: '0.3.17',
+52 silly install resolved     repository:
+52 silly install resolved      { type: 'git',
+52 silly install resolved        url: 'git+ssh://git@github.com/Swimlane/angular-data-table.git',
+52 silly install resolved        github: 'http://github.com/Swimlane/angular-data-table.git' },
+52 silly install resolved     main: './release/dataTable.js',
+52 silly install resolved     homepage: 'http://swimlane.com/',
+52 silly install resolved     author:
+52 silly install resolved      { name: 'Swimlane',
+52 silly install resolved        email: 'austin@swimlane.com',
+52 silly install resolved        url: 'http://swimlane.com/' },
+52 silly install resolved     licenses: [ [Object] ],
+52 silly install resolved     devDependencies:
+52 silly install resolved      { angular: '^1.4.4',
+52 silly install resolved        'angular-mocks': '^1.4.3',
+52 silly install resolved        'babel-core': '^5.8.22',
+52 silly install resolved        babelify: '^6.1.3',
+52 silly install resolved        'browser-sync': '^2.7.2',
+52 silly install resolved        'chai-as-promised': '^5.1.0',
+52 silly install resolved        del: '^1.2.0',
+52 silly install resolved        gulp: '^3.8.11',
+52 silly install resolved        'gulp-babel': '^5.1.0',
+52 silly install resolved        'gulp-changed': '^1.2.1',
+52 silly install resolved        'gulp-header': '^1.2.2',
+52 silly install resolved        'gulp-less': '^3.0.3',
+52 silly install resolved        'gulp-ng-annotate': '^1.0.0',
+52 silly install resolved        'gulp-plumber': '^1.0.1',
+52 silly install resolved        'gulp-rename': '^1.2.2',
+52 silly install resolved        'gulp-replace': '^0.5.3',
+52 silly install resolved        'gulp-uglify': '^1.2.0',
+52 silly install resolved        jspm: '^0.16.1',
+52 silly install resolved        karma: '^0.13.3',
+52 silly install resolved        'karma-angular': '0.0.6',
+52 silly install resolved        'karma-babel-preprocessor': '^5.2.1',
+52 silly install resolved        'karma-browserify': '^4.2.1',
+52 silly install resolved        'karma-chrome-launcher': '^0.2.0',
+52 silly install resolved        'karma-mocha': '^0.2.0',
+52 silly install resolved        'karma-mocha-reporter': '^1.0.3',
+52 silly install resolved        'karma-phantomjs-launcher': '^0.2.0',
+52 silly install resolved        'karma-phantomjs-shim': '^1.0.0',
+52 silly install resolved        'karma-sinon-chai': '^1.0.0',
+52 silly install resolved        mocha: '^2.2.1',
+52 silly install resolved        phantomjs: '^1.9.17',
+52 silly install resolved        rollup: '^0.7.8',
+52 silly install resolved        'run-sequence': '^1.1.0',
+52 silly install resolved        sinon: '^1.15.4',
+52 silly install resolved        'sinon-chai': '^2.7.0',
+52 silly install resolved        'systemjs-builder': '^0.11.3',
+52 silly install resolved        'vinyl-paths': '^1.0.0' },
+52 silly install resolved     dependencies: {},
+52 silly install resolved     jspm:
+52 silly install resolved      { directories: {},
+52 silly install resolved        dependencies: [Object],
+52 silly install resolved        devDependencies: [Object] },
+52 silly install resolved     scripts: { postinstall: 'jspm install' },
+52 silly install resolved     gitHead: '54c760c7ef8837113470031c6709dd5797841be8',
+52 silly install resolved     bugs: { url: 'https://github.com/Swimlane/angular-data-table/issues' },
+52 silly install resolved     _id: 'angular-data-table@0.3.17',
+52 silly install resolved     _shasum: '451a13a5f2d547baa3b5becb5bd83eff05b01620',
+52 silly install resolved     _from: 'angular-data-table@*',
+52 silly install resolved     _npmVersion: '2.11.3',
+52 silly install resolved     _nodeVersion: '0.12.7',
+52 silly install resolved     _npmUser: { name: 'amcdnl', email: 'amcdaniel2@gmail.com' },
+52 silly install resolved     dist:
+52 silly install resolved      { shasum: '451a13a5f2d547baa3b5becb5bd83eff05b01620',
+52 silly install resolved        tarball: 'http://registry.npmjs.org/angular-data-table/-/angular-data-table-0.3.17.tgz' },
+52 silly install resolved     maintainers: [ [Object] ],
+52 silly install resolved     directories: {},
+52 silly install resolved     _resolved: 'https://registry.npmjs.org/angular-data-table/-/angular-data-table-0.3.17.tgz',
+52 silly install resolved     readme: 'ERROR: No README data found!' } ]
+53 info install angular-data-table@0.3.17 into C:\Sara\22.Projects\Kepler_HCMOne\gRetail
+54 info installOne angular-data-table@0.3.17
+55 verbose installOne of angular-data-table to C:\Sara\22.Projects\Kepler_HCMOne\gRetail not in flight; installing
+56 verbose lock using C:\Users\saravanakumar\AppData\Roaming\npm-cache\_locks\angular-data-table-ad3c66aab204776b.lock for C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table
+57 silly install write writing angular-data-table 0.3.17 to C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table
+58 verbose unbuild node_modules\angular-data-table
+59 silly gentlyRm C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table is being purged from base C:\Sara\22.Projects\Kepler_HCMOne\gRetail
+60 verbose gentlyRm don't care about contents; nuking C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table
+61 verbose tar unpack C:\Users\saravanakumar\AppData\Roaming\npm-cache\angular-data-table\0.3.17\package.tgz
+62 verbose tar unpacking to C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table
+63 silly gentlyRm C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table is being purged
+64 verbose gentlyRm don't care about contents; nuking C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table
+65 silly gunzTarPerm modes [ '777', '666' ]
+66 silly gunzTarPerm extractEntry package.json
+67 silly gunzTarPerm modified mode [ 'package.json', 420, 438 ]
+68 silly gunzTarPerm extractEntry .npmignore
+69 silly gunzTarPerm modified mode [ '.npmignore', 420, 438 ]
+70 silly gunzTarPerm extractEntry README.md
+71 silly gunzTarPerm modified mode [ 'README.md', 420, 438 ]
+72 silly gunzTarPerm extractEntry config.js
+73 silly gunzTarPerm modified mode [ 'config.js', 420, 438 ]
+74 silly gunzTarPerm extractEntry gulpfile.js
+75 silly gunzTarPerm modified mode [ 'gulpfile.js', 420, 438 ]
+76 silly gunzTarPerm extractEntry karma.conf.js
+77 silly gunzTarPerm modified mode [ 'karma.conf.js', 420, 438 ]
+78 silly gunzTarPerm extractEntry demos/paging.html
+79 silly gunzTarPerm modified mode [ 'demos/paging.html', 420, 438 ]
+80 silly gunzTarPerm extractEntry demos/action-links.html
+81 silly gunzTarPerm modified mode [ 'demos/action-links.html', 420, 438 ]
+82 silly gunzTarPerm extractEntry demos/cell-templates.html
+83 silly gunzTarPerm modified mode [ 'demos/cell-templates.html', 420, 438 ]
+84 silly gunzTarPerm extractEntry demos/checkboxes.html
+85 silly gunzTarPerm modified mode [ 'demos/checkboxes.html', 420, 438 ]
+86 silly gunzTarPerm extractEntry demos/columnadd.html
+87 silly gunzTarPerm modified mode [ 'demos/columnadd.html', 420, 438 ]
+88 silly gunzTarPerm extractEntry demos/data/100.json
+89 silly gunzTarPerm modified mode [ 'demos/data/100.json', 420, 438 ]
+90 silly gunzTarPerm extractEntry demos/data/columns.json
+91 silly gunzTarPerm modified mode [ 'demos/data/columns.json', 420, 438 ]
+92 silly gunzTarPerm extractEntry demos/data/complex-100000.json
+93 silly gunzTarPerm modified mode [ 'demos/data/complex-100000.json', 420, 438 ]
+94 silly gunzTarPerm extractEntry demos/data/olympics.json
+95 silly gunzTarPerm modified mode [ 'demos/data/olympics.json', 420, 438 ]
+96 silly gunzTarPerm extractEntry demos/empty.html
+97 silly gunzTarPerm modified mode [ 'demos/empty.html', 420, 438 ]
+98 silly gunzTarPerm extractEntry demos/expressive.html
+99 silly gunzTarPerm modified mode [ 'demos/expressive.html', 420, 438 ]
+100 silly gunzTarPerm extractEntry demos/filters.html
+101 silly gunzTarPerm modified mode [ 'demos/filters.html', 420, 438 ]
+102 silly gunzTarPerm extractEntry demos/force.html
+103 silly gunzTarPerm modified mode [ 'demos/force.html', 420, 438 ]
+104 silly gunzTarPerm extractEntry demos/greed.html
+105 silly gunzTarPerm modified mode [ 'demos/greed.html', 420, 438 ]
+106 silly gunzTarPerm extractEntry demos/grouping.html
+107 silly gunzTarPerm modified mode [ 'demos/grouping.html', 420, 438 ]
+108 silly gunzTarPerm extractEntry demos/multi-select.html
+109 silly gunzTarPerm modified mode [ 'demos/multi-select.html', 420, 438 ]
+110 silly gunzTarPerm extractEntry demos/basic.html
+111 silly gunzTarPerm modified mode [ 'demos/basic.html', 420, 438 ]
+112 silly gunzTarPerm extractEntry demos/perf.html
+113 silly gunzTarPerm modified mode [ 'demos/perf.html', 420, 438 ]
+114 silly gunzTarPerm extractEntry demos/pins.html
+115 silly gunzTarPerm modified mode [ 'demos/pins.html', 420, 438 ]
+116 silly gunzTarPerm extractEntry demos/scroll.html
+117 silly gunzTarPerm modified mode [ 'demos/scroll.html', 420, 438 ]
+118 silly gunzTarPerm extractEntry demos/single-select.html
+119 silly gunzTarPerm modified mode [ 'demos/single-select.html', 420, 438 ]
+120 silly gunzTarPerm extractEntry demos/slow.html
+121 silly gunzTarPerm modified mode [ 'demos/slow.html', 420, 438 ]
+122 silly gunzTarPerm extractEntry demos/sort.html
+123 silly gunzTarPerm modified mode [ 'demos/sort.html', 420, 438 ]
+124 silly gunzTarPerm extractEntry demos/tabs.html
+125 silly gunzTarPerm modified mode [ 'demos/tabs.html', 420, 438 ]
+126 silly gunzTarPerm extractEntry demos/tall.html
+127 silly gunzTarPerm modified mode [ 'demos/tall.html', 420, 438 ]
+128 silly gunzTarPerm extractEntry demos/templates.html
+129 silly gunzTarPerm modified mode [ 'demos/templates.html', 420, 438 ]
+130 silly gunzTarPerm extractEntry demos/tooltip.html
+131 silly gunzTarPerm modified mode [ 'demos/tooltip.html', 420, 438 ]
+132 silly gunzTarPerm extractEntry demos/transclude.html
+133 silly gunzTarPerm modified mode [ 'demos/transclude.html', 420, 438 ]
+134 silly gunzTarPerm extractEntry demos/tree.html
+135 silly gunzTarPerm modified mode [ 'demos/tree.html', 420, 438 ]
+136 silly gunzTarPerm extractEntry demos/virtual.html
+137 silly gunzTarPerm modified mode [ 'demos/virtual.html', 420, 438 ]
+138 silly gunzTarPerm extractEntry bower.json
+139 silly gunzTarPerm modified mode [ 'bower.json', 420, 438 ]
+140 silly gunzTarPerm extractEntry .editorconfig
+141 silly gunzTarPerm modified mode [ '.editorconfig', 420, 438 ]
+142 silly gunzTarPerm extractEntry index.html
+143 silly gunzTarPerm modified mode [ 'index.html', 420, 438 ]
+144 silly gunzTarPerm extractEntry jsconfig.json
+145 silly gunzTarPerm modified mode [ 'jsconfig.json', 420, 438 ]
+146 silly gunzTarPerm extractEntry .travis.yml
+147 silly gunzTarPerm modified mode [ '.travis.yml', 420, 438 ]
+148 silly gunzTarPerm extractEntry release/dataTable.cjs.js
+149 silly gunzTarPerm modified mode [ 'release/dataTable.cjs.js', 420, 438 ]
+150 silly gunzTarPerm extractEntry release/dataTable.es6.js
+151 silly gunzTarPerm modified mode [ 'release/dataTable.es6.js', 420, 438 ]
+152 silly gunzTarPerm extractEntry release/dataTable.helpers.js
+153 silly gunzTarPerm modified mode [ 'release/dataTable.helpers.js', 420, 438 ]
+154 silly gunzTarPerm extractEntry release/dataTable.helpers.min.js
+155 silly gunzTarPerm modified mode [ 'release/dataTable.helpers.min.js', 420, 438 ]
+156 silly gunzTarPerm extractEntry release/dataTable.js
+157 silly gunzTarPerm modified mode [ 'release/dataTable.js', 420, 438 ]
+158 silly gunzTarPerm extractEntry release/dataTable.css
+159 silly gunzTarPerm modified mode [ 'release/dataTable.css', 420, 438 ]
+160 silly gunzTarPerm extractEntry release/material.css
+161 silly gunzTarPerm modified mode [ 'release/material.css', 420, 438 ]
+162 silly gunzTarPerm extractEntry .eslintrc
+163 silly gunzTarPerm modified mode [ '.eslintrc', 420, 438 ]
+164 silly gunzTarPerm extractEntry src/dataTable.js
+165 silly gunzTarPerm modified mode [ 'src/dataTable.js', 420, 438 ]
+166 silly gunzTarPerm extractEntry src/defaults.js
+167 silly gunzTarPerm modified mode [ 'src/defaults.js', 420, 438 ]
+168 silly gunzTarPerm extractEntry src/components/DataTableController.js
+169 silly gunzTarPerm modified mode [ 'src/components/DataTableController.js', 420, 438 ]
+170 silly gunzTarPerm extractEntry src/components/DataTableDirective.js
+171 silly gunzTarPerm modified mode [ 'src/components/DataTableDirective.js', 420, 438 ]
+172 silly gunzTarPerm extractEntry src/components/DataTableService.js
+173 silly gunzTarPerm modified mode [ 'src/components/DataTableService.js', 420, 438 ]
+174 silly gunzTarPerm extractEntry src/components/DataTableService.spec.js
+175 silly gunzTarPerm modified mode [ 'src/components/DataTableService.spec.js', 420, 438 ]
+176 silly gunzTarPerm extractEntry src/components/body/BodyController.js
+177 silly gunzTarPerm modified mode [ 'src/components/body/BodyController.js', 420, 438 ]
+178 silly gunzTarPerm extractEntry src/components/body/CellController.js
+179 silly gunzTarPerm modified mode [ 'src/components/body/CellController.js', 420, 438 ]
+180 silly gunzTarPerm extractEntry src/components/body/CellDirective.js
+181 silly gunzTarPerm modified mode [ 'src/components/body/CellDirective.js', 420, 438 ]
+182 silly gunzTarPerm extractEntry src/components/body/GroupRowController.js
+183 silly gunzTarPerm modified mode [ 'src/components/body/GroupRowController.js', 420, 438 ]
+184 silly gunzTarPerm extractEntry src/components/body/GroupRowDirective.js
+185 silly gunzTarPerm modified mode [ 'src/components/body/GroupRowDirective.js', 420, 438 ]
+186 silly gunzTarPerm extractEntry src/components/body/BodyDirective.js
+187 silly gunzTarPerm modified mode [ 'src/components/body/BodyDirective.js', 420, 438 ]
+188 silly gunzTarPerm extractEntry src/components/body/RowDirective.js
+189 silly gunzTarPerm modified mode [ 'src/components/body/RowDirective.js', 420, 438 ]
+190 silly gunzTarPerm extractEntry src/components/body/ScrollerDirective.js
+191 silly gunzTarPerm modified mode [ 'src/components/body/ScrollerDirective.js', 420, 438 ]
+192 silly gunzTarPerm extractEntry src/components/body/SelectionController.js
+193 silly gunzTarPerm modified mode [ 'src/components/body/SelectionController.js', 420, 438 ]
+194 silly gunzTarPerm extractEntry src/components/body/SelectionDirective.js
+195 silly gunzTarPerm modified mode [ 'src/components/body/SelectionDirective.js', 420, 438 ]
+196 silly gunzTarPerm extractEntry src/components/body/StyleTranslator.js
+197 silly gunzTarPerm modified mode [ 'src/components/body/StyleTranslator.js', 420, 438 ]
+198 silly gunzTarPerm extractEntry src/components/body/RowController.js
+199 silly gunzTarPerm modified mode [ 'src/components/body/RowController.js', 420, 438 ]
+200 silly gunzTarPerm extractEntry src/components/footer/FooterController.js
+201 silly gunzTarPerm modified mode [ 'src/components/footer/FooterController.js', 420, 438 ]
+202 silly gunzTarPerm extractEntry src/components/footer/FooterDirective.js
+203 silly gunzTarPerm modified mode [ 'src/components/footer/FooterDirective.js', 420, 438 ]
+204 silly gunzTarPerm extractEntry src/components/footer/PagerController.js
+205 silly gunzTarPerm modified mode [ 'src/components/footer/PagerController.js', 420, 438 ]
+206 silly gunzTarPerm extractEntry src/components/footer/PagerDirective.js
+207 silly gunzTarPerm modified mode [ 'src/components/footer/PagerDirective.js', 420, 438 ]
+208 silly gunzTarPerm extractEntry src/components/header/HeaderCellController.js
+209 silly gunzTarPerm modified mode [ 'src/components/header/HeaderCellController.js', 420, 438 ]
+210 silly gunzTarPerm extractEntry src/components/header/HeaderCellDirective.js
+211 silly gunzTarPerm modified mode [ 'src/components/header/HeaderCellDirective.js', 420, 438 ]
+212 silly gunzTarPerm extractEntry src/components/header/HeaderController.js
+213 silly gunzTarPerm modified mode [ 'src/components/header/HeaderController.js', 420, 438 ]
+214 silly gunzTarPerm extractEntry src/components/header/HeaderDirective.js
+215 silly gunzTarPerm modified mode [ 'src/components/header/HeaderDirective.js', 420, 438 ]
+216 silly gunzTarPerm extractEntry src/components/header/ResizableDirective.js
+217 silly gunzTarPerm modified mode [ 'src/components/header/ResizableDirective.js', 420, 438 ]
+218 silly gunzTarPerm extractEntry src/components/header/SortableDirective.js
+219 silly gunzTarPerm modified mode [ 'src/components/header/SortableDirective.js', 420, 438 ]
+220 silly gunzTarPerm extractEntry src/components/menu/MenuController.js
+221 silly gunzTarPerm modified mode [ 'src/components/menu/MenuController.js', 420, 438 ]
+222 silly gunzTarPerm extractEntry src/components/menu/MenuDirective.js
+223 silly gunzTarPerm modified mode [ 'src/components/menu/MenuDirective.js', 420, 438 ]
+224 silly gunzTarPerm extractEntry src/components/menu/menu.js
+225 silly gunzTarPerm modified mode [ 'src/components/menu/menu.js', 420, 438 ]
+226 silly gunzTarPerm extractEntry src/components/menu/context/ContextMenuController.js
+227 silly gunzTarPerm modified mode [ 'src/components/menu/context/ContextMenuController.js',
+227 silly gunzTarPerm   420,
+227 silly gunzTarPerm   438 ]
+228 silly gunzTarPerm extractEntry src/components/menu/context/ContextMenuDirective.js
+229 silly gunzTarPerm modified mode [ 'src/components/menu/context/ContextMenuDirective.js',
+229 silly gunzTarPerm   420,
+229 silly gunzTarPerm   438 ]
+230 silly gunzTarPerm extractEntry src/components/menu/context/contextMenu.js
+231 silly gunzTarPerm modified mode [ 'src/components/menu/context/contextMenu.js', 420, 438 ]
+232 silly gunzTarPerm extractEntry src/components/menu/dropdown/DropdownController.js
+233 silly gunzTarPerm modified mode [ 'src/components/menu/dropdown/DropdownController.js',
+233 silly gunzTarPerm   420,
+233 silly gunzTarPerm   438 ]
+234 silly gunzTarPerm extractEntry src/components/menu/dropdown/DropdownDirective.js
+235 silly gunzTarPerm modified mode [ 'src/components/menu/dropdown/DropdownDirective.js', 420, 438 ]
+236 silly gunzTarPerm extractEntry src/components/menu/dropdown/DropdownMenuDirective.js
+237 silly gunzTarPerm modified mode [ 'src/components/menu/dropdown/DropdownMenuDirective.js',
+237 silly gunzTarPerm   420,
+237 silly gunzTarPerm   438 ]
+238 silly gunzTarPerm extractEntry src/components/menu/dropdown/DropdownToggleDirective.js
+239 silly gunzTarPerm modified mode [ 'src/components/menu/dropdown/DropdownToggleDirective.js',
+239 silly gunzTarPerm   420,
+239 silly gunzTarPerm   438 ]
+240 silly gunzTarPerm extractEntry src/components/menu/dropdown/dropdown.js
+241 silly gunzTarPerm modified mode [ 'src/components/menu/dropdown/dropdown.js', 420, 438 ]
+242 silly gunzTarPerm extractEntry src/components/menu/menu.less
+243 silly gunzTarPerm modified mode [ 'src/components/menu/menu.less', 420, 438 ]
+244 silly gunzTarPerm extractEntry src/components/popover/PopoverDirective.js
+245 silly gunzTarPerm modified mode [ 'src/components/popover/PopoverDirective.js', 420, 438 ]
+246 silly gunzTarPerm extractEntry src/components/popover/PopoverRegistry.js
+247 silly gunzTarPerm modified mode [ 'src/components/popover/PopoverRegistry.js', 420, 438 ]
+248 silly gunzTarPerm extractEntry src/components/popover/PositionHelper.js
+249 silly gunzTarPerm modified mode [ 'src/components/popover/PositionHelper.js', 420, 438 ]
+250 silly gunzTarPerm extractEntry src/components/popover/popover.js
+251 silly gunzTarPerm modified mode [ 'src/components/popover/popover.js', 420, 438 ]
+252 silly gunzTarPerm extractEntry src/components/popover/popover.less
+253 silly gunzTarPerm modified mode [ 'src/components/popover/popover.less', 420, 438 ]
+254 silly gunzTarPerm extractEntry src/dataTable.less
+255 silly gunzTarPerm modified mode [ 'src/dataTable.less', 420, 438 ]
+256 silly gunzTarPerm extractEntry src/tests/frameworks.js
+257 silly gunzTarPerm modified mode [ 'src/tests/frameworks.js', 420, 438 ]
+258 silly gunzTarPerm extractEntry src/themes/material.less
+259 silly gunzTarPerm modified mode [ 'src/themes/material.less', 420, 438 ]
+260 silly gunzTarPerm extractEntry src/utils/keys.js
+261 silly gunzTarPerm modified mode [ 'src/utils/keys.js', 420, 438 ]
+262 silly gunzTarPerm extractEntry src/utils/math.js
+263 silly gunzTarPerm modified mode [ 'src/utils/math.js', 420, 438 ]
+264 silly gunzTarPerm extractEntry src/utils/polyfill.js
+265 silly gunzTarPerm modified mode [ 'src/utils/polyfill.js', 420, 438 ]
+266 silly gunzTarPerm extractEntry src/utils/throttle.js
+267 silly gunzTarPerm modified mode [ 'src/utils/throttle.js', 420, 438 ]
+268 silly gunzTarPerm extractEntry src/utils/translate.js
+269 silly gunzTarPerm modified mode [ 'src/utils/translate.js', 420, 438 ]
+270 silly gunzTarPerm extractEntry src/utils/utils.js
+271 silly gunzTarPerm modified mode [ 'src/utils/utils.js', 420, 438 ]
+272 silly gunzTarPerm extractEntry src/utils/utils.spec.js
+273 silly gunzTarPerm modified mode [ 'src/utils/utils.spec.js', 420, 438 ]
+274 silly gunzTarPerm extractEntry src/utils/vendorPrefixes.js
+275 silly gunzTarPerm modified mode [ 'src/utils/vendorPrefixes.js', 420, 438 ]
+276 verbose write writing to C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table\package.json
+277 info preinstall angular-data-table@0.3.17
+278 verbose readDependencies loading dependencies from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table\package.json
+279 verbose readDependencies loading dependencies from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table\package.json
+280 silly install resolved []
+281 verbose about to build C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table
+282 info build C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table
+283 info linkStuff angular-data-table@0.3.17
+284 silly linkStuff angular-data-table@0.3.17 has C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules as its parent node_modules
+285 verbose linkBins angular-data-table@0.3.17
+286 verbose linkMans angular-data-table@0.3.17
+287 verbose rebuildBundles angular-data-table@0.3.17
+288 info install angular-data-table@0.3.17
+289 info postinstall angular-data-table@0.3.17
+290 verbose unsafe-perm in lifecycle true
+291 info angular-data-table@0.3.17 Failed to exec postinstall script
+292 verbose unlock done using C:\Users\saravanakumar\AppData\Roaming\npm-cache\_locks\angular-data-table-ad3c66aab204776b.lock for C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table
+293 verbose stack Error: angular-data-table@0.3.17 postinstall: `jspm install`
+293 verbose stack Exit status 1
+293 verbose stack     at EventEmitter.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\lifecycle.js:213:16)
+293 verbose stack     at EventEmitter.emit (events.js:110:17)
+293 verbose stack     at ChildProcess.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\spawn.js:24:14)
+293 verbose stack     at ChildProcess.emit (events.js:110:17)
+293 verbose stack     at maybeClose (child_process.js:1015:16)
+293 verbose stack     at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+294 verbose pkgid angular-data-table@0.3.17
+295 verbose cwd C:\Sara\22.Projects\Kepler_HCMOne\gRetail
+296 error Windows_NT 6.3.9600
+297 error argv "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "angular-data-table"
+298 error node v0.12.4
+299 error npm  v2.10.1
+300 error code ELIFECYCLE
+301 error angular-data-table@0.3.17 postinstall: `jspm install`
+301 error Exit status 1
+302 error Failed at the angular-data-table@0.3.17 postinstall script 'jspm install'.
+302 error This is most likely a problem with the angular-data-table package,
+302 error not with npm itself.
+302 error Tell the author that this fails on your system:
+302 error     jspm install
+302 error You can get their info via:
+302 error     npm owner ls angular-data-table
+302 error There is likely additional logging output above.
+303 verbose exit [ 1, true ]
+304 verbose unbuild node_modules\angular-data-table
+305 info preuninstall angular-data-table@0.3.17
+306 info uninstall angular-data-table@0.3.17
+307 verbose unbuild rmStuff angular-data-table@0.3.17 from C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules
+308 info postuninstall angular-data-table@0.3.17
+309 silly gentlyRm C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table is being purged from base C:\Sara\22.Projects\Kepler_HCMOne\gRetail
+310 verbose gentlyRm don't care about contents; nuking C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table
+311 silly vacuum-fs purging C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules\angular-data-table
+312 silly vacuum-fs quitting because other entries in C:\Sara\22.Projects\Kepler_HCMOne\gRetail\node_modules
