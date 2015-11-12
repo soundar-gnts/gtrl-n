@@ -13,23 +13,22 @@
  * 
  * 
  */
-var customer = require('../models/Customer.js');
-var log = require('../config/logger').logger;
-
-var APPMSG			= require('../config/Message.js');
+var customer 	= require('../models/Customer.js');
+var log 		= require('../config/logger').logger;
+var response 	= {
+					status	: Boolean,
+					message : String,
+					data	: String
+					};
+var appmsg		= require('../config/Message.js');
 
 // To get Customer List based on user param
-exports.getCustomerDetails = function(condition, selectedAttributes, callback) {
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String
-	}
+exports.getCustomerDetails = function(condition,attr,callback) {
 	
-	customer.findAll({where : [condition],attributes: selectedAttributes}).then(function(result) {
+	customer.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
-			log.info(APPMSG.LISTNOTFOUNDMESSAGE);
-			response.message = APPMSG.LISTNOTFOUNDMESSAGE;
+			log.info(appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			callback(response);
@@ -42,11 +41,11 @@ exports.getCustomerDetails = function(condition, selectedAttributes, callback) {
 			callback(response);
 		}
 	}).error(function(err){
-		log.error(err);
-		response.status  	= false;
-		response.message 	= 'Internal error.';
-		response.data  		= err;
-		callback(response);
+			log.error(err);
+			response.status  	= false;
+			response.message 	= 'Internal error.';
+			response.data  		= err;
+			callback(response);
 	});
 }
 
@@ -54,39 +53,29 @@ exports.getCustomerDetails = function(condition, selectedAttributes, callback) {
 
 
 // To Save Save/Update Customer Details
-exports.saveCustomer = function(customr, callback) {
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String
-	};
-	if(customr.cust_id != null){
-		customer.upsert(customr).then(function(data){
-			log.info(APPMSG.CUSTOMEREDITSUCCESS);
-			response.message = APPMSG.CUSTOMEREDITSUCCESS;
+exports.saveCustomer = function(customerobj,callback) {
+	customer.upsert(customerobj).then(function(data){
+		if(data){
+			log.info('Saved Successfully.');
+			response.message = 'Saved Successfully.';
 			response.status  = true;
-			response.data  = customr.cust_id;
 			callback(response);
-		}).error(function(err){
+		}
+		else{
+			log.info('Updated Successfully.');
+			response.message = 'Updated Successfully.';
+			response.status  = true;
+			callback(response);
+		}
+		
+	}).error(function(err){
 			log.error(err);
 			response.status  	= false;
 			response.message 	= 'Internal error.';
 			response.data  		= err;
 			callback(response);
-		});
-	} else{
-		customer.create(customr).then(function(data){
-			log.info(APPMSG.CUSTOMERSAVESUCCESS);
-			response.message = APPMSG.CUSTOMERSAVESUCCESS;
-			response.status  = true;
-			response.data  = data.cust_id;
-			callback(response);
-		}).error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= 'Internal error.';
-			response.data  		= err;
-			callback(response);
-		});
-	}
+	});
+		
 }
+
+

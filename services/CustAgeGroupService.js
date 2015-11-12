@@ -15,22 +15,23 @@
  */
 var custagegroup 		= require('../models/CustAgeGroup.js');
 var log 				= require('../config/logger').logger;
-var APPMSG				= require('../config/Message.js');
+var response 			= {
+							status	: Boolean,
+							message : String,
+							data	: String
+						};
+var appmsg				= require('../config/Message.js');
+
 var path 				= require('path');
 var filename			= path.basename(__filename);
 
 // To get Customer Age Group based on user param
-exports.getCustAgeGroupDetails = function(condition, callback) {
-	var response 			= {
-			status	: Boolean,
-			message : String,
-			data	: String
-		}
+exports.getCustAgeGroupDetails = function(condition,callback) {
 	
 	custagegroup.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			log.info(filename+'>>getCustAgeGroupDetails>>'+APPMSG.LISTNOTFOUNDMESSAGE);
-			response.message = APPMSG.LISTNOTFOUNDMESSAGE;
+			log.info(filename+'>>getCustAgeGroupDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
+			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			callback(response);
@@ -46,7 +47,7 @@ exports.getCustAgeGroupDetails = function(condition, callback) {
 			log.info(filename+'>>getCustAgeGroupDetails>>');
 			log.error(err);
 			response.status  	= false;
-			response.message 	= APPMSG.INTERNALERRORMESSAGE;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
 			callback(response);
 	});
@@ -54,40 +55,32 @@ exports.getCustAgeGroupDetails = function(condition, callback) {
 
 
 // To Save Save/Update Customer Age Group Details
-exports.saveCustAgeGroup = function(custAgeGrp, callback) {
-	log.info(filename+'>>saveCustAgeGroup>>');
-	var response 			= {
-			status	: Boolean,
-			message : String,
-			data	: String
+exports.saveCustAgeGroup = function(agegroupobj,callback) {
+	custagegroup.upsert(agegroupobj).then(function(data){
+		if(data){
+			log.info(filename+'>>saveCustAgeGroup>>'+appmsg.SAVEMESSAGE);
+			response.message = appmsg.SAVEMESSAGE;
+			response.status  = true;
+			response.data	 = "";
+			callback(response);
 		}
-	if(custAgeGrp.age_group_id != null){
-		custagegroup.upsert(custAgeGrp).then(function(data){
-			log.info(APPMSG.CUSTOMERAGEGROUPEDITSUCCESS);
-			response.message = APPMSG.CUSTOMERAGEGROUPEDITSUCCESS;
+		else{
+			log.info(filename+'>>saveCustAgeGroup>>'+appmsg.UPDATEMESSAGE);
+			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
-			response.data	 = custAgeGrp.age_group_id;
-		}).error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= APPMSG.INTERNALERRORMESSAGE;
-				response.data  		= err;
-				callback(response);
-		});
-	} else{
-		custagegroup.create(custAgeGrp).then(function(data){
-			log.info(APPMSG.CUSTOMERAGEGROUPSAVESUCCESS);
-			response.message = APPMSG.CUSTOMERAGEGROUPSAVESUCCESS;
-			response.status  = true;
-			response.data	 = data.age_group_id;
-		}).error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= APPMSG.INTERNALERRORMESSAGE;
-				response.data  		= err;
-				callback(response);
-		});
-	}
+			response.data	 = "";
+			callback(response);
+		}
+		
+	}).error(function(err){
+			log.info(filename+'>>saveCustAgeGroup>>');
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+	});
+		
 }
 
 

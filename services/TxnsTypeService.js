@@ -13,68 +13,35 @@
  * 
  * 
  */
-var txnstype = require('../models/TxnsType.js');
-var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
-var appmsg			= require('../config/Message.js');
+var txnstype 	= require('../models/TxnsType.js');
+var log 		= require('../config/logger').logger;
+var response 	= {
+					status	: Boolean,
+					message : String,
+					data	: String
+					};
+var appmsg		= require('../config/Message.js');
 
-var path = require('path');
-var filename=path.basename(__filename);
+var path 		= require('path');
+var filename	= path.basename(__filename);
 
 // To get full Transaction Type List
-exports.getTxnsTypeDetails = function(req, res) {
-	var attr 			= "";
-	var condition 		= "";
-	var transtypeid		=req.param("transtypeid");
-	var companyid		=req.param("companyid");
-	var transtypename	=req.param("transtypename");
-	var status			=req.param("status");
-	if(transtypeid!=null){
-		condition ="trans_type_id="+transtypeid;
-	}
-	if(companyid!=null){
-		if(condition === ""){
-			condition="company_id='"+companyid+"'";
-		}else {
-			condition=condition+" and company_id='"+companyid+"'";
-		}
-	}
-	if(transtypename!=null){
-		if(condition === ""){
-			condition="trans_type_name like '%"+transtypename+"%'";
-		}else {
-			condition=condition+" and trans_type_name like '%"+transtypename+"%'";
-		}
-	}
-	if(status!=null){
-		if(condition === ""){
-			condition="status='"+status+"'";
-		}else {
-			condition=condition+" and status='"+status+"'";
-		}
-	}
-	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
-		attr=['trans_type_id','trans_type_name','cr_dr'];
-	}
-	
+exports.getTxnsTypeDetails = function(condition,attr,callback) {
+		
 	txnstype.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>>getTxnsTypeDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(filename+'>>getTxnsTypeDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 			log.info(filename+'>>getTxnsTypeDetails>>');
@@ -82,7 +49,7 @@ exports.getTxnsTypeDetails = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 }
 
@@ -90,29 +57,21 @@ exports.getTxnsTypeDetails = function(req, res) {
 
 
 // To Save Transaction Type
-exports.saveTxnsType = function(req, res) {
-	txnstype.upsert({
-		trans_type_id		: req.param("transtypeid"),
-		company_id 			: req.param("companyid"),
-		trans_type_name		: req.param("transtypename"),
-		cr_dr				: req.param("crdr"),
-		status				: req.param("status"),
-		last_updated_dt 	: req.param("lastupdateddt"),
-		last_updated_by 	: req.param("lastupdatedby")
-	}).then(function(data){
+exports.saveTxnsType = function(txnstypeobj,callback) {
+	txnstype.upsert(txnstypeobj).then(function(data){
 		if(data){
 			log.info(filename+'>>saveTxnsType>>'+appmsg.SAVEMESSAGE);
 			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		}
 		else{
 			log.info(filename+'>>saveTxnsType>>'+appmsg.UPDATEMESSAGE);
 			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		}
 		
 	}).error(function(err){
@@ -121,7 +80,7 @@ exports.saveTxnsType = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 		
 }

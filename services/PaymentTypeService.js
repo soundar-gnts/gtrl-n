@@ -15,39 +15,34 @@
  * 
  */
 
-var path = require('path');
-var fileName=path.basename(__filename);
-var log = require('../config/logger').logger;
-var appMsg			= require('../config/Message.js');
+var path 		= require('path');
+var fileName	= path.basename(__filename);
+var log 		= require('../config/logger').logger;
+var appMsg		= require('../config/Message.js');
 var paymentType = require('../models/PaymentType.js');
 
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-}
+var response 	= {
+					status	: Boolean,
+					message : String,
+					data	: String
+				 }
 
 //insert or update Payment type
-exports.saveOrUpdatePymentType = function(req, res){
+exports.saveOrUpdatePymentType = function(paytypeobj,callback){
 	log.info(fileName+'.saveOrUpdatePymentType');
-	paymentType.upsert({
-		pymt_type_id	: req.param('pymttypeid'),
-		company_id		: req.param('companyid'),
-	    pymt_type_name	: req.param('pymttypename'),
-	    status			: req.param('status'),
-		last_updated_dt	: req.param("lastupdateddt"),
-		last_updated_by	: req.param('lastupdatedby')
-	}).then(function(data){
+	paymentType.upsert(paytypeobj).then(function(data){
 		if(data){
 			log.info(appMsg.PAYMENTTYPESAVESUCCESS);
-			response.message = appMsg.PAYMENTTYPESAVESUCCESS;
-			response.status  = true;
-			res.send(response);
+			response.message 	= appMsg.PAYMENTTYPESAVESUCCESS;
+			response.status  	= true;
+			response.data  		= "";
+			callback(response);
 		} else{
 			log.info(appMsg.PAYMENTTYPEEDITSUCCESS);
-			response.message = appMsg.PAYMENTTYPEEDITSUCCESS;
-			response.status  = true;
-			res.send(response);
+			response.message 	= appMsg.PAYMENTTYPEEDITSUCCESS;
+			response.status  	= true;
+			response.data  		= "";
+			callback(response);
 		}
 		
 	}).error(function(err){
@@ -55,50 +50,14 @@ exports.saveOrUpdatePymentType = function(req, res){
 		response.status  	= false;
 		response.message 	= appMsg.INTERNALERRORMESSAGE;
 		response.data  		= err;
-		res.send(response);
+		callback(response);
 	});
 }
 
 
 //get all Payment type
-exports.getPymentType = function(req, res){
+exports.getPymentType = function(condition,selectedAttributes,callback){
 	log.info(fileName+'.getPymentType');
-	
-	
-	var condition 			= "";
-	var paymentTypeId 		= req.param('pymttypeid');
-	var companyId 			= req.param('companyid');
-	var status				= req.param('status');
-	var paymentName 		= req.param('pymttypename');
-	var selectedAttributes	= "";
-	
-	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
-		selectedAttributes = ['pymt_type_id','pymt_type_name']
-	}
-	
-	if(companyId != "")
-		condition = "company_id="+companyId;
-	
-	if(paymentTypeId!=null)
-		if(condition === "")
-			condition = "pymt_type_id='"+paymentTypeId+"'";
-	
-		else
-			condition = condition+" and pymt_type_id='"+paymentTypeId+"'";
-	
-	if(status!=null)
-		if(condition === "")
-			condition = "status='"+status+"'";
-	
-		else
-			condition = condition+" and status='"+status+"'";
-	
-	if(paymentName!=null)
-		if(condition === "")
-			condition = "pymt_type_name='"+paymentName+"'";
-	
-		else
-			condition = condition+" and pymt_type_name='"+paymentName+"'";
 	
 	paymentType.findAll({
 		where		: [condition],
@@ -108,15 +67,16 @@ exports.getPymentType = function(req, res){
 		.then(function(type){
 			if(type.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);
-				response.message = appMsg.LISTNOTFOUNDMESSAGE;
-				response.status  = false;
-				res.send(response);
+				response.message 	= appMsg.LISTNOTFOUNDMESSAGE;
+				response.status 	= false;
+				response.data  		= "";
+				callback(response);
 			} else{
 				log.info('About '+type.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+type.length+' results.';
-				response.data 		= type;
-				res.send(response);
+				response.data 		= "";
+				callback(response);
 			}
 		})
 		.error(function(err){
@@ -124,6 +84,6 @@ exports.getPymentType = function(req, res){
 			response.status  	= false;
 			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
 }
