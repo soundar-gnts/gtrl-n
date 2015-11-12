@@ -80,6 +80,14 @@ exports.SALESDELIVERYDETAILSEDITSUCCESS = 'Sale delivery details editted success
 exports.WISHLISTSAVESUCCESS		= 'Wishlist added successfully.';
 exports.WISHLISTALREADYSAVESUCCESS		= 'Wishlist already added.';
 exports.WISHLISTEDITSUCCESS		= 'Wishlist editted successfully.';
+<<<<<<< .mine
+exports.WISHLISTREMOVESUCCESS	= 'Wishlist removed successfully.';
+
+exports.PURCHASERETURNSAVESUCCESS = 'Purchase Return saved successfully.';
+exports.PURCHASERETURNEDITSUCCESS = 'Purchase Return editted successfully.';
+
+exports.PURCHASERETURNDETAILSAVESUCCESS = 'Purchase Return details saved successfully.';
+exports.PURCHASERETURNDETAILEDITSUCCESS = 'Purchase Return details editted successfully.';=======
 exports.WISHLISTREMOVESUCCESS	= 'Wishlist removed successfully.';
 
 exports.ACCOUNTRECEIVABLESAVESUCCESS = 'Account receivable saved successfully.';
@@ -92,4 +100,4 @@ exports.PRODUCTSERIALCODESAVESUCCESS = 'Product serial code saved successfully.'
 exports.PRODUCTSERIALCODEEDITSUCCESS = 'Product serial code editted successfully.';
 
 exports.SALESPAYMENTDETAILSAVESUCCESS = 'Sales payment detail saved successfully.';
-exports.SALESPAYMENTDETAILEDITSUCCESS = 'Sales payment detail editted successfully.';
+exports.SALESPAYMENTDETAILEDITSUCCESS = 'Sales payment detail editted successfully.';>>>>>>> .r110

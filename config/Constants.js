@@ -62,3 +62,4 @@ exports.TRANSFER_SERIAL_NO					= 'TRNS_SLCD';
 exports.STORE_SERIAL_NO						= 'ST_SLNO';
 exports.SALES_ORDER_NO						= 'SO-NO';
 exports.PUR_BILL_NO							= 'BILL_NO';
+exports.PURCHAS_RETURN_NO					= 'PO_RETNO';
