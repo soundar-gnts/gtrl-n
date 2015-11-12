@@ -15,110 +15,79 @@
  */
 var custagegroup 		= require('../models/CustAgeGroup.js');
 var log 				= require('../config/logger').logger;
-var response 			= {
-							status	: Boolean,
-							message : String,
-							data	: String
-						};
-var appmsg				= require('../config/Message.js');
-
+var APPMSG				= require('../config/Message.js');
 var path 				= require('path');
 var filename			= path.basename(__filename);
 
 // To get Customer Age Group based on user param
-exports.getCustAgeGroupDetails = function(req, res) {
-	var condition 		= "";
-	var agegroupid		=req.param("agegroupid");
-	var companyid		=req.param("companyid");
-	var agegroupname	=req.param("agegroupname");
-	var status			=req.param("status");
-	if(agegroupid!=null){
-		condition ="age_group_id="+agegroupid;
-	}
-	if(companyid!=null){
-		if(condition === ""){
-			condition="company_id='"+companyid+"'";
-		}else {
-			condition=condition+" and company_id='"+companyid+"'";
+exports.getCustAgeGroupDetails = function(condition, callback) {
+	var response 			= {
+			status	: Boolean,
+			message : String,
+			data	: String
 		}
-	}
-	if(agegroupname!=null){
-		if(condition === ""){
-			condition="age_group_name like '%"+agegroupname+"%'";
-		}else {
-			condition=condition+" and age_group_name like '%"+agegroupname+"%'";
-		}
-	}
-	if(status!=null){
-		if(condition === ""){
-			condition="status='"+status+"'";
-		}else {
-			condition=condition+" and status='"+status+"'";
-		}
-	}
 	
 	custagegroup.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
-			log.info(filename+'>>getCustAgeGroupDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
-			response.message = appmsg.LISTNOTFOUNDMESSAGE;
+			log.info(filename+'>>getCustAgeGroupDetails>>'+APPMSG.LISTNOTFOUNDMESSAGE);
+			response.message = APPMSG.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(filename+'>>getCustAgeGroupDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 			log.info(filename+'>>getCustAgeGroupDetails>>');
 			log.error(err);
 			response.status  	= false;
-			response.message 	= appmsg.INTERNALERRORMESSAGE;
+			response.message 	= APPMSG.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 }
 
 
 // To Save Save/Update Customer Age Group Details
-exports.saveCustAgeGroup = function(req, res) {
-	custagegroup.upsert({
-		age_group_id				: req.param("agegroupid"),
-		company_id 					: req.param("companyid"),
-		age_group_name 				: req.param("agegroupname"),
-		discount_yn 				: req.param("discountyn"),
-		status 						: req.param("status"),
-		last_updated_dt 			: req.param("lastupdateddt"),
-		last_updated_by 			: req.param("lastupdatedby")
-		
-	}).then(function(data){
-		if(data){
-			log.info(filename+'>>saveCustAgeGroup>>'+appmsg.SAVEMESSAGE);
-			response.message = appmsg.SAVEMESSAGE;
-			response.status  = true;
-			response.data	 = "";
-			res.send(response);
+exports.saveCustAgeGroup = function(custAgeGrp, callback) {
+	log.info(filename+'>>saveCustAgeGroup>>');
+	var response 			= {
+			status	: Boolean,
+			message : String,
+			data	: String
 		}
-		else{
-			log.info(filename+'>>saveCustAgeGroup>>'+appmsg.UPDATEMESSAGE);
-			response.message = appmsg.UPDATEMESSAGE;
+	if(custAgeGrp.age_group_id != null){
+		custagegroup.upsert(custAgeGrp).then(function(data){
+			log.info(APPMSG.CUSTOMERAGEGROUPEDITSUCCESS);
+			response.message = APPMSG.CUSTOMERAGEGROUPEDITSUCCESS;
 			response.status  = true;
-			response.data	 = "";
-			res.send(response);
-		}
-		
-	}).error(function(err){
-			log.info(filename+'>>saveCustAgeGroup>>');
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appmsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			res.send(response);
-	});
-		
+			response.data	 = custAgeGrp.age_group_id;
+		}).error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= APPMSG.INTERNALERRORMESSAGE;
+				response.data  		= err;
+				callback(response);
+		});
+	} else{
+		custagegroup.create(custAgeGrp).then(function(data){
+			log.info(APPMSG.CUSTOMERAGEGROUPSAVESUCCESS);
+			response.message = APPMSG.CUSTOMERAGEGROUPSAVESUCCESS;
+			response.status  = true;
+			response.data	 = data.age_group_id;
+		}).error(function(err){
+				log.error(err);
+				response.status  	= false;
+				response.message 	= APPMSG.INTERNALERRORMESSAGE;
+				response.data  		= err;
+				callback(response);
+		});
+	}
 }
 
 

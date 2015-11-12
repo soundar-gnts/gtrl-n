@@ -15,11 +15,7 @@
  */
 var wishorderlist = require('../models/WishorderList.js');
 var log = require('../config/logger').logger;
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-};
+
 var appmsg			= require('../config/Message.js');
 var sequelize		= require('../config/sequelize.js');
 
@@ -27,59 +23,27 @@ var path 			= require('path');
 var filename		= path.basename(__filename);
 
 // To get Wishorder List based on user param
-exports.getWishorderList = function(req, res) {
-	var condition 		= "";
-	var wishid			=req.param("wishid");
-	var companyid		=req.param("companyid");
-	var productid		=req.param("productid");
-	var customerid		=req.param("customerid");
-	var status			=req.param("status");
-	if(wishid!=null){
-		condition ="wish_id="+wishid;
-	}
-	if(companyid!=null){
-		if(condition === ""){
-			condition="company_id='"+companyid+"'";
-		}else {
-			condition=condition+" and company_id='"+companyid+"'";
-		}
-	}
-	if(productid!=null){
-		if(condition === ""){
-			condition="product_id='"+productid+"'";
-		}else {
-			condition=condition+" and product_id='"+productid+"'";
-		}
-	}
-	if(customerid!=null){
-		if(condition === ""){
-			condition="customer_id='"+customerid+"'";
-		}else {
-			condition=condition+" and customer_id='"+customerid+"'";
-		}
-	}
-	if(status!=null){
-		if(condition === ""){
-			condition="status='"+status+"'";
-		}else {
-			condition=condition+" and status='"+status+"'";
-		}
+var getWishorderList = function(condition, callback) {
+	var response = {
+		status	: Boolean,
+		message : String,
+		data	: String
 	}
 	
 	wishorderlist.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>>getWishorderList>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message 	= appmsg.LISTNOTFOUNDMESSAGE;
-			response.status  	= false;
+			response.status  	= true;
 			response.data	 	= "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(filename+'>>getWishorderList>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 			log.info(filename+'>>getWishorderList>>');
@@ -87,85 +51,136 @@ exports.getWishorderList = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 }
 
-//To  Save/Update Wishorder List Details
-exports.saveWishorderList = function(req, res){	
+var saveWishorderList = function(wishlist, callback){
 	var response = {
-					 status	: Boolean,
-					 message : String,
-					 data	: String
-					};	
-	var wishlist = {
-					wish_id					: req.param("wishid"),
-					company_id 				: req.param("companyid"),
-					customer_id 			: req.param("customerid"),
-					product_id 				: req.param("productid"),
-					status 					: req.param("status"),
-					rating 					: req.param("rating")
-				   };							
-	
-	if(req.param('wishid')!=null){
-	
+			 status	: Boolean,
+			 message : String,
+			 data	: String
+		}
+	if(wishlist.wish_id != null){
 		wishorderlist.upsert(wishlist)
 		.then(function(data){						
 			log.info(filename+'>>saveWishorderList>>'+appmsg.WISHLISTREMOVESUCCESS);
 			response.message = appmsg.WISHLISTREMOVESUCCESS;
 			response.status  = true;
-			res.send(response);			
+			response.data  		= wishlist.wish_id;
+			callback(response);			
 		})
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
-	} else{	
-		
-		wishorderlist.findOne({where : {customer_id : wishlist.customer_id, product_id : wishlist.product_id, company_id : wishlist.company_id, status : 'Active'}})
-		.then(function(d){
-			if(d){
-				log.info(filename+'>>saveWishorderList>>'+appmsg.WISHLISTALREADYSAVESUCCESS);
-				response.message = appmsg.WISHLISTALREADYSAVESUCCESS;
-				response.status  = false;
-				response.wishid  = d.wish_id;
-				res.send(response);
-			} else{
-				wishorderlist.create(wishlist)
-		    	.then(function(data){
-				log.info(filename+'>>saveWishorderList>>'+appmsg.WISHLISTSAVESUCCESS);
-				response.message = appmsg.WISHLISTSAVESUCCESS;
-				response.status  = true;
-				response.wishid  = data.wish_id;
-				res.send(response);
-			})
-			.error(function(err){
-				log.error(err);
-				response.status  	= false;
-				response.message 	= appmsg.INTERNALERRORMESSAGE;
-				response.data  		= err;
-				res.send(response);
-			});	
-			}
-			
+	} else{
+		wishorderlist.create(wishlist)
+		.then(function(data){						
+			log.info(filename+'>>saveWishorderList>>'+appmsg.WISHLISTREMOVESUCCESS);
+			response.message = appmsg.WISHLISTREMOVESUCCESS;
+			response.status  = true;
+			response.data  		= data.wish_id;
+			callback(response);			
 		})
 		.error(function(err){
 			log.error(err);
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
-		
-		
 	}
 }
 
+var deleteWishOrderList = function(condition, callback){
+	log.info(fileName+'.deleteWishOrderList');
+	var response = {
+			status	: Boolean,
+			message : String,
+			data	: String
+	}
+	wishorderlist.destroy({where : [condition]})
+	.then(function(data){
+		
+		if(data >= '1'){
+			log.info(data+' Wishlist removed.');
+			response.status  	= true;
+			response.message 	= data+' Wishlist removed.';
+			callback(response);
+		} else{
+			log.info('No Wishlist found.');
+			response.status  	= false;
+			response.message 	= 'No Wishlist found.';
+			callback(response);
+		}
+		
+	})
+	.error(function(err){
+		log.error(err);
+		response.status  	= false;
+		response.message 	= APPMSG.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		callback(response);
+	});
+}
+//To  Save/Update Wishorder List Details
+
+var wishListAddOrRemove = function(wishlist, callback){
+	log.info(filename+'>>wishListAddOrRemove>>');
+	var response = {
+			 status	: Boolean,
+			 message : String,
+			 data	: String
+		}
+	console.log(wishlist)
+	var condition="company_id = '"+wishlist.company_id+"'and product_id = '"+wishlist.product_id+"' and customer_id = '"+wishlist.customer_id+"' and status='Active'";
+	getWishorderList(condition, function(result){
+		if(result.status){
+			
+			if(result.data[0]){
+				result.data[0].status = 'Inactive';
+				console.log(result.data);
+				saveWishorderList(result.data[0].dataValues, function(data){
+					if(data.status){
+						log.info(appmsg.WISHLISTREMOVESUCCESS);
+						response.message = appmsg.WISHLISTREMOVESUCCESS;
+						response.status  = true;
+						callback(response);	
+					} else{
+						callback(data);
+					}
+				});
+			} else{
+				saveWishorderList(wishlist, function(data){
+					if(data.status){
+						log.info(appmsg.WISHLISTSAVESUCCESS);
+						response.message = appmsg.WISHLISTSAVESUCCESS;
+						response.status  = true;
+						response.wishid  = data.data;
+						callback(response);
+					} else{
+						callback(data);
+					}
+				});
+			}
+		} else{
+			callback(result);
+		}
+	});
+}
+
+
 //For Show wishlist products
-exports.getWishList = function(req, res) {
+var getWishList = function(req, res) {
+	var response = {
+			 status	: Boolean,
+			 message : String,
+			 data	: String
+		}
 	var status = null;
 	if(req.param("status")!=null){
 		status = req.param("status");
@@ -211,4 +226,10 @@ exports.getWishList = function(req, res) {
 			res.send(response);
 	}
 };
-
+module.exports = {
+		getWishorderList : getWishorderList,
+		saveWishorderList : saveWishorderList,
+		deleteWishOrderList : deleteWishOrderList,
+		wishListAddOrRemove : wishListAddOrRemove,
+		getWishList : getWishList
+}

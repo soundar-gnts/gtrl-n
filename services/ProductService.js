@@ -18,6 +18,7 @@ var product 			= require('../models/Product.js');
 var productspec 		= require('../models/ProductSpec.js');
 var productimage 		= require('../models/ProductImage.js');
 var productbrand 		= require('../models/ProdBrand.js');
+
 var log 				= require('../config/logger').logger;
 var appMsg				= require('../config/Message.js');
 var response 			= {

@@ -16,6 +16,7 @@
  */
 var productService = require('../services/ProductService.js');
 var productSerialCodesService = require('../services/ProductSerialCodesService.js');
+var tax					= require('../models/Tax.js');
 
 module.exports = function(app, server) {
 	app.post('/saveproduct', productService.saveProduct);
@@ -42,7 +43,7 @@ module.exports = function(app, server) {
 		
 		
 		if(companyid!=null){
-			condition ="company_id="+companyid;
+			condition ="m_product.company_id="+companyid;
 		}
 		if(prodid!=null){
 			if(condition === ""){
@@ -88,23 +89,21 @@ module.exports = function(app, server) {
 		}
 		if(status!=null){
 			if(condition === ""){
-				condition="status='"+status+"'";
+				condition="m_product.status='"+status+"'";
 			}else {
-				condition=condition+" and status='"+status+"'";
+				condition=condition+" and m_product.status='"+status+"'";
 			}
 		}
 		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
 			selectedAttributes=['prod_id','prod_code','prod_name','uom_id','max_discount','sell_tax_id'];
 		}
 		
-//		if(req.param('fetchassociation')=='y'){
-//			fetchAssociation = [{
-//									model : poDetail, include : {model : product, attributes : ['prod_code', 'prod_name']}
-//								},
-//			                    {model : supplier, attributes : ['supplier_code','supplier_id']}]
-//		}
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [
+			                    {model : tax, attributes : ['cst','lst','surcharge','tax_on_mrp','service_tax','mrp_inclusive']}]
+		}
 		
-		productService.getProduct(condition, selectedAttributes, '', function(result){
+		productService.getProduct(condition, selectedAttributes, fetchAssociation, function(result){
 			res.send(result);
 		});
 	}

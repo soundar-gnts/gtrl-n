@@ -27,6 +27,7 @@ var stockLedgerService 			= require('../services/StockLedgerService.js');
 var messageService 				= require('../services/MessagesService.js');
 var pushNotfctnService			= require('../services/PushNotificationService.js');
 var accountReceivableService 	= require('../services/AccountReceivableService.js');
+var accountService 				= require('../services/AccountsService.js');
 
 
 // get sales header function.
@@ -370,19 +371,87 @@ var saveOrUpdateSales = function(slid, sales, salesDetails, salesDeleteDetailsId
 			 * 		2. insert/update account receivable table.
 			 */
 			if(sales.status == CONSTANT.STATUSAPPROVED && (sales.sale_type == CONSTANT.SALES_TYPE_WHOLESALE || sales.sale_type == CONSTANT.SALES_TYPE_CORPORATE || sales.sale_type == CONSTANT.SALES_TYPE_MOBILE)){
-//				accountReceivableService.insertAccountReceivable(
-//						sales.supplier_id,
-//						sales.company_id,
-//						sales.store_id,
-//						new Date(),
-//						null,
-//						sales.invoice_no,
-//						sales.invoice_date,
-//						sales.invoice_amount,
-//						sales.invoice_amount,
-//						'Purchase Deleted - Ref No :'+purchasehdrdtl.invoice_no,
-//						sales.last_updated_dt,
-//						sales.last_updated_by);
+//				var accountReceivable = {
+//						accrcble_id				: req.param("accrcbleid"),
+//						company_id 				: req.param("companyid"),
+//						store_id 				: req.param("storeid"),
+//						entry_date 				: req.param("entrydate"),
+//						account_id 				: req.param("accountid"),
+//						invoice_no 				: req.param("invoiceno"),
+//						invoice_date 			: req.param("invoicedate"),	
+//						invoice_amount 			: req.param("invoiceamount"),
+//						paid_amount 			: req.param("paidamount"),
+//						balance_amount 			: req.param("balanceamount"),
+//						remarks 				: req.param("remarks"),
+//						prepared_by 			: req.param("preparedby"),
+//						actioned_by 			: req.param("actionedby"),
+//						status 					: req.param("status"),
+//						last_updated_dt 		: req.param("lastupdateddt"),
+//						last_updated_by 		: req.param("lastupdatedby")
+//				}
+//				var condition = "company_id='"+companyid+"' and client_id = '"+clientid+"'";
+//				accountService.getAccountsDetails(condition, '', function(result){
+//					if(result.status){
+//						// check account table for an account of sales related customer.
+//						if(result.data.length != 0){
+//							log.info('Account Already Exist.');
+//							accountReceivable.account_id = result.data[0].account_id;
+//							accountReceivableService.saveOrUpdateAccountReceivable(accountReceivable, function(data){
+//								if(data.status){
+//									log.info(appmsg.ACCOUNTRECEIVABLESAVESUCCESS);
+//								} else{
+//									log.info(data.data);
+//								}
+//							});
+//						} else{
+//							log.info('A new Account need to create.')
+//							var account = {
+//									//account_id					: req.param("accountid"),
+//									company_id 					: req.param("companyid"),
+//									//store_id 					: req.param("storeid"),
+//									account_group 				: req.param("accountgroup"),
+//									account_name 				: req.param("accountname"),
+//									account_dt 					: req.param("accountdt"),
+//									finance_year 				: req.param("financeyear"),
+//									generate_voucher_yn 		: req.param("generatevoucheryn"),
+//									//employee_id 				: req.param("employeeid"),
+//									bank_id 					: req.param("bankid"),
+//									bank_branch_id 				: req.param("bankbranchid"),
+//									//supplier_id 				: req.param("supplierid"),
+//									client_id 					: req.param("clientid"),
+//									acct_type_id 				: req.param("accttypeid"),
+//									od_amoun 					: req.param("odamount"),
+//									open_balance 				: req.param("openbalance"),
+//									parked_amount 				: req.param("parkedamount"),
+//									current_balance 			: req.param("currentbalance"),
+//									aproveauth 					: req.param("aproveauth"),
+//									parent_account_id 			: req.param("parentaccountid"),
+//									selfapprv_yn 				: req.param("selfapprvyn"),
+//									remarks 					: req.param("remarks"),
+//									status 						: req.param("status"),
+//									last_updated_dt 			: req.param("lastupdateddt"),
+//									last_updated_by 			: req.param("lastupdatedby")
+//							}
+//							accountService.saveAccounts(account, function(data){
+//								if(data.status){
+//									log.info(appmsg.ACCOUNTSAVESUCCESS);
+//									accountReceivable.account_id = data.data;
+//									accountReceivableService.saveOrUpdateAccountReceivable(accountReceivable, function(data){
+//										if(data.status){
+//											log.info(appmsg.ACCOUNTRECEIVABLESAVESUCCESS);
+//										} else{
+//											log.info(data.data);
+//										}
+//									});
+//								} else{
+//									// account table data insert error
+//								}
+//							});
+//						}
+//					} else{
+//						// account table data fetch error
+//					}
+//				});
 			}
 			/**TODO
 			 * if sales status is approved/billed
@@ -408,85 +477,16 @@ var saveOrUpdateSales = function(slid, sales, salesDetails, salesDeleteDetailsId
 			 * 		use account id to account receivable table
 			**/ 
 			
-		} else{
-			callback(response);
-		}
-	});
-	
-	
-	
-	
-	
-	if(sales.sale_id != null){
-		saleHdr.upsert(sales)
-		.then(function(data){
-			
-			log.info(salesDeleteDetailsIds.length+' Sale detail is going to remove.');
-			log.info(salesDetails.length+' Sale detail is going to update');
-			
-			//delete sale details from sale detail table.
-			for(var i = 0; i < salesDeleteDetailsIds.length; i++)
-				deleteSaleDetailsFn("sale_dtlid='"+salesDeleteDetailsIds[i].sale_dtlid+"'", function(result){
-					if(!result.status)
-						callback(result);
-				});
-			
-			//update/save new sale details into sale detail table.
-			for(var i = 0; i < salesDetails.length; i++)
-				saveOrUpdateSaleDetailsFn(salesDetails[i], function(result){
-					if(!result.status)
-						callback(result);
-				});
-			
-			log.info(appMsg.SALESEDITSUCCESS);
-			response.message 	= appMsg.SALESEDITSUCCESS;
-			response.data  		= data.salesorder_id;
-			response.status  	= true;
-			callback(response);
-			
-		}).error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			callback(response);
-		});
-	} else{
-		
-//		stockLedgerService.insertStockLedger(
-//					req.param('purchasedtlslist')[i].productid,req.param("companyid"),req.param("storeid"),req.param("batchno"),
-//					req.param('purchasedtlslist')[i].invoiceqty,0,req.param('purchasedtlslist')[i].uomid,req.param("invoiceno"),
-//					req.param("invoicedate"),"Purchase Goods -Invoice Number : "+req.param("invoiceno")+'-'+req.param("actionremarks"));
-//		
-		saleHdr.create(sales)
-		.then(function(data){
-				console.log(data)
-			for(var i = 0; i < salesDetails.length; i++){
-				console.log(data.sale_id);
-				salesDetails[i].sale_id = data.sale_id;
-				saveOrUpdateSaleDetailsFn(salesDetails[i], function(result){
-					if(!result.status)
-						callback(result);
-				});
-			}
 			log.info(appMsg.SALESSAVESUCCESS);
 			response.message	= appMsg.SALESSAVESUCCESS;
 			response.data  		= data.sale_id;
 			response.status 	= true;
 			callback(response);
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
+			
+		} else{
 			callback(response);
-		});
-		
-
-		
-	}
-	
+		}
+	});
 }
 
 var changeSalesStatus = function(){
@@ -495,6 +495,7 @@ var changeSalesStatus = function(){
 	 * check account table with customer id if not create
 	 * use account id to account receivable table
 	**/ 
+	
 }
 
 
