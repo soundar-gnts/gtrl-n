@@ -24,7 +24,7 @@ var userGroup = require('../models/UserGroup.js');
 
 
 //insert or update User Access Tree
-exports.saveOrUpdateUserAccessTree = function(req, res){
+var saveOrUpdateUserAccess = function(req, res){
 	log.info(fileName+'.saveOrUpdateUserAccessTree');
 	var response = {
 			status	: Boolean,
@@ -97,7 +97,7 @@ exports.saveOrUpdateUserAccessTree = function(req, res){
 
 
 //get all User Access Tree
-exports.getUserAccessTree = function(req, res){
+var getUserAccessTree = function(condition, selectedAttributes, fetchAssociation, callback){
 
 	log.info(fileName+'.getUserAccessTree');
 	var response = {
@@ -106,37 +106,6 @@ exports.getUserAccessTree = function(req, res){
 			data	: String
 	}
 	
-	var condition 			= "";
-	var accessTreeId		= req.param('acctreeid');
-	var companyId 			= req.param('companyid');
-	var status				= req.param('status');
-	var selectedAttributes	= "";
-	var fetchAssociation 	= "";
-	
-	if(req.param('fetchAssociation')=='yes'){
-		fetchAssociation = [{model : poDetail}]
-	}
-	
-	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
-		selectedAttributes = ['acc_tree_id','group_id']
-	}
-	
-	if(companyId != null)
-		condition = "m_user_access_tree.company_id="+companyId;
-	
-	if(accessTreeId != null)
-		if(condition === "")
-			condition = "acc_tree_id='"+accessTreeId+"'";
-	
-		else
-			condition = condition+" and acc_tree_id='"+accessTreeId+"'";
-	
-	if(status != null)
-		if(condition === "")
-			condition = "status='"+status+"'";
-	
-		else
-			condition = condition+" and status='"+status+"'";
 	
 	userAccessTree.findAll({
 		where		: [condition],
@@ -149,13 +118,13 @@ exports.getUserAccessTree = function(req, res){
 				log.info(fileName+'.getUserAccessTree - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
-				res.send(response);
+				callback(response);
 			} else{
 				log.info(fileName+'.getUserAccessTree - About '+accesTre.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+accesTre.length+' results.';
 				response.data 		= accesTre;
-				res.send(response);
+				callback(response);
 			}
 		})
 		.error(function(err){
@@ -163,6 +132,50 @@ exports.getUserAccessTree = function(req, res){
 			response.status  	= false;
 			response.message 	= appMsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
+}
+
+var saveOrUpdateUserAccessTree = function(uAccessTree, callback){
+
+	log.error(fileName+'.getUserAccessTree - ');
+	if(uAccessTree.acc_tree_id != null){
+		userAccessTree.upsert(uAccessTree)
+		.then(function(data){
+			log.info(appMsg.USERACCESSTREEEDITSUCCESS);
+			response.message= appMsg.USERACCESSTREEEDITSUCCESS;
+			response.status = true;
+			response.data  	= uAccessTree.acc_tree_id;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		})
+	} else{
+		userAccessTree.create(uAccessTree)
+		.then(function(data){
+			log.info(appMsg.USERACCESSTREESAVESUCCESS);
+			response.message= appMsg.USERACCESSTREESAVESUCCESS;
+			response.status = true;
+			response.data  	= data.acc_tree_id;
+			callback(response);
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		})
+	}
+}
+
+module.exports = {
+		saveOrUpdateUserAccess : saveOrUpdateUserAccess,
+		getUserAccessTree : getUserAccessTree,
+		saveOrUpdateUserAccessTree : saveOrUpdateUserAccessTree
 }

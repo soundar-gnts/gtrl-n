@@ -80,14 +80,13 @@ exports.SALESDELIVERYDETAILSEDITSUCCESS = 'Sale delivery details editted success
 exports.WISHLISTSAVESUCCESS		= 'Wishlist added successfully.';
 exports.WISHLISTALREADYSAVESUCCESS		= 'Wishlist already added.';
 exports.WISHLISTEDITSUCCESS		= 'Wishlist editted successfully.';
-<<<<<<< .mine
 exports.WISHLISTREMOVESUCCESS	= 'Wishlist removed successfully.';
 
 exports.PURCHASERETURNSAVESUCCESS = 'Purchase Return saved successfully.';
 exports.PURCHASERETURNEDITSUCCESS = 'Purchase Return editted successfully.';
 
 exports.PURCHASERETURNDETAILSAVESUCCESS = 'Purchase Return details saved successfully.';
-exports.PURCHASERETURNDETAILEDITSUCCESS = 'Purchase Return details editted successfully.';=======
+exports.PURCHASERETURNDETAILEDITSUCCESS = 'Purchase Return details editted successfully.';
 exports.WISHLISTREMOVESUCCESS	= 'Wishlist removed successfully.';
 
 exports.ACCOUNTRECEIVABLESAVESUCCESS = 'Account receivable saved successfully.';
@@ -100,4 +99,19 @@ exports.PRODUCTSERIALCODESAVESUCCESS = 'Product serial code saved successfully.'
 exports.PRODUCTSERIALCODEEDITSUCCESS = 'Product serial code editted successfully.';
 
 exports.SALESPAYMENTDETAILSAVESUCCESS = 'Sales payment detail saved successfully.';
-exports.SALESPAYMENTDETAILEDITSUCCESS = 'Sales payment detail editted successfully.';>>>>>>> .r110
+exports.SALESPAYMENTDETAILEDITSUCCESS = 'Sales payment detail editted successfully.';
+
+exports.CUSTOMERSAVESUCCESS = 'Customer saved successfully.';
+exports.CUSTOMEREDITSUCCESS = 'Customer editted successfully.';
+
+exports.CUSTOMERTYPESAVESUCCESS = 'Customer type saved successfully.';
+exports.CUSTOMERTYPEEDITSUCCESS = 'Customer type editted successfully.';
+
+exports.CUSTOMERAGEGROUPSAVESUCCESS = 'Customer age group saved successfully.';
+exports.CUSTOMERAGEGROUPEDITSUCCESS = 'Customer age group editted successfully.';
+
+exports.VOUCHERSAVESUCCESS = 'Voucher saved successfully.';
+exports.VOUCHEREDITSUCCESS = 'Voucher editted successfully.';
+
+exports.VOUCHERTYPESAVESUCCESS = 'Voucher type saved successfully.';
+exports.VOUCHERTYPEEDITSUCCESS = 'Voucher type editted successfully.';

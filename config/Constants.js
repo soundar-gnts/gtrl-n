@@ -37,6 +37,7 @@ exports.STATUSHOLD						= 'Hold';
 exports.STATUSBILLED					= 'Billed';
 exports.STATUSDELIVERYREADY				= 'Deliveryready';
 exports.STATUSDELIVERED					= 'Delivered';
+exports.STATUSINPROGRESS				= 'Inprogress';
 
 
 // SERIAL NUMBER TYPES

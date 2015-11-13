@@ -19,7 +19,46 @@ var userAccessTreeService = require('../services/UserAccessTreeService.js');
 
 module.exports = function(app, server){
 	
-	app.post('/saveuseraccesstreedetails', userAccessTreeService.saveOrUpdateUserAccessTree);
-	//app.post('/getuseraccesstreedetails', 	userAccessTreeService.getUserAccessTree);
+	app.post('/getuseraccesstreedetails', 	getUserAccessTree);
+	app.post('/saveuseraccesstreedetails', userAccessTreeService.saveOrUpdateUserAccess);
 	
+	
+	function getUserAccessTree(req, res){
+		
+		var condition 			= "";
+		var accessTreeId		= req.param('acctreeid');
+		var companyId 			= req.param('companyid');
+		var status				= req.param('status');
+		var selectedAttributes	= "";
+		var fetchAssociation 	= "";
+		
+		if(req.param('fetchAssociation')=='yes'){
+			fetchAssociation = [{model : poDetail}]
+		}
+		
+		if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
+			selectedAttributes = ['acc_tree_id','group_id']
+		}
+		
+		if(companyId != null)
+			condition = "m_user_access_tree.company_id="+companyId;
+		
+		if(accessTreeId != null)
+			if(condition === "")
+				condition = "acc_tree_id='"+accessTreeId+"'";
+		
+			else
+				condition = condition+" and acc_tree_id='"+accessTreeId+"'";
+		
+		if(status != null)
+			if(condition === "")
+				condition = "status='"+status+"'";
+		
+			else
+				condition = condition+" and status='"+status+"'";
+		
+		userAccessTreeService.getUserAccessTree(condition, selectedAttributes, fetchAssociation, function(response){
+			res.send(response);
+		});
+	}
 }
