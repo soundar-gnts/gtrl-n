@@ -9,12 +9,14 @@ app.controller("LoginScreen",function($filter,$scope,$http,$rootScope,filterFilt
 //states start
 app.controller("StateList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 	//App.init();
+        var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();  
         $scope.search={};
         init=0;
 	$scope.LoadState=function(cond){
             console.log(cond);
             if((cond == "")||(cond == null))
-             blockUI.start();
+             contentBlock.start();
          condtion="";
             if(($scope.search.statename !="")&&($scope.search.statename !=null))
             {
@@ -43,7 +45,7 @@ app.controller("StateList",function($filter,$scope,$http,$rootScope,filterFilter
 				
 		});
                 if((cond == "")||(cond == null))
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
 	// add state
 	$scope.state={};
@@ -97,6 +99,8 @@ app.controller("StateList",function($filter,$scope,$http,$rootScope,filterFilter
 app.controller("citiesList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
 //$scope.ActiveStateList={};
    // console.log(RESOURCES);
+    var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();  
    $scope.selectedState="";
    $scope.selectedcityname="";
    $scope.selectedstatus="";
@@ -119,7 +123,7 @@ app.controller("citiesList",function($filter,$scope,$http,$rootScope,filterFilte
             {
                 condtion +="&status="+$scope.selectedstatus;
             }
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getcitylist?isfulllist='+condtion).success(function(res){
 			//var data=res.data;
 			$scope.CityList=res.data;
@@ -138,7 +142,7 @@ app.controller("citiesList",function($filter,$scope,$http,$rootScope,filterFilte
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
 	// add state
 	$scope.city={};
@@ -192,7 +196,9 @@ app.controller("citiesList",function($filter,$scope,$http,$rootScope,filterFilte
 // end cities
 //start company
 app.controller("companyList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
-//$scope.ActiveStateList={};	
+//$scope.ActiveStateList={};
+ var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop(); 
 $scope.CompanyList={};
   $scope.form={}; 
   $scope.form.companyname="";  
@@ -216,7 +222,7 @@ $scope.CompanyList={};
 		});
             }; 
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getcompanydetails?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.CompanyList=res.data;
@@ -235,11 +241,11 @@ $scope.CompanyList={};
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
         $scope.EditCompanyProcess=function(company_id){
             $scope.form={};
-             blockUI.start(); 
+             contentBlock.start(); 
              $http.post(RESOURCES.DOMAIN+'getcompanydetails?companyid='+company_id+"&isfulllist=").success(function(res){
              //$scope.CompanyList=res.data;
              console.log(res.data[0]);
@@ -259,7 +265,7 @@ $scope.CompanyList={};
                         $scope.form.status=res.data[0].status;
                         $scope.LoadActiveCities($scope.form.stateid);
              });
-              blockUI.stop();
+              contentBlock.stop();
          };
           $scope.UpdateorSaveCompany=function(){
               var companyId_string="";
@@ -298,6 +304,8 @@ $scope.CompanyList={};
 //start manufacturer
 app.controller("ManufacturerList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
 //$scope.ActiveStateList={};	
+var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop(); 
 $scope.AllActiveStateList={};
 $scope.AllActiveCityList={};
 $scope.AllActiveManufacturer={};
@@ -328,7 +336,7 @@ $scope.search={};
             };           
 	 $scope.InitLoad=function(cond){
                if((cond == "")||(cond == null))
-             blockUI.start(); 
+             contentBlock.start(); 
              condtion="";
             if(($scope.search.manufactCode !="")&&($scope.search.manufactCode !=null))
             {
@@ -362,11 +370,11 @@ $scope.search={};
 				
 		});
                  // if((cond == "")||(cond == null))
-                    blockUI.stop(); 
+                    contentBlock.stop(); 
 	};
          $scope.EditManufacturProcess=function(manufgid){
             $scope.form={};
-             blockUI.start(); 
+             contentBlock.start(); 
              $http.post(RESOURCES.DOMAIN+'getmanufactdetails?manufgid='+manufgid+"&isfulllist=").success(function(res){
              //$scope.CompanyList=res.data;
              console.log(res.data[0]);
@@ -391,7 +399,7 @@ $scope.search={};
                          
                         //$scope.LoadActiveCities($scope.form.stateid);
              });
-              blockUI.stop();
+              contentBlock.stop();
          };
          
          // save/update manufacturer
@@ -440,12 +448,14 @@ $scope.search={};
 
 //start Store
 app.controller("StoreList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
-//$scope.ActiveStateList={};	
+//$scope.ActiveStateList={};
+var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop(); 
    $scope.search={};
            
 	$scope.InitLoad=function(cond){
             if((cond == "")||(cond == null))
-             blockUI.start(); 
+             contentBlock.start(); 
               condtion="";
             if(($scope.search.storecode !="")&&($scope.search.storecode !=null))
             {
@@ -477,7 +487,7 @@ app.controller("StoreList",function($filter,$scope,$http,$rootScope,filterFilter
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
 	$scope.InitLoad();
 });
@@ -486,10 +496,11 @@ app.controller("StoreList",function($filter,$scope,$http,$rootScope,filterFilter
 //start Storeregion
 app.controller("StoreRegionList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+   var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getstoreregionlist?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.StoreRegionList=res.data;
@@ -508,7 +519,7 @@ app.controller("StoreRegionList",function($filter,$scope,$http,$rootScope,filter
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
 	$scope.InitLoad();
 });
@@ -518,10 +529,11 @@ app.controller("StoreRegionList",function($filter,$scope,$http,$rootScope,filter
 //start supplier
 app.controller("SupplierList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+   var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();  
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getsupplierdetails?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.SupplierList=res.data;
@@ -540,7 +552,7 @@ app.controller("SupplierList",function($filter,$scope,$http,$rootScope,filterFil
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
 	$scope.InitLoad();
 });
@@ -549,10 +561,11 @@ app.controller("SupplierList",function($filter,$scope,$http,$rootScope,filterFil
 //start supplierType
 app.controller("SupplierTypeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+      var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getsuppliertypedetails?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.SupplierTypeList=res.data;
@@ -571,7 +584,7 @@ app.controller("SupplierTypeList",function($filter,$scope,$http,$rootScope,filte
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
 	$scope.InitLoad();
 });
@@ -580,10 +593,11 @@ app.controller("SupplierTypeList",function($filter,$scope,$http,$rootScope,filte
 //start supplierType
 app.controller("SupplierAccountTypeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+         var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getsupplieraccounttypedetails?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.SupplierAccountTypeList=res.data;
@@ -602,7 +616,7 @@ app.controller("SupplierAccountTypeList",function($filter,$scope,$http,$rootScop
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
 	$scope.InitLoad();
 });
@@ -610,11 +624,13 @@ app.controller("SupplierAccountTypeList",function($filter,$scope,$http,$rootScop
 
 //start customer
 app.controller("CustomerList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
-//$scope.ActiveStateList={};	
-   
+//$scope.ActiveStateList={};
+         var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
+ $scope.CustomerList={};  
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getcustomerdetails?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.CustomerList=res.data;
@@ -633,7 +649,7 @@ app.controller("CustomerList",function($filter,$scope,$http,$rootScope,filterFil
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
 	$scope.InitLoad();
 });
@@ -642,10 +658,11 @@ app.controller("CustomerList",function($filter,$scope,$http,$rootScope,filterFil
 //start customerType
 app.controller("CustomerTypeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+ var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getcustomertypedetails?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.CustomerTypeList=res.data;
@@ -664,7 +681,7 @@ app.controller("CustomerTypeList",function($filter,$scope,$http,$rootScope,filte
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
 	$scope.InitLoad();
 });
@@ -673,10 +690,11 @@ app.controller("CustomerTypeList",function($filter,$scope,$http,$rootScope,filte
 //start customer Age Group
 app.controller("customerAgeGroupList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+ var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();   
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getcustagegroupdetails?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.CustomerAgeGroupList=res.data;
@@ -695,7 +713,7 @@ app.controller("customerAgeGroupList",function($filter,$scope,$http,$rootScope,f
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
 	$scope.InitLoad();
 });
@@ -704,10 +722,11 @@ app.controller("customerAgeGroupList",function($filter,$scope,$http,$rootScope,f
 //start Bank
 app.controller("BankList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+ var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();    
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getbankdetails?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.BankList=res.data;
@@ -726,7 +745,7 @@ app.controller("BankList",function($filter,$scope,$http,$rootScope,filterFilter,
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
        
 	$scope.InitLoad();
@@ -736,10 +755,11 @@ app.controller("BankList",function($filter,$scope,$http,$rootScope,filterFilter,
 //start Bank Branch
 app.controller("BankBranchList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+  var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();    
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getbankbranchdetails?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.BankBranchList=res.data;
@@ -758,7 +778,7 @@ app.controller("BankBranchList",function($filter,$scope,$http,$rootScope,filterF
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
         //load active banks
        $scope.LoadActiveBanks=function(){
@@ -775,10 +795,11 @@ app.controller("BankBranchList",function($filter,$scope,$http,$rootScope,filterF
  //start Card Type
 app.controller("CardTypeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+   var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();  
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getcardtypelist?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.CardTypeList=res.data;
@@ -797,7 +818,7 @@ app.controller("CardTypeList",function($filter,$scope,$http,$rootScope,filterFil
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
         
 	$scope.InitLoad();
@@ -807,10 +828,11 @@ app.controller("CardTypeList",function($filter,$scope,$http,$rootScope,filterFil
  //start Card Type
 app.controller("PaymentTypeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+      var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();  
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 		$http.post(RESOURCES.DOMAIN+'getcardtypelist?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.CardTypeList=res.data;
@@ -829,7 +851,7 @@ app.controller("PaymentTypeList",function($filter,$scope,$http,$rootScope,filter
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
        
 	$scope.InitLoad();
@@ -839,10 +861,11 @@ app.controller("PaymentTypeList",function($filter,$scope,$http,$rootScope,filter
 //start Account Type
 app.controller("AccountTypeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+         var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();  
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
 //		$http.post("http://localhost:2000/getcardtypelist?isfulllist=").success(function(res){
 //			//var data=res.data;
 //			$scope.CardTypeList=res.data;
@@ -861,7 +884,7 @@ app.controller("AccountTypeList",function($filter,$scope,$http,$rootScope,filter
 //				}, true);
 //				
 //		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
        
 	$scope.InitLoad();
@@ -871,10 +894,11 @@ app.controller("AccountTypeList",function($filter,$scope,$http,$rootScope,filter
 //start Transaction Type
 app.controller("TransactionTypeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+           var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop(); 
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
                 $http.post(RESOURCES.DOMAIN+'gettxnstypedetails?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.TransactionTypeList=res.data;
@@ -893,7 +917,7 @@ app.controller("TransactionTypeList",function($filter,$scope,$http,$rootScope,fi
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
        
 	$scope.InitLoad();
@@ -903,10 +927,11 @@ app.controller("TransactionTypeList",function($filter,$scope,$http,$rootScope,fi
 //start Voucher
 app.controller("VoucherList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+             var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
                 $http.post(RESOURCES.DOMAIN+'getvoucherlist?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.VoucherList=res.data;
@@ -925,7 +950,7 @@ app.controller("VoucherList",function($filter,$scope,$http,$rootScope,filterFilt
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
         $scope.LoadActiveVoucherType=function(){
                  $http.post(RESOURCES.DOMAIN+'getvouchertypelist?status=Active').success(function(res){
@@ -942,10 +967,11 @@ app.controller("VoucherList",function($filter,$scope,$http,$rootScope,filterFilt
 //start Voucher Type
 app.controller("VoucherTypeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
 //$scope.ActiveStateList={};	
-   
+     var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
            
 	$scope.InitLoad=function(){
-             blockUI.start(); 
+             contentBlock.start(); 
                 $http.post(RESOURCES.DOMAIN+'getvouchertypelist?isfulllist=').success(function(res){
 			//var data=res.data;
 			$scope.VoucherTypeList=res.data;
@@ -964,13 +990,272 @@ app.controller("VoucherTypeList",function($filter,$scope,$http,$rootScope,filter
 				}, true);
 				
 		});
-                 blockUI.stop(); 
+                 contentBlock.stop(); 
 	};
         
             
 	$scope.InitLoad();
 });
 // end Voucher Type
+
+//start product
+app.controller("ProductList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,RESOURCES){
+//$scope.ActiveStateList={};	
+var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();    
+           
+	$scope.InitLoad=function(){
+             contentBlock.start(); 
+                $http.post(RESOURCES.DOMAIN+'getproductslist').success(function(res){
+			//var data=res.data;
+			$scope.ProductList=res.data;
+			//console.log($scope.StoreRegionList);
+				// pagination controls
+				$scope.currentPage = 1;
+				$scope.totalItems = $scope.ProductList.length;
+				$scope.entryLimit = 10; // items per page
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				// $watch search to update pagination
+				$scope.$watch('search', function (newVal, oldVal) {
+				$scope.filtered = filterFilter($scope.ProductList, newVal);
+				$scope.totalItems = $scope.filtered.length;
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				$scope.currentPage = 1;
+				}, true);
+				
+		});
+                 contentBlock.stop(); 
+	};
+        $scope.swapcontent=function(productid)
+        {
+            
+             contentBlock.start();
+             $http.post(RESOURCES.DOMAIN+'getproductcategorydetails?status=Active').success(function(res){
+                 $scope.AllActiveProductCategory = res.data;
+             });
+             $http.post(RESOURCES.DOMAIN+'getmanufactdetails?status=Active').success(function(res){
+                 $scope.AllActiveManufacturer = res.data;
+             });
+             $http.post(RESOURCES.DOMAIN+'getbranddetails?status=Active').success(function(res){
+                 $scope.AllActiveBrand = res.data;
+             });
+             $http.post(RESOURCES.DOMAIN+'getuomdetails?status=Active').success(function(res){
+                 $scope.AllActiveUOM = res.data;
+             });
+             $http.post(RESOURCES.DOMAIN+'gettaxdetails?status=Active').success(function(res){
+                 $scope.AllActiveTAX = res.data;
+             });
+            $("#productDataPanel").hide();
+            $("#addEdit_product").show();
+             contentBlock.stop();
+        };
+        $scope.backbtn=function(productid)
+        {
+            $("#productaddeditForm")[0].reset();
+           $("#productDataPanel").show();
+            $("#addEdit_product").hide(); 
+        };
+	$scope.InitLoad();
+});
+// end product
+
+//start Tax
+app.controller("TaxList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
+//$scope.ActiveStateList={};	
+     var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
+           $scope.LoadActiveStates=function(RESOURCES){
+                 CommonMasters.getallActiveStates().success(function(res){ 
+            $scope.AllActiveStateList = res.data;
+            });
+            };  
+	$scope.InitLoad=function(){
+             contentBlock.start(); 
+                $http.post(RESOURCES.DOMAIN+'gettaxdetails?isfulllist=').success(function(res){
+			//var data=res.data;
+			$scope.TaxList=res.data;
+			//console.log($scope.StoreRegionList);
+				// pagination controls
+				$scope.currentPage = 1;
+				$scope.totalItems = $scope.TaxList.length;
+				$scope.entryLimit = 10; // items per page
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				// $watch search to update pagination
+				$scope.$watch('search', function (newVal, oldVal) {
+				$scope.filtered = filterFilter($scope.TaxList, newVal);
+				$scope.totalItems = $scope.filtered.length;
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				$scope.currentPage = 1;
+				}, true);
+				
+		});
+                 contentBlock.stop(); 
+	};
+        
+        $scope.LoadActiveStates();    
+	$scope.InitLoad();
+});
+// end Tax
+
+//start Brand
+app.controller("BrandList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
+//$scope.ActiveStateList={};	
+     var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
+            
+	$scope.InitLoad=function(){
+             contentBlock.start(); 
+                $http.post(RESOURCES.DOMAIN+'getbranddetails?isfulllist=').success(function(res){
+			//var data=res.data;
+			$scope.BrandList=res.data;
+			//console.log($scope.StoreRegionList);
+				// pagination controls
+				$scope.currentPage = 1;
+				$scope.totalItems = $scope.BrandList.length;
+				$scope.entryLimit = 10; // items per page
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				// $watch search to update pagination
+				$scope.$watch('search', function (newVal, oldVal) {
+				$scope.filtered = filterFilter($scope.BrandList, newVal);
+				$scope.totalItems = $scope.filtered.length;
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				$scope.currentPage = 1;
+				}, true);
+				
+		});
+                 contentBlock.stop(); 
+	};
+        
+        $scope.InitLoad();
+});
+// end Brand
+
+
+//start UOM
+app.controller("UOMList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
+//$scope.ActiveStateList={};	
+     var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
+            
+	$scope.InitLoad=function(){
+             contentBlock.start(); 
+                $http.post(RESOURCES.DOMAIN+'getuomdetails?isfulllist=').success(function(res){
+			//var data=res.data;
+			$scope.UOMList=res.data;
+			//console.log($scope.StoreRegionList);
+				// pagination controls
+				$scope.currentPage = 1;
+				$scope.totalItems = $scope.UOMList.length;
+				$scope.entryLimit = 10; // items per page
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				// $watch search to update pagination
+				$scope.$watch('search', function (newVal, oldVal) {
+				$scope.filtered = filterFilter($scope.UOMList, newVal);
+				$scope.totalItems = $scope.filtered.length;
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				$scope.currentPage = 1;
+				}, true);
+				
+		});
+                 contentBlock.stop(); 
+	};
+        
+        $scope.InitLoad();
+});
+// end UOM
+// 
+//start SL num gen
+app.controller("serialNumGenerateList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
+//$scope.ActiveStateList={};	
+$scope.form={};
+     var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
+     $http.post(RESOURCES.DOMAIN+'getstorelist?status=Active&isfulllist=').success(function(res){
+                 $scope.AllActiveStore = res.data;
+             });       
+	$scope.InitLoad=function(){
+             contentBlock.start(); 
+                $http.post(RESOURCES.DOMAIN+'getslnogendetails?isfulllist=').success(function(res){
+			//var data=res.data;
+			$scope.SerialNumberList=res.data;
+			//console.log($scope.StoreRegionList);
+				// pagination controls
+				$scope.currentPage = 1;
+				$scope.totalItems = $scope.SerialNumberList.length;
+				$scope.entryLimit = 10; // items per page
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				// $watch search to update pagination
+				$scope.$watch('search', function (newVal, oldVal) {
+				$scope.filtered = filterFilter($scope.SerialNumberList, newVal);
+				$scope.totalItems = $scope.filtered.length;
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				$scope.currentPage = 1;
+				}, true);
+				
+		});
+                 contentBlock.stop(); 
+	};
+        $scope.EditSerialNumProcess=function(serialid){
+             $http.post(RESOURCES.DOMAIN+'getslnogendetails?slnoid='+serialid+'&isfulllist=').success(function(res){
+                 $scope.form={};
+                 serialnum={};
+                 serialnum=res.data;
+                 console.log(serialnum);
+                 $scope.form.slnogenlevel=serialnum[0].slno_gen_level;
+                 $scope.form.slno_id=serialnum[0].serialid;
+                 $scope.form.storeid=serialnum[0].store_id;
+                 $scope.form.refkey=serialnum[0].ref_key;
+                 $scope.form.prefixkey=serialnum[0].prefix_key;
+                 $scope.form.prefixcncat=serialnum[0].prefix_cncat;
+                 $scope.form.suffixkey=serialnum[0].suffix_key;
+                 $scope.form.suffixcncat=serialnum[0].suffix_cncat;
+                 $scope.form.autogenyn=serialnum[0].autogen_yn;
+                 $scope.form.keydesc=serialnum[0].key_desc;
+                 $scope.form.status=serialnum[0].status;
+             });
+        };
+        $scope.resetform=function(){
+            $("#snoGenForm")[0].reset();
+        };
+        $scope.AddEditSerialNumGen=function(){
+            //var statename=$scope.
+		
+		//console.log($scope.city);
+		var SlnumId_string="";
+		if(($scope.form.slno_id != "") && ($scope.form.slno_id != null) )
+			{
+			SlnumId_string="&slnoid="+$scope.form.slno_id;
+			
+			}
+                        
+		var dataString="?slnogenlevel="+$scope.form.slnogenlevel+"&storeid="+$scope.form.storeid+
+                        "&refkey="+$scope.form.refkey+"&keydesc="+$scope.form.keydesc+"&autogenyn="+$scope.form.autogenyn
+                +"&prefixkey="+$scope.form.prefixkey+"&prefixcncat="+$scope.form.prefixcncat+"&suffixkey="+$scope.form.suffixkey
+                +"&suffixcncat="+$scope.form.suffixcncat+"&status="+$scope.form.status+"&lastupdatedby=soundar&lastupdateddt="
+                +$filter('date')(new Date(), 'yyyy-mm-dd')+SlnumId_string;
+		
+		$http.post(RESOURCES.DOMAIN+'saveslnogen'+dataString).success(function(res){
+			//console.log(res);
+                        console.log(res);
+			//$scope.LoadCities();	
+			if(res.status)
+			{
+				$('#modal-Addcity').modal('hide');
+				$scope.resetform();
+				toastr.success(res.message,'Success',{closeButton:true,positionClass:'toastr-top-center'});
+				
+				}
+			else
+				{
+				toastr.error(res.message,'Failed');
+				}
+		});
+                
+        };
+        
+        $scope.InitLoad();
+});
+// end Brand
 
 app.filter('startFrom', function() {
     return function(input, start) {

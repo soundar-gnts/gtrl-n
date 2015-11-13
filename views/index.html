@@ -172,6 +172,23 @@
                                         <li class="has-sub">
 					    <a href="javascript:;">
 					        <b class="caret pull-right"></b>
+					        <i class="fa fa-ship"></i>
+					        <span>Products</span>
+					    </a>
+					    <ul class="sub-menu">
+							<li><a href="#products">Products</a></li>
+                                                        <li><a href="#tax">Tax</a></li>
+                                                        <li><a href="#brand">Brand</a></li>
+                                                        <li><a href="#serialNumGenerate">Serial Number Generation</a></li> 
+                                                        <li><a href="#UOM">Unit of Measure</a></li>
+                                                        <li><a href="#transactionType">Transaction Type</a></li>
+                                                        <li><a href="#voucher">Voucher</a></li>
+                                                        <li><a href="#voucherType">Voucher Type</a></li>
+					    </ul>
+					</li>
+                                        <li class="has-sub">
+					    <a href="javascript:;">
+					        <b class="caret pull-right"></b>
 					        <i class="fa fa-bank"></i>
 					        <span>Account Details</span>
 					    </a>
@@ -253,7 +270,7 @@
 		<!-- end #sidebar -->
 		<!-- begin #content -->
                 
-		<div id="content" class="content" ng-view>
+		<div block-ui="contentBlock" id="content" class="content" ng-view>
 			
 			
 		</div>
@@ -282,6 +299,7 @@
         <!-- chosen end -->
 	<script src="/assets/Ang-Controller/app.js"></script>
         <script src="/assets/Ang-Controller/services.js"></script>
+        <script src="/assets/Ang-Controller/controllers.js"></script>
 	<!--[if lt IE 9]>
 		<script src="/assets/crossbrowserjs/html5shiv.js"></script>
 		<script src="/assets/crossbrowserjs/respond.min.js"></script>

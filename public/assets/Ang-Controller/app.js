@@ -26,7 +26,8 @@ var cmsAppFirstRun = function ($templateCache, $templateRequest, $rootScope) {
     M_STORE_URL   :  'pages/store/',
     M_SUPPLIER_URL:  'pages/supplier/',
     M_CUSTOMER_URL:  'pages/customer/',
-    M_ACCOUNTS_URL:  'pages/accounts/'
+    M_ACCOUNTS_URL:  'pages/accounts/',
+    M_PRODUCTS_URL:  'pages/products/'
   }
 })());
 // app constant end 
@@ -129,6 +130,26 @@ app.config(function($routeProvider,RESOURCES) {
         .when('/voucherType', {
             templateUrl : RESOURCES.M_ACCOUNTS_URL+'voucherType.html',
             controller  : 'VoucherTypeList'
+        })
+        .when('/products', {
+            templateUrl : RESOURCES.M_PRODUCTS_URL+'products.html',
+            controller  : 'ProductList'
+        })
+        .when('/tax', {
+            templateUrl : RESOURCES.M_PRODUCTS_URL+'tax.html',
+            controller  : 'TaxList'
+        })
+        .when('/brand', {
+            templateUrl : RESOURCES.M_PRODUCTS_URL+'brand.html',
+            controller  : 'BrandList'
+        })
+        .when('/serialNumGenerate', {
+            templateUrl : RESOURCES.M_PRODUCTS_URL+'serialNumGenerate.html',
+            controller  : 'serialNumGenerateList'
+        })
+        .when('/UOM', {
+            templateUrl : RESOURCES.M_PRODUCTS_URL+'UOM.html',
+            controller  : 'UOMList'
         });
         
 });

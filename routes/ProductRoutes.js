@@ -95,7 +95,7 @@ module.exports = function(app, server) {
 			}
 		}
 		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
-			selectedAttributes=['prod_id','prod_code','prod_name','uom_id','max_discount','sell_tax_id'];
+			selectedAttributes=['prod_id','prod_code','prod_name','uom_id','max_discount','sell_tax_id','status','last_updated_by','last_updated_dt'];
 		}
 		
 		if(req.param('fetchassociation')=='y'){
