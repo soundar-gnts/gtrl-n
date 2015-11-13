@@ -24,50 +24,7 @@ var appMsg				= require('../config/Message.js');
 var path 				= require('path');
 var fileName			= path.basename(__filename);
 // To get full Serial No Generation List
-exports.getSlnoGenDetails = function(req, res) {
-	var attr 			= "";
-	var condition 		= "";
-	var slnoid			= req.param("slnoid");
-	var companyid		= req.param("companyid");
-	var storeid			= req.param("storeid");
-	var refkey			= req.param("refkey");
-	var status			= req.param("status");
-	var autogenyn=req.param("autogenyn");
-	if(slnoid!=null){
-		condition ="slno_id="+slnoid;
-	}
-	if(companyid!=null){
-		if(condition === ""){
-			condition="company_id='"+companyid+"'";
-		}else {
-			condition=condition+" and company_id='"+companyid+"'";
-		}
-	}
-	if(storeid!=null){
-		if(condition === ""){
-			condition="store_id='"+storeid+"'";
-		}else {
-			condition=condition+" and store_id='"+storeid+"'";
-		}
-	}
-	if(refkey!=null){
-		if(condition === ""){
-			condition="ref_key like '"+refkey+"'";
-		}else {
-			condition=condition+" and ref_key like '"+refkey+"'";
-		}
-	}
-	if(status!=null){
-		if(condition === ""){
-			condition="status='"+status+"'";
-		}else {
-			condition=condition+" and status='"+status+"'";
-		}
-	}
-	if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
-		attr=['prefix_key','prefix_cncat','suffix_key','suffix_cncat','curr_seqno'];
-	}
-	
+exports.getSlnoGenDetails = function(condition,attr,callback) {
 	
 	slnogen.findAll({where : [condition],attributes: attr}).then(function(result) {
 		if(result.length === 0){
@@ -76,27 +33,26 @@ exports.getSlnoGenDetails = function(req, res) {
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(fileName+'.getSlnoGenDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 		log.error(fileName+'.getSlnoGenDetails - '+err);
 		response.status  	= false;
 		response.message 	= 'Internal error.';
 		response.data  		= err;
-		res.send(response);
+		callback(response);
 	});
 
 }
 
 //To Update curr seqno and last seqno
-
 exports.updateSequenceNo = function(slnoid,lastupdateddt,lastupdatedby) {
 	
 var values={
@@ -133,37 +89,8 @@ var values={
 	});
 }
 
-
-exports.getSlnoValue=function(companyid,storeid,refkey,autogenyn,status, callback){
-	
-	var sl = {
-			slid : String,
-			sno : String	
-		}
-	slnogen.findOne({
-		where : {
-			company_id 			: companyid,
-			store_id 			: storeid,
-			ref_key 			: refkey,
-			autogen_yn 			: autogenyn,
-			status 				: status
-		},
-		attributes: ['slno_id','prefix_key','prefix_cncat','suffix_key','suffix_cncat','curr_seqno']
-		
-	}).then(function(result) {
-		if(result){
-			sl.slid = result.slno_id;
-			sl.sno = result.prefix_key+""+result.prefix_cncat+""+result.suffix_key+""+result.suffix_cncat+""+result.curr_seqno;
-			callback(sl);
-		}
-		else{
-			sl.sno = null;
-			sl.slid = null;
-			callback(sl);
-		}
-	});
-}
-exports.getSlnoValu=function(condition, callback){
+//For get serial no sequence value
+exports.getSlnoValue=function(condition, callback){
 	
 	var sl = {
 			slid : String,

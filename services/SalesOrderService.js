@@ -342,7 +342,7 @@ var salesOrderOtpVerification = function(req, res){
 							autogen_yn 			: 'Y',
 							status 				: 'Active'
 					}
-					slnogenService.getSlnoValu(slNoCondition, function(sl){
+					slnogenService.getSlnoValue(slNoCondition, function(sl){
 						console.log(sl.sno);
 						result.data[0].sal_ordr_number	= sl.sno;
 						result.data[0].status			= CONSTANT.STATUSPENDING;

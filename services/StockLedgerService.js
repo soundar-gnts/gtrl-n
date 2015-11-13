@@ -28,54 +28,7 @@ var filename			= path.basename(__filename);
 
 
 // To get StockLedger List based on user param
-exports.getStockLedgerDetails = function(req, res) {
-	var condition 		= "";
-	var stockledid		=req.param("stockledid");
-	var companyid		=req.param("companyid");
-	var productid		=req.param("productid");
-	var storeid			=req.param("storeid");
-	var batchno			=req.param("batchno");
-	var islatest		=req.param("islatest");
-	if(stockledid!=null){
-		condition ="stock_ledid="+stockledid;
-	}
-	if(companyid!=null){
-		if(condition === ""){
-			condition="company_id='"+companyid+"'";
-		}else {
-			condition=condition+" and company_id='"+companyid+"'";
-		}
-	}
-	if(productid!=null){
-		if(condition === ""){
-			condition="product_id='"+productid+"'";
-		}else {
-			condition=condition+" and product_id='"+productid+"'";
-		}
-	}
-	if(storeid!=null){
-		if(condition === ""){
-			condition="store_id='"+storeid+"'";
-		}else {
-			condition=condition+" and store_id='"+storeid+"'";
-		}
-	}
-	
-	if(batchno!=null){
-		if(condition === ""){
-			condition="batch_no='"+batchno+"'";
-		}else {
-			condition=condition+" and batch_no='"+batchno+"'";
-		}
-	}
-	
-	if(islatest!=null){
-		if(condition === ""){
-			condition="is_latest='"+islatest+"'";
-		}else {
-			condition=condition+" and is_latest='"+islatest+"'";
-		}
-	}
+exports.getStockLedgerDetails = function(condition,callback) {
 	
 	stockledger.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
@@ -83,14 +36,14 @@ exports.getStockLedgerDetails = function(req, res) {
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(filename+'>>getStockLedgerDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 			log.info(filename+'>>getStockLedgerDetails>>');
@@ -98,7 +51,7 @@ exports.getStockLedgerDetails = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 }
 
@@ -106,38 +59,21 @@ exports.getStockLedgerDetails = function(req, res) {
 
 
 // To Save/Update Stock Ledger Details
-exports.saveStockLedger = function(req, res) {
-	stockledger.upsert({
-		stock_ledid					: req.param("stockledid"),
-		ledger_date 				: req.param("ledgerdate"),
-		product_id 					: req.param("productid"),
-		company_id 					: req.param("companyid"),
-		store_id 					: req.param("storeid"),
-		batch_no 					: req.param("batchno"),
-		open_qty 					: req.param("openqty"),
-		in_qty 						: req.param("inqty"),
-		out_qty 					: req.param("outqty"),
-		close_qty 					: req.param("closeqty"),
-		uom_id 						: req.param("uomid"),
-		is_latest 					: req.param("islatest"),
-		ref_no 						: req.param("refno"),
-		ref_date 					: req.param("refdate"),
-		ref_remarks 				: req.param("refremarks")
-		
-	}).then(function(data){
+exports.saveStockLedger = function(ledgerobj,callback) {
+	stockledger.upsert(ledgerobj).then(function(data){
 		if(data){
 			log.info(filename+'>>saveStockLedger>>'+appmsg.SAVEMESSAGE);
 			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		}
 		else{
 			log.info(filename+'>>saveStockLedger>>'+appmsg.UPDATEMESSAGE);
 			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		}
 		
 	}).error(function(err){
@@ -146,7 +82,7 @@ exports.saveStockLedger = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 		
 }

@@ -25,45 +25,7 @@ var path 			= require('path');
 var filename		= path.basename(__filename);
 
 // To get Stock Summary List based on user param
-exports.getStockSummaryDetails = function(req, res) {
-	var condition 		= "";
-	var stockid			=req.param("stockid");
-	var companyid		=req.param("companyid");
-	var productid		=req.param("productid");
-	var storeid			=req.param("storeid");
-	var batchno			=req.param("batchno");
-	if(stockid!=null){
-		condition ="stock_id="+stockid;
-	}
-	if(companyid!=null){
-		if(condition === ""){
-			condition="company_id='"+companyid+"'";
-		}else {
-			condition=condition+" and company_id='"+companyid+"'";
-		}
-	}
-	if(productid!=null){
-		if(condition === ""){
-			condition="product_id='"+productid+"'";
-		}else {
-			condition=condition+" and product_id='"+productid+"'";
-		}
-	}
-	if(storeid!=null){
-		if(condition === ""){
-			condition="store_id='"+storeid+"'";
-		}else {
-			condition=condition+" and store_id='"+storeid+"'";
-		}
-	}
-	
-	if(batchno!=null){
-		if(condition === ""){
-			condition="batch_no='"+batchno+"'";
-		}else {
-			condition=condition+" and batch_no='"+batchno+"'";
-		}
-	}
+exports.getStockSummaryDetails = function(condition,callback) {
 	
 	stocksummary.findAll({where : [condition]}).then(function(result) {
 		if(result.length === 0){
@@ -71,14 +33,14 @@ exports.getStockSummaryDetails = function(req, res) {
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		} else{
 			
 			log.info(filename+'>>getStockSummaryDetails>>'+'About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
-			res.send(response);
+			callback(response);
 		}
 	}).error(function(err){
 			log.info(filename+'>>getStockSummaryDetails>>');
@@ -86,39 +48,28 @@ exports.getStockSummaryDetails = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 }
 
 
 
-
 // To Save/Update Stock Summary Details
-exports.saveStockSummary = function(req, res) {
-	stocksummary.upsert({
-		stock_id					: req.param("stockid"),
-		product_id 					: req.param("productid"),
-		company_id 					: req.param("companyid"),
-		store_id 					: req.param("storeid"),
-		batch_no 					: req.param("batchno"),
-		curr_stock 					: req.param("currstock"),
-		last_sold_dt 				: req.param("lastsolddt"),
-		last_sold_qty 				: req.param("lastsoldqty")
-		
-	}).then(function(data){
+exports.saveStockSummary = function(summaryobj,callback) {
+	stocksummary.upsert(summaryobj).then(function(data){
 		if(data){
 			log.info(filename+'>>saveStockSummary>>'+appmsg.SAVEMESSAGE);
 			response.message = appmsg.SAVEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		}
 		else{
 			log.info(filename+'>>saveStockSummary>>'+appmsg.UPDATEMESSAGE);
 			response.message = appmsg.UPDATEMESSAGE;
 			response.status  = true;
 			response.data	 = "";
-			res.send(response);
+			callback(response);
 		}
 		
 	}).error(function(err){
@@ -127,7 +78,7 @@ exports.saveStockSummary = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 		
 }

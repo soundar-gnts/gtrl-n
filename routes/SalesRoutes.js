@@ -251,7 +251,7 @@ module.exports = function(app, server){
 					autogen_yn 			: 'Y',
 					status 				: 'Active'
 			}
-			slnogenService.getSlnoValu(slNoCondition, function(sl){
+			slnogenService.getSlnoValue(slNoCondition, function(sl){
 				console.log(sl);
 				sales.bill_no	= sl.sno;
 				salesService.saveOrUpdateSales(sl.slid, sales, salesDetails, salesDeleteDetailsIds, function(response){

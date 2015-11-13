@@ -17,9 +17,75 @@
 var accountTxnsBillsService = require('../services/AccountTxnsBillsService.js');
 module.exports = function(app, server) {
 	
-	app.post('/getaccounttxnsbillsdetails', accountTxnsBillsService.getAccountTxnsBillsDetails);
-	app.post('/saveaccounttxnsbills', accountTxnsBillsService.saveAccountTxnsBills);
+	app.post('/getaccounttxnsbillsdetails', getAccountTxnsBillsDetails);
+	app.post('/saveaccounttxnsbills', saveAccountTxnsBills);
 	app.post('/deleteaccounttxnsbill', accountTxnsBillsService.deleteAccountTxnsBill);
 	
+	
+	// To get Account Txns Bills List based on user param
+	function getAccountTxnsBillsDetails(req, res){
+		var attr 			= "";
+		var condition 		= "";
+		var txnbillid		=req.param("txnbillid");
+		var acctxnid		=req.param("acctxnid");
+		var accountid		=req.param("accountid");
+		var refno			=req.param("refno");
+		var status			=req.param("status");
+		if(txnbillid!=null){
+			condition ="txnbill_id="+txnbillid;
+		}
+		if(acctxnid!=null){
+			if(condition === ""){
+				condition="acctxn_id='"+acctxnid+"'";
+			}else {
+				condition=condition+" and acctxn_id='"+acctxnid+"'";
+			}
+		}
+		if(accountid!=null){
+			if(condition === ""){
+				condition="account_id='"+accountid+"'";
+			}else {
+				condition=condition+" and account_id='"+accountid+"'";
+			}
+		}
+		if(refno!=null){
+			if(condition === ""){
+				condition="ref_no like '%"+refno+"%'";
+			}else {
+				condition=condition+" and ref_no like '%"+refno+"%'";
+			}
+		}
+		if(status!=null){
+			if(condition === ""){
+				condition="status='"+status+"'";
+			}else {
+				condition=condition+" and status='"+status+"'";
+			}
+		}
+		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+			attr=['txnbill_id','acctxn_id','ref_no','paid_amount'];
+		}
+		
+		 accountTxnsBillsService.getAccountTxnsBillsDetails(condition,attr,function(result){
+			res.send(result);
+		});
+	}
+	
+	// To Save Save/Update Account Txns Bills Details
+	function saveAccountTxnsBills(req, res){
+		var billsobj ={
+				txnbill_id					: req.param("txnbillid"),
+				acctxn_id 					: req.param("acctxnid"),
+				account_id 					: req.param("accountid"),
+				ref_no 						: req.param("refno"),
+				ref_date 					: req.param("refdate"),
+				paid_amount 				: req.param("paidamount"),
+				status 						: req.param("status")
+				
+			};
+		 accountTxnsBillsService.saveAccountTxnsBills(billsobj,function(result){
+				res.send(result);
+			});
+	}
 }
 

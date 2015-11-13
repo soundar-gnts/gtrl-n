@@ -183,7 +183,7 @@ exports.savePurchaseHdrDetails = function(purchasehdrdtl, purchaseDetails, callb
 								autogen_yn 			: 'Y',
 								status 				: 'Active'
 						}
-						slnogenService.getSlnoValu(slNoCondition, function(sl){
+						slnogenService.getSlnoValue(slNoCondition, function(sl){
 							purchasehdrdtl.invoice_no = sl.sno;
 							purchasehdr.create(purchasehdrdtl).then(function(data){
 					 			

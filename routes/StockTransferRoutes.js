@@ -193,7 +193,7 @@ function saveTransferDetails(req, res){
 				autogen_yn 			: 'Y',
 				status 				: 'Active'
 		}
-		slnogenService.getSlnoValu(slNoCondition, function(sl){
+		slnogenService.getSlnoValue(slNoCondition, function(sl){
 			
 			trnsferhdr.transfer_refno = sl.sno;
 			stockTransferService.saveTransferDetails(sl.slid, trnsferhdr, transferDetails, function(response){

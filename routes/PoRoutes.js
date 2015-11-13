@@ -192,7 +192,7 @@ module.exports = function(app, server){
 					autogen_yn 			: 'Y',
 					status 				: 'Active'
 			}
-			slnogenService.getSlnoValu(slNoCondition, function(sl){
+			slnogenService.getSlnoValue(slNoCondition, function(sl){
 				
 				purchaseOrder.po_no = sl.sno;
 				poService.saveOrUpdatePo(sl.slid, purchaseOrder, purchaseDetails, purchaseDeleteDetailsIds, function(response){

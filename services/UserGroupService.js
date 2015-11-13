@@ -21,17 +21,88 @@ var log				= require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var userGroup 		= require('../models/UserGroup.js');
 var userAccessTree	= require('../models/UserAccessTree.js');
-var userAccessTreeService	= require('../services/UserAccessTreeService.js');
+var response = {
+		status	: Boolean,
+		message : String,
+		data	: String
+}
+
+//insert or update User Group
+exports.saveOrUpdateUserGroup = function(uGroup,uAccessTrees,callback){
+	log.info(fileName+'.saveOrUpdateUserGroup');
+	
+	if(uGroup.group_id != null){
+		userGroup.upsert(uGroup)
+		.then(function(data){
+			for(var i = 0; i < uAccessTrees.length; i++){
+				userAccessTree.upsert(uAccessTrees[i])
+				.then(function(d){
+					log.info('Access tree saved successfully.');
+				})
+				.error(function(err){
+					log.error(err);
+					response.status  	= false;
+					response.message 	= appMsg.INTERNALERRORMESSAGE;
+					response.data  		= err;
+					callback(response);
+				});
+			}
+			
+			log.info(appMsg.USERGROUPEDITSUCCESS);
+			response.message	= appMsg.USERGROUPEDITSUCCESS;
+			response.data  		= data.po_id;
+			response.status 	= true;
+			callback(response);
+			
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	} else{
+		userGroup.create(uGroup)
+		.then(function(data){
+			for(var i = 0; i < uAccessTrees.length; i++){
+				uAccessTrees[i].group_id = data.group_id;
+				userAccessTree.upsert(uAccessTrees[i])
+				.then(function(d){
+					log.info('Access tree saved successfully.');
+				})
+				.error(function(err){
+					log.error(err);
+					response.status  	= false;
+					response.message 	= appMsg.INTERNALERRORMESSAGE;
+					response.data  		= err;
+					callback(response);
+				});
+			}
+			
+			log.info(appMsg.USERGROUPSAVESUCCESS);
+			response.message	= appMsg.USERGROUPSAVESUCCESS;
+			response.data  		= data.po_id;
+			response.status 	= true;
+			callback(response);
+			
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
+			callback(response);
+		});
+	}
+	
+}
 
 
 //get all User Group
-var getUserGroup = function(condition, selectedAttributes, fetchAssociation, callback){
+exports.getUserGroup = function(condition,selectedAttributes,fetchAssociation,callback){
+
 	log.info(fileName+'.getUserGroup');
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String
-	}
 	
 	userGroup.findAll({
 		where		: [condition],
@@ -44,6 +115,7 @@ var getUserGroup = function(condition, selectedAttributes, fetchAssociation, cal
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
+				response.data 	 = groups;
 				callback(response);
 			} else{
 				log.info('About '+groups.length+' results.');
@@ -62,76 +134,42 @@ var getUserGroup = function(condition, selectedAttributes, fetchAssociation, cal
 		});
 }
 
-var saveOrUpdateUserGroup = function(uGroup, callback){
+//For get user access tree based on user param
+exports.getUserAccessTree = function(condition,selectedAttributes,fetchAssociation,callback){
 
-	log.error(fileName+'.getUserAccessTree - ');
-	if(uGroup.group_id != null){
-		userGroup.upsert(uGroup)
-		.then(function(data){
-			log.info(appMsg.USERGROUPEDITSUCCESS);
-			response.message= appMsg.USERGROUPEDITSUCCESS;
-			response.status = true;
-			response.data  	= uGroup.group_id;
-			callback(response);
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			callback(response);
-		})
-	} else{
-		userGroup.create(uGroup)
-		.then(function(data){
-			log.info(appMsg.USERGROUPSAVESUCCESS);
-			response.message= appMsg.USERGROUPSAVESUCCESS;
-			response.status = true;
-			response.data  	= data.group_id;
-			callback(response);
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appMsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			callback(response);
-		})
-	}
-}
-
-//insert or update User Group details
-var saveOrUpdateUserGroupDetails = function(uGroup, uAccessTrees, callback){
-	log.info(fileName+'.saveOrUpdateUserGroupDetails');
+	log.info(fileName+'.getUserAccessTree');
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
+		
+	userAccessTree.findAll({
+		where		: [condition],
+		attributes	: selectedAttributes
 	
-	saveOrUpdateUserGroup(uGroup, function(result){
-		if(result.status){
-			if(uAccessTrees.length != null)
-				uAccessTrees.forEach(function(accessTre){
-					accessTre.group_id = result.data;
-					userAccessTreeService.saveOrUpdateUserAccessTree(accessTre, function(data){
-						log.info(data);
-					})
-				});
-			
-			log.info('saveOrUpdateUserGroupDetails succesfully');
-			response.message	= 'saveOrUpdateUserGroupDetails succesfully';// change msg
-			response.status 	= true;
+	})
+		.then(function(accesTre){
+			if(accesTre.length == 0){
+				log.info(appMsg.LISTNOTFOUNDMESSAGE);
+				response.message = appMsg.LISTNOTFOUNDMESSAGE;
+				response.status  = false;
+				response.data 	 = accesTre;
+				callback(response);
+			} else{
+				log.info('About '+accesTre.length+' results.');
+				response.status  	= true;
+				response.message 	= 'About '+accesTre.length+' results.';
+				response.data 		= accesTre;
+				callback(response);
+			}
+		})
+		.error(function(err){
+			log.error(err);
+			response.status  	= false;
+			response.message 	= appMsg.INTERNALERRORMESSAGE;
+			response.data  		= err;
 			callback(response);
-			
-		} else{
-			callback(result);
-		}
-	});
+		});
 }
 
-module.exports = {
-	getUserGroup				: getUserGroup,
-	saveOrUpdateUserGroup		: saveOrUpdateUserGroup,
-	saveOrUpdateUserGroupDetails: saveOrUpdateUserGroupDetails
-}
