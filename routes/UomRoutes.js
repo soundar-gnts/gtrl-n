@@ -51,29 +51,36 @@ module.exports = function(app, server){
 			selectedAttributes = ['uom_id','uom_name']
 		}
 		
-		if(companyId != null)
+		if(companyId != null){
 			condition = "company_id="+companyId;
+		}
 		
-		if(uomId!=null)
-			if(condition === "")
+		if(uomId!=null){
+			if(condition === ""){
 				condition = "uom_id='"+uomId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and uom_id='"+uomId+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
+			}
+		}
 		
-		if(uomName!=null)
-			if(condition === "")
+		if(uomName!=null){
+			if(condition === ""){
 				condition = "uom_name='"+uomName+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and uom_name='"+uomName+"'";
+			}
+		}
 		
 		uomService.getUom(condition,selectedAttributes,function(result){
 			res.send(result);

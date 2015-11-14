@@ -19,7 +19,16 @@ module.exports = function(app, server) {
 	
 	app.post('/getaccounttxnsbillsdetails', getAccountTxnsBillsDetails);
 	app.post('/saveaccounttxnsbills', saveAccountTxnsBills);
-	app.post('/deleteaccounttxnsbill', accountTxnsBillsService.deleteAccountTxnsBill);
+	app.post('/deleteaccounttxnsbill', deleteAccountTxnsBill);
+	
+	//For delete account txns bills
+	function deleteAccountTxnsBill(req, res){
+		
+		var txnbillid	= req.param("txnbillid");
+		accountTxnsBillsService.deleteAccountTxnsBill(txnbillid,function(result){
+				res.send(result);
+			});
+	}
 	
 	
 	// To get Account Txns Bills List based on user param

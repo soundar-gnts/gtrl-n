@@ -22,6 +22,7 @@ module.exports = function(app, server){
 	app.post('/savetaxdetails', saveOrUpdateTax);
 	app.post('/gettaxdetails', 	getTax);
 	
+	//For save / update tax details
 	function saveOrUpdateTax(req, res){
 		var tax = {
 				tax_id			: req.param('taxid'),
@@ -46,6 +47,7 @@ module.exports = function(app, server){
 		});
 	}
 	
+	//For get tax list based on user param
 	function getTax(req, res){
 		
 		var condition 			= "";
@@ -60,35 +62,45 @@ module.exports = function(app, server){
 			selectedAttributes = ['tax_id','tax_name']
 		}
 		
-		if(companyId != null)
+		if(companyId != null){
 			condition = "company_id="+companyId;
+		}
 		
-		if(taxId!=null)
-			if(condition === "")
+		if(taxId!=null){
+			if(condition === ""){
 				condition = "tax_id='"+taxId+"'";
-			else
+			}
+			else{
 				condition = condition+" and tax_id='"+taxId+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
+			}
+		}
 		
-		if(taxName!=null)
-			if(condition === null)
+		if(taxName!=null){
+			if(condition === null){
 				condition = "tax_name='"+taxName+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and tax_name='"+taxName+"'";
+			}
+		}
 		
-		if(stateId!=null)
-			if(condition === null)
+		if(stateId!=null){
+			if(condition === null){
 				condition = "state_id='"+stateId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and state_id='"+stateId+"'";
+			}
+		}
 		
 		taxService.getTax(condition, selectedAttributes, function(result){
 			res.send(result);

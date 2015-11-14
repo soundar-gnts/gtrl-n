@@ -20,6 +20,7 @@ module.exports = function(app, server) {
 	app.post('/savepushnotification', 		savePushNotification);
 	app.post('/deletepushnotification', 	deletePushNotification);
 	
+	//For get push notification based on user param
 	function getPushNotificationDetails(req, res){
 		
 		var condition 			= "";
@@ -58,6 +59,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For save / update push notification
 	function savePushNotification(req, res){
 		
 		var pushNotfictn = {
@@ -76,6 +78,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For delete push notification
 	function deletePushNotification(req, res){
 		var condition ="push_id="+pushid;
 		

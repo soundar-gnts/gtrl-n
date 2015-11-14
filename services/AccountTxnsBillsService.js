@@ -83,17 +83,23 @@ exports.saveAccountTxnsBills = function(billsobj,callback) {
 		
 }
 //To Delete Account Txns Bill Detail
-exports.deleteAccountTxnsBill = function(req, res) {
-	if(req.param("txnbillid")!=null){
+exports.deleteAccountTxnsBill = function(txnbillid,callback) {
+	if(txnbillid!=null){
 		accounttxnsbills.destroy({where:{
-			txnbill_id					: req.param("txnbillid")		
+			txnbill_id					: txnbillid		
 	}}).then(function(data){
 		if(data){
 			log.info(filename+'>>deleteAccountTxnsBill>>'+appmsg.DELETEMESSAGE);
 			response.message = appmsg.DELETEMESSAGE;
 			response.status  = true;
-			response.data	 = req.param("txnbillid");
-			res.send(response);
+			response.data	 = txnbillid;
+			callback(response);
+		}else{
+			log.info(filename+'>>deleteAccountTxnsBill>>'+appmsg.DELETEMESSAGE);
+			response.message = appmsg.DELETEMESSAGE;
+			response.status  = true;
+			response.data	 = txnbillid;
+			callback(response);
 		}
 		
 	}).error(function(err){
@@ -102,13 +108,13 @@ exports.deleteAccountTxnsBill = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 	});
 	}else{
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
-			response.data  		= req.param("txnbillid");
-			res.send(response);
+			response.data  		= txnbillid;
+			callback(response);
 	}
 }
 

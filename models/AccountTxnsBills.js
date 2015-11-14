@@ -15,9 +15,9 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var accounttxnsbills = model.define('t_account_txns_bills', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var accounttxnsbills 	= model.define('t_account_txns_bills', {
 
 	txnbill_id : {
 		type 			: dataTypes.INTEGER,

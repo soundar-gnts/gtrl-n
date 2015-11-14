@@ -24,6 +24,7 @@ module.exports = function(app, server){
 	app.post('/savesupplierdetails',saveOrUpdateSupplierDetails);
 	app.post('/getsupplierdetails', getSupplier);
 	
+	//For save / update supplier details
 	function saveOrUpdateSupplierDetails(req, res){
 		
 		var supplier = {
@@ -60,6 +61,7 @@ module.exports = function(app, server){
 		});
 	}
 	
+	//For get supplier details based on user param
 	function getSupplier(req, res){
 		
 		var fetchAssociation 	= "";
@@ -78,30 +80,36 @@ module.exports = function(app, server){
 			selectedAttributes = ['supplier_id','supplier_code','supplier_name']
 		}
 		
-		if(companyId != null)
+		if(companyId != null){
 			condition = "company_id="+companyId;
+		}
 		
-		if(supId!=null)
-			if(condition === "")
+		if(supId!=null){
+			if(condition === ""){
 				condition = "supplier_id='"+supId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and supplier_id='"+supId+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}
+			else{
 				condition = condition+" and status='"+status+"'";
+			}
+		}
 		
-		if(supName!=null)
-			if(condition === "")
+		if(supName!=null){
+			if(condition === ""){
 				condition = "supplier_name='"+supName+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and supplier_name='"+supName+"'";
-		
+			}
+		}		
 		
 		supplierService.getSupplier(condition, selectedAttributes, fetchAssociation,function(response){
 			res.send(response);

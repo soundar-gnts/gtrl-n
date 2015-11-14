@@ -87,7 +87,7 @@ exports.saveOrUpdateproductCategory = function(req, res){
 }
 
 //get all product category
-exports.getProductCategory = function(req, res){
+exports.getProductCategory = function(condition,selectedAttributes,callback){
 
 	log.info(fileName+'.getProductCategory');
 
@@ -97,57 +97,6 @@ exports.getProductCategory = function(req, res){
 			data	: String
 	}
 	
-	var selectedAttributes	= "";
-	var condition 			= "";
-	var prodcatid 			= req.param('prodcatid');
-	var companyId 			= req.param('companyid');
-	var status				= req.param('status');
-	var productCatName 		= req.param('prodcatname');
-	var parantId			= req.param('parentid');
-	var levelNo				= req.param('levelno');
-	
-	if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
-		selectedAttributes = ['prod_cat_id','prod_cat_name','level_no']
-	}
-	
-	if(companyId != null)
-		condition = "company_id="+companyId;
-	
-	if(prodcatid!=null)
-		if(condition === "")
-			condition = "Prod_cat_id='"+prodcatid+"'";
-	
-		else
-			condition = condition+" and Prod_cat_id='"+prodcatid+"'";
-	
-	if(status!=null)
-		if(condition === "")
-			condition = "status='"+status+"'";
-	
-		else
-			condition = condition+" and status='"+status+"'";
-	
-	if(productCatName!=null)
-		if(condition === null)
-			condition = "prod_cat_name='"+productCatName+"'";
-	
-		else
-			condition = condition+" and prod_cat_name='"+productCatName+"'";
-	
-	if(parantId!=null)
-		if(condition === null)
-			condition = "parent_id='"+parantId+"'";
-	
-		else
-			condition = condition+" and parent_id='"+parantId+"'";
-	
-	if(levelNo!=null)
-		if(condition === null)
-			condition = "level_no='"+levelNo+"'";
-	
-		else
-			condition = condition+" and level_no='"+levelNo+"'";
-	
 	category.findAll({
 		where		: [condition],
 		attributes	: selectedAttributes
@@ -156,15 +105,16 @@ exports.getProductCategory = function(req, res){
 		.then(function(categories){
 			if(categories.length == 0){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);
-				response.message = appMsg.LISTNOTFOUNDMESSAGE;
-				response.status  = false;
-				res.send(response);
+				response.message 	= appMsg.LISTNOTFOUNDMESSAGE;
+				response.status  	= false;
+				response.data 		= categories;
+				callback(response);
 			} else{
 				log.info('About '+categories.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+categories.length+' results.';
 				response.data 		= categories;
-				res.send(response);
+				callback(response);
 			}
 		})
 		.error(function(err){
@@ -172,6 +122,6 @@ exports.getProductCategory = function(req, res){
 			response.status  	= false;
 			response.message 	= appMsg.INTERNALERROR;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
 }

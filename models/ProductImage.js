@@ -15,14 +15,14 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var productimage = model.define('m_product_image', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var productimage 		= model.define('m_product_image', {
 
-	product_image_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	product_image_id 	: {
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 
 	prod_id 			: dataTypes.INTEGER,
@@ -35,8 +35,8 @@ var productimage = model.define('m_product_image', {
 	//prod_cat_id 		: dataTypes.INTEGER
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 'm_product_image'
+	timestamps 			: false,
+	freezeTableName 	: true,
+	tableName 			: 'm_product_image'
 });
-module.exports = productimage;
+module.exports 			= productimage;

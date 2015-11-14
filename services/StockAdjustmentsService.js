@@ -17,35 +17,34 @@ var stockadjustments 		= require('../models/StockAdjustments.js');
 var log 					= require('../config/logger').logger;
 var path 					= require('path');
 var fileName				= path.basename(__filename);
+var response 				= {
+								status	: Boolean,
+								message : String,
+								data	: String  
+								};
 var stockLedgerService 		= require('../services/StockLedgerService.js');
 var appMsg					= require('../config/Message.js');
 
 // To get Stock Adjustments List based on user param
-exports.getStockAdjustmentsDetails = function(condition, selectedAttribute, callback) {
-	log.error(fileName+'.getStockAdjustmentsDetails - ');
-	var response = {
-			status	: Boolean,
-			message : String,
-			data	: String  
-		}
+exports.getStockAdjustmentsDetails = function(condition,attr,callback) {
 	
-	stockadjustments.findAll({where : [condition],attributes: selectedAttribute,order: [['actioned_dt', 'DESC']]}).then(function(result) {
+	stockadjustments.findAll({where : [condition],attributes: attr,order: [['actioned_dt', 'DESC']]}).then(function(result) {
 		if(result.length === 0){
-			log.info(appMsg.LISTNOTFOUNDMESSAGE);
+			log.info(fileName+'.getStockAdjustmentsDetails - '+appMsg.LISTNOTFOUNDMESSAGE);
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;
 			response.status  = false;
 			response.data	 = "";
 			callback(response);
 		} else{
 			
-			log.info(result.length+' results.');
+			log.info(fileName+'.getStockAdjustmentsDetails - About '+result.length+' results.');
 			response.status  	= true;
 			response.message 	= 'About '+result.length+' results.';
 			response.data 		= result;
 			callback(response);
 		}
 	}).error(function(err){
-		
+		log.error(fileName+'.getStockAdjustmentsDetails - ');
 		log.error(err);
 		response.status  	= false;
 		response.message 	= appMsg.INTERNALERRORMESSAGE;
@@ -54,51 +53,12 @@ exports.getStockAdjustmentsDetails = function(condition, selectedAttribute, call
 	});
 }
 
-exports.saveOrUpdateStockAdjustments = function(stockAdjstmentObj, callback) {
-	var response = {
-			 status	: Boolean,
-			 message : String,
-			 data	: String
-		}
-	if(stockAdjstmentObj.adjust_id != null){
-		stockadjustments.upsert(stockAdjstmentObj)
-		.then(function(data){						
-			log.info(filename+'>>saveWishorderList>>'+appmsg.WISHLISTREMOVESUCCESS);
-			response.message = appmsg.WISHLISTREMOVESUCCESS;
-			response.status  = true;
-			response.data  		= stockAdjstmentObj.adjust_id;
-			callback(response);			
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appmsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			callback(response);
-		});
-	} else{
-		stockadjustments.create(stockAdjstmentObj)
-		.then(function(data){						
-			log.info(filename+'>>saveWishorderList>>'+appmsg.WISHLISTREMOVESUCCESS);
-			response.message = appmsg.WISHLISTREMOVESUCCESS;
-			response.status  = true;
-			response.data  		= data.adjust_id;
-			callback(response);			
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= appmsg.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			callback(response);
-		});
-	}
-}
+
 
 
 // To Save/Update Stock Adjustments Details
-exports.saveStockAdjustments = function(stockAdjstment, callback) {
-	stockadjustments.upsert(stockAdjstment).then(function(data){
+exports.saveStockAdjustments = function(adjustobj,callback) {
+	stockadjustments.upsert(adjustobj).then(function(data){
 		if(data){
 			log.info(fileName+'.saveStockAdjustments - '+appMsg.SAVEMESSAGE);
 			response.message = appMsg.SAVEMESSAGE;
@@ -114,10 +74,15 @@ exports.saveStockAdjustments = function(stockAdjstment, callback) {
 			response.data	 = "";
 			callback(response);
 			
-			if(stockAdjstment.status==='Approved' && stockAdjstment.adjust_symbol==='+'){
-				stockLedgerService.insertStockLedger(stockAdjstment.product_id, stockAdjstment.company_id, stockAdjstment.store_id, stockAdjstment.batch_no, stockAdjstment.adjust_qty,null,stockAdjstment.uom_id,null,data.actioned_dt,"Stock Adjustment - "+data.adjust_reason);
-				}else if(stockAdjstment.status==='Approved' && stockAdjstment.adjust_symbol ==='-') {
-					stockLedgerService.insertStockLedger(stockAdjstment.product_id,stockAdjstment.company_id,stockAdjstment.store_id,stockAdjstment.batch_no,null,stockAdjstment.adjust_qty,stockAdjstment.uom_id,null,data.actioned_dt,"Stock Adjustment - "+data.adjust_reason)
+			//For update stock ledger and summary
+			if(adjustobj.status==='Approved' && adjustobj.adjust_symbol==='+'){
+				stockLedgerService.insertStockLedger(adjustobj.product_id,adjustobj.company_id,adjustobj.store_id,
+						adjustobj.batch_no,adjustobj.adjust_qty,null,adjustobj.uom_id,null,data.actioned_dt,
+						"Stock Adjustment - "+data.adjust_reason);
+				}else if(adjustobj.status==='Approved' && adjustobj.adjust_symbol==='-') {
+					stockLedgerService.insertStockLedger(adjustobj.product_id,adjustobj.company_id,adjustobj.store_id
+							,adjustobj.batch_no,null,adjustobj.adjust_qty,adjustobj.uom_id,null,data.actioned_dt,
+							"Stock Adjustment - "+data.adjust_reason)
 				}
 		}
 		

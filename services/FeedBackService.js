@@ -27,121 +27,67 @@ var response 	= {
 					};
 	
 
-//SaveOrUpdate FeedBack Details
+	//SaveOrUpdate FeedBack Details
+	exports.saveOrUpdateFeedBack = function(feedbackobj, callback) {
+	feedbackservice.upsert(feedbackobj).then(
+			function(data) {
+				if (data) {
+					log.info(fileName + '.saveOrUpdateFeedBack - '
+							+ appMsg.SAVEMESSAGE);
+					response.message 	= appMsg.SAVEMESSAGE;
+					response.status 	= true;
+					response.data 		= "";
+					callback(response);
 
-	exports.saveOrUpdateFeedBack = function(req, res){	
-
-		feedbackservice.upsert({
-			
-			feedback_id		: req.param('feedbackid'),
-			company_id		: req.param('companyid'),
-			cust_id         : req.param('custid'),
-			feedback		: req.param('feedback'),
-			status    		: req.param('status'),	
-			last_updated_dt	: req.param('lastupdateddt'),
-	        last_updated_by	: req.param('lastupdatedby')
-	        
-			})
-			.then(function(data){
-				if(data){
-					log.info(fileName+'.saveOrUpdateFeedBack - '+appMsg.SAVEMESSAGE);
-					response.message = appMsg.SAVEMESSAGE;
-					response.status  = true;
-					res.send(response);
-
+				} else {
+					log.info(fileName + '.saveOrUpdateFeedBack - '
+							+ appMsg.UPDATEMESSAGE);
+					response.message 	= appMsg.UPDATEMESSAGE;
+					response.status 	= true;
+					response.data 		= "";
+					callback(response);
 				}
-				else{
-					log.info(fileName+'.saveOrUpdateFeedBack - '+appMsg.UPDATEMESSAGE);
-					response.message = appMsg.UPDATEMESSAGE;
-					response.status  = true;
-					res.send(response);
-				}
-				
 
-				
-			}).error(function(err){
-				log.info(fileName+'.saveOrUpdateFeedBack - '+appMsg.INTERNALERRORMESSAGE);
+			}).error(
+			function(err) {
+				log.info(fileName + '.saveOrUpdateFeedBack - '
+						+ appMsg.INTERNALERRORMESSAGE);
 				log.error(err);
-				response.status  	= false;
+				response.status 	= false;
 				response.message 	= appMsg.INTERNALERRORMESSAGE;
-				response.data  		= err;
-				res.send(response);
+				response.data 		= err;
+				callback(response);
 			});
 	}; 
 
-	//FeedBack List
-
-	exports.getFeedBackList = function(req, res) {	
+	//To get feedback list based on user param
+	exports.getFeedBackList = function(condition,attr,callback) {	
 		
-		var condition  		= "";		
-		var feedbackid		= req.param('feedbackid');
-		var companyid		= req.param('companyid');
-		var custid    	    = req.param('custid');	
-		var status			= req.param("status");
-		
-		var attr 		= "";
-		
-		if(feedbackid!=null){
-			condition ="feedback_id="+feedbackid;
-			}
-		
-		if(companyid!=null){
-			if(condition === ""){
-				condition="company_id ='"+companyid+"'";
-			}else {
-				condition=condition+" and company_id ='"+companyid+"'";
-			}
-		}
-		
-		if(custid!=null){
-			if(condition === ""){
-				condition="cust_id='"+custid+"'";
-			}else {
-				condition=condition+" and cust_id='"+custid+"'";
-			}
-		}
-		if(status!=null){
-			if(condition === ""){
-				condition="status='"+status+"'";
-			}else {
-				condition=condition+" and status='"+status+"'";
-			}
-		}
-		
-
-		if(req.param('isfulllist')== null ||req.param('isfulllist')=='P'){
-			attr=['company_id','cust_id','feedback_id'];
-		}
-			
-
 		feedbackservice.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
 		  
 		  .then(function(result){
-			  
 				if(result.length === 0){
-					
 					log.info(fileName+'.getFeedBackList - '+appMsg.LISTNOTFOUNDMESSAGE);
 					response.message = appMsg.LISTNOTFOUNDMESSAGE;
 					response.status  = false;
 					response.data 	 = "";
-					res.send(response);
+					callback(response);
 				} else{
 
 					log.info(fileName+'.getFeedBackList - About '+result.length+' results.');					
 					response.status  	= true;
 					response.message 	= 'About '+result.length+' results.';
 					response.data 		= result;
-					res.send(response);
+					callback(response);
 				}
 				
 			})
-			
 			.error(function(err){
 				log.error(fileName+'.getFeedBackList - '+appMsg.INTERNALERRORMESSAGE);
 				log.error(err);
 				response.status  	= false;
 				response.message 	= appMsg.INTERNALERRORMESSAGE;
 				response.data  		= err;
-				res.send(response);
+				callback(response);
 			});
 		};

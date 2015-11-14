@@ -22,6 +22,7 @@ module.exports = function(app, server){
 	app.post('/savescreentreedetails', saveOrUpdateScreenTree);
 	app.post('/getscreentreedetails', 	getScreenTree);
 	
+	//For save / update screen tree
 	function saveOrUpdateScreenTree(req, res){
 		var screenTree = {
 				screen_id		: req.param('screenid'),
@@ -34,6 +35,7 @@ module.exports = function(app, server){
 			res.send(result);
 		});
 	}
+	//For get screen tree list based on user param.
 	 function getScreenTree(req, res){
 		 
 		var condition 	= "";
@@ -46,24 +48,28 @@ module.exports = function(app, server){
 			selectedAttributes = ['screen_id','screen_name']
 		}
 			
-		if(screenId!=null)
-			if(condition === "")
+		if(screenId!=null){
+			if(condition === ""){
 				condition = "screen_id='"+screenId+"'";
-		
+			}
+		}		
 			
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
-			
-		if(screeName!=null)
-			if(condition === "")
+			}
+		}			
+		if(screeName!=null){
+			if(condition === ""){
 				condition = "screen_name='"+screeName+"'";
-			
-			else
+			}			
+			else{
 				condition = condition+" and screen_name='"+screeName+"'";
+			}
+		}
 			
 		screenTreeService.getScreenTree(condition, selectedAttributes, function(result){
 			res.send(result);

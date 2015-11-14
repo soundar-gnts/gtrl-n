@@ -17,12 +17,36 @@
 var stockAdjustmentsService = require('../services/StockAdjustmentsService.js');
 module.exports = function(app, server) {
 	app.post('/getstockadjustmentsdetails', getStockAdjustmentsDetails);
-	app.post('/savestockadjustments', 		saveStockAdjustments);
+	app.post('/savestockadjustments', saveStockAdjustments);
 	
+	//For save / update stock adjustments
+	function saveStockAdjustments(req, res){
+		var adjustobj = {
+				adjust_id					: req.param("adjustid"),
+				product_id 					: req.param("productid"),
+				company_id 					: req.param("companyid"),
+				store_id 					: req.param("storeid"),
+				adjust_date 				: req.param("adjustdate"),
+				adjust_qty 					: req.param("adjustqty"),
+				batch_no					: req.param("batchno"),
+				uom_id						: req.param("uomid"),
+				status						: req.param("status"),
+				adjust_symbol 				: req.param("adjustsymbol"),
+				adjust_reason 				: req.param("adjustreason"),
+				actioned_by 				: req.param("actionedby"),
+				actioned_dt 				: req.param("actioneddt")
+				
+			};
+		stockAdjustmentsService.saveStockAdjustments(adjustobj, function(response){
+			res.send(response);
+		});
+	}
+	
+	
+	//For get stock adjustments details
 	function getStockAdjustmentsDetails(req, res){
-		
 		var condition 			= "";
-		var selectedAttribute	= "";
+		var attr 				= "";
 		var adjustid			=req.param("adjustid");
 		var companyid			=req.param("companyid");
 		var productid			=req.param("productid");
@@ -70,32 +94,10 @@ module.exports = function(app, server) {
 			}
 		}
 		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
-			selectedAttribute=['adjust_id','product_id','company_id','adjust_symbol'];
+			attr=['adjust_id','product_id','company_id','adjust_symbol'];
 		}
 		
-		stockAdjustmentsService.getStockAdjustmentsDetails(condition, selectedAttribute, function(response){
-			res.send(response);
-		});
-	}
-	
-	function saveStockAdjustments(req, res){
-		var stockAdjstment = {
-		adjust_id					: req.param("adjustid"),
-		product_id 					: req.param("productid"),
-		company_id 					: req.param("companyid"),
-		store_id 					: req.param("storeid"),
-		adjust_date 				: req.param("adjustdate"),
-		adjust_qty 					: req.param("adjustqty"),
-		batch_no					: req.param("batchno"),
-		uom_id						: req.param("uomid"),
-		status						: req.param("status"),
-		adjust_symbol 				: req.param("adjustsymbol"),
-		adjust_reason 				: req.param("adjustreason"),
-		actioned_by 				: req.param("actionedby"),
-		actioned_dt 				: req.param("actioneddt")
-		
-	}
-		stockAdjustmentsService.saveStockAdjustments(stockAdjstment, function(response){
+		stockAdjustmentsService.getStockAdjustmentsDetails(condition,attr, function(response){
 			res.send(response);
 		});
 	}

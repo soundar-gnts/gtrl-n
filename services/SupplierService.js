@@ -38,11 +38,13 @@ var saveOrUpdateSupplierDetails = function(supplier, callback){
 			log.info(appMsg.SUPPLIERSAVESUCCESS);
 			response.message = appMsg.SUPPLIERSAVESUCCESS;
 			response.status  = true;
+			response.data 	 = "";
 			callback(response);
 		} else{
 			log.info(appMsg.SUPPLIEREDITSUCCESS);
 			response.message = appMsg.SUPPLIEREDITSUCCESS;
 			response.status  = true;
+			response.data 	 = "";
 			callback(response);
 		}
 		
@@ -71,8 +73,9 @@ var getSupplier = function(condition, selectedAttributes, fetchAssociation, call
 		.then(function(suppliers){
 			if(suppliers.length == 0){
 				log.info(fileName+'.getSupplier - '+appMsg.LISTNOTFOUNDMESSAGE);
-				response.message = appMsg.LISTNOTFOUNDMESSAGE;
-				response.status  = false;
+				response.message 	= appMsg.LISTNOTFOUNDMESSAGE;
+				response.status  	= false;
+				response.data 		= suppliers;
 				callback(response);
 			} else{
 				log.info(fileName+'.getSupplier - About '+suppliers.length+' results.');

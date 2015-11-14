@@ -253,6 +253,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For get customer details based on user param
 	function getCustomerDetails(req, res){
 		var selectedAttributes 			= "";
 		var condition 		= "";
@@ -332,6 +333,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For save / update customer
 	function saveCustomer(req, res){
 		var customer = {
 				cust_id				: req.param("custid"),
@@ -365,6 +367,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For get customer type details based on user param
 	function getCustomerTypeDetails(req, res){
 		var condition 		= "";
 		var custgroupid		=req.param("custgroupid");
@@ -401,6 +404,7 @@ module.exports = function(app, server) {
 		})
 	}
 	
+	//For save / update customer type 
 	function saveCustomerType(req, res){
 		var custType = {
 				cust_group_id				: req.param("custgroupid"),
@@ -417,6 +421,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For get customer age group list based on user param
 	function getCustAgeGroupDetails(req, res){
 		
 		var condition 		= "";
@@ -454,6 +459,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For save / update customer age group
 	function saveCustAgeGroup(req, res){
 		var custAgeGrp = {
 		age_group_id				: req.param("agegroupid"),
