@@ -21,13 +21,14 @@ var cmsAppFirstRun = function ($templateCache, $templateRequest, $rootScope) {
   // Use the variable in your constants
   return {
     DOMAIN: resource,
-    M_BASE_URL:  'pages/',
-    M_LOCATION_URL:  'pages/location/',
-    M_STORE_URL   :  'pages/store/',
-    M_SUPPLIER_URL:  'pages/supplier/',
-    M_CUSTOMER_URL:  'pages/customer/',
-    M_ACCOUNTS_URL:  'pages/accounts/',
-    M_PRODUCTS_URL:  'pages/products/'
+    M_BASE_URL     :  'pages/',
+    M_LOCATION_URL :  'pages/location/',
+    M_STORE_URL    :  'pages/store/',
+    M_SUPPLIER_URL :  'pages/supplier/',
+    M_CUSTOMER_URL :  'pages/customer/',
+    M_ACCOUNTS_URL :  'pages/accounts/',
+    M_PRODUCTS_URL :  'pages/products/',
+    M_USERS_URL    :  'pages/users/'
   }
 })());
 // app constant end 
@@ -150,6 +151,26 @@ app.config(function($routeProvider,RESOURCES) {
         .when('/UOM', {
             templateUrl : RESOURCES.M_PRODUCTS_URL+'UOM.html',
             controller  : 'UOMList'
+        })
+        .when('/Users', {
+            templateUrl : RESOURCES.M_USERS_URL+'users.html',
+            controller  : 'UsersList'
+        })
+        .when('/UserGroup', {
+            templateUrl : RESOURCES.M_USERS_URL+'userGroup.html',
+            controller  : 'UserGroupList'
+        })
+        .when('/UserAccessTree', {
+            templateUrl : RESOURCES.M_USERS_URL+'userAccessTree.html',
+            controller  : 'UserAccessTreeList'
+        })
+        .when('/Employee', {
+            templateUrl : RESOURCES.M_USERS_URL+'employee.html',
+            controller  : 'EmployeeList'
+        })
+        .when('/ScreenTree', {
+            templateUrl : RESOURCES.M_USERS_URL+'screenTree.html',
+            controller  : 'ScreenTreeList'
         });
         
 });

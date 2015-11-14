@@ -30333,3 +30333,142 @@
 {"level":"info","message":"UomService.js.getUom - About 8 results.","timestamp":"2015-11-13T13:42:56.143Z"}
 {"level":"info","message":"UomService.js.getUom","timestamp":"2015-11-13T13:43:03.141Z"}
 {"level":"info","message":"UomService.js.getUom - About 8 results.","timestamp":"2015-11-13T13:43:03.150Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:12:05.589Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:18:25.567Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:19:46.961Z"}
+{"level":"info","message":"TaxService.js.getTax","timestamp":"2015-11-14T06:19:54.688Z"}
+{"level":"info","message":"StateService.js.getStateList - About 8 results.","timestamp":"2015-11-14T06:19:54.709Z"}
+{"level":"info","message":"TaxService.js.getTax - About 4 results.","timestamp":"2015-11-14T06:19:54.719Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:19:58.570Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:21:50.120Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:30:03.873Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:36:39.390Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:36:49.279Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:37:43.271Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:38:05.921Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:38:24.175Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:38:42.632Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:39:06.469Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:39:32.583Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:39:59.773Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:40:21.822Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:40:48.369Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:45:54.644Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:47:35.948Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T06:47:39.495Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T06:59:19.574Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T06:59:19.631Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:03:08.294Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:03:09.523Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T07:04:26.000Z"}
+{"level":"info","message":"About 23 results.","timestamp":"2015-11-14T07:05:16.818Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:05:20.512Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:05:20.531Z"}
+{"level":"info","message":"TaxService.js.getTax","timestamp":"2015-11-14T07:06:37.562Z"}
+{"level":"info","message":"StateService.js.getStateList - About 8 results.","timestamp":"2015-11-14T07:06:37.605Z"}
+{"level":"info","message":"TaxService.js.getTax - About 4 results.","timestamp":"2015-11-14T07:06:37.614Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:10:47.856Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:10:47.912Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:11:08.016Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:11:08.069Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:14:10.731Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:14:10.780Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:14:33.399Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:14:33.451Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:15:11.664Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:15:11.725Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:16:40.840Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:16:40.892Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:18:00.652Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:18:00.703Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:20:03.729Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:20:03.783Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:21:48.995Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:21:49.068Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:22:19.265Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:22:19.437Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:22:25.709Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:22:25.720Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T07:30:14.040Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T07:30:14.490Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T07:31:21.992Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T07:31:23.774Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T07:33:52.307Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T07:34:09.098Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T07:42:24.179Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T07:42:24.346Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T07:42:28.024Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T07:42:28.044Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T07:43:34.543Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T07:43:35.011Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T07:43:39.389Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T07:43:39.402Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T07:43:46.846Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T07:43:46.858Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:09:29.168Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:09:29.239Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:09:36.033Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:09:36.044Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:42:39.124Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:42:39.179Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:43:28.492Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:43:28.542Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:45:04.323Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:45:04.545Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:48:59.158Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:48:59.224Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:49:18.176Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:49:18.230Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:49:58.264Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:49:58.316Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:50:21.336Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:50:21.390Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:50:46.588Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:50:46.635Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:53:10.459Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:53:10.510Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:54:03.110Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:54:03.162Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:54:31.504Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:54:31.552Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:54:45.181Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:54:45.229Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:56:02.776Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:56:02.828Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T09:57:03.596Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T09:57:03.650Z"}
+{"level":"info","message":"UserGroupService.js.getUserAccessTree","timestamp":"2015-11-14T10:15:22.260Z"}
+{"level":"info","message":"About 21 results.","timestamp":"2015-11-14T10:15:22.306Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T10:18:11.998Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T10:18:12.061Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T10:22:49.758Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T10:27:20.019Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T10:27:20.071Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T10:27:49.316Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T10:27:49.370Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T10:27:53.567Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T10:30:19.708Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T10:31:32.523Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T10:32:38.774Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T10:32:38.826Z"}
+{"level":"info","message":"UserGroupService.js.getUserGroup","timestamp":"2015-11-14T11:25:00.014Z"}
+{"level":"info","message":"About 8 results.","timestamp":"2015-11-14T11:25:00.288Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:25:04.657Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:26:22.359Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:27:34.037Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:27:56.484Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:28:13.283Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:28:27.789Z"}
+{"level":"info","message":"ScreenTreeService.js.getScreenTree","timestamp":"2015-11-14T11:34:40.382Z"}
+{"level":"info","message":"About 5 results.","timestamp":"2015-11-14T11:34:40.726Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:36:04.059Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:36:07.092Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:38:03.532Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:38:35.117Z"}
+{"level":"info","message":"EmployeeService.js>>getEmployeeDetails>>About 5 results.","timestamp":"2015-11-14T11:39:31.178Z"}
+{"level":"info","message":"ScreenTreeService.js.getScreenTree","timestamp":"2015-11-14T11:40:11.193Z"}
+{"level":"info","message":"About 5 results.","timestamp":"2015-11-14T11:40:11.673Z"}
+{"level":"info","message":"ScreenTreeService.js.getScreenTree","timestamp":"2015-11-14T13:14:26.633Z"}
+{"level":"info","message":"About 5 results.","timestamp":"2015-11-14T13:14:27.061Z"}
+{"level":"info","message":"ScreenTreeService.js.getScreenTree","timestamp":"2015-11-14T13:30:08.298Z"}
+{"level":"info","message":"About 5 results.","timestamp":"2015-11-14T13:30:08.943Z"}

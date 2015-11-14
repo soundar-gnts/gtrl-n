@@ -1257,6 +1257,197 @@ $scope.form={};
 });
 // end Brand
 
+
+//start USERS
+app.controller("UsersList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
+//$scope.ActiveStateList={};	
+     var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
+            
+	$scope.InitLoad=function(){
+             contentBlock.start(); 
+                $http.post(RESOURCES.DOMAIN+'getuserlist').success(function(res){
+			//var data=res.data;
+			$scope.UsersList=res.data;
+			//console.log($scope.StoreRegionList);
+				// pagination controls
+				$scope.currentPage = 1;
+				$scope.totalItems = $scope.UsersList.length;
+				$scope.entryLimit = 10; // items per page
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				// $watch search to update pagination
+				$scope.$watch('search', function (newVal, oldVal) {
+				$scope.filtered = filterFilter($scope.UsersList, newVal);
+				$scope.totalItems = $scope.filtered.length;
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				$scope.currentPage = 1;
+				}, true);
+				
+		});
+                 contentBlock.stop(); 
+	};
+        $scope.openPanel=function(){
+            contentBlock.start(); 
+            $("#gridPanel").hide();
+            $("#addEditPanel").show();
+            contentBlock.stop(); 
+        };
+        $scope.closePanel=function(){
+            contentBlock.start(); 
+            $scope.InitLoad();
+            $("#addEditPanel").hide();
+            $("#gridPanel").show();
+           
+            contentBlock.stop(); 
+        };
+        
+        $scope.InitLoad();
+});
+// end USERS
+// 
+//start USER Group
+app.controller("UserGroupList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
+//$scope.ActiveStateList={};	
+     var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
+            
+	$scope.InitLoad=function(){
+             contentBlock.start(); 
+                $http.post(RESOURCES.DOMAIN+'getusergroupdetails').success(function(res){
+			//var data=res.data;
+			$scope.UserGroupList=res.data;
+			//console.log($scope.StoreRegionList);
+				// pagination controls
+				$scope.currentPage = 1;
+				$scope.totalItems = $scope.UserGroupList.length;
+				$scope.entryLimit = 10; // items per page
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				// $watch search to update pagination
+				$scope.$watch('search', function (newVal, oldVal) {
+				$scope.filtered = filterFilter($scope.UserGroupList, newVal);
+				$scope.totalItems = $scope.filtered.length;
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				$scope.currentPage = 1;
+				}, true);
+				
+		});
+                 contentBlock.stop(); 
+	};
+        $scope.InitLoad();
+});
+// end USERS Group
+
+//start USER Access Tree
+app.controller("UserAccessTreeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
+//$scope.ActiveStateList={};	
+     var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
+            
+	$scope.InitLoad=function(){
+             contentBlock.start(); 
+                $http.post(RESOURCES.DOMAIN+'getuseraccesstreedetails?isfulllist=').success(function(res){
+			//var data=res.data;
+			$scope.UserAccessTreeList=res.data;
+			//console.log($scope.StoreRegionList);
+				// pagination controls
+				$scope.currentPage = 1;
+				$scope.totalItems = $scope.UserAccessTreeList.length;
+				$scope.entryLimit = 10; // items per page
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				// $watch search to update pagination
+				$scope.$watch('search', function (newVal, oldVal) {
+				$scope.filtered = filterFilter($scope.UserAccessTreeList, newVal);
+				$scope.totalItems = $scope.filtered.length;
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				$scope.currentPage = 1;
+				}, true);
+				
+		});
+                 contentBlock.stop(); 
+	};
+        $scope.openPanel=function(){
+            contentBlock.start(); 
+            $("#gridPanel").hide();
+            $("#addEditPanel").show();
+            contentBlock.stop(); 
+        };
+        $scope.closePanel=function(){
+            contentBlock.start(); 
+            $scope.InitLoad();
+            $("#addEditPanel").hide();
+            $("#gridPanel").show();
+           
+            contentBlock.stop(); 
+        };
+        
+        $scope.InitLoad();
+});
+// end USER Access Tree
+
+//start employee
+app.controller("EmployeeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
+//$scope.ActiveStateList={};	
+     var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
+            
+	$scope.InitLoad=function(){
+             contentBlock.start(); 
+                $http.post(RESOURCES.DOMAIN+'getemployeedetails?isfulllist=').success(function(res){
+			//var data=res.data;
+			$scope.EmployeeList=res.data;
+			//console.log($scope.StoreRegionList);
+				// pagination controls
+				$scope.currentPage = 1;
+				$scope.totalItems = $scope.EmployeeList.length;
+				$scope.entryLimit = 10; // items per page
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				// $watch search to update pagination
+				$scope.$watch('search', function (newVal, oldVal) {
+				$scope.filtered = filterFilter($scope.EmployeeList, newVal);
+				$scope.totalItems = $scope.filtered.length;
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				$scope.currentPage = 1;
+				}, true);
+				
+		});
+                 contentBlock.stop(); 
+	};
+        $scope.InitLoad();
+});
+// end employee
+
+//start employee
+app.controller("ScreenTreeList",function($filter,$scope,$http,$rootScope,filterFilter,toastr,blockUI,CommonMasters,RESOURCES){
+//$scope.ActiveStateList={};	
+     var contentBlock = blockUI.instances.get('contentBlock');
+ contentBlock.stop();
+            
+	$scope.InitLoad=function(){
+             contentBlock.start(); 
+                $http.post(RESOURCES.DOMAIN+'getscreentreedetails?isfulllist=').success(function(res){
+			//var data=res.data;
+			$scope.ScreenTreeList=res.data;
+			//console.log($scope.StoreRegionList);
+				// pagination controls
+				$scope.currentPage = 1;
+				$scope.totalItems = $scope.ScreenTreeList.length;
+				$scope.entryLimit = 10; // items per page
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				// $watch search to update pagination
+				$scope.$watch('search', function (newVal, oldVal) {
+				$scope.filtered = filterFilter($scope.ScreenTreeList, newVal);
+				$scope.totalItems = $scope.filtered.length;
+				$scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+				$scope.currentPage = 1;
+				}, true);
+				
+		});
+                 contentBlock.stop(); 
+	};
+        $scope.InitLoad();
+});
+// end employee
+
 app.filter('startFrom', function() {
     return function(input, start) {
         if (!input || !input.length) { return; }

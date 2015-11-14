@@ -106,7 +106,7 @@ exports.getUserGroup = function(condition,selectedAttributes,fetchAssociation,ca
 	
 	userGroup.findAll({
 		where		: [condition],
-		attributes	: selectedAttributes,
+		//attributes	: selectedAttributes,
 		include		: fetchAssociation
 	
 	})
