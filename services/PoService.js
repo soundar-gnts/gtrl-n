@@ -262,7 +262,11 @@ var saveOrUpdatePo = function(slid, purchaseOrder, purchaseDetails, purchaseDele
 					});
 				});
 				
-			
+			var po = {
+					po_id : header.data,
+					po_no : purchaseOrder.po_no
+			}
+			header.data = po;
 			callback(header);
 		} else{
 			console.log('header.status'+header.status);

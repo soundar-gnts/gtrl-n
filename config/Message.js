@@ -115,3 +115,16 @@ exports.VOUCHEREDITSUCCESS = 'Voucher editted successfully.';
 
 exports.VOUCHERTYPESAVESUCCESS = 'Voucher type saved successfully.';
 exports.VOUCHERTYPEEDITSUCCESS = 'Voucher type editted successfully.';
+
+
+exports.PRODUCTSAVESUCCESS = 'Product saved successfully.';
+exports.PRODUCTEDITSUCCESS = 'Product editted successfully.';
+
+exports.PRODUCTSPECSAVESUCCESS = 'Product specification saved successfully.';
+exports.PRODUCTSPECEDITSUCCESS = 'Product specification editted successfully.';
+
+exports.PRODUCTIMAGESAVESUCCESS = 'Product image saved successfully.';
+exports.PRODUCTIMAGEEDITSUCCESS = 'Product image editted successfully.';
+
+exports.PRODUCTBRANDSAVESUCCESS = 'Product brand saved successfully.';
+exports.PRODUCTBRANDEDITSUCCESS = 'Product brand editted successfully.';
