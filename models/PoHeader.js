@@ -51,7 +51,8 @@ var poHeader = model.define('t_po_hdr', {
 	freezeTableName : true,
 	tableName : 't_po_hdr'
 });
-
+// poHeader.hasMany(poDetail,{targetkey: 'po_id'});
 poHeader.hasMany(poDetail, 	{foreignKey: 'po_id'});
+//poHeader.hasMany(poReturn, 	{foreignKey: 'po_id'});
 poHeader.belongsTo(supplier, 	{foreignKey: 'supplier_id'});
 module.exports = poHeader;

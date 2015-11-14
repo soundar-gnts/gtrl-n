@@ -20,13 +20,14 @@ var CONSTANT	= require('../config/Constants.js');
 var purchaseReturnService		= require('../services/PurchaseReturnService.js');
 var purchasereturndtlservice	= require('../services/PurchaseReturnDtlService.js');
 var purchasereturndetail		= require('../models/PurchaseReturnDtl.js');
+var slnogenService 		= require('../services/SlnoGenService.js');
 module.exports = function(app, server){
 	 
 	//Purchase Return Header		
 	app.post('/getpurchasereturnhdrlist', getPurchaseReturnHdrList);
 	app.post('/getPurchaseReturnDtllist', getPurchaseReturnDtlList);
 	app.post('/saveorupdatepurchasereturn', saveOrUpdatePurchaseReturn);
-	//app.post('/updatepurchasereturnstatus', updatePurchaseReturnStatus);	
+	app.post('/changePurchaseReturnStatus', changePurchaseReturnStatus);	
 		
 	
 	//Purchase Return Details	
@@ -164,48 +165,49 @@ module.exports = function(app, server){
 				purchaseReturnDetails.push(purchaseReturnDetail);
 			}); 
 		
-			purchaseReturnService.saveOrUpdatePurchaseReturn(PurchaseReturnHdr, purchaseReturnDetails, function(response){
-			res.send(response);
-			});
-		/*if(req.param('purchasedeletedetails') != null)
-			req.param('purchasedeletedetails').forEach(function(poDeleteDetails){
-				var purchaseDeleteDetailsId = {
-						po_dtlid	: poDeleteDetails.podtlid,
+//			purchaseReturnService.saveOrUpdatePurchaseReturn(PurchaseReturnHdr, purchaseReturnDetails, function(response){
+//			res.send(response);
+//			});
+		if(req.param('purchasereturndeletedetails') != null)
+			req.param('purchasereturndeletedetails').forEach(function(prDeleteDetails){
+				var purchasereturnDeleteDetailsId = {
+						return_dtlid	: prDeleteDetails.returndtlid,
 					}
-					purchaseDeleteDetailsIds.push(purchaseDeleteDetailsId);
-			});*/
-		/*if(req.param("autogenyn") == 'y' && req.param('status') == CONSTANT.STATUSPENDING && req.param('pono') == null){
+					purchaseReturnDeleteDetailsIds.push(purchasereturnDeleteDetailsId);
+			});
+		
+		if(req.param('status') == CONSTANT.STATUSPENDING && req.param('retrunrefno') == null){
 			var slNoCondition = {
-					company_id 			: poHdr.company_id,
-					ref_key 			: CONSTANT.PURCHASE_NO,
+					company_id 			: PurchaseReturnHdr.company_id,
+					ref_key 			: CONSTANT.PURCHAS_RETURN_NO,
 					autogen_yn 			: 'Y',
 					status 				: 'Active'
 			}
-			slnogenService.getSlnoValue(slNoCondition, function(sl){
+			slnogenService.getSlnoValu(slNoCondition, function(sl){
 				
-				purchaseOrder.po_no = sl.sno;
-				poService.saveOrUpdatePo(sl.slid, purchaseOrder, purchaseDetails, purchaseDeleteDetailsIds, function(response){
+				PurchaseReturnHdr.retrun_ref_no = sl.sno;
+				console.log(sl.sno);
+				purchaseReturnService.saveOrUpdatePurchaseReturn(sl.slid, PurchaseReturnHdr, purchaseReturnDetails, purchaseReturnDeleteDetailsIds, function(response){
 					res.send(response);
-				});
-					
+				});					
 			});
 		} else{
-			poService.saveOrUpdatePo(null, purchaseReturnDetails, PurchaseReturnHdr, purchaseReturnDeleteDetailsIds, function(response){
+			purchaseReturnService.saveOrUpdatePurchaseReturn(null, PurchaseReturnHdr, purchaseReturnDetails, purchaseReturnDeleteDetailsIds, function(response){
 				res.send(response);
 			});
-		}*/
+		} 
 		
 	}
 	
-	function changePoStatus(req, res){
-		var purchaseOrder = {
-				po_id			: req.param('poid'),
+	function changePurchaseReturnStatus(req, res){
+		var PurchaseReturnHdr = {
+				return_id			: req.param('returnid'),
 				status 			: req.param('status'),
 				last_updated_dt	: req.param('lastupdateddt'),
 				last_updated_by	: req.param('lastupdatedby')
 		}
-		poService.changePoStatus(purchaseOrder, function(response){
-			res.send(response);
+		purchaseReturnService.changePurchaseReturnStatus(PurchaseReturnHdr, function(response){
+		res.send(response);
 		});
 	}
 	
