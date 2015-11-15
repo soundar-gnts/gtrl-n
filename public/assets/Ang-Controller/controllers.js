@@ -747,7 +747,34 @@ app.controller("BankList",function($filter,$scope,$http,$rootScope,filterFilter,
 		});
                  contentBlock.stop(); 
 	};
-       
+       $scope.saveUpdate=function(){
+           $scope.form={};
+           bankid_string="";
+           if(($scope.form.bankid=="")||($scope.form.bankid==null))
+           {
+               bankid_string +="&bankid="+$scope.form.bankid;
+           }
+        var dataString = "?bankcode=" + $scope.form.bankcode +"&bankname=" + $scope.form.bankname + "&status=" + $scope.form.status 
+                + "&lastupdatedby=Soundar" + bankid_string;
+        console.log(dataString);
+        $http.post(RESOURCES.DOMAIN + 'savebankdetails' + dataString).success(function (res) {
+            //console.log(res);
+           
+            if (res.status)
+            {
+                $("#saveupdateform")[0].reset();
+                $('#modal-addEdit-bank').modal('hide');
+                toastr.success(res.message, 'Success', {closeButton: true, positionClass: 'toastr-top-center'});
+
+            }
+            else
+            {
+                toastr.error(res.message, 'Failed');
+            }
+             $scope.InitLoad();
+        });
+        
+       };
 	$scope.InitLoad();
 });
 // end bank
