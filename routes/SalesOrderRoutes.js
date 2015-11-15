@@ -33,6 +33,7 @@ module.exports = function(app, server){
 	app.post('/salesorderotpverification', 	soService.salesOrderOtpVerification);
 	app.post('/changesalesorderstatus', 	soService.changeSalesOrderStatus);
 	
+	//For add a product in cart
 	function addToCartFn(req, res){
 		
 		var salesOrder = {
@@ -122,51 +123,62 @@ module.exports = function(app, server){
 			selectedAttributes = ['salesorder_id','sal_ordr_number']
 		}
 		
-		if(companyId != null)
+		if(companyId != null){
 			condition = "t_salesorder_hdr.company_id="+companyId;
+		}
 		
-		if(soId!=null)
-			if(condition === "")
+		if(soId!=null){
+			if(condition === ""){
 				condition = "t_salesorder_hdr.salesorder_id='"+soId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and t_salesorder_hdr.salesorder_id='"+soId+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "t_salesorder_hdr.status in ("+status+")";
-				
-			else
+			}				
+			else{
 				condition = condition+" and t_salesorder_hdr.status in ("+status+")";
+			}
+		}
 				
-		if(storeId!=null)
-			if(condition === "")
+		if(storeId!=null){
+			if(condition === ""){
 				condition = "store_id='"+storeId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and store_id='"+storeId+"'";
+			}
+		}
 		
-		if(salesOrderNumber!=null)
-			if(condition === "")
+		if(salesOrderNumber!=null){
+			if(condition === ""){
 				condition = "sal_ordr_number='"+salesOrderNumber+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and sal_ordr_number='"+salesOrderNumber+"'";
-		
-		if(otpCode!=null)
-			if(condition === "")
+			}
+		}		
+		if(otpCode!=null){
+			if(condition === ""){
 				condition = "otp_code='"+otpCode+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and otp_code='"+otpCode+"'";
+			}
+		}
 		
-		if(customerId!=null)
-			if(condition === "")
+		if(customerId!=null){
+			if(condition === ""){
 				condition = "customer_id='"+customerId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and customer_id='"+customerId+"'";
-		
+			}
+		}		
 		soService.getSalesOrder(condition, selectedAttributes, fetchAssociation, function(result){
 			
 			res.send(result)
@@ -196,33 +208,36 @@ module.exports = function(app, server){
 		if(req.param('isfulllist')=='p')
 			selectedAttributes=['salesorder_dtl_id','salesorder_id']
 		
-		if(soId != null)
+		if(soId != null){
 			condition = "salesorder_id="+soId;
+		}
 		
-		if(soDetailsId!=null)
-			if(condition === "")
+		if(soDetailsId!=null){
+			if(condition === ""){
 				condition = "salesorder_dtl_id='"+soDetailsId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and salesorder_dtl_id='"+soDetailsId+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "t_salesorder_dtl.status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and t_salesorder_dtl.status='"+status+"'";
-		
+			}
+		}		
 		
 		soService.getSalesOrderDetails(condition, selectedAttributes, fetchAssociation, function(result){
 			res.send(result)
 		});
 	}
-	
+	// save / update sales order
 	function saveOrUpdateSalesOrderFn(req, res){
 		
 		var condition 			= "";
-		
 			
 		var salesOrder = {
 				salesorder_id		: req.param('salesorderid'),
@@ -247,8 +262,9 @@ module.exports = function(app, server){
 				available_hours		: req.param('availablehours'),
 				order_type			: req.param('ordertype')
 		}
-		if(req.param('ordervalue') != null)
+		if(req.param('ordervalue') != null){
 			salesOrder.Order_value = parseFloat(req.param('ordervalue'));
+		}
 //		console.log('..............');
 //		console.log(salesOrder.Order_value);
 		

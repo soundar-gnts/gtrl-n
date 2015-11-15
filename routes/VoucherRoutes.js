@@ -80,6 +80,7 @@ module.exports = function(app, server){
 		});
 	}
 	
+	//For get voucher type list based on user param
 	function getVoucherTypeList(req, res){
 
 		var selectedAttribute	= "";
@@ -148,7 +149,7 @@ module.exports = function(app, server){
 			res.send(response);
 		});
 	}
-	
+	//for save / update voucher type 
 	function saveOrUpdateVoucherType(req, res){
 		var voucherType = {
 			voucher_type_id		: req.param('vouchertypeid'),

@@ -80,6 +80,7 @@ module.exports = function(app, server){
 		});
 	}
 	
+	//For save / update company details
 	function saveCompanyDetails(req, res){
 		
 		var companyobj={

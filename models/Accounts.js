@@ -15,9 +15,9 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var accounts = model.define('t_accounts', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var accounts 			= model.define('t_accounts', {
 
 	account_id : {
 		type 			: dataTypes.INTEGER,
@@ -55,4 +55,4 @@ var accounts = model.define('t_accounts', {
 	freezeTableName 	: true,
 	tableName 			: 't_accounts'
 });
-module.exports = accounts;
+module.exports 			= accounts;

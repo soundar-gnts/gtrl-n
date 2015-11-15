@@ -22,6 +22,7 @@ module.exports = function(app, server){
 	app.post('/savesupplieraccounttypedetails', saveOrUpdateSupplierAccountType);
 	app.post('/getsupplieraccounttypedetails', 	getSupplierAccountType);
 	
+	//For save /update supplier account type
 	function saveOrUpdateSupplierAccountType(req, res){
 		
 		var supplierAccType = {
@@ -40,6 +41,7 @@ module.exports = function(app, server){
 		});
 	}
 	
+	//For get Supplier account type based on user param
 	function getSupplierAccountType(req, res){
 		
 		var condition 	= "";
@@ -53,30 +55,35 @@ module.exports = function(app, server){
 			selectedAttributes = ['supp_acct_id','supp_acct_name']
 		}
 		
-		if(companyId != null)
+		if(companyId != null){
 			condition = "company_id="+companyId;
+		}
 		
-		if(suppAcctId!=null)
-			if(condition === "")
+		if(suppAcctId!=null){
+			if(condition === ""){
 				condition = "supp_acct_id='"+suppAcctId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and supp_acct_id='"+suppAcctId+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
-		
-		if(name!=null)
-			if(condition === null)
+			}
+		}		
+		if(name!=null){
+			if(condition === null){
 				condition = "supp_acct_name='"+name+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and supp_acct_name='"+name+"'";
-		
+			}
+		}		
 		
 		supplierAccountTypeService.getSupplierAccountType(condition, selectedAttributes, function(response){
 			res.send(response);

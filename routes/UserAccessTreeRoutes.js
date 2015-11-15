@@ -23,6 +23,7 @@ module.exports = function(app, server){
 	app.post('/saveuseraccesstreedetails', userAccessTreeService.saveOrUpdateUserAccess);
 	
 	
+	//For get user access tree 
 	function getUserAccessTree(req, res){
 		
 		var condition 			= "";
@@ -40,23 +41,27 @@ module.exports = function(app, server){
 			selectedAttributes = ['acc_tree_id','group_id']
 		}
 		
-		if(companyId != null)
+		if(companyId != null){
 			condition = "m_user_access_tree.company_id="+companyId;
+		}
 		
-		if(accessTreeId != null)
-			if(condition === "")
+		if(accessTreeId != null){
+			if(condition === ""){
 				condition = "acc_tree_id='"+accessTreeId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and acc_tree_id='"+accessTreeId+"'";
+			}
+		}
 		
-		if(status != null)
-			if(condition === "")
+		if(status != null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
-		
+			}
+		}		
 		userAccessTreeService.getUserAccessTree(condition, selectedAttributes, fetchAssociation, function(response){
 			res.send(response);
 		});

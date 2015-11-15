@@ -31,6 +31,7 @@ module.exports = function(app, server){
 	app.post('/savepodetails',			saveOrUpdatePo);
 	app.post('/changepostatus', 		changePoStatus);
 	
+	//For get po details based on user param
 	function getPo(req, res){
 		
 		var fetchAssociation 	= [{model : supplier, attributes : ['supplier_code']}];
@@ -55,42 +56,52 @@ module.exports = function(app, server){
 			
 		}
 		
-		if(companyId != null)
+		if(companyId != null){
 			condition = "t_po_hdr.company_id="+companyId;
+		}
 		
-		if(poId!=null)
-			if(condition === "")
+		if(poId!=null){
+			if(condition === ""){
 				condition = "t_po_hdr.po_id='"+poId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and t_po_hdr.po_id='"+poId+"'";
+			}
+		}
 		
-		if(status!=null || statusprogress != null)
-			if(condition === "")
+		if(status!=null || statusprogress != null){
+			if(condition === ""){
 				condition = "t_po_hdr.status='"+status+"' or t_po_hdr.status='"+statusprogress+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and t_po_hdr.status='"+status+"' or t_po_hdr.status='"+statusprogress+"'";
+			}
+		}
 		
-		if(storeId!=null)
-			if(condition === "")
+		if(storeId!=null){
+			if(condition === ""){
 				condition = "store_id='"+storeId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and store_id='"+storeId+"'";
+			}
+		}
 		
-		if(supplierId!=null)
-			if(condition === "")
+		if(supplierId!=null){
+			if(condition === ""){
 				condition = "m_supplier.supplier_id='"+supplierId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and m_supplier.supplier_id='"+supplierId+"'";
+			}
+		}
 		
 		poService.getPo(condition, selectedAttributes, fetchAssociation, function(response){
 			res.send(response);
 		});
 	}
 	
+	//For get PO details based on user param
 	function getPoDetails(req, res){
 		
 		var selectedAttributes 	= ['po_id','po_dtlid'];
@@ -99,32 +110,38 @@ module.exports = function(app, server){
 		var poId 				= req.param('poid');
 		var status				= req.param('status');
 		
-		if(req.param('isfulllist')=='y')
+		if(req.param('isfulllist')=='y'){
 			selectedAttributes="";
+		}
 		
-		if(poId != null)
+		if(poId != null){
 			condition = "po_id="+poId;
+		}
 		
-		if(poDetailsId!=null)
-			if(condition === "")
+		if(poDetailsId!=null){
+			if(condition === ""){
 				condition = "po_dtlid='"+poDetailsId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and po_dtlid='"+poDetailsId+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
-		
+			}
+		}	
 		
 		poService.getPoDetails(condition, selectedAttributes, function(response){
 			res.send(response);
 		});
 	}
 	
+	//For save / update purchase order
 	function saveOrUpdatePo(req, res){
 		
 		var purchaseDetails			= [];
@@ -208,6 +225,7 @@ module.exports = function(app, server){
 		
 	}
 	
+	//For change the PO header status
 	function changePoStatus(req, res){
 		var purchaseOrder = {
 				po_id			: req.param('poid'),

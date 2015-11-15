@@ -37,4 +37,4 @@ var accounttxnsbills 	= model.define('t_account_txns_bills', {
 	freezeTableName 	: true,
 	tableName 			: 't_account_txns_bills'
 });
-module.exports = accounttxnsbills;
+module.exports 			= accounttxnsbills;

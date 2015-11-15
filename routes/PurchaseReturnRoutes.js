@@ -53,23 +53,27 @@ module.exports = function(app, server){
 			selectedAttributes = ['return_id','po_id']
 		}
 		
-		if(return_id != null)
+		if(return_id != null){
 			condition = "return_id="+return_id;
+		}
 		
-		if(po_id!=null)
-			if(condition === "")
+		if(po_id!=null){
+			if(condition === ""){
 				condition = "po_id='"+po_id+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and po_id='"+po_id+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
-		
+			}
+		}	
 		
 		purchaseReturnService.getPurchaseReturnHdrList(condition, selectedAttributes, fetchAssociation, function(response){
 			res.send(response);

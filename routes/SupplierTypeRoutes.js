@@ -22,6 +22,7 @@ module.exports = function(app, server){
 	app.post('/savesuppliertypedetails',saveOrUpdateSupplierType);
 	app.post('/getsuppliertypedetails', getSupplierType);
 	
+	//For save / update suppler type
 	function saveOrUpdateSupplierType(req, res){
 		
 		var supplierType = {
@@ -38,7 +39,7 @@ module.exports = function(app, server){
 			res.send(response);
 		});
 	}
-	
+	//for get suppler type based on user param
 	function getSupplierType(req, res){
 		
 		var condition 	= "";
@@ -52,30 +53,36 @@ module.exports = function(app, server){
 			selectedAttributes = ['supp_type_id','supp_type_name']
 		}
 		
-		if(companyId != null)
+		if(companyId != null){
 			condition = "company_id="+companyId;
+		}
 		
-		if(suppTypeId!=null)
-			if(condition === "")
+		if(suppTypeId!=null){
+			if(condition === ""){
 				condition = "supp_type_id='"+suppTypeId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and supp_type_id='"+suppTypeId+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
+			}
+		}
 		
-		if(name!=null)
-			if(condition === null)
+		if(name!=null){
+			if(condition === null){
 				condition = "supp_type_name='"+name+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and supp_type_name='"+name+"'";
-		
+			}
+		}		
 		
 		supplierTypeService.getSupplierType(condition, selectedAttributes, function(response){
 			res.send(response);

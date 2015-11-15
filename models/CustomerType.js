@@ -15,9 +15,9 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var customertype = model.define('m_customer_type', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var customertype 		= model.define('m_customer_type', {
 
 	cust_group_id : {
 		type 			: dataTypes.INTEGER,
@@ -32,8 +32,8 @@ var customertype = model.define('m_customer_type', {
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 'm_customer_type'
+	timestamps 			: false,
+	freezeTableName 	: true,
+	tableName 			: 'm_customer_type'
 });
-module.exports = customertype;
+module.exports 			= customertype;

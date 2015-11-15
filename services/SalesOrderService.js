@@ -262,9 +262,10 @@ var saveOrUpdateSalesOrder = function(slid, salesOrder, salesDetails, salesDelet
 					
 					salesDetail.salesorder_id = header.data;
 					var pdCondition					= "prod_id='"+salesDetail.product_id+"'";
-					productService.getProduct(pdCondition, '', '', function(proDetails){
+					console.log('pdCondition='+pdCondition);
+					productService.getProducts(pdCondition, '', '', function(proDetails){
 						
-						console.log('proDetails');
+						console.log('proDetails='+proDetails);
 						
 						//salesDetail.discount_prcnt	= proDetails.data[0].max_discount;
 						//console.log('salesDetail.discount_prcnt : '+salesDetail.discount_prcnt);

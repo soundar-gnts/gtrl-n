@@ -51,6 +51,7 @@ var getProducts = function(condition, selectedAttributes, fetchAssociation, call
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);
 				response.message = appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  = false;
+				response.data 	 = prodct;
 				callback(response);
 			} else{
 				log.info('About '+prodct.length+' results.');

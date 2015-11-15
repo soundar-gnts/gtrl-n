@@ -15,14 +15,14 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var designation = model.define('m_designation', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var designation 		= model.define('m_designation', {
 
 	designation_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 	company_id 			: dataTypes.INTEGER,	
 	designation_name 	: dataTypes.STRING,
@@ -31,7 +31,7 @@ var designation = model.define('m_designation', {
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	freezeTableName : true,
-	tableName : 'm_designation'
+	freezeTableName 	: true,
+	tableName 			: 'm_designation'
 });
-module.exports = designation;
+module.exports 			= designation;

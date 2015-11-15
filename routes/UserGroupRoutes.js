@@ -72,30 +72,36 @@ module.exports = function(app, server){
 			selectedAttributes = ['group_id','group_name']
 		}
 		
-		if(companyId != null)
+		if(companyId != null){
 			condition = "m_user_group.company_id="+companyId;
+		}
 		
-		if(groupId!=null)
-			if(condition === "")
+		if(groupId!=null){
+			if(condition === ""){
 				condition = "m_user_group.group_id='"+groupId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and m_user_group.group_id='"+groupId+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
+			}
+		}
 		
-		if(groupName!=null)
-			if(condition === "")
+		if(groupName!=null){
+			if(condition === ""){
 				condition = "group_name='"+groupName+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and group_name='"+groupName+"'";
-		
+			}
+		}		
 		userGroupService.getUserGroup(condition,selectedAttributes,fetchAssociation,function(result){
 			res.send(result);
 		});
@@ -115,29 +121,34 @@ module.exports = function(app, server){
 			selectedAttributes = ['acc_tree_id','group_id']
 		}
 		
-		if(companyId != null)
+		if(companyId != null){
 			condition = "m_user_access_tree.company_id="+companyId;
-		
-		if(accessTreeId != null)
-			if(condition === "")
+		}		
+		if(accessTreeId != null){
+			if(condition === ""){
 				condition = "acc_tree_id='"+accessTreeId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and acc_tree_id='"+accessTreeId+"'";
+			}
+		}
 		
-		if(groupId != null)
-			if(condition === "")
+		if(groupId != null){
+			if(condition === ""){
 				condition = "group_id='"+groupId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and group_id='"+groupId+"'";
-		
-		if(status != null)
-			if(condition === "")
+			}
+		}		
+		if(status != null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
+			}
+		}
 		
 		userGroupService.getUserAccessTree(condition,selectedAttributes,fetchAssociation,function(result){
 			res.send(result);

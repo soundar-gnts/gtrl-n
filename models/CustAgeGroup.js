@@ -15,9 +15,9 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var custagegroup = model.define('m_cust_age_group', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var custagegroup 		= model.define('m_cust_age_group', {
 
 	age_group_id : {
 		type 			: dataTypes.INTEGER,
@@ -32,8 +32,8 @@ var custagegroup = model.define('m_cust_age_group', {
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 'm_cust_age_group'
+	timestamps 			: false,
+	freezeTableName 	: true,
+	tableName 			: 'm_cust_age_group'
 });
-module.exports = custagegroup;
+module.exports 			= custagegroup;

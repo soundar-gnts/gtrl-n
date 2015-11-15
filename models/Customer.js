@@ -15,14 +15,14 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var Customer = model.define('m_customer', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var Customer 			= model.define('m_customer', {
 	
 	cust_id			: {
-		type: dataTypes.INTEGER,
-	    primaryKey: true,
-	    autoIncrement: true
+		type			: dataTypes.INTEGER,
+	    primaryKey		: true,
+	    autoIncrement	: true
 	    },
 	    
 	    cust_code		: dataTypes.STRING,
@@ -51,8 +51,8 @@ var Customer = model.define('m_customer', {
 	    city_id			: dataTypes.INTEGER,
 	
 },{
-	timestamps: false,
-	 freezeTableName: true,
-	tableName: 'm_customer'
+	timestamps			: false,
+	 freezeTableName	: true,
+	tableName			: 'm_customer'
 });
-module.exports = Customer;
+module.exports 			= Customer;

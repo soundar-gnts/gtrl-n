@@ -15,8 +15,8 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
 var accountTransactions = model.define('t_account_txns', {
 
 	acctxn_id : {
@@ -54,4 +54,4 @@ var accountTransactions = model.define('t_account_txns', {
 	freezeTableName 	: true,
 	tableName 			: 't_account_txns'
 });
-module.exports = accountTransactions;
+module.exports 			= accountTransactions;

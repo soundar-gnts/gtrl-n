@@ -20,6 +20,7 @@ module.exports = function(app, server) {
 	app.post('/savesalespymtdetails', 	saveSalesPymtDetails);
 	app.post('/deletesalespymtdetails', deleteSalesPymtDetails);
 	
+	//For get sales payment details
 	function getSalesPymtDetails(req, res){
 	
 		var condition 			= "";
@@ -66,6 +67,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For save / update sales payment details
 	function saveSalesPymtDetails(req, res){
 		
 		var salesPymntDetails = {
@@ -85,6 +87,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For delete a sales payment details
 	function deleteSalesPymtDetails(req, res){
 		
 		var condition = "sale_pymtid='"+req.param("salepymtid")+"'";

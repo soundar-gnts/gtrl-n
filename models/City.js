@@ -20,8 +20,8 @@
 		
 		city_id			: {
 			
-			type: dataTypes.INTEGER,
-		    primaryKey: true,
+			type		: dataTypes.INTEGER,
+		    primaryKey	: true,
 		    autoIncrement: true
 		    
 		    },

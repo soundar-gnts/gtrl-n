@@ -52,43 +52,54 @@ module.exports = function(app, server){
 			selectedAttributes = ['sale_id','bill_no']
 		}
 			
-		if(companyId != null)
+		if(companyId != null){
 			condition = "company_id="+companyId;
+		}
 		
-		if(saleId!=null)
-			if(condition === "")
+		if(saleId!=null){
+			if(condition === ""){
 				condition = "sale_id='"+saleId+"'";
-			
-			else
+			}			
+			else{
 				condition = condition+" and sale_id='"+saleId+"'";
+			}
+		}
 			
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-			
-			else
+			}			
+			else{
 				condition = condition+" and status='"+status+"'";
+			}
+		}
 			
-		if(storeId!=null)
-			if(condition === "")
+		if(storeId!=null){
+			if(condition === ""){
 				condition = "store_id='"+storeId+"'";
-			
-			else
+			}			
+			else{
 				condition = condition+" and store_id='"+storeId+"'";
+			}
+		}
 			
-		if(billNo!=null)
-			if(condition === "")
+		if(billNo!=null){
+			if(condition === ""){
 				condition = "bill_no='"+billNo+"'";
-			
-			else
+			}			
+			else{
 				condition = condition+" and sal_ordr_number='"+billNo+"'";
+			}
+		}
 			
-		if(customerId!=null)
-			if(condition === "")
+		if(customerId!=null){
+			if(condition === ""){
 				condition = "customer_id='"+customerId+"'";
-			
-			else
+			}			
+			else{
 				condition = condition+" and customer_id='"+customerId+"'";
+			}
+		}
 			
 		salesService.getSalesFn(condition, fetchAssociation, selectedAttributes, function(response){
 			res.send(response);
@@ -96,6 +107,7 @@ module.exports = function(app, server){
 			
 	}
 	
+	//For get sales details
 	function getSalesDetails(req, res){
 		
 		var selectedAttributes 	= "";
@@ -105,26 +117,31 @@ module.exports = function(app, server){
 		var status				= req.param('status');
 		var batchNo				= req.param('batch_no')
 		
-		if(req.param('isfulllist')=='p')
+		if(req.param('isfulllist')=='p'){
 			selectedAttributes=['salesorder_dtl_id','salesorder_id']
+		}
 		
-		if(saleId != null)
+		if(saleId != null){
 			condition = "sale_id="+saleId;
+		}
 		
-		if(saleDtlId!=null)
-			if(condition === "")
+		if(saleDtlId!=null){
+			if(condition === ""){
 				condition = "sale_dtlid='"+saleDtlId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and sale_dtlid='"+saleDtlId+"'";
+			}
+		}
 		
-		if(batchNo!=null)
-			if(condition === "")
+		if(batchNo!=null){
+			if(condition === ""){
 				condition = "batch_no='"+batchNo+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and batch_no='"+batchNo+"'";
-		
+			}
+		}		
 		
 		salesService.getSalesDetailsFn(condition, selectedAttributes, function(response){
 			res.send(response);
@@ -132,6 +149,7 @@ module.exports = function(app, server){
 	}
 	
 
+	//For get sales delivery details
 	function getSalesDeliveryDetails(req, res){
 		
 		var selectedAttributes 	= "";
@@ -142,39 +160,46 @@ module.exports = function(app, server){
 		var status				= req.param('status');
 		var batchNo			
 		
-		if(req.param('isfulllist')=='p')
+		if(req.param('isfulllist')=='p'){
 			selectedAttributes=['delivery_dtlid','sale_id', 'customer_name', 'delivery_address']
+		}
 		
-		if(deliveryDetId != null)
+		if(deliveryDetId != null){
 			condition = "delivery_dtlid="+deliveryDetId;
+		}
 		
-		if(saleId!=null)
-			if(condition === "")
+		if(saleId!=null){
+			if(condition === ""){
 				condition = "sale_id='"+saleId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and sale_id='"+saleId+"'";
-		
-		if(salesOrderId!=null)
-			if(condition === "")
+			}
+		}		
+		if(salesOrderId!=null){
+			if(condition === ""){
 				condition = "salesorder_id='"+salesOrderId+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and salesorder_id='"+salesOrderId+"'";
+			}
+		}
 		
-		if(status!=null)
-			if(condition === "")
+		if(status!=null){
+			if(condition === ""){
 				condition = "status='"+status+"'";
-		
-			else
+			}		
+			else{
 				condition = condition+" and status='"+status+"'";
-		
+			}
+		}		
 		
 		salesService.getSalesDeliveryDetailsFn(condition, selectedAttributes, function(response){
 			res.send(response);
 		});
 	}
-	
+	 
+	//For save / update sales header and details
 	function saveOrUpdateSales(req, res){
 		
 		var salesDetails			= [];
@@ -266,6 +291,7 @@ module.exports = function(app, server){
 		}
 	}
 	
+	//For save / update sales delivery details
 	function saveOrUpdateSalesDeliveryDetails(req, res){
 		var salesDeliveryDetail = {
 				delivery_dtlid		: req.param('deliverydtlid'),
