@@ -146,6 +146,7 @@ exports.getUserAccessTree = function(condition,selectedAttributes,fetchAssociati
 		
 	userAccessTree.findAll({
 		where		: [condition],
+		include		: fetchAssociation,
 		attributes	: selectedAttributes
 	
 	})

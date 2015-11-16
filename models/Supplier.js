@@ -14,16 +14,17 @@
  * 
  */
 
-var model		= require('../config/sequelize.js');
-var dataTypes	= require('sequelize');
-var state		= require('../models/State.js');
-var city		= require('../models/City.js');
-var supplier = model.define('m_supplier', {
+var model			= require('../config/sequelize.js');
+var dataTypes		= require('sequelize');
+var state			= require('../models/State.js');
+var city			= require('../models/City.js');
+var supplierType 	= require('../models/SupplierType.js');
+var supplier 		= model.define('m_supplier', {
 
-	supplier_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	supplier_id 	: {
+	type 			: dataTypes.INTEGER,
+	primaryKey 		: true,
+	autoIncrement 	: true
 	},
 	
 	supplier_code	: dataTypes.STRING,
@@ -53,11 +54,12 @@ var supplier = model.define('m_supplier', {
 	
 
 }, {
-	timestamps : false,
+	timestamps 		: false,
 	freezeTableName : true,
-	tableName : 'm_supplier'
+	tableName 		: 'm_supplier'
 });
 supplier.belongsTo(state, {foreignKey : 'state_id'});
 supplier.belongsTo(city, {foreignKey : 'city_id'});
+supplier.belongsTo(supplierType, {foreignKey : 'supp_type_id'});
 
-module.exports = supplier;
+module.exports 		= supplier;

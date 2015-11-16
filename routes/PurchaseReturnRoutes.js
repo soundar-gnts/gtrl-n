@@ -15,12 +15,12 @@
  * 
  */
 
-var CONSTANT	= require('../config/Constants.js');
+var CONSTANT					= require('../config/Constants.js');
 
 var purchaseReturnService		= require('../services/PurchaseReturnService.js');
 var purchasereturndtlservice	= require('../services/PurchaseReturnDtlService.js');
 var purchasereturndetail		= require('../models/PurchaseReturnDtl.js');
-var slnogenService 		= require('../services/SlnoGenService.js');
+var slnogenService 				= require('../services/SlnoGenService.js');
 module.exports = function(app, server){
 	 
 	//Purchase Return Header		

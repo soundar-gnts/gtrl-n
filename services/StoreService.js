@@ -36,7 +36,7 @@ var response 		 = {
 				log.info(fileName+'.getStoreList - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message 	= appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  	= false;	
-				response.data	 	= "";
+				response.data	 	= storelist;
 				callback(response);
 			} else{
 				
@@ -67,7 +67,7 @@ var response 		 = {
 				log.info(fileName+'.getStoreRegionList - '+appMsg.LISTNOTFOUNDMESSAGE);
 				response.message 	= appMsg.LISTNOTFOUNDMESSAGE;
 				response.status  	= false;
-				response.data	 	= "";
+				response.data	 	= regionlist;
 				callback(response);
 			} else{
 				

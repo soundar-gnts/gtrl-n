@@ -29,9 +29,9 @@ var filename			= path.basename(__filename);
 var accountsService 	= require('../services/AccountsService.js');
 
 // To get Account Payables List based on user param
-exports.getAccountPayablesDetails = function(condition,attr,callback) {
+exports.getAccountPayablesDetails = function(condition,attr,fetchAssociation,callback) {
 	
-	accountpayables.findAll({where : [condition],attributes: attr}).then(function(result) {
+	accountpayables.findAll({where : [condition],include : fetchAssociation,attributes: attr}).then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>>getAccountPayablesDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;

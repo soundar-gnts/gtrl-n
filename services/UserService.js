@@ -414,37 +414,51 @@ exports.getUser = function(req, res){
 			message : String,
 			data	: String
 	}
-	var condition 	= "";
-	var userId 		= req.param('userid');
-	var companyId 	= req.param('companyid');
-	var status		= req.param('status');
-	var userName 	= req.param('username');
+	var condition 			= "";
+	var fetchAssociation 	= "";
+	var userId 				= req.param('userid');
+	var companyId 			= req.param('companyid');
+	var status				= req.param('status');
+	var userName 			= req.param('username');
 	
-	if(companyId != null)
+	
+	if(req.param('fetchassociation')=='y'){
+		fetchAssociation = [{model : userGroup, attributes : ['group_name']}]
+	}
+	
+	
+	if(companyId != null){
 		condition = "company_id="+companyId;
+	}
 	
-	if(userId!=null)
-		if(condition === "")
+	if(userId!=null){
+		if(condition === ""){
 			condition = "user_id='"+userId+"'";
-	
-		else
+		}	
+		else{
 			condition = condition+" and user_id='"+userId+"'";
+		}
+	}
 	
-	if(status!=null)
-		if(condition === "")
+	if(status!=null){
+		if(condition === ""){
 			condition = "status='"+status+"'";
-	
-		else
+		}	
+		else{
 			condition = condition+" and status='"+status+"'";
+		}
+	}
 	
-	if(userName!=null)
-		if(condition === null)
+	if(userName!=null){
+		if(condition === null){
 			condition = "user_name='"+userName+"'";
-	
-		else
+		}	
+		else{
 			condition = condition+" and user_name='"+userName+"'";
+		}
+	}
 		
-	User.findAll({where : [condition]})
+	User.findAll({where : [condition],include		: fetchAssociation})
 		.then(function(users){
 			if(users.length == 0){
 				log.info('Empty User List.');

@@ -14,21 +14,20 @@
  * 
  */
 
-var manufac = require('../models/Manufacturer.js');
-var appMsg		= require('../config/Message.js');
-var log = require('../config/logger').logger;
-var path = require('path');
-var fileName=path.basename(__filename);
-var response 	= {
-						status	: Boolean,
+var manufac 		= require('../models/Manufacturer.js');
+var appMsg			= require('../config/Message.js');
+var log 			= require('../config/logger').logger;
+var path 			= require('path');
+var fileName		= path.basename(__filename);
+var response 		= {	status	: Boolean,
 						message : String,
 						data	: String
 					};
 
 // To get full Manufacturer List
-exports.getmanufactDetails = function(conditionQuery,attr,callback) {
+exports.getmanufactDetails = function(conditionQuery,attr,fetchAssociation,callback) {
 	
-	manufac.findAll({where : [conditionQuery],attributes: attr,order: [['last_updated_dt', 'DESC']]})
+	manufac.findAll({where : [conditionQuery],include : fetchAssociation,attributes: attr,order: [['last_updated_dt', 'DESC']]})
 	.then(function(result){
 		if(result.length === 0){
 			

@@ -14,7 +14,9 @@
  * 
  * 
  */
-var accountTransactionsService = require('../services/AccountTransactionsService.js');
+var accountTransactionsService 	= require('../services/AccountTransactionsService.js');
+var accounts 					= require('../models/Accounts.js');
+
 module.exports = function(app, server) {
 	
 	app.post('/getaccounttransdetails', getaccounttransDetails);
@@ -22,18 +24,24 @@ module.exports = function(app, server) {
 	
 	// To get Account Txns List based on user param
 	function getaccounttransDetails(req, res){
-		var attr 			= "";
-		var condition 		= "";
-		var acctxnid		=req.param("acctxnid");
-		var companyid		=req.param("companyid");
-		var storeid			=req.param("storeid");
-		var accountid		=req.param("accountid");
-		var employeeid		=req.param("employeeid");
-		var transtypeid 	=req.param("transtypeid");
-		var refno			=req.param("refno");
-		var voucherno		=req.param("voucherno");
-		var linkedacctxnid	=req.param("linkedacctxnid");
-		var status			=req.param("status");
+		var attr 				= "";
+		var condition 			= "";
+		var acctxnid			= req.param("acctxnid");
+		var companyid			= req.param("companyid");
+		var storeid				= req.param("storeid");
+		var accountid			= req.param("accountid");
+		var employeeid			= req.param("employeeid");
+		var transtypeid 		= req.param("transtypeid");
+		var refno				= req.param("refno");
+		var voucherno			= req.param("voucherno");
+		var linkedacctxnid		= req.param("linkedacctxnid");
+		var status				= req.param("status");
+		var fetchAssociation 	= "";
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : accounts, attributes : ['account_name']}];
+		}
+		
 		if(acctxnid!=null){
 			condition ="acctxn_id="+acctxnid;
 		}
@@ -105,7 +113,7 @@ module.exports = function(app, server) {
 		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
 			attr=['acctxn_id','voucher_no','open_balance','trans_amount','close_balance','ref_no'];
 		}
-		accountTransactionsService.getaccounttransDetails(condition,attr,function(result){
+		accountTransactionsService.getaccounttransDetails(condition,attr,fetchAssociation,function(result){
 			res.send(result);
 		});
 	}

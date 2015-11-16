@@ -17,6 +17,7 @@
 
 var model 				 = require('../config/sequelize.js');
 var dataTypes			 = require('sequelize');
+var accounts 			 = require('../models/Accounts.js');
 var accountRecevables	 = model.define('t_account_receivables', {
 
 	  accrcble_id : {
@@ -46,4 +47,5 @@ var accountRecevables	 = model.define('t_account_receivables', {
 	freezeTableName 	: true,
 	tableName 			: 't_account_receivables'
 });
+accountRecevables.belongsTo(accounts,	{foreignKey: 'account_id'});
 module.exports 			= accountRecevables;

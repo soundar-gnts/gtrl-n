@@ -17,6 +17,7 @@
 
 var model 				= require('../config/sequelize.js');
 var dataTypes 			= require('sequelize');
+var bank 				= require('../models/Bank.js');
 var bankBranch 			= model.define('m_bank_branch', {
 
 	branch_id: {
@@ -46,4 +47,5 @@ var bankBranch 			= model.define('m_bank_branch', {
 	freezeTableName 	: true,
 	tableName 			: 'm_bank_branch'
 });
+bankBranch.belongsTo(bank, 	{foreignKey: 'bank_id'});
 module.exports 			= bankBranch;

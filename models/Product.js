@@ -19,6 +19,7 @@ var model		= require('../config/sequelize.js');
 var dataTypes	= require('sequelize');
 var productImage= require('../models/ProductImage.js');
 var tax			= require('../models/Tax.js');
+var uom 		= require('../models/Uom.js');
 
 var product = model.define('m_product', {
 
@@ -75,4 +76,5 @@ var product = model.define('m_product', {
 
 product.belongsTo(tax,	{foreignKey : 'sell_tax_id'});
 product.hasMany(productImage,	{foreignKey : 'prod_id'});
+product.belongsTo(uom, 	{foreignKey: 'uom_id'});
 module.exports = product;

@@ -25,6 +25,7 @@ module.exports = function(app, server){
 	app.post('/saveorupdatevouchertype',voucherService.saveOrUpdateVoucherType);
 	
 	
+	//for get voucher list based on user param
 	function getVoucher(req, res){
 		
 		var selectedAttribute	= "";

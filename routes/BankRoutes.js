@@ -14,7 +14,8 @@
  * 
  */
 
-var bankservice = require('../services/BankService.js');
+var bankservice 		= require('../services/BankService.js');
+var bank 				= require('../models/Bank.js');
 
 module.exports = function(app, server){
 	app.post('/getbankdetails', getBankDetails);
@@ -88,10 +89,16 @@ module.exports = function(app, server){
 		var cityId				= req.param("cityid");
 		var emailId				= req.param("emailid");
 	    var ifscCode			= req.param("ifsccode");
-
+	    var fetchAssociation	= "";
+	    
+	    if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : bank, attributes : ['bank_name','bank_code']}]
+		}
+	    
+	    
 		if(bankId!=null){
 			conditionQuery ="bank_id="+bankId;
-			}
+		}
 		if(branchId!=null){
 			if(conditionQuery === ""){
 				conditionQuery ="branch_id="+branchId;
@@ -166,7 +173,7 @@ module.exports = function(app, server){
 			attr=['branch_id','branch_code','branch_name'];
 		}
 		
-		bankservice.getBankBranchDetails(conditionQuery,attr, function(result){
+		bankservice.getBankBranchDetails(conditionQuery,attr,fetchAssociation, function(result){
 			res.send(result);
 		});
 	}

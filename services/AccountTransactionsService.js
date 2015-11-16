@@ -26,9 +26,9 @@ var filename		= path.basename(__filename);
 var accountsService = require('../services/AccountsService.js');
 
 // To get Account Txns List based on user param
-exports.getaccounttransDetails = function(condition,attr,callback) {
+exports.getaccounttransDetails = function(condition,attr,fetchAssociation,callback) {
 	
-	accounttxns.findAll({where : [condition],attributes: attr,order: [['last_updated_dt', 'DESC']]}).then(function(result) {
+	accounttxns.findAll({where : [condition],attributes: attr,include : fetchAssociation,order: [['last_updated_dt', 'DESC']]}).then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>>getaccounttransDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;

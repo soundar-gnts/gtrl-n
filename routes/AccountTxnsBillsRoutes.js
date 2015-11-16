@@ -15,6 +15,8 @@
  * 
  */
 var accountTxnsBillsService = require('../services/AccountTxnsBillsService.js');
+var accounts 				= require('../models/Accounts.js');
+
 module.exports = function(app, server) {
 	
 	app.post('/getaccounttxnsbillsdetails', getAccountTxnsBillsDetails);
@@ -33,13 +35,19 @@ module.exports = function(app, server) {
 	
 	// To get Account Txns Bills List based on user param
 	function getAccountTxnsBillsDetails(req, res){
-		var attr 			= "";
-		var condition 		= "";
-		var txnbillid		=req.param("txnbillid");
-		var acctxnid		=req.param("acctxnid");
-		var accountid		=req.param("accountid");
-		var refno			=req.param("refno");
-		var status			=req.param("status");
+		var attr 				= "";
+		var condition 			= "";
+		var txnbillid			= req.param("txnbillid");
+		var acctxnid			= req.param("acctxnid");
+		var accountid			= req.param("accountid");
+		var refno				= req.param("refno");
+		var status				= req.param("status");
+		var fetchAssociation 	= "";
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : accounts, attributes : ['account_name']}];
+		}
+		
 		if(txnbillid!=null){
 			condition ="txnbill_id="+txnbillid;
 		}
@@ -75,7 +83,7 @@ module.exports = function(app, server) {
 			attr=['txnbill_id','acctxn_id','ref_no','paid_amount'];
 		}
 		
-		 accountTxnsBillsService.getAccountTxnsBillsDetails(condition,attr,function(result){
+		 accountTxnsBillsService.getAccountTxnsBillsDetails(condition,attr,fetchAssociation,function(result){
 			res.send(result);
 		});
 	}

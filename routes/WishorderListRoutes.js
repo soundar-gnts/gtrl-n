@@ -19,6 +19,8 @@ module.exports = function(app, server) {
 	app.post('/getwishorderlist', getWishorderList);
 	app.post('/savewishorderlist', saveWishorderList);
 	app.post('/getwishlist', wishorderListService.getWishList);
+	
+	//For get wishorder list based on user param
 	function getWishorderList(req, res){
 		var condition 		= "";
 		var wishid			=req.param("wishid");
@@ -63,6 +65,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For save /update wishorder list
 	function saveWishorderList(req, res){
 		var wishlist = {
 					wish_id					: req.param("wishid"),

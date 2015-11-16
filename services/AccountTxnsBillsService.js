@@ -24,9 +24,9 @@ var path 				= require('path');
 var filename			= path.basename(__filename);
 
 // To get Account Txns Bills List based on user param
-exports.getAccountTxnsBillsDetails = function(condition,attr,callback) {
+exports.getAccountTxnsBillsDetails = function(condition,attr,fetchAssociation,callback) {
 	
-	accounttxnsbills.findAll({where : [condition],attributes: attr}).then(function(result) {
+	accounttxnsbills.findAll({where : [condition],include : fetchAssociation,attributes: attr}).then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>>getAccountTxnsBillsDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;

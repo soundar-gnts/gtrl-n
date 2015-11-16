@@ -14,15 +14,16 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
+var model 			= require('../config/sequelize.js');
+var dataTypes 		= require('sequelize');
+var state 			= require('../models/State.js');
 
-var tax = model.define('m_tax', {
+var tax 			= model.define('m_tax', {
 
 	tax_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	type 			: dataTypes.INTEGER,
+	primaryKey 		: true,
+	autoIncrement 	: true
 	},
 	tax_name		: dataTypes.STRING,
 	company_id 		: dataTypes.INTEGER,	
@@ -41,9 +42,10 @@ var tax = model.define('m_tax', {
 	last_updated_by	: dataTypes.STRING
 
 }, {
-	timestamps : false,
+	timestamps 		: false,
 	freezeTableName : true,
-	tableName : 'm_tax'
+	tableName 		: 'm_tax'
 });
 
-module.exports = tax;
+tax.belongsTo(state, 	{foreignKey: 'state_id'});
+module.exports 		= tax;

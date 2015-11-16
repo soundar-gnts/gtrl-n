@@ -17,6 +17,7 @@
 
 var model 				= require('../config/sequelize.js');
 var dataTypes 			= require('sequelize');
+var accounts 			= require('../models/Accounts.js');
 var accountTransactions = model.define('t_account_txns', {
 
 	acctxn_id : {
@@ -54,4 +55,5 @@ var accountTransactions = model.define('t_account_txns', {
 	freezeTableName 	: true,
 	tableName 			: 't_account_txns'
 });
+accountTransactions.belongsTo(accounts,	{foreignKey: 'account_id'});
 module.exports 			= accountTransactions;

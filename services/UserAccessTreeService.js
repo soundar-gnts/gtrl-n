@@ -106,6 +106,7 @@ var getUserAccessTree = function(condition, selectedAttributes, fetchAssociation
 			data	: String
 	}
 	
+	console.log("fetchAssociation-->"+fetchAssociation);
 	
 	userAccessTree.findAll({
 		where		: [condition],
@@ -138,7 +139,7 @@ var getUserAccessTree = function(condition, selectedAttributes, fetchAssociation
 
 var saveOrUpdateUserAccessTree = function(uAccessTree, callback){
 
-	log.error(fileName+'.getUserAccessTree - ');
+	log.error(fileName+'.saveOrUpdateUserAccessTree - ');
 	if(uAccessTree.acc_tree_id != null){
 		userAccessTree.upsert(uAccessTree)
 		.then(function(data){

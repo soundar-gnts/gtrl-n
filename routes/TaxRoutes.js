@@ -15,7 +15,8 @@
  * 
  */
 
-var taxService = require('../services/TaxService.js');
+var taxService 		= require('../services/TaxService.js');
+var state 			= require('../models/State.js');
 
 module.exports = function(app, server){
 	
@@ -51,6 +52,7 @@ module.exports = function(app, server){
 	function getTax(req, res){
 		
 		var condition 			= "";
+		var fetchAssociation 	= "";
 		var taxId 				= req.param('taxid');
 		var companyId 			= req.param('companyid');
 		var status				= req.param('status');
@@ -61,6 +63,10 @@ module.exports = function(app, server){
 		if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
 			selectedAttributes = ['tax_id','tax_name']
 		}
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : state, attributes : ['state_name']}]
+		}
+		
 		
 		if(companyId != null){
 			condition = "company_id="+companyId;
@@ -102,7 +108,7 @@ module.exports = function(app, server){
 			}
 		}
 		
-		taxService.getTax(condition, selectedAttributes, function(result){
+		taxService.getTax(condition, selectedAttributes,fetchAssociation, function(result){
 			res.send(result);
 		});
 	}

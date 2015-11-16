@@ -15,15 +15,15 @@
  * 
  */
 
-var path = require('path');
-var fileName=path.basename(__filename);
-var log = require('../config/logger').logger;
+var path 			= require('path');
+var fileName		= path.basename(__filename);
+var log 			= require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
-var tax = require('../models/Tax.js');
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
+var tax 			= require('../models/Tax.js');
+var response 		= {
+						status	: Boolean,
+						message : String,
+						data	: String
 }
 
 //insert or update Tax
@@ -54,11 +54,12 @@ var saveOrUpdateTax = function(taxDet, callback){
 
 
 //get all Tax
-var getTax = function(condition, selectedAttributes, callback){
+var getTax = function(condition, selectedAttributes,fetchAssociation, callback){
 	log.info(fileName+'.getTax');
 
 	tax.findAll({
 		where		: [condition],
+		include		: fetchAssociation,
 		attributes	: selectedAttributes
 	
 	})

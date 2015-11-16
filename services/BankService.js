@@ -58,9 +58,9 @@ exports.getBankDetails = function(conditionQuery,attr,callback) {
 };
 
 //To Get Bank Branchfull LIST
-exports.getBankBranchDetails = function(conditionQuery,attr,callback) {
+exports.getBankBranchDetails = function(conditionQuery,attr,fetchAssociation,callback) {
 	
-	bankBranch.findAll({where : [conditionQuery],attributes: attr,order: [['last_updated_dt', 'DESC']]})
+	bankBranch.findAll({where : [conditionQuery],include : fetchAssociation,attributes: attr,order: [['last_updated_dt', 'DESC']]})
 	.then(function(result){
 		if(result.length === 0){
 			

@@ -16,6 +16,7 @@
  */
 
 var userGroupService = require('../services/UserGroupService.js');
+var userGroup 				= require('../models/UserGroup.js');
 
 module.exports = function(app, server){
 	
@@ -119,6 +120,9 @@ module.exports = function(app, server){
 		
 		if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
 			selectedAttributes = ['acc_tree_id','group_id']
+		}
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : userGroup, attributes : ['group_name']}]
 		}
 		
 		if(companyId != null){

@@ -18,6 +18,7 @@
 var supplierService = require('../services/SupplierService.js');
 var state			= require('../models/State.js');
 var city			= require('../models/City.js');
+var supplierType 	= require('../models/SupplierType.js');
 
 module.exports = function(app, server){
 	
@@ -73,11 +74,13 @@ module.exports = function(app, server){
 		var selectedAttributes	= "";
 		
 		if(req.param('fetchassociation')=='y'){
-			fetchAssociation = [{model : state, attributes : ['state_name']},{model : city, attributes : ['city_name']}]
+			fetchAssociation = [{model : state, attributes : ['state_name']},
+			                    {model : city, attributes : ['city_name']},
+			                    {model : supplierType, attributes : ['supp_type_name']}];
 		}
 		
 		if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
-			selectedAttributes = ['supplier_id','supplier_code','supplier_name']
+			selectedAttributes = ['supplier_id','supplier_code','supplier_name'];
 		}
 		
 		if(companyId != null){

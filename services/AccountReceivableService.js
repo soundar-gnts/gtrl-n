@@ -21,13 +21,13 @@ var path 				= require('path');
 var filename			= path.basename(__filename);
 
 // To get Account Receivable List based on user param
-exports.getAccountReceivableDetails = function(condition, selectedAttributes, callback) {
+exports.getAccountReceivableDetails = function(condition, selectedAttributes,fetchAssociation, callback) {
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 		}
-	accountreceivables.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes	: selectedAttributes})
+	accountreceivables.findAll({where : [condition],include : fetchAssociation,order: [['last_updated_dt', 'DESC']],attributes	: selectedAttributes})
 	.then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>> getAccountReceivableDetails >>'+appmsg.LISTNOTFOUNDMESSAGE);

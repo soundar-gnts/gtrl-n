@@ -14,7 +14,8 @@
  * 
  * 
  */
-var accountreceivableservice = require('../services/AccountReceivableService.js');
+var accountreceivableservice 	= require('../services/AccountReceivableService.js');
+var accounts 			 		= require('../models/Accounts.js');
 
 module.exports = function(app, server){
 	
@@ -31,6 +32,11 @@ module.exports = function(app, server){
 		var storeid				= req.param("storeid");
 		var invoiceno			= req.param("invoiceno");
 		var status				= req.param("status");
+		var fetchAssociation 	= "";
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : accounts, attributes : ['account_name']}];
+		}
 		
 		if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
 			selectedAttributes = ['accrcble_id','entry_date','account_id']
@@ -75,7 +81,8 @@ module.exports = function(app, server){
 			}
 		}
 		
-		accountreceivableservice.getAccountReceivableDetails(condition, selectedAttributes, function(response){
+		console.log("fetchAssociation-->"+fetchAssociation);
+		accountreceivableservice.getAccountReceivableDetails(condition, selectedAttributes,fetchAssociation, function(response){
 			res.send(response);
 		});
 	}

@@ -14,9 +14,10 @@
  * 
  * 
  */
-var productService = require('../services/ProductService.js');
-var productSerialCodesService = require('../services/ProductSerialCodesService.js');
-var tax					= require('../models/Tax.js');
+var productService 				= require('../services/ProductService.js');
+var productSerialCodesService 	= require('../services/ProductSerialCodesService.js');
+var tax							= require('../models/Tax.js');
+var uom 						= require('../models/Uom.js');
 
 module.exports = function(app, server) {
 	app.post('/saveproduct', 		saveProductDetails);
@@ -28,6 +29,7 @@ module.exports = function(app, server) {
 	//app.post('/getproductserialcodesdetails', productSerialCodesService.getProductSerialCodesDetails);
 	//app.post('/saveproductserialcodes', productSerialCodesService.saveProductSerialCodes);
 	
+	//For save / update product details
 	function saveProductDetails(req, res){
 		var prodSpeclist			= [];
 		var prodImagelist			= [];
@@ -120,18 +122,19 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For get product list based on user param
 	function getProductsList(req, res){
 		var fetchAssociation 	= "";
-		var selectedAttributes 			= "";
-		var condition 		= "";
-		var companyid		=req.param("companyid");
-		var prodid			=req.param("prodid");
-		var prodcode		=req.param("prodcode");
-		var prodname		=req.param("prodname");
-		var manufgid		=req.param("manufgid");
-		var brandid			=req.param("brandid");
-		var prodcatid		=req.param("prodcatid");
-		var status			=req.param("status");
+		var selectedAttributes 	= "";
+		var condition 			= "";
+		var companyid			= req.param("companyid");
+		var prodid				= req.param("prodid");
+		var prodcode			= req.param("prodcode");
+		var prodname			= req.param("prodname");
+		var manufgid			= req.param("manufgid");
+		var brandid				= req.param("brandid");
+		var prodcatid			= req.param("prodcatid");
+		var status				= req.param("status");
 		
 		
 		if(companyid!=null){
@@ -191,8 +194,8 @@ module.exports = function(app, server) {
 		}
 		
 		if(req.param('fetchassociation')=='y'){
-			fetchAssociation = [
-			                    {model : tax, attributes : ['cst','lst','surcharge','tax_on_mrp','service_tax','mrp_inclusive']}]
+			fetchAssociation = [{model : tax, attributes : ['cst','lst','surcharge','tax_on_mrp','service_tax','mrp_inclusive']},
+			                    {model : uom, attributes : ['uom_name']}]
 		}
 		
 		productService.getProducts(condition, selectedAttributes, fetchAssociation, function(result){
@@ -200,6 +203,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For get product specification list based on user param
 	function getProductSpec(req, res){
 		var condition 		= "";
 		var prodspecid		=req.param("prodspecid");
@@ -235,6 +239,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For product image list based on user param
 	function getProductImages(req, res){
 		var condition 			= "";
 		var productimageid		=req.param("productimageid");
@@ -278,6 +283,7 @@ module.exports = function(app, server) {
 		});
 	}
 	
+	//For get product brand list based on user param
 	function getProductBrands(req, res){
 		var condition 		= "";
 		var prodbrandid		=req.param("prodbrandid");

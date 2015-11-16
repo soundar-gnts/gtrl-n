@@ -25,10 +25,10 @@ var customer	= require('../models/Customer.js');
 var User = model.define('m_user', {
 	
 	user_id			: {
-		type: dataTypes.INTEGER,
-	    primaryKey: true,
-	    autoIncrement: true
-	    },
+	type			: dataTypes.INTEGER,
+	primaryKey		: true,
+	autoIncrement	: true
+	},
 	login_id		: dataTypes.STRING,
 	user_name		: dataTypes.STRING,
 	login_pwd		: dataTypes.STRING,
@@ -58,9 +58,9 @@ var User = model.define('m_user', {
 	employee_id		: dataTypes.INTEGER,
 	cust_id			: dataTypes.INTEGER
 },{
-	timestamps: false,
-	 freezeTableName: true,
-	tableName: 'm_user'
+	timestamps		: false,
+	freezeTableName	: true,
+	tableName		: 'm_user'
 });
 
 

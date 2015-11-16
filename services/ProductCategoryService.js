@@ -15,8 +15,8 @@
  * 
  */
 
-var path = require('path');
-var fileName=path.basename(__filename);
+var path 				= require('path');
+var fileName			= path.basename(__filename);
 var log					= require('../config/logger').logger;
 var common				= require('../services/CommonService.js');
 var appMsg				= require('../config/Message.js');

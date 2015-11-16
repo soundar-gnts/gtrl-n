@@ -17,9 +17,11 @@
 
 var model 				= require('../config/sequelize.js');
 var dataTypes 			= require('sequelize');
+var city 				= require('../models/City.js');
+var state 				= require('../models/State.js');
 var manufacturer 		= model.define('m_manufacturer', {
 
-	manufg_id		: {
+	manufg_id			: {
 		type			: dataTypes.INTEGER,
 	    primaryKey		: true,
 	    autoIncrement	: true
@@ -51,4 +53,6 @@ var manufacturer 		= model.define('m_manufacturer', {
 	freezeTableName		: true,
 	tableName			: 'm_manufacturer'
 });
+manufacturer.belongsTo(city, 	{foreignKey: 'city_id'});
+manufacturer.belongsTo(state, 	{foreignKey: 'state_id'});
 module.exports 			= manufacturer;

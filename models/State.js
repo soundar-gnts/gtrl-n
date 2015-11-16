@@ -14,26 +14,23 @@
    	        
  */
 
-	var model = require('../config/sequelize.js');
-	var dataTypes = require('sequelize');
-	var State = model.define('m_state', {
-		
-		state_id	: {
-			
-			type			: dataTypes.INTEGER,
-		    primaryKey		: true,
-		    autoIncrement	: true
-		   
-		},
-		
-		state_name		: dataTypes.STRING,
-		status		    : dataTypes.STRING,
-		last_updated_dt	: dataTypes.DATE,
-		last_updated_by	: dataTypes.STRING,
-	
-	},{
-		
-		 freezeTableName: true,
-		 tableName: 'm_state'
-	});
-	module.exports = State;
+var model 			= require('../config/sequelize.js');
+var dataTypes 		= require('sequelize');
+var State 			= model.define('m_state', {
+
+	state_id : {
+	type 			: dataTypes.INTEGER,
+	primaryKey 		: true,
+	autoIncrement 	: true
+	},
+
+	state_name 		: dataTypes.STRING,
+	status 			: dataTypes.STRING,
+	last_updated_dt : dataTypes.DATE,
+	last_updated_by : dataTypes.STRING,
+
+}, {
+	freezeTableName : true,
+	tableName 		: 'm_state'
+});
+module.exports 		= State;

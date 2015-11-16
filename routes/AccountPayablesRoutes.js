@@ -14,7 +14,9 @@
  * 
  * 
  */
-var accountPayablesService = require('../services/AccountPayablesService.js');
+var accountPayablesService 	= require('../services/AccountPayablesService.js');
+var accounts 				= require('../models/Accounts.js');
+
 module.exports = function(app, server) {
 	
 	app.post('/getaccountpayablesdetails', getAccountPayablesDetails);
@@ -22,14 +24,20 @@ module.exports = function(app, server) {
 	
 	// To get Account Payables List based on user param
 	function getAccountPayablesDetails(req, res){
-		var attr 			= "";
-		var condition 		= "";
-		var accpaybleid		=req.param("accpaybleid");
-		var companyid		=req.param("companyid");
-		var storeid			=req.param("storeid");
-		var accountid		=req.param("accountid");
-		var billno			=req.param("billno");
-		var status			=req.param("status");
+		var attr 				= "";
+		var condition 			= "";
+		var accpaybleid			= req.param("accpaybleid");
+		var companyid			= req.param("companyid");
+		var storeid				= req.param("storeid");
+		var accountid			= req.param("accountid");
+		var billno				= req.param("billno");
+		var status				= req.param("status");
+		var fetchAssociation 	= "";
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : accounts, attributes : ['account_name']}];
+		}
+		
 		if(accpaybleid!=null){
 			condition ="accpayble_id="+accpaybleid;
 		}
@@ -72,7 +80,7 @@ module.exports = function(app, server) {
 			attr=['accpayble_id','bill_no','invoice_amount','paid_amount','balance_amount'];
 		}
 		
-		accountPayablesService.getAccountPayablesDetails(condition,attr,function(result){
+		accountPayablesService.getAccountPayablesDetails(condition,attr,fetchAssociation,function(result){
 			res.send(result);
 		});
 	}

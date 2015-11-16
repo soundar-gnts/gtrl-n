@@ -15,9 +15,9 @@
  * 
  */
 
-var model		 	= require('../config/sequelize.js');
-var dataTypes 		= require('sequelize');
-var storeRegion 	= model.define('m_store_region', {
+var model		 		= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var storeRegion 		= model.define('m_store_region', {
 
 	region_id : {
 		
@@ -34,7 +34,7 @@ var storeRegion 	= model.define('m_store_region', {
 
 }, {
 	
-	freezeTableName : true,
-	tableName 		: 'm_store_region'
+	freezeTableName 	: true,
+	tableName 			: 'm_store_region'
 });
-module.exports = storeRegion;
+module.exports 			= storeRegion;

@@ -15,6 +15,8 @@
  */
 
 var manufacturerservice = require('../services/ManufacturerService.js');
+var city 				= require('../models/City.js');
+var state 				= require('../models/State.js');
 
 module.exports = function(app, server){
 	app.post('/getmanufactdetails', getmanufactDetails);
@@ -52,16 +54,21 @@ module.exports = function(app, server){
 	
 	//To get Manufacturer details based on user param
 	function getmanufactDetails(req, res){
-		var conditionQuery = "";
-		var attr 			= "";
-		var manufgId		=req.param("manufgid");
-		var manufgName		=req.param("manufgname");
-		var status			=req.param("status");
-		var companyId		=req.param("companyid");
-		var stateId			=req.param("stateid");
-		var cityId			=req.param("cityid");
-		var manufgCode		=req.param("manufgcode");
+		var conditionQuery 		= "";
+		var attr 				= "";
+		var manufgId			= req.param("manufgid");
+		var manufgName			= req.param("manufgname");
+		var status				= req.param("status");
+		var companyId			= req.param("companyid");
+		var stateId				= req.param("stateid");
+		var cityId				= req.param("cityid");
+		var manufgCode			= req.param("manufgcode");
+		var fetchAssociation 	= "";
 
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : state, attributes : ['state_name']},{model : city, attributes : ['city_name']}]
+		}
+		
 		if(manufgId!=null){
 			conditionQuery ="manufg_id="+manufgId;
 			}
@@ -71,7 +78,7 @@ module.exports = function(app, server){
 			}else {
 				conditionQuery=conditionQuery+" and company_id="+companyId;
 			}	
-			}
+		}
 		
 		if(status!=null){
 			if(conditionQuery === ""){
@@ -101,7 +108,7 @@ module.exports = function(app, server){
 			}else {
 				conditionQuery=conditionQuery+" and state_id="+stateId;
 			}	
-			}
+		}
 		
 		if(cityId!=null){
 			if(conditionQuery === ""){
@@ -109,11 +116,11 @@ module.exports = function(app, server){
 			}else {
 				conditionQuery=conditionQuery+" and city_id="+cityId;
 			}	
-			}
-		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
-			attr=['manufg_id','manufg_name'];
 		}
-		manufacturerservice.getmanufactDetails(conditionQuery,attr,function(result){
+		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+			attr=['manufg_id','manufg_name','manufg_code'];
+		}
+		manufacturerservice.getmanufactDetails(conditionQuery,attr,fetchAssociation,function(result){
 			res.send(result);
 		});
 	}

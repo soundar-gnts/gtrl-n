@@ -15,16 +15,16 @@
  * 
  */
 
-var path = require('path');
-var fileName=path.basename(__filename);
-var log = require('../config/logger').logger;
+var path 			= require('path');
+var fileName		= path.basename(__filename);
+var log 			= require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
-var supplierType = require('../models/SupplierType.js');
-var response = {
-		status	: Boolean,
-		message : String,
-		data	: String
-}
+var supplierType 	= require('../models/SupplierType.js');
+var response 		= {
+						status	: Boolean,
+						message : String,
+						data	: String
+					 };
 
 //insert or update Supplier Type
 var saveOrUpdateSupplierType = function(supplierType, callback){
