@@ -33,3 +33,15 @@ app.factory("CommonMasters", ['$http',function($http){
     }
  return obj;
 }]);
+
+//utils
+app.factory('Utils', function() {
+  var service = {
+     isUndefinedOrNull: function(obj) {
+         return angular.isDefined(obj) || obj===null;
+     }
+    
+  }
+  
+  return service;
+});
