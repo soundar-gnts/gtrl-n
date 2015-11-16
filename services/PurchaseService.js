@@ -159,8 +159,13 @@ exports.savePurchaseHdrDetails = function(purchasehdrdtl, purchaseDetails, callb
 			 			
 			 			}
 			 			log.info(filename+'>>savePurchaseHdrDetails>>'+APPMSG.UPDATEMESSAGE);
+			 			var purchase = {
+			 					purchase_id : purchasehdrdtl.purchase_id,
+								invoice_no : purchasehdrdtl.invoice_no
+						}
+			 			
 			 			response.message 	= APPMSG.UPDATEMESSAGE;
-			 			response.data  		= purchasehdrdtl.purchase_id;
+			 			response.data  		= purchase;
 			 			response.status  	= true;
 			 			callback(response);
 			 			
@@ -187,6 +192,7 @@ exports.savePurchaseHdrDetails = function(purchasehdrdtl, purchaseDetails, callb
 							purchasehdrdtl.invoice_no = sl.sno;
 							purchasehdr.create(purchasehdrdtl).then(function(data){
 					 			
+								console.log("purchaseDetails.length-->"+purchaseDetails.length);
 					 			for(var i = 0; i < purchaseDetails.length; i++){
 					 				
 					 				purchaseDetails[i].purchase_id = data.purchase_id; 			
