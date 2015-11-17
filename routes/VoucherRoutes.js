@@ -19,10 +19,10 @@ var voucherService= require('../services/VoucherService.js');
 
 module.exports = function(app, server){
 	
-	app.post('/getvoucherlist',			voucherService.getVoucher);
-	app.post('/getvouchertypelist',		voucherService.getVoucherType);
-	app.post('/saveorupdatevoucher',	voucherService.saveOrUpdateVoucher);
-	app.post('/saveorupdatevouchertype',voucherService.saveOrUpdateVoucherType);
+	app.post('/getvoucherlist',			getVoucher);
+	app.post('/getvouchertypelist',		getVoucherType);
+	app.post('/saveorupdatevoucher',	saveOrUpdateVoucher);
+	app.post('/saveorupdatevouchertype',saveOrUpdateVoucherType);
 	
 	
 	//for get voucher list based on user param
@@ -82,7 +82,7 @@ module.exports = function(app, server){
 	}
 	
 	//For get voucher type list based on user param
-	function getVoucherTypeList(req, res){
+	function getVoucherType(req, res){
 
 		var selectedAttribute	= "";
 		var condition 			= "";
