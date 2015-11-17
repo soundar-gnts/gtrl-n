@@ -16,6 +16,11 @@
  */
 var accountreceivableservice 	= require('../services/AccountReceivableService.js');
 var accounts 			 		= require('../models/Accounts.js');
+var messagesService 			= require('../services/MessagesService.js');
+var constants					= require('../config/Constants.js');
+var config 						= require('../config/config.js');
+var slnogenService 				= require('../services/SlnoGenService.js');
+
 
 module.exports = function(app, server){
 	
@@ -108,8 +113,56 @@ module.exports = function(app, server){
 				last_updated_by 		: req.param("lastupdatedby")
 				
 			}
+		
+		if(req.param("accrcbleid")==null){
+			
+			var refkey	= 'ACC_RECV_REF';
+			var slNoCondition = {
+					company_id 			: accountReceivable.company_id,
+					ref_key 			: refkey,
+					autogen_yn 			: 'Y',
+					status 				: 'Active'
+			};
+			
+			slnogenService.getSlnoValue(slNoCondition, function(sl) {
+				accountReceivable.ref_number = sl.sno;
+				
+				accountreceivableservice.saveAccountReceivables(accountReceivable, function(response){
+
+					if (response.status) {
+						slnogenService.updateSequenceNo(sl.slid,
+								accountReceivable.last_updated_dt, accountReceivable.last_updated_by);
+					}
+
+					res.send(response);
+				});
+				
+			});
+			
+		}else{
+		
 		accountreceivableservice.saveAccountReceivables(accountReceivable, function(response){
+			
+			//For Sent a Message
+			if(req.param("status")!=null&&req.param("status")!=constants.STATUSAPPROVED){
+				var messageobj={	
+						company_id 				: req.param("companyid"),
+						msg_type 				: 'N',
+						msg_sender 				: config.ACCOUNTS_EMAIL,
+						msg_receivers 			: config.ACCOUNTS_EMAIL,
+						msg_subject 			: 'Reg - Account Receivables - '+req.param("status"),
+						msg_body 				: 'Invoice Number : '+req.param("invoiceno")+'\nAmount :'+req.param("invoiceamount")+
+												  '\nRemarks :'+req.param("remarks")+'\nInvoice Date :'+req.param("invoicedate"),
+						client_ip 				: req.connection.remoteAddress,
+						user_id 				: req.param("userid"),
+						msg_status 				: 'Pending',
+						msg_sent_dt 			: new Date()
+					};
+				messagesService.saveMessages(messageobj, function(result){
+				});
+			}
 			res.send(response);
 		});
+		}
 	}
 }

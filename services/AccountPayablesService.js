@@ -27,6 +27,9 @@ var commonService 		= require('../services/CommonService.js');
 var path 				= require('path');
 var filename			= path.basename(__filename);
 var accountsService 	= require('../services/AccountsService.js');
+var constants			= require('../config/Constants.js');
+var config 				= require('../config/config.js');
+var slnogenService 		= require('../services/SlnoGenService.js');
 
 // To get Account Payables List based on user param
 exports.getAccountPayablesDetails = function(condition,attr,fetchAssociation,callback) {
@@ -106,18 +109,36 @@ exports.insertAccountPayables = function(companyid,storeid,entrydate,accountid,b
 				last_updated_by 		: lastupdatedby
 			};
 	
+	var refkey	= 'ACC_PAY_REF';
+	var slNoCondition = {
+			company_id 			: accpay.company_id,
+			ref_key 			: refkey,
+			autogen_yn 			: 'Y',
+			status 				: 'Active'
+	};
+	
 	accounts.findOne({where:[{supplier_id:supplierid,status:'Active'}]})
 	.then(function(result){
 		if(result!=null){
 			accpay.account_id	=	result.account_id;
-			accountpayables.create(accpay).then(function(data){
+			slnogenService.getSlnoValue(slNoCondition, function(sl) {
+				accpay.ref_number = sl.sno;
 				
-				//For update the account balance
-				accountsService.updateAccountBalance(result.account_id,invoiceamount,"D");
+				accountpayables.create(accpay).then(function(data){
+					
+					//For update the account balance
+					accountsService.updateAccountBalance(result.account_id,invoiceamount,"D");
+					
+					//For update the serial number sequence
+					slnogenService.updateSequenceNo(sl.slid,
+							accpay.last_updated_dt, accpay.last_updated_by);
+					
+				}).error(function(err){
+					log.error(err);
+				});
 				
-			}).error(function(err){
-				log.error(err);
 			});
+			
 				
 		}else{
 
@@ -134,7 +155,7 @@ exports.insertAccountPayables = function(companyid,storeid,entrydate,accountid,b
 				open_balance 				: 0,
 				parked_amount 				: 0,
 				current_balance 			: 0,
-				aproveauth 					: '',
+				aproveauth 					: 'N',
 				selfapprv_yn 				: 'N',
 				remarks 					: 'Nill',
 				status 						: 'Active',
@@ -143,15 +164,22 @@ exports.insertAccountPayables = function(companyid,storeid,entrydate,accountid,b
 				
 			}).then(function(data){
 				accpay.account_id	=	data.account_id;
-				accountpayables.create(accpay).then(function(result){
+				slnogenService.getSlnoValue(slNoCondition, function(sl) {
+					accpay.ref_number = sl.sno;
 					
-					//For update the account balance
-					accountsService.updateAccountBalance(data.account_id,invoiceamount,"D");
+					accountpayables.create(accpay).then(function(data){
+						
+						//For update the account balance
+						accountsService.updateAccountBalance(data.account_id,invoiceamount,"D");
+						
+						//For update the serial number sequence
+						slnogenService.updateSequenceNo(sl.slid,
+								accpay.last_updated_dt, accpay.last_updated_by);
+						
+					}).error(function(err){
+						log.error(err);
+					});
 					
-				}).error(function(err){
-					log.info(filename+'>>insertAccountPayables>>');
-					log.error(err);
-					console.log("Error--1->"+err);
 				});
 					
 			}).error(function(err){

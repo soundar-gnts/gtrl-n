@@ -19,6 +19,10 @@ var log 				= require('../config/logger').logger;
 var appmsg				= require('../config/Message.js');
 var path 				= require('path');
 var filename			= path.basename(__filename);
+var accountsService 	= require('../services/AccountsService.js');
+var constants			= require('../config/Constants.js');
+var config 				= require('../config/config.js');
+var slnogenService 		= require('../services/SlnoGenService.js');
 
 // To get Account Receivable List based on user param
 exports.getAccountReceivableDetails = function(condition, selectedAttributes,fetchAssociation, callback) {
@@ -95,7 +99,7 @@ exports.saveOrUpdateAccountReceivable = function(accountReceivable, callback) {
 	}
 }
 //For Insert New Record in Account Receivable Table
-exports.insertAccountReceivable = function(supplierid,companyid,storeid,entrydate,accountid,invoiceno,
+exports.insertAccountReceivable = function(customerid,companyid,storeid,entrydate,accountid,invoiceno,
 		invoicedate,invoiceamount,outstandingamount,remarks,lastupdateddt,lastupdatedby) {
 	var response = {
 			status	: Boolean,
@@ -123,17 +127,74 @@ exports.insertAccountReceivable = function(supplierid,companyid,storeid,entrydat
 		
 	};
 	
-	accounts.findOne({where:[{supplier_id:supplierid,status:'Active'}]})
+	accounts.findOne({where:[{client_id:customerid,status:'Active'}]})
 	.then(function(result){
 	
 		if(result!=null){
 			accreceive.account_id=result.account_id;
+			
+			slnogenService.getSlnoValue(slNoCondition, function(sl) {
+				accpay.ref_number = sl.sno;
+				
 			accountreceivables.create(accreceive).then(function(data){
+				//For update the account balance
+				accountsService.updateAccountBalance(result.account_id,invoiceamount,"C");
+				
+				//For update the serial number sequence
+				slnogenService.updateSequenceNo(sl.slid,
+						accreceive.last_updated_dt, accreceive.last_updated_by);
+				
 			}).error(function(err){
 				log.error(err);
 			});
+		});
 				
-		}else{     
+		}else{
+
+			accounts.create({
+				company_id 					: companyid,
+				store_id 					: storeid,
+				account_group 				: 'Customer',
+				account_name 				: 'Customer-'+commonService.generateOTP(4),
+				account_dt 					: entrydate,
+				finance_year 				: '',
+				generate_voucher_yn 		: '',
+				client_id 					: customerid,
+				od_amoun 					: 0,
+				open_balance 				: 0,
+				parked_amount 				: 0,
+				current_balance 			: 0,
+				aproveauth 					: 'N',
+				selfapprv_yn 				: 'N',
+				remarks 					: 'Nill',
+				status 						: 'Active',
+				last_updated_dt 			: lastupdateddt,
+				last_updated_by 			: lastupdateddt
+				
+			}).then(function(data){
+				accreceive.account_id	=	data.account_id;
+				slnogenService.getSlnoValue(slNoCondition, function(sl) {
+					accpay.ref_number = sl.sno;
+					
+					accountreceivables.create(accreceive).then(function(data){
+						//For update the account balance
+						accountsService.updateAccountBalance(data.account_id,invoiceamount,"C");
+						
+						//For update the serial number sequence
+						slnogenService.updateSequenceNo(sl.slid,
+								accreceive.last_updated_dt, accreceive.last_updated_by);
+						
+					}).error(function(err){
+						log.error(err);
+					});
+					
+				});
+					
+			}).error(function(err){
+				log.info(filename+'>>insertAccountPayables>>');
+				log.error(err);
+				console.log("Error--2->"+err);
+			});
 
 		}
 		

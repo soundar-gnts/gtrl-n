@@ -29,6 +29,7 @@ var accountRecevables	 = model.define('t_account_receivables', {
 	company_id 			: dataTypes.INTEGER,
 	store_id			: dataTypes.INTEGER,
 	entry_date 			: dataTypes.DATE,
+	ref_number			: dataTypes.STRING,
 	account_id 			: dataTypes.INTEGER,
 	invoice_no 			: dataTypes.STRING,
 	invoice_date 		: dataTypes.DATE ,

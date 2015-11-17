@@ -15,9 +15,9 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var stockadjustments = model.define('t_stock_adjustments', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var stockadjustments 	= model.define('t_stock_adjustments', {
 
 	adjust_id : {
 		type 			: dataTypes.INTEGER,
@@ -28,6 +28,7 @@ var stockadjustments = model.define('t_stock_adjustments', {
 	company_id			: dataTypes.INTEGER,
 	store_id			: dataTypes.INTEGER,
 	adjust_date			: dataTypes.DATE,
+	ref_number			: dataTypes.STRING,
 	product_id			: dataTypes.INTEGER,
 	uom_id				: dataTypes.INTEGER,
 	adjust_qty			: dataTypes.INTEGER,

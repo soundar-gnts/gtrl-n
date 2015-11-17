@@ -23,3 +23,5 @@ exports.mailPassword	= "GntS@2014!";
 
 exports.PURCHASE_EMAIL	= "soundar1@gnts.in";
 exports.STOCK_TRANS_EMAIL	= "soundar1@gnts.in";
+exports.STORE_EMAIL	= "soundar1@gnts.in";
+exports.ACCOUNTS_EMAIL	= "soundar1@gnts.in";

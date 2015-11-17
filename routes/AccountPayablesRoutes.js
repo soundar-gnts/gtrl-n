@@ -1,21 +1,25 @@
 /**
- * @Filename	:	AccountPayablesRoutes.js
- * @Description	:	To write Routing middlewares for Account Payables related Table.
- * @Author		:	SOUNDAR C
- * @Date		:	October 10, 2015
+ * @Filename : AccountPayablesRoutes.js
+ * @Description : To write Routing middlewares for Account Payables related
+ *              Table.
+ * @Author : SOUNDAR C
+ * @Date : October 10, 2015
  * 
- * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. 
- * All rights reserved.   
- *
- * This software is the confidential and proprietary information 
- * of GNTS Technologies Pvt. Ltd.
+ * Copyright (C) 2015 GNTS Technologies Pvt. Ltd. All rights reserved.
  * 
- * Version       Date           	Modified By             Remarks
+ * This software is the confidential and proprietary information of GNTS
+ * Technologies Pvt. Ltd.
+ * 
+ * Version Date Modified By Remarks
  * 
  * 
  */
 var accountPayablesService 	= require('../services/AccountPayablesService.js');
 var accounts 				= require('../models/Accounts.js');
+var messagesService 		= require('../services/MessagesService.js');
+var constants				= require('../config/Constants.js');
+var config 					= require('../config/config.js');
+var slnogenService 			= require('../services/SlnoGenService.js');
 
 module.exports = function(app, server) {
 	
@@ -108,9 +112,56 @@ module.exports = function(app, server) {
 				last_updated_by 		: req.param("lastupdatedby")
 				
 			};
+		
+		
+		if(req.param("accpaybleid")==null){
+			
+			var refkey	= 'ACC_PAY_REF';
+			var slNoCondition = {
+					company_id 			: accpayobj.company_id,
+					ref_key 			: refkey,
+					autogen_yn 			: 'Y',
+					status 				: 'Active'
+			};
+			
+			slnogenService.getSlnoValue(slNoCondition, function(sl) {
+				accpayobj.ref_number = sl.sno;
+				accountPayablesService.saveAccountPayables(accpayobj, function(result) {
+
+					if (result.status) {
+						slnogenService.updateSequenceNo(sl.slid,
+								accpayobj.last_updated_dt, accpayobj.last_updated_by);
+					}
+
+					res.send(result);
+				});
+			});
+			
+		}else{
+					
 		accountPayablesService.saveAccountPayables(accpayobj,function(result){
+			
+			// For Sent a Message
+			if(req.param("status")!=null&&req.param("status")!=constants.STATUSAPPROVED){
+				var messageobj={	
+						company_id 				: req.param("companyid"),
+						msg_type 				: 'N',
+						msg_sender 				: config.ACCOUNTS_EMAIL,
+						msg_receivers 			: config.ACCOUNTS_EMAIL,
+						msg_subject 			: 'Reg - Account Payable - '+req.param("status"),
+						msg_body 				: 'Bill Number : '+req.param("billno")+'\nAmount :'+req.param("invoiceamount")+
+												  '\nRemarks :'+req.param("remarks")+'\nBill Date :'+req.param("billdate"),
+						client_ip 				: req.connection.remoteAddress,
+						user_id 				: req.param("userid"),
+						msg_status 				: 'Pending',
+						msg_sent_dt 			: new Date()
+					};
+				messagesService.saveMessages(messageobj, function(result){
+				});
+			}
 			res.send(result);
 		});
+	 }
 	}
 }
 

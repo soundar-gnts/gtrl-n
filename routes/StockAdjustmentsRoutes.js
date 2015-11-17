@@ -14,7 +14,12 @@
  * 
  * 
  */
-var stockAdjustmentsService = require('../services/StockAdjustmentsService.js');
+var stockAdjustmentsService 	= require('../services/StockAdjustmentsService.js');
+var messagesService 			= require('../services/MessagesService.js');
+var constants					= require('../config/Constants.js');
+var config 						= require('../config/config.js');
+var slnogenService 				= require('../services/SlnoGenService.js');
+
 module.exports = function(app, server) {
 	app.post('/getstockadjustmentsdetails', getStockAdjustmentsDetails);
 	app.post('/savestockadjustments', saveStockAdjustments);
@@ -27,6 +32,7 @@ module.exports = function(app, server) {
 				company_id 					: req.param("companyid"),
 				store_id 					: req.param("storeid"),
 				adjust_date 				: req.param("adjustdate"),
+				ref_number					: req.param("refnumber"),
 				adjust_qty 					: req.param("adjustqty"),
 				batch_no					: req.param("batchno"),
 				uom_id						: req.param("uomid"),
@@ -37,9 +43,52 @@ module.exports = function(app, server) {
 				actioned_dt 				: req.param("actioneddt")
 				
 			};
-		stockAdjustmentsService.saveStockAdjustments(adjustobj, function(response){
+		
+		if(req.param("adjustid")==null){
+			
+			var refkey	= 'ADJUST_REF';
+			var slNoCondition = {
+					company_id 			: adjustobj.company_id,
+					ref_key 			: refkey,
+					autogen_yn 			: 'Y',
+					status 				: 'Active'
+			};
+			
+			slnogenService.getSlnoValue(slNoCondition, function(sl){
+			adjustobj.ref_number = sl.sno;
+			stockAdjustmentsService.saveStockAdjustments(adjustobj, function(response){
+			
+			if(response.status){
+				slnogenService.updateSequenceNo(sl.slid, adjustobj.actioned_dt, adjustobj.actioned_by);
+			}
+				
+			res.send(response);
+			});
+			});
+		}else{
+			stockAdjustmentsService.saveStockAdjustments(adjustobj, function(response){
+			
+			//For Sent a Message
+			if(req.param("status")!=null&&req.param("status")!=constants.STATUSAPPROVED){
+				var messageobj={	
+						company_id 				: req.param("companyid"),
+						msg_type 				: 'N',
+						msg_sender 				: config.STORE_EMAIL,
+						msg_receivers 			: config.STORE_EMAIL,
+						msg_subject 			: 'Reg - Stock Adjustments - '+req.param("status"),
+						msg_body 				: 'Product Ref : '+req.param("productid")+'\nQty :'+req.param("adjustqty")+
+												  '\nReason :'+req.param("adjustreason")+'\nSymbol :'+req.param("adjustsymbol"),
+						client_ip 				: req.connection.remoteAddress,
+						user_id 				: req.param("userid"),
+						msg_status 				: 'Pending',
+						msg_sent_dt 			: new Date()
+					};
+				messagesService.saveMessages(messageobj, function(result){
+				});
+			}
 			res.send(response);
 		});
+		}
 	}
 	
 	
@@ -53,7 +102,8 @@ module.exports = function(app, server) {
 		var storeid				=req.param("storeid");
 		var adjustsymbol		=req.param("adjustsymbol");
 		var status				=req.param("status");
-
+		var refnumber			=req.param("refnumber");
+		
 		
 		if(adjustid!=null){
 			condition ="adjust_id="+adjustid;
@@ -70,6 +120,13 @@ module.exports = function(app, server) {
 				condition="product_id='"+productid+"'";
 			}else {
 				condition=condition+" and product_id='"+productid+"'";
+			}
+		}
+		if(refnumber!=null){
+			if(condition === ""){
+				condition="ref_number='%"+refnumber+"%'";
+			}else {
+				condition=condition+" and ref_number='%"+refnumber+"%'";
 			}
 		}
 		if(storeid!=null){
