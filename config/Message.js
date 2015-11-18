@@ -128,3 +128,12 @@ exports.PRODUCTIMAGEEDITSUCCESS = 'Product image editted successfully.';
 
 exports.PRODUCTBRANDSAVESUCCESS = 'Product brand saved successfully.';
 exports.PRODUCTBRANDEDITSUCCESS = 'Product brand editted successfully.';
+
+exports.SALESDETAILEDITSUCCESS = 'Sales order details editted successfully.';
+exports.SALESDETAILSAVESUCCESS = 'Purchase order details saved successfully.';
+
+exports.SALESRETURNSAVESUCCESS = 'Sales Return saved successfully.';
+exports.SALESRETURNEDITSUCCESS = 'Sales Return editted successfully.';
+
+exports.SALESRETURNDETAILSAVESUCCESS = 'Sales Return details saved successfully.';
+exports.SALESRETURNDETAILEDITSUCCESS = 'Sales Return details editted successfully.';

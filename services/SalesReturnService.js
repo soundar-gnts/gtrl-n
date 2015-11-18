@@ -30,14 +30,14 @@ var accountReceivable 			= require('../services/AccountReceivableService.js');
 var productSerialCodesService 	= require('../services/ProductSerialCodesService.js');
 var accountReceivableService 	= require('../services/AccountReceivableService.js');
 //get all Purchase Return header List
-var getPurchaseReturnHdrList = function(condition, selectedAttributes, fetchAssociation, callback){
-	log.info(fileName+'.getPurchaseReturnHdrList');
+var getSalesReturnHdrList = function(condition, selectedAttributes, fetchAssociation, callback){
+	log.info(fileName+'.getSalesReturnHdrList');
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
-	purchaseReturnHdr.findAll({
+	salesReturnHdr.findAll({
 		where		: [condition],
 		include		: fetchAssociation,
 		attributes	: selectedAttributes
@@ -64,15 +64,15 @@ var getPurchaseReturnHdrList = function(condition, selectedAttributes, fetchAsso
 		callback(response);
 	});
 }
-//Get All Purchase Return Details List
-var getPurchaseReturnDtlList = function(condition, selectedAttributes, fetchAssociation, callback){
-	log.info(fileName+'.getPo');
+//Get All Sales Return Details List
+var getSalesReturnDtlList = function(condition, selectedAttributes, fetchAssociation, callback){
+	//log.info(fileName+'.getPo');
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
-	purchaseReturnDtl.findAll({
+	salesReturnDtl.findAll({
 		where		: [condition],
 		include		: fetchAssociation,
 		attributes	: selectedAttributes
@@ -100,22 +100,22 @@ var getPurchaseReturnDtlList = function(condition, selectedAttributes, fetchAsso
 	});
 } 
 
-//Save or Update Purchase Return Header 
-var saveOrUpdatePurchaseReturnHeader = function(returnHdr, callback){
+//Save or Update Sales Return Header 
+var saveOrUpdateSalesReturnHeader = function(returnHdr, callback){
 	
-	log.info(fileName+'.saveOrUpdatePurchaseReturnHeader');
+	log.info(fileName+'.saveOrUpdateSalesReturnHeader');
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
-	//if purchase order id exist then update otherwise create poheader table 
-	if(returnHdr.return_id != null){
-		purchaseReturnHdr.upsert(returnHdr)
+	//if Sales id exist then update otherwise create poheader table 
+	if(returnHdr.sale_id != null){
+		salesReturnHdr.upsert(returnHdr)
 		.then(function(data){
 			log.info(APPMSG.POEDITSUCCESS);
-			response.message 	= APPMSG.PURCHASERETURNEDITSUCCESS;
-			response.data  		= returnHdr.return_id;
+			response.message 	= APPMSG.SALESRETURNEDITSUCCESS;
+			response.data  		= returnHdr.sale_id;
 			response.status  	= true;
 			callback(response);
 		})
@@ -127,11 +127,11 @@ var saveOrUpdatePurchaseReturnHeader = function(returnHdr, callback){
 			callback(response);
 		});
 	} else{
-		purchaseReturnHdr.create(returnHdr)
+		salesReturnHdr.create(returnHdr)
 		.then(function(data){
-			log.info(APPMSG.POSAVESUCCESS);
-			response.message	= APPMSG.PURCHASERETURNSAVESUCCESS;
-			response.data  		= data.return_id;
+			//log.info(APPMSG.POSAVESUCCESS);
+			response.message	= APPMSG.SALESRETURNSAVESUCCESS;
+			response.data  		= data.sale_id;
 			response.status 	= true;
 			callback(response);
 		})
@@ -146,20 +146,20 @@ var saveOrUpdatePurchaseReturnHeader = function(returnHdr, callback){
 	}
 }
 
-var saveOrUpdatePurchaseReturnDetails = function(purchaseReturnDtl_res, callback) {
+var saveOrUpdateSalesReturnDetails = function(salesReturnDtl_res, callback) {
 
-	log.info(fileName+'.saveOrUpdatePurchaseReturnDetails');
+	log.info(fileName+'.saveOrUpdateSalesReturnDetails');
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
-	//if purchase details id exist then update otherwise create poDetail table 
-	if(purchaseReturnDtl_res.return_dtlid != null){
-		purchaseReturnDtl.upsert(purchaseReturnDtl_res)
+	//if Sales details id exist then update otherwise create poDetail table 
+	if(salesReturnDtl_res.return_dtlid != null){
+		salesReturnDtl.upsert(salesReturnDtl_res)
 		.then(function(data){
-			log.info(APPMSG.PODETAILEDITSUCCESS);
-			response.message	= APPMSG.PURCHASERETURNDETAILEDITSUCCESS;
+			log.info(APPMSG.SALESDETAILEDITSUCCESS);
+			response.message	= APPMSG.SALESRETURNDETAILEDITSUCCESS;
 			response.data  		= purchaseReturnDtl_res.return_dtlid;
 			response.status 	= true;
 			callback(response);
@@ -172,10 +172,10 @@ var saveOrUpdatePurchaseReturnDetails = function(purchaseReturnDtl_res, callback
 			callback(response);
 		});
 	} else{
-		purchaseReturnDtl.create(purchaseReturnDtl_res)
+		salesReturnDtl.create(salesReturnDtl_res)
 		.then(function(data){
 			log.info(APPMSG.PODETAILSAVESUCCESS);
-			response.message	= APPMSG.PURCHASERETURNDETAILSAVESUCCESS;
+			response.message	= APPMSG.SALESRETURNDETAILSAVESUCCESS;
 			response.data  		= data.return_dtlid;
 			response.status 	= true;
 			callback(response);
@@ -190,61 +190,61 @@ var saveOrUpdatePurchaseReturnDetails = function(purchaseReturnDtl_res, callback
 	}
 }
 
-var saveOrUpdatePurchaseReturn = function(slid, PurchaseReturnHdr, purchaseReturnDetails, purchaseReturnDeleteDetailsIds,callback){
-	log.info(fileName+'.saveOrUpdatePurchaseReturn');
+var saveOrUpdateSalesReturn = function(slid, salesReturnHdr, salesReturnDetails, salesReturnDeleteDetailsIds,callback){
+	log.info(fileName+'.saveOrUpdateSalesReturn');
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
 	
-	saveOrUpdatePurchaseReturnHeader(PurchaseReturnHdr, function(header){
+	saveOrUpdateSalesReturnHeader(salesReturnHdr, function(header){
 		//if true data inserted/updated successfully else error
 		if(header.status){			
 			//if slid exist, serial number generated, so need to update slnoGen table 
 			if(slid != null)
-				slnogenService.updateSequenceNo(slid, PurchaseReturnHdr.last_updated_dt, PurchaseReturnHdr.last_updated_by);
+				slnogenService.updateSequenceNo(slid, salesReturnHdr.last_updated_dt, salesReturnHdr.last_updated_by);
 			console.log('header.status : '+header.status);
 			//if delete details id exist need to hard delete in poDetail Table
-			if(purchaseReturnDeleteDetailsIds != null)
-				purchaseReturnDeleteDetailsIds.forEach(function(prDelDetail){
+			if(salesReturnDeleteDetailsIds != null)
+				salesReturnDeleteDetailsIds.forEach(function(prDelDetail){
 					deletePoDetails("return_dtlid='"+prDelDetail.return_dtlid+"'", function(result){
 						log.info(result);
 					});
 				});
 			//if purchase details exist need to add/update in poDetail Table
-			if(purchaseReturnDetails != null)
-				purchaseReturnDetails.forEach(function(purchaseReturnDetail){
-					purchaseReturnDetail.return_id = header.data;
-					saveOrUpdatePurchaseReturnDetails(purchaseReturnDetail, function(result){
+			if(salesReturnDetails != null)
+				salesReturnDetails.forEach(function(salesReturnDetail){
+					salesReturnDetail.return_id = header.data;
+					saveOrUpdateSalesReturnDetails(salesReturnDetail, function(result){
 						console.log(result);
 					});
 					// Update Ledger Details  
 					 stockLedgerService.insertStockLedger(
- 							purchaseReturnDetail[i].product_id,
- 							purchaseReturnDetail.company_id,
- 							purchaseReturnDetail.store_id,
- 							purchaseReturnDetail.batch_no,
- 							purchaseReturnDetail[i].invoice_qty,
+							 salesReturnDetail[i].product_id,
+							 salesReturnDetail.company_id,
+							 salesReturnDetail.store_id,
+							 salesReturnDetail.batch_no,
+							 salesReturnDetail[i].invoice_qty,
  							0,
- 							purchaseReturnDetail[i].uom_id,
- 							purchaseReturnDetail.invoice_no,
- 							purchaseReturnDetail.invoice_date,"Purchase Goods -Invoice Number : "+purchaseReturnDetail.invoice_no+'-'+purchaseReturnDetail.action_remarks);
+ 							salesReturnDetail[i].uom_id,
+ 							salesReturnDetail.invoice_no,
+ 							salesReturnDetail.invoice_date,"Purchase Goods -Invoice Number : "+salesReturnDetail.invoice_no+'-'+salesReturnDetail.action_remarks);
  					//To Insert Row in product Serail Codes
  					productSerialCodesService.insertProductSerialCodes(
- 							purchaseReturnDetail.company_id,
- 							purchaseReturnDetail.purchase_id,
- 							purchaseReturnDetail[i].product_id,
- 							purchaseReturnDetail.store_id,
- 							purchaseReturnDetail.batch_no,
- 							purchaseReturnDetail[i].eanserialno,
- 							purchaseReturnDetail[i].storeserialno); 	
+ 							salesReturnDetail.company_id,
+ 							salesReturnDetail.purchase_id,
+ 							salesReturnDetail[i].product_id,
+ 							salesReturnDetail.store_id,
+ 							salesReturnDetail.batch_no,
+ 							salesReturnDetail[i].eanserialno,
+ 							salesReturnDetail[i].storeserialno); 	
 				});
 			//For  Account Receivable 
-			accountReceivableService.insertAccountReceivable(PurchaseReturnHdr.supplier_id,PurchaseReturnHdr.company_id,
-			PurchaseReturnHdr.store_id,new Date(),null,PurchaseReturnHdr.invoice_no,PurchaseReturnHdr.invoice_date,
-			PurchaseReturnHdr.invoice_amount,PurchaseReturnHdr.invoice_amount,'Purchase Deleted - Ref No :'+PurchaseReturnHdr.invoice_no,
-			PurchaseReturnHdr.last_updated_dt,PurchaseReturnHdr.last_updated_by);			
+			accountReceivableService.insertAccountReceivable(salesReturnHdr.supplier_id,salesReturnHdr.company_id,
+			salesReturnHdr.store_id,new Date(),null,salesReturnHdr.invoice_no,salesReturnHdr.invoice_date,
+			salesReturnHdr.invoice_amount,salesReturnHdr.invoice_amount,'Sales Deleted - Ref No :'+salesReturnHdr.invoice_no,
+			salesReturnHdr.last_updated_dt,salesReturnHdr.last_updated_by);			
 			
 			callback(header);
 		} else{
@@ -255,29 +255,29 @@ var saveOrUpdatePurchaseReturn = function(slid, PurchaseReturnHdr, purchaseRetur
 }
 
 //Cancel, Approve and Reject service (po_hdr)
-var changePurchaseReturnStatus = function(PurchaseReturnHdr, callback){
-	log.info(fileName+'.changePurchaseReturnStatus');
+var changeSalesReturnStatus = function(salesReturnHdr, callback){
+	log.info(fileName+'.changeSalesReturnStatus');
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
 	}
-	var condition = "return_id='"+PurchaseReturnHdr.return_id+"'";
+	var condition = "return_id='"+salesReturnHdr.return_id+"'";
 	getPo(condition, '', '', function(data){
 		//if true data exist else error
 		if(data.status){
 			//if approved cannot do rejection & cancel operation else can
-			if(data.data[0].status == CONSTANT.STATUSAPPROVED && (PurchaseReturnHdr.status == CONSTANT.STATUSREJECTED||PurchaseReturnHdr.status == CONSTANT.STATUSCANCELLED)){
-				log.info('Purchase order is already'+CONSTANT.STATUSAPPROVED);
+			if(data.data[0].status == CONSTANT.STATUSAPPROVED && (salesReturnHdr.status == CONSTANT.STATUSREJECTED||salesReturnHdr.status == CONSTANT.STATUSCANCELLED)){
+				log.info('Sales order is already'+CONSTANT.STATUSAPPROVED);
 				response.status  	= true;
-				response.message 	= 'Purchase order is already'+CONSTANT.STATUSAPPROVED;
+				response.message 	= 'Sales order is already'+CONSTANT.STATUSAPPROVED;
 				callback(result);
 			} else
-				saveOrUpdatePurchaseReturnHeader(PurchaseReturnHdr, function(result){
+				saveOrUpdateSalesReturnHeader(salesReturnHdr, function(result){
 					if(result.status){
 						
 						//insert into message table when status is Pending/Cancelled/Approved/Rejected
-						if(PurchaseReturnHdr.status == CONSTANT.STATUSCANCELLED || PurchaseReturnHdr.status == CONSTANT.STATUSAPPROVED || PurchaseReturnHdr.status == CONSTANT.STATUSREJECTED || PurchaseReturnHdr.status == CONSTANT.STATUSPENDING){
+						if(salesReturnHdr.status == CONSTANT.STATUSCANCELLED || salesReturnHdr.status == CONSTANT.STATUSAPPROVED || salesReturnHdr.status == CONSTANT.STATUSREJECTED || salesReturnHdr.status == CONSTANT.STATUSPENDING){
 							var msgObj = {
 									company_id 			: data.data[0].company_id 
 							}
@@ -286,9 +286,9 @@ var changePurchaseReturnStatus = function(PurchaseReturnHdr, callback){
 							});
 						}
 						
-						log.info('Purchase order is '+PurchaseReturnHdr.status);
+						log.info('Sales order is '+salesReturnHdr.status);
 						response.status  	= true;
-						response.message 	= 'Purchase order is '+PurchaseReturnHdr.status;
+						response.message 	= 'Sales order is '+salesReturnHdr.status;
 						callback(result);
 					} else
 						callback(result);
@@ -300,8 +300,8 @@ var changePurchaseReturnStatus = function(PurchaseReturnHdr, callback){
 }
 
 module.exports = {
-	getPurchaseReturnHdrList	: getPurchaseReturnHdrList,
-	getPurchaseReturnDtlList	: getPurchaseReturnDtlList,
-	saveOrUpdatePurchaseReturn	: saveOrUpdatePurchaseReturn,
-	changePurchaseReturnStatus	: changePurchaseReturnStatus
+	getSalesReturnHdrList	: getSalesReturnHdrList,
+	getSalesReturnDtlList	: getSalesReturnDtlList,
+	saveOrUpdateSalesReturn	: saveOrUpdateSalesReturn,
+	changeSalesReturnStatus	: changeSalesReturnStatus
 }

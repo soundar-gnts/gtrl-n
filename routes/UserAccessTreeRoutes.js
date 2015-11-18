@@ -16,7 +16,7 @@
  */
 
 var userAccessTreeService 	= require('../services/UserAccessTreeService.js');
-var userGroup 				= require('../models/UserGroup.js');
+//var userGroup 				= require('../models/UserGroup.js');
 
 module.exports = function(app, server){
 	
@@ -34,9 +34,9 @@ module.exports = function(app, server){
 		var selectedAttributes	= "";
 		var fetchAssociation 	= "";
 		
-		if(req.param('fetchassociation')=='y'){
+		/*if(req.param('fetchassociation')=='y'){
 			fetchAssociation = [{model : userGroup, attributes : ['group_name']}]
-		}
+		}*/
 		
 		if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
 			selectedAttributes = ['acc_tree_id','group_id']

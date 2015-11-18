@@ -14,15 +14,16 @@
  * 
  */
 
-var model 			= require('../config/sequelize.js');
-var dataTypes 		= require('sequelize');
-var userGroup 		= require('../models/UserGroup.js');
-var accesTree 		= model.define('m_user_access_tree', {
+var model = require('../config/sequelize.js');
+var dataTypes = require('sequelize');
+//var userGroup = require('../models/UserGroup.js');
+
+var accesTree = model.define('m_user_access_tree', {
 
 	acc_tree_id : {
-	type 			: dataTypes.INTEGER,
-	primaryKey 		: true,
-	autoIncrement 	: true
+		type : dataTypes.INTEGER,
+		primaryKey : true,
+		autoIncrement : true
 	},
 	screen_name		: dataTypes.STRING,
 	view_yn			: dataTypes.STRING,
@@ -33,10 +34,10 @@ var accesTree 		= model.define('m_user_access_tree', {
 	last_updated_by	: dataTypes.STRING
 
 }, {
-	timestamps 		: false,
+	timestamps : false,
 	freezeTableName : true,
-	tableName 		: 'm_user_access_tree'
+	tableName : 'm_user_access_tree'
 });
 
-accesTree.belongsTo(userGroup, {foreignKey : 'group_id'});
+//accesTree.belongsTo(userGroup, {foreignKey : 'group_id', targetKey : 'group_id'});
 module.exports = accesTree;

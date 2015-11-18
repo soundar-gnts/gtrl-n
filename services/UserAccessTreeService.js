@@ -20,7 +20,7 @@ var fileName=path.basename(__filename);
 var log				= require('../config/logger').logger;
 var appMsg			= require('../config/Message.js');
 var userAccessTree	= require('../models/UserAccessTree.js');
-var userGroup = require('../models/UserGroup.js');
+//var userGroup = require('../models/UserGroup.js');
 
 
 //insert or update User Access Tree
