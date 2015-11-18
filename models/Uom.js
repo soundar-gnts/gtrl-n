@@ -14,15 +14,15 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
+var model 			= require('../config/sequelize.js');
+var dataTypes 		= require('sequelize');
 
-var uom = model.define('m_uom', {
+var uom 			= model.define('m_uom', {
 
-	uom_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	uom_id 			: {
+	type 			: dataTypes.INTEGER,
+	primaryKey 		: true,
+	autoIncrement 	: true
 	},
 	uom_name		: dataTypes.STRING,
 	company_id 		: dataTypes.INTEGER,	
@@ -31,9 +31,9 @@ var uom = model.define('m_uom', {
 	last_updated_by	: dataTypes.STRING
 
 }, {
-	timestamps : false,
+	timestamps 		: false,
 	freezeTableName : true,
-	tableName : 'm_uom'
+	tableName 		: 'm_uom'
 });
 
-module.exports = uom;
+module.exports 		= uom;

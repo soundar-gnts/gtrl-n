@@ -32,6 +32,7 @@ module.exports = function(app, server){
 	app.post('/getsalesdeliverydetails',		getSalesDeliveryDetails);
 	app.post('/savesalesdeliverydetails',		saveOrUpdateSalesDeliveryDetails);
 	
+	//For get sales list based on user param
 	function getSales(req, res){
 		
 		var fetchAssociation 	= "";

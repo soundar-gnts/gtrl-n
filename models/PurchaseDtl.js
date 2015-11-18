@@ -15,11 +15,11 @@
  * 
  */
 
-var product		= require('../models/Product.js');
-var poDetail	= require('../models/PoDetail.js');
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var purchasedtl = model.define('t_purchase_dtl', {
+var product				= require('../models/Product.js');
+var poDetail			= require('../models/PoDetail.js');
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var purchasedtl 		= model.define('t_purchase_dtl', {
 
 	purchase_dtlid : {
 		type 			: dataTypes.INTEGER,

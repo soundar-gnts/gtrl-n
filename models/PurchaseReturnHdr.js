@@ -23,9 +23,9 @@ var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 
 	return_id : {
 		
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 
 	company_id 			: dataTypes.INTEGER,

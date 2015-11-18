@@ -15,18 +15,18 @@
  * 
  */
 
-var model		= require('../config/sequelize.js');
-var dataTypes	= require('sequelize');
-var productImage= require('../models/ProductImage.js');
-var tax			= require('../models/Tax.js');
-var uom 		= require('../models/Uom.js');
+var model			= require('../config/sequelize.js');
+var dataTypes		= require('sequelize');
+var productImage	= require('../models/ProductImage.js');
+var tax				= require('../models/Tax.js');
+var uom 			= require('../models/Uom.js');
 
-var product = model.define('m_product', {
+var product 		= model.define('m_product', {
 
 	prod_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	type 			: dataTypes.INTEGER,
+	primaryKey 		: true,
+	autoIncrement 	: true
 	},
 
 	company_id 		: dataTypes.INTEGER,

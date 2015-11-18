@@ -28,9 +28,9 @@ var filename			= path.basename(__filename);
 
 
 // To get StockLedger List based on user param
-exports.getStockLedgerDetails = function(condition,callback) {
+exports.getStockLedgerDetails = function(condition,fetchAssociation,callback) {
 	
-	stockledger.findAll({where : [condition]}).then(function(result) {
+	stockledger.findAll({where : [condition],include : fetchAssociation}).then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>>getStockLedgerDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;

@@ -14,7 +14,10 @@
  * 
  * 
  */
-var stockLedgerService = require('../services/StockLedgerService.js');
+var stockLedgerService 		= require('../services/StockLedgerService.js');
+var product 				= require('../models/Product.js');
+var store 		     		= require('../models/Store.js');
+
 module.exports = function(app, server) {
 	
 	app.post('/getstockledgerdetails', getStockLedgerDetails);
@@ -22,21 +25,28 @@ module.exports = function(app, server) {
 	
 	//To get stock ledger list based on user param
 	function getStockLedgerDetails(req, res){
-		var condition 		= "";
-		var stockledid		=req.param("stockledid");
-		var companyid		=req.param("companyid");
-		var productid		=req.param("productid");
-		var storeid			=req.param("storeid");
-		var batchno			=req.param("batchno");
-		var islatest		=req.param("islatest");
+		var condition 			= "";
+		var stockledid			= req.param("stockledid");
+		var companyid			= req.param("companyid");
+		var productid			= req.param("productid");
+		var storeid				= req.param("storeid");
+		var batchno				= req.param("batchno");
+		var islatest			= req.param("islatest");
+		var fetchAssociation 	= "";
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : product, attributes : ['prod_code','prod_name']},
+			                    {model : store, attributes : ['store_code','store_name']}]
+		}
+		
 		if(stockledid!=null){
 			condition ="stock_ledid="+stockledid;
 		}
 		if(companyid!=null){
 			if(condition === ""){
-				condition="company_id='"+companyid+"'";
+				condition="t_stock_ledger.company_id='"+companyid+"'";
 			}else {
-				condition=condition+" and company_id='"+companyid+"'";
+				condition=condition+" and t_stock_ledger.company_id='"+companyid+"'";
 			}
 		}
 		if(productid!=null){
@@ -48,9 +58,9 @@ module.exports = function(app, server) {
 		}
 		if(storeid!=null){
 			if(condition === ""){
-				condition="store_id='"+storeid+"'";
+				condition="t_stock_ledger.store_id='"+storeid+"'";
 			}else {
-				condition=condition+" and store_id='"+storeid+"'";
+				condition=condition+" and t_stock_ledger.store_id='"+storeid+"'";
 			}
 		}
 		
@@ -69,7 +79,7 @@ module.exports = function(app, server) {
 				condition=condition+" and is_latest='"+islatest+"'";
 			}
 		}
-		stockLedgerService.getStockLedgerDetails(condition,function(result){
+		stockLedgerService.getStockLedgerDetails(condition,fetchAssociation,function(result){
 			res.send(result);
 		});
 	}

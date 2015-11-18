@@ -15,9 +15,10 @@
  * 
  */
 
-var model 			 = require('../config/sequelize.js');
-var dataTypes 		 = require('sequelize');
-var feedback		 = model.define('t_feedback', {	
+var model 			 	= require('../config/sequelize.js');
+var dataTypes 		 	= require('sequelize');
+var customer 			= require('../models/Customer.js');
+var feedback		 	= model.define('t_feedback', {	
 
 	feedback_id : {
 		
@@ -39,4 +40,5 @@ var feedback		 = model.define('t_feedback', {
 	freezeTableName 	: true,
 	tableName 			: 't_feedback'
 });
-module.exports = feedback;
+feedback.belongsTo(customer, 	{foreignKey: 'cust_id'});
+module.exports 			= feedback;

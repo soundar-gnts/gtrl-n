@@ -15,14 +15,14 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var productbrand = model.define('m_prod_brand', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var productbrand 		= model.define('m_prod_brand', {
 
-	prod_brand_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	prod_brand_id 		: {
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 	prod_id				: dataTypes.INTEGER,
 	brand_id 			: dataTypes.INTEGER,
@@ -32,8 +32,8 @@ var productbrand = model.define('m_prod_brand', {
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 'm_prod_brand'
+	timestamps 			: false,
+	freezeTableName 	: true,
+	tableName 			: 'm_prod_brand'
 });
-module.exports = productbrand;
+module.exports 			= productbrand;

@@ -15,11 +15,13 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var stocksummary = model.define('t_stock_summary', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var product 			= require('../models/Product.js');
+var store 		     	= require('../models/Store.js');
+var stocksummary 		= model.define('t_stock_summary', {
 
-	stock_id : {
+	stock_id 			: {
 		type 			: dataTypes.INTEGER,
 		primaryKey 		: true,
 		autoIncrement 	: true
@@ -38,4 +40,6 @@ var stocksummary = model.define('t_stock_summary', {
 	freezeTableName 	: true,
 	tableName 			: 't_stock_summary'
 });
-module.exports = stocksummary;
+stocksummary.belongsTo(product, 	{foreignKey: 'product_id'});
+stocksummary.belongsTo(store, 		{foreignKey: 'store_id'});
+module.exports 			= stocksummary;

@@ -19,6 +19,8 @@ var messagesService 			= require('../services/MessagesService.js');
 var constants					= require('../config/Constants.js');
 var config 						= require('../config/config.js');
 var slnogenService 				= require('../services/SlnoGenService.js');
+var product 					= require('../models/Product.js');
+var uom 						= require('../models/Uom.js');
 
 module.exports = function(app, server) {
 	app.post('/getstockadjustmentsdetails', getStockAdjustmentsDetails);
@@ -103,16 +105,21 @@ module.exports = function(app, server) {
 		var adjustsymbol		=req.param("adjustsymbol");
 		var status				=req.param("status");
 		var refnumber			=req.param("refnumber");
+		var fetchAssociation 	= "";
 		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : product, attributes : ['prod_code','prod_name']},
+			                    {model : uom, attributes : ['uom_name']}]
+		}
 		
 		if(adjustid!=null){
 			condition ="adjust_id="+adjustid;
 		}
 		if(companyid!=null){
 			if(condition === ""){
-				condition="company_id='"+companyid+"'";
+				condition="t_stock_adjustments.company_id='"+companyid+"'";
 			}else {
-				condition=condition+" and company_id='"+companyid+"'";
+				condition=condition+" and t_stock_adjustments.company_id='"+companyid+"'";
 			}
 		}
 		if(productid!=null){
@@ -154,7 +161,9 @@ module.exports = function(app, server) {
 			attr=['adjust_id','product_id','company_id','adjust_symbol'];
 		}
 		
-		stockAdjustmentsService.getStockAdjustmentsDetails(condition,attr, function(response){
+		console.log('condition-->'+condition);
+		
+		stockAdjustmentsService.getStockAdjustmentsDetails(condition,attr,fetchAssociation, function(response){
 			res.send(response);
 		});
 	}

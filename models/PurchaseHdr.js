@@ -15,13 +15,13 @@
  * 
  */
 
-var supplier	= require('../models/Supplier.js');
-var purchasedtl = require('../models/PurchaseDtl.js');
+var supplier			= require('../models/Supplier.js');
+var purchasedtl 		= require('../models/PurchaseDtl.js');
 var poHeader			= require('../models/PoHeader.js');
 
-var model		= require('../config/sequelize.js');
-var dataTypes	= require('sequelize');
-var purchasehdr = model.define('t_purchase_hdr', {
+var model				= require('../config/sequelize.js');
+var dataTypes			= require('sequelize');
+var purchasehdr 		= model.define('t_purchase_hdr', {
 
 	purchase_id : {
 		type 			: dataTypes.INTEGER,

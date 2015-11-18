@@ -18,7 +18,17 @@ var messagesService = require('../services/MessagesService.js');
 module.exports = function(app, server) {
 	app.post('/getmessagesdetails', getMessagesDetails);
 	app.post('/savemessages', saveMessages);
-	app.post('/deletemessages', messagesService.deleteMessages);
+	app.post('/deletemessages', deleteMessages);
+	
+	//For delete a message
+	function deleteMessages(req, res){
+	var msgid =	req.param("msgid");
+	messagesService.deleteMessages(msgid, function(result){
+			res.send(result);
+	});
+		
+	}
+	
 	
 	//For Save/Update Message
 	function saveMessages(req, res){

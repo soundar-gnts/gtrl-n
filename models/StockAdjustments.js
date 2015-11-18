@@ -17,6 +17,8 @@
 
 var model 				= require('../config/sequelize.js');
 var dataTypes 			= require('sequelize');
+var product 			= require('../models/Product.js');
+var uom 				= require('../models/Uom.js');
 var stockadjustments 	= model.define('t_stock_adjustments', {
 
 	adjust_id : {
@@ -42,4 +44,6 @@ var stockadjustments 	= model.define('t_stock_adjustments', {
 	freezeTableName 	: true,
 	tableName 			: 't_stock_adjustments'
 });
-module.exports = stockadjustments;
+stockadjustments.belongsTo(product, 	{foreignKey: 'product_id'});
+stockadjustments.belongsTo(uom, 		{foreignKey: 'uom_id'});
+module.exports 			= stockadjustments;

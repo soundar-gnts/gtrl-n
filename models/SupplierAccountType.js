@@ -14,26 +14,25 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var supplierAcType 		= model.define('m_supp_acct_type', {
 
-var supplierAcType = model.define('m_supp_acct_type', {
-
-	supp_acct_id : {
+	supp_acct_id 		: {
 		type			: dataTypes.INTEGER,
 		primaryKey		: true,
 		autoIncrement	: true
 	},
-	supp_acct_name	: dataTypes.STRING,
-	company_id 		: dataTypes.INTEGER,	
-	status 			: dataTypes.STRING,
-	last_updated_dt	: dataTypes.DATE,
-	last_updated_by	: dataTypes.STRING
+	supp_acct_name		: dataTypes.STRING,
+	company_id 			: dataTypes.INTEGER,	
+	status 				: dataTypes.STRING,
+	last_updated_dt		: dataTypes.DATE,
+	last_updated_by		: dataTypes.STRING
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 'm_supp_acct_type'
+	timestamps 			: false,
+	freezeTableName 	: true,
+	tableName 			: 'm_supp_acct_type'
 });
 
-module.exports = supplierAcType;
+module.exports 			= supplierAcType;

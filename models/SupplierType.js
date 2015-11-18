@@ -14,15 +14,15 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
+var model 			= require('../config/sequelize.js');
+var dataTypes 		= require('sequelize');
 
-var supplierType = model.define('m_supplier_type', {
+var supplierType 	= model.define('m_supplier_type', {
 
-	supp_type_id : {
-		type 			: dataTypes.INTEGER,
-		primaryKey 		: true,
-		autoIncrement	: true
+	supp_type_id 	: {
+	type 			: dataTypes.INTEGER,
+	primaryKey 		: true,
+	autoIncrement	: true
 	},
 	supp_type_name	: dataTypes.STRING,
 	company_id 		: dataTypes.INTEGER,	
@@ -31,9 +31,9 @@ var supplierType = model.define('m_supplier_type', {
 	last_updated_by	: dataTypes.STRING
 
 }, {
-	timestamps : false,
+	timestamps 		: false,
 	freezeTableName : true,
-	tableName : 'm_supplier_type'
+	tableName 		: 'm_supplier_type'
 });
 
-module.exports = supplierType;
+module.exports 		= supplierType;

@@ -14,15 +14,15 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
+var model 			= require('../config/sequelize.js');
+var dataTypes 		= require('sequelize');
 
-var screenTree = model.define('m_screen_tree', {
+var screenTree 		= model.define('m_screen_tree', {
 
-	screen_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	screen_id 		: {
+	type 			: dataTypes.INTEGER,
+	primaryKey 		: true,
+	autoIncrement 	: true
 	},
 	screen_name		: dataTypes.STRING,
 	status 			: dataTypes.STRING,
@@ -30,9 +30,9 @@ var screenTree = model.define('m_screen_tree', {
 	last_updated_by	: dataTypes.STRING
 
 }, {
-	timestamps : false,
+	timestamps 		: false,
 	freezeTableName : true,
-	tableName : 'm_screen_tree'
+	tableName 		: 'm_screen_tree'
 });
 
-module.exports = screenTree;
+module.exports 		= screenTree;

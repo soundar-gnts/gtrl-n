@@ -26,9 +26,9 @@ var stockLedgerService 		= require('../services/StockLedgerService.js');
 var appMsg					= require('../config/Message.js');
 
 // To get Stock Adjustments List based on user param
-exports.getStockAdjustmentsDetails = function(condition,attr,callback) {
+exports.getStockAdjustmentsDetails = function(condition,attr,fetchAssociation,callback) {
 	
-	stockadjustments.findAll({where : [condition],attributes: attr,order: [['actioned_dt', 'DESC']]}).then(function(result) {
+	stockadjustments.findAll({where : [condition],include : fetchAssociation,attributes: attr,order: [['actioned_dt', 'DESC']]}).then(function(result) {
 		if(result.length === 0){
 			log.info(fileName+'.getStockAdjustmentsDetails - '+appMsg.LISTNOTFOUNDMESSAGE);
 			response.message = appMsg.LISTNOTFOUNDMESSAGE;

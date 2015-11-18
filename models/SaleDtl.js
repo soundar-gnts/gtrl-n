@@ -15,9 +15,9 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var saledtl = model.define('t_sale_dtl', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var saledtl 			= model.define('t_sale_dtl', {
 
 	sale_dtlid : {
 		type 			: dataTypes.INTEGER,
@@ -42,8 +42,8 @@ var saledtl = model.define('t_sale_dtl', {
 	discount_value		: dataTypes.INTEGER
 
 }, {
-	timestamps 		: false,
-	freezeTableName : true,
-	tableName 		: 't_sale_dtl'
+	timestamps 			: false,
+	freezeTableName 	: true,
+	tableName 			: 't_sale_dtl'
 });
-module.exports = saledtl;
+module.exports 			= saledtl;

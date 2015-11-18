@@ -15,14 +15,14 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var txnstype = model.define('m_txns_type', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var txnstype 			= model.define('m_txns_type', {
 
-	trans_type_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	trans_type_id 		: {
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 	company_id 			: dataTypes.INTEGER,
 	trans_type_name 	: dataTypes.STRING,
@@ -32,8 +32,8 @@ var txnstype = model.define('m_txns_type', {
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 'm_txns_type'
+	timestamps 			: false,
+	freezeTableName 	: true,
+	tableName 			: 'm_txns_type'
 });
-module.exports = txnstype;
+module.exports 			= txnstype;

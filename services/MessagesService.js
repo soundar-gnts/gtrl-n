@@ -90,15 +90,15 @@ exports.saveMessages = function(messageobj,callback) {
 }
 
 //To Delete Messages
-exports.deleteMessages = function(req, res) {
-	if(req.param("msgid")!=null){
-		messages.destroy({where:{msg_id	: req.param("msgid")}})
+exports.deleteMessages = function(msgid,callback) {
+	if(msgid!=null){
+		messages.destroy({where:{msg_id	: msgid}})
 		.then(function(data){
 			log.info(filename+'>> deleteMessages >>'+appmsg.DELETEMESSAGE);
 			response.message 	= appmsg.DELETEMESSAGE;
 			response.status  	= true;
-			response.data		= req.param("msgid");
-			res.send(response);
+			response.data		= msgid;
+			callback(response);
 			
 		}).error(function(err){
 			log.info(filename+'>> deleteMessages >>');
@@ -106,13 +106,13 @@ exports.deleteMessages = function(req, res) {
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
 			response.data  		= err;
-			res.send(response);
+			callback(response);
 		});
 		}else{
 			log.info(filename+'>> deleteMessages >>');
 			response.status  	= false;
 			response.message 	= appmsg.INTERNALERRORMESSAGE;
-			response.data  		= req.param("msgid");
-			res.send(response);
+			response.data  		= msgid;
+			callback(response);
 		}
 }

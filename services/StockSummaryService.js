@@ -25,9 +25,9 @@ var path 			= require('path');
 var filename		= path.basename(__filename);
 
 // To get Stock Summary List based on user param
-exports.getStockSummaryDetails = function(condition,callback) {
+exports.getStockSummaryDetails = function(condition,fetchAssociation,callback) {
 	
-	stocksummary.findAll({where : [condition]}).then(function(result) {
+	stocksummary.findAll({where : [condition],include : fetchAssociation}).then(function(result) {
 		if(result.length === 0){
 			log.info(filename+'>>getStockSummaryDetails>>'+appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;

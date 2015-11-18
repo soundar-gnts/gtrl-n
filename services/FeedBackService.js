@@ -61,9 +61,9 @@ var response 	= {
 	}; 
 
 	//To get feedback list based on user param
-	exports.getFeedBackList = function(condition,attr,callback) {	
+	exports.getFeedBackList = function(condition,attr,fetchAssociation,callback) {	
 		
-		feedbackservice.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
+		feedbackservice.findAll({where : [condition],include : fetchAssociation,order: [['last_updated_dt', 'DESC']],attributes: attr})
 		  
 		  .then(function(result){
 				if(result.length === 0){

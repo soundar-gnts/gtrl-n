@@ -15,11 +15,13 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var stockledger = model.define('t_stock_ledger', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var product 			= require('../models/Product.js');
+var store 		     	= require('../models/Store.js');
+var stockledger 		= model.define('t_stock_ledger', {
 
-	stock_ledid : {
+	stock_ledid 		: {
 		type 			: dataTypes.INTEGER,
 		primaryKey 		: true,
 		autoIncrement 	: true
@@ -45,4 +47,6 @@ var stockledger = model.define('t_stock_ledger', {
 	freezeTableName 	: true,
 	tableName 			: 't_stock_ledger'
 });
-module.exports = stockledger;
+stockledger.belongsTo(product, 	{foreignKey: 'product_id'});
+stockledger.belongsTo(store, 	{foreignKey: 'store_id'});
+module.exports 			= stockledger;

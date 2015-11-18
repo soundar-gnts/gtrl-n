@@ -15,14 +15,14 @@
  * 
  */
 
-var model = require('../config/sequelize.js');
-var dataTypes = require('sequelize');
-var slnogen = model.define('m_slno_gen', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var slnogen 			= model.define('m_slno_gen', {
 
-	slno_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	slno_id 			: {
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 	company_id 			: dataTypes.INTEGER,
 	slno_gen_level 		: dataTypes.STRING,
@@ -41,8 +41,8 @@ var slnogen = model.define('m_slno_gen', {
 	last_updated_by 	: dataTypes.STRING
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 'm_slno_gen'
+	timestamps 			: false,
+	freezeTableName 	: true,
+	tableName 			: 'm_slno_gen'
 });
-module.exports = slnogen;
+module.exports 			= slnogen;

@@ -15,7 +15,8 @@
  * 
  */
 
-var feedBackService = require('../services/FeedBackService.js');
+var feedBackService 	= require('../services/FeedBackService.js');
+var customer 			= require('../models/Customer.js');
 
 module.exports = function(app, server){
 	
@@ -41,13 +42,17 @@ module.exports = function(app, server){
 	
 	//To get feedback list based on user param
 	function getFeedBackList(req, res){
-		var condition  		= "";		
-		var feedbackid		= req.param('feedbackid');
-		var companyid		= req.param('companyid');
-		var custid    	    = req.param('custid');	
-		var status			= req.param("status");
+		var condition  			= "";		
+		var feedbackid			= req.param('feedbackid');
+		var companyid			= req.param('companyid');
+		var custid    	    	= req.param('custid');	
+		var status				= req.param("status");
+		var fetchAssociation 	= "";
+		var attr 				= "";
 		
-		var attr 		= "";
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : customer, attributes : ['cust_code','cus_last_name','cus_first_name']}]
+		}
 		
 		if(feedbackid!=null){
 			condition ="feedback_id="+feedbackid;
@@ -55,24 +60,24 @@ module.exports = function(app, server){
 		
 		if(companyid!=null){
 			if(condition === ""){
-				condition="company_id ='"+companyid+"'";
+				condition="t_feedback.company_id ='"+companyid+"'";
 			}else {
-				condition=condition+" and company_id ='"+companyid+"'";
+				condition=condition+" and t_feedback.company_id ='"+companyid+"'";
 			}
 		}
 		
 		if(custid!=null){
 			if(condition === ""){
-				condition="cust_id='"+custid+"'";
+				condition="t_feedback.cust_id='"+custid+"'";
 			}else {
-				condition=condition+" and cust_id='"+custid+"'";
+				condition=condition+" and t_feedback.cust_id='"+custid+"'";
 			}
 		}
 		if(status!=null){
 			if(condition === ""){
-				condition="status='"+status+"'";
+				condition="t_feedback.status='"+status+"'";
 			}else {
-				condition=condition+" and status='"+status+"'";
+				condition=condition+" and t_feedback.status='"+status+"'";
 			}
 		}
 
@@ -80,7 +85,7 @@ module.exports = function(app, server){
 			attr=['company_id','cust_id','feedback_id'];
 		}
 		
-		feedBackService.getFeedBackList(condition,attr,function(result){
+		feedBackService.getFeedBackList(condition,attr,fetchAssociation,function(result){
 			res.send(result);
 		});
 	}

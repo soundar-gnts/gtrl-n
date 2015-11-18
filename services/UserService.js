@@ -421,7 +421,7 @@ exports.getUser = function(req, res){
 	var userName 	= req.param('username');
 	
 	if(companyId != null)
-		condition = "company_id="+companyId;
+		condition = "m_user.company_id="+companyId;
 	
 	if(userId!=null)
 		if(condition === "")
@@ -432,10 +432,10 @@ exports.getUser = function(req, res){
 	
 	if(status!=null)
 		if(condition === "")
-			condition = "status='"+status+"'";
+			condition = "m_user.status='"+status+"'";
 	
 		else
-			condition = condition+" and status='"+status+"'";
+			condition = condition+" and m_user.status='"+status+"'";
 	
 	if(userName!=null)
 		if(condition === null)

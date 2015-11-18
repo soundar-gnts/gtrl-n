@@ -14,17 +14,17 @@
  * 
  */
 
-var model		= require('../config/sequelize.js');
-var dataTypes	= require('sequelize');
-var poDetail	= require('../models/PoDetail.js');
-var supplier	= require('../models/Supplier.js');
+var model			= require('../config/sequelize.js');
+var dataTypes		= require('sequelize');
+var poDetail		= require('../models/PoDetail.js');
+var supplier		= require('../models/Supplier.js');
 
-var poHeader = model.define('t_po_hdr', {
+var poHeader 		= model.define('t_po_hdr', {
 
 	po_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	type 			: dataTypes.INTEGER,
+	primaryKey 		: true,
+	autoIncrement 	: true
 	},
 	
 	company_id		: dataTypes.INTEGER,
@@ -47,12 +47,12 @@ var poHeader = model.define('t_po_hdr', {
 	payment_mode	: dataTypes.STRING
 
 }, {
-	timestamps : false,
+	timestamps 		: false,
 	freezeTableName : true,
-	tableName : 't_po_hdr'
+	tableName 		: 't_po_hdr'
 });
 // poHeader.hasMany(poDetail,{targetkey: 'po_id'});
 poHeader.hasMany(poDetail, 	{foreignKey: 'po_id'});
 //poHeader.hasMany(poReturn, 	{foreignKey: 'po_id'});
 poHeader.belongsTo(supplier, 	{foreignKey: 'supplier_id'});
-module.exports = poHeader;
+module.exports 		= poHeader;
