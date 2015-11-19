@@ -57,8 +57,8 @@ exports.saveOrUpdateCity = function(cityobj,callback){
 	}; 
 
 	//City Full LIST
-	exports.getCityList = function(condition,attr,callback) {	
-	  city.findAll({where : [condition],order: [['last_updated_dt', 'DESC']],attributes: attr})
+	exports.getCityList = function(condition,attr,fetchAssociation,callback) {	
+	  city.findAll({where : [condition],include		: fetchAssociation,order: [['last_updated_dt', 'DESC']],attributes: attr})
 		  
 		  .then(function(citylist){
 				if(citylist.length === 0){

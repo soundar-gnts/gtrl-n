@@ -15,7 +15,7 @@
  */
 
 var model 				= require('../config/sequelize.js');
-var Company 			= require('../models/Company.js');
+/*var Company 			= require('../models/Company.js');*/
 var dataTypes 			= require('sequelize');
 
 var PaymentType 		= model.define('m_payment_type', {
@@ -29,7 +29,7 @@ var PaymentType 		= model.define('m_payment_type', {
 	    pymt_type_name	: dataTypes.STRING,
 	    status			: dataTypes.STRING,
 		last_updated_dt	: dataTypes.DATE,
-		last_updated_by	: dataTypes.STRING,
+		last_updated_by	: dataTypes.STRING
 	
 },{
 	timestamps			: false,
@@ -37,5 +37,5 @@ var PaymentType 		= model.define('m_payment_type', {
 	tableName			: 'm_payment_type'
 });
 
-PaymentType.belongsTo(Company, {foreignKey: 'company_id'})
+/*PaymentType.belongsTo(Company, {foreignKey: 'company_id'})*/
 module.exports 			= PaymentType;

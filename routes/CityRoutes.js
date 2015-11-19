@@ -15,7 +15,8 @@
  * 
  */
 
-var cityService = require('../services/CityService.js');
+var cityService 	= require('../services/CityService.js');
+var state 			= require('../models/State.js');
 
 module.exports = function(app, server){
 	
@@ -40,12 +41,17 @@ module.exports = function(app, server){
 	
 	//City list based on user param
 	function getCityList(req, res){
-		var condition  	= "";		
-		var cityId		= req.param("cityid");
-		var cityName	= req.param("cityname");
-		var status		= req.param("status");
-		var stateId		= req.param("stateid");
-		var attr 		= "";
+		var condition  			= "";		
+		var cityId				= req.param("cityid");
+		var cityName			= req.param("cityname");
+		var status				= req.param("status");
+		var stateId				= req.param("stateid");
+		var attr 				= "";
+		var fetchAssociation 	= "";
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : state, attributes : ['state_name']}]
+		}
 		
 		if(cityId!=null){
 			condition ="city_id="+cityId;
@@ -53,17 +59,17 @@ module.exports = function(app, server){
 		
 		if(stateId!=null){
 			if(condition === ""){
-				condition="state_id ='"+stateId+"'";
+				condition="m_city.state_id ='"+stateId+"'";
 			}else {
-				condition=condition+" and state_id ='"+stateId+"'";
+				condition=condition+" and m_city.state_id ='"+stateId+"'";
 			}
 		}
 		
 		if(status!=null){
 			if(condition === ""){
-				condition="status='"+status+"'";
+				condition="m_city.status='"+status+"'";
 			}else {
-				condition=condition+" and status='"+status+"'";
+				condition=condition+" and m_city.status='"+status+"'";
 			}
 		}
 		
@@ -79,7 +85,7 @@ module.exports = function(app, server){
 		if(req.param('isfulllist')== null ||req.param('isfulllist')=='P'){
 			attr=['city_id','city_name'];
 		}
-		cityService.getCityList(condition,attr, function(result){
+		cityService.getCityList(condition,attr,fetchAssociation, function(result){
 			res.send(result);
 		});
 	}

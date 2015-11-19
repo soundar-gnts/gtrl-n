@@ -1,166 +1,206 @@
 <div class="panel panel-inverse">
-			    <div class="panel-heading">
-			        <div class="panel-heading-btn">
-			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
-			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
-			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
-			            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
-			        </div>
-			        <h4 class="panel-title">Company</h4>
-			    </div>
-			    <div class="panel-body">
-                             <a href="company#modal-edit_company" data-toggle="modal" class="btn btn-sm btn-info pull-right" style="margin-bottom:5px;">Add New</a>
-                                    	  
-			    <div class="col-md-12 clearfix"></div>
-			        <div class="table-responsive" style="clear:both;">
-                                <table class="table table-striped table-bordered">
-                                    
-                                    
-                                    	<thead>
-                                    	<tr>
-                                    	<td>ID</td>
-                                    	<td>Name</td>
-                                        <td>Address</td>
-                                        <td>Mobile</td>
-                                    	<td>Status</td>
-                                    	<td>Last Up.Dt</td>
-                                        <td>Last Up.By</td>
-                                    	<td>Options</td>
-                                    	</tr>
-                                    	</thead>
-                                    	<tbody>
-                                    	<tr ng-repeat="companylist in CompanyList | orderBy:'company_name' | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit  ">
-                                    	<td>{{companylist.company_id}}</td>
-                                    	<td>{{companylist.company_name}}</td>
-                                        <td>{{companylist.address}}</td>
-                                         <td>{{companylist.mobile_no}}</td>
-                                    	<td>{{companylist.status}}</td>
-                                    	<td>{{companylist.last_updated_dt | date:'dd-mm-yyyy H:mm' }}</td>
-                                        <td>{{companylist.last_updated_by}}</td>
-                                    	<td>
-                                    	<a href="company#modal-edit_company" data-toggle="modal" ng-click="EditCompanyProcess(companylist.company_id)" class="btn btn-sm btn-info">Edit</a>
-                                    	</td>
-                                    	</tr>
-                                    	</tbody>
-                                    
-                                </table>
-                                
-<div class="pull-right">                                
-<pagination page="currentPage" max-size="noOfPages" total-items="totalItems" items-per-page="entryLimit"></pagination>
-         </div>
-                    </div>
-                </div>
-			   
+	<div class="panel-heading">
+		<div class="panel-heading-btn">
+			<a href="javascript:;"
+				class="btn btn-xs btn-icon btn-circle btn-default"
+				data-click="panel-expand"><i class="fa fa-expand"></i></a> <a
+				href="javascript:;"
+				class="btn btn-xs btn-icon btn-circle btn-success"
+				data-click="panel-reload"><i class="fa fa-repeat"></i></a> <a
+				href="javascript:;"
+				class="btn btn-xs btn-icon btn-circle btn-warning"
+				data-click="panel-collapse"><i class="fa fa-minus"></i></a> <a
+				href="javascript:;"
+				class="btn btn-xs btn-icon btn-circle btn-danger"
+				data-click="panel-remove"><i class="fa fa-times"></i></a>
+		</div>
+		<h4 class="panel-title">Company</h4>
+	</div>
+	<div class="panel-body">
+		<a href="company#modal-edit_company" data-toggle="modal"
+			class="btn btn-sm btn-info pull-right" style="margin-bottom: 5px;">Add
+			New</a>
+
+		<div class="col-md-12 clearfix"></div>
+		<div class="table-responsive" style="clear: both;">
+			<table class="table table-striped table-bordered">
+
+
+				<thead>
+					<tr>
+						<td>ID</td>
+						<td>Name</td>
+						<td>Address</td>
+						<td>Mobile</td>
+						<td>Status</td>
+						<td>Updated On</td>
+						<td>Updated By</td>
+						<td>Options</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr
+						ng-repeat="companylist in CompanyList | orderBy:'company_name' | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit  ">
+						<td>{{companylist.company_id}}</td>
+						<td>{{companylist.company_name}}</td>
+						<td>{{companylist.address}}</td>
+						<td>{{companylist.mobile_no}}</td>
+						<td>{{companylist.status}}</td>
+						<td>{{companylist.last_updated_dt | date:'dd-mm-yyyy H:mm' }}</td>
+						<td>{{companylist.last_updated_by}}</td>
+						<td><a href="company#modal-edit_company" data-toggle="modal"
+							ng-click="EditCompanyProcess(companylist.company_id)"
+							class="btn btn-sm btn-info">Edit</a></td>
+					</tr>
+				</tbody>
+
+			</table>
+
+			<div class="pull-right">
+				<pagination page="currentPage" max-size="noOfPages"
+					total-items="totalItems" items-per-page="entryLimit"></pagination>
 			</div>
-			
-                            <!-- #modal-dialog -->
-	
-			<!-- #modal-dialog -->	
-        <div class="panel modal panel-success panel-model-large" id="modal-edit_company">
-                        <div class="panel-heading">
-                            <div class="panel-heading-btn">
-                                <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></a>
-                            </div>
-                            <h4 class="panel-title">Company Edit</h4>
-                        </div>
-                        <div class="panel-body">
-                            <div class="col-md-12">
-                                <form id="UpdateorSaveCompanyForm"  ng-submit="UpdateorSaveCompany()">
-                                    <input type="hidden" ng-model="form.companyid" id="company_id" name="company_id" />
-				 <div class="col-md-3">
+		</div>
+	</div>
+
+</div>
+
+<!-- #modal-dialog -->
+
+<!-- #modal-dialog -->
+<div class="panel modal panel-success panel-model-large"
+	id="modal-edit_company">
+	<div class="panel-heading">
+		<div class="panel-heading-btn">
+			<a href="javascript:;"
+				class="btn btn-xs btn-icon btn-circle btn-danger"
+				data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></a>
+		</div>
+		<h4 class="panel-title">Company Edit</h4>
+	</div>
+	<div class="panel-body">
+		<div class="col-md-12">
+			<form id="UpdateorSaveCompanyForm" ng-submit="UpdateorSaveCompany()">
+				<input type="hidden" ng-model="form.companyid" id="company_id"
+					name="company_id" />
+				<div class="col-md-3">
 					<div class="form-group">
-					<label>Company Name</label> <input class="form-control input-md" value="" ng-model="form.companyname" placeholder="Company Name" id="cmpname" name="cmpname" type="text">
+						<label>Company Name</label> <input class="form-control input-md"
+							value="" ng-model="form.companyname" placeholder="Company Name"
+							id="cmpname" name="cmpname" type="text">
 					</div>
-                                 </div>
-                                 
-                                 <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>State Name</label>
-                                        <select  on-change="" placeholder="Select State" class="form-control" options="AllActiveStateList" 
-                                                 ng-model="form.stateid"  ng-options="state.state_id as state.state_name for state in AllActiveStateList">
-								
-					</select>
-                                       
-                                        </div>
-
 				</div>
+
 				<div class="col-md-3">
-                                    <div class="form-group">
-					<label>City Name</label> 
-                                         <select  on-change="" placeholder="Select City" class="form-control" options="AllActiveCityList" 
-                                                 ng-model="form.cityid"  ng-options="city.city_id as city.city_name for city in AllActiveCityList">
-								
-					</select>
-                                        
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                            <label>Pincode</label> <input ng-model="form.pincode" class="form-control input-md" placeholder="Pincode" value="" id="cmppincde" type="text">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-				<div class="form-group">
-					<label>Landline Number</label> <input ng-model="form.landline" class="form-control input-md" placeholder="Landline Number" value="" id="cmplndnumber" type="text">
-				</div>
-                                </div>
-				<div class="col-md-3">
-
-                                    <div class="form-group">
-                                            <label>Mobile Number</label> <input ng-model="form.mobile" class="form-control input-md" placeholder="Mobile Number" value="" id="cmpmobnum" type="text">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                    <label>Fax Number</label> <input ng-model="form.fax_no" class="form-control input-md" placeholder="Fax Number" value="" id="cmpfaxnum" type="text">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                            <label>Contact Person</label> <input  ng-model="form.contact_person" class="form-control input-md" placeholder="Contact Person" value="" id="cmpcontprsn" type="text">
-                                    </div>
-
-				</div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                            <label>Contact Number</label> <input  ng-model="form.contactno" class="form-control input-md" placeholder="Contact Number" value="" id="cmpcontprsnumber" type="text">
-                                    </div>
-
-				</div>
-				<div class="col-md-3">
-                                    <div class="form-group ">
-                                            <label>Email Id</label> <input ng-model="form.email_id" class="form-control input-md" placeholder="Email ID" value="" id="cmpemilid" type="text">
-                                    </div>
-                                 </div>
-                                <div class="col-md-3">
 					<div class="form-group">
-					<label>Address</label>
-					<textarea class="form-control input-md" ng-model="form.address"  type="text" id="cmpaddrs"></textarea>
+						<label>State Name</label> <select on-change=""
+							placeholder="Select State" class="form-control"
+							options="AllActiveStateList" ng-model="form.stateid"
+							ng-options="state.state_id as state.state_name for state in AllActiveStateList">
+
+						</select>
+
 					</div>
-                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                            <label>Remarks</label>
-                                            <textarea class="form-control input-md" ng-model="form.remarks"  type="text" id="cmpremk"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                    <label>Status</label> <select ng-model="form.status" aria-invalid="false" class="form-control input-md valid" id="cmpstatus">
-                                            <option value="Active">Active</option>
-                                            <option value="Inactive">Inactive</option>
-                                    </select>
-                                    </div>
 
 				</div>
-                                    <div  class="clearfix col-md-3">
-                                    </div>
-                                    <div class="col-md-3">
-                                                     <button type="reset" class="btn btn-sm btn-danger pull-right" style="margin: 20px -5px 0px 0px;">Reset</button>
-                                                    <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin: 20px 5px 0px 0px;">Save</button>
-				                                        
-                                                </div>
-                          </form>
-			</div>
-                        </div>
-                    </div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>City Name</label> <select on-change=""
+							placeholder="Select City" class="form-control"
+							options="AllActiveCityList" ng-model="form.cityid"
+							ng-options="city.city_id as city.city_name for city in AllActiveCityList">
+
+						</select>
+
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>Pincode</label> <input ng-model="form.pincode"
+							class="form-control input-md" placeholder="Pincode" value=""
+							id="cmppincde" type="text">
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>Landline Number</label> <input ng-model="form.landline"
+							class="form-control input-md" placeholder="Landline Number"
+							value="" id="cmplndnumber" type="text">
+					</div>
+				</div>
+				<div class="col-md-3">
+
+					<div class="form-group">
+						<label>Mobile Number</label> <input ng-model="form.mobile"
+							class="form-control input-md" placeholder="Mobile Number"
+							value="" id="cmpmobnum" type="text">
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>Fax Number</label> <input ng-model="form.fax_no"
+							class="form-control input-md" placeholder="Fax Number" value=""
+							id="cmpfaxnum" type="text">
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>Contact Person</label> <input
+							ng-model="form.contact_person" class="form-control input-md"
+							placeholder="Contact Person" value="" id="cmpcontprsn"
+							type="text">
+					</div>
+
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>Contact Number</label> <input ng-model="form.contactno"
+							class="form-control input-md" placeholder="Contact Number"
+							value="" id="cmpcontprsnumber" type="text">
+					</div>
+
+				</div>
+				<div class="col-md-3">
+					<div class="form-group ">
+						<label>Email Id</label> <input ng-model="form.email_id"
+							class="form-control input-md" placeholder="Email ID" value=""
+							id="cmpemilid" type="text">
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>Address</label>
+						<textarea class="form-control input-md" ng-model="form.address"
+							type="text" id="cmpaddrs"></textarea>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>Remarks</label>
+						<textarea class="form-control input-md" ng-model="form.remarks"
+							type="text" id="cmpremk"></textarea>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>Status</label> <select ng-model="form.status"
+							aria-invalid="false" class="form-control input-md valid"
+							id="cmpstatus">
+							<option value="Active">Active</option>
+							<option value="Inactive">Inactive</option>
+						</select>
+					</div>
+
+				</div>
+				<div class="clearfix col-md-3"></div>
+				<div class="col-md-3">
+					<button type="reset" class="btn btn-sm btn-danger pull-right"
+						style="margin: 20px -5px 0px 0px;">Reset</button>
+					<button type="submit" class="btn btn-sm btn-primary pull-right"
+						style="margin: 20px 5px 0px 0px;">Save</button>
+
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

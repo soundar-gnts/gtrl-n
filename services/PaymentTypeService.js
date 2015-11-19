@@ -58,6 +58,8 @@ exports.saveOrUpdatePymentType = function(paytypeobj,callback){
 //get all Payment type
 exports.getPymentType = function(condition,selectedAttributes,callback){
 	log.info(fileName+'.getPymentType');
+	log.info(fileName+'.condition>'+condition);
+	log.info(fileName+'.selectedAttributes>'+selectedAttributes);
 	
 	paymentType.findAll({
 		where		: [condition],
@@ -69,13 +71,13 @@ exports.getPymentType = function(condition,selectedAttributes,callback){
 				log.info(appMsg.LISTNOTFOUNDMESSAGE);
 				response.message 	= appMsg.LISTNOTFOUNDMESSAGE;
 				response.status 	= false;
-				response.data  		= "";
+				response.data  		= type;
 				callback(response);
 			} else{
 				log.info('About '+type.length+' results.');
 				response.status  	= true;
 				response.message 	= 'About '+type.length+' results.';
-				response.data 		= "";
+				response.data 		= type;
 				callback(response);
 			}
 		})

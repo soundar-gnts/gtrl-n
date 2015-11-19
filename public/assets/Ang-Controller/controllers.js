@@ -125,7 +125,7 @@ app.controller("citiesList", function ($filter, $scope, $http, $rootScope, filte
             condtion += "&status=" + $scope.selectedstatus;
         }
         contentBlock.start();
-        $http.post(RESOURCES.DOMAIN + 'getcitylist?isfulllist=' + condtion).success(function (res) {
+        $http.post(RESOURCES.DOMAIN + 'getcitylist?fetchassociation=y&isfulllist=y' + condtion).success(function (res) {
             //var data=res.data;
             $scope.CityList = res.data;
             //console.log($scope.CityList);
@@ -862,18 +862,18 @@ app.controller("PaymentTypeList", function ($filter, $scope, $http, $rootScope, 
 
     $scope.InitLoad = function () {
         contentBlock.start();
-        $http.post(RESOURCES.DOMAIN + 'getcardtypelist?isfulllist=').success(function (res) {
+        $http.post(RESOURCES.DOMAIN + 'getpaymenttypedetails?isfulllist=y').success(function (res) {
             //var data=res.data;
-            $scope.CardTypeList = res.data;
+            $scope.PaymentTypeList = res.data;
             //console.log($scope.StoreRegionList);
             // pagination controls
             $scope.currentPage = 1;
-            $scope.totalItems = $scope.CardTypeList.length;
+            $scope.totalItems = $scope.PaymentTypeList.length;
             $scope.entryLimit = 10; // items per page
             $scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
             // $watch search to update pagination
             $scope.$watch('search', function (newVal, oldVal) {
-                $scope.filtered = filterFilter($scope.CardTypeList, newVal);
+                $scope.filtered = filterFilter($scope.PaymentTypeList, newVal);
                 $scope.totalItems = $scope.filtered.length;
                 $scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
                 $scope.currentPage = 1;
