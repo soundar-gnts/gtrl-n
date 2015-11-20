@@ -222,8 +222,8 @@ var saveOrUpdatePurchaseReturn = function(slid, PurchaseReturnHdr, purchaseRetur
 					// Update Ledger Details  
 					 stockLedgerService.insertStockLedger(
  							purchaseReturnDetail.product_id,
- 							purchaseReturnDetail.company_id,
- 							purchaseReturnDetail.store_id,
+ 							PurchaseReturnHdr.company_id,
+ 							PurchaseReturnHdr.store_id,
  							purchaseReturnDetail.batch_no,
  							purchaseReturnDetail.invoice_qty,
  							0,
@@ -232,19 +232,19 @@ var saveOrUpdatePurchaseReturn = function(slid, PurchaseReturnHdr, purchaseRetur
  							purchaseReturnDetail.invoice_date,"Purchase Goods -Invoice Number : "+purchaseReturnDetail.invoice_no+'-'+purchaseReturnDetail.action_remarks);
  					//To Insert Row in product Serail Codes
  					productSerialCodesService.insertProductSerialCodes(
- 							purchaseReturnDetail.company_id,
- 							purchaseReturnDetail.purchase_id,
+ 							PurchaseReturnHdr.company_id,
+ 							PurchaseReturnHdr.purchase_id,
  							purchaseReturnDetail.product_id,
- 							purchaseReturnDetail.store_id,
+ 							PurchaseReturnHdr.store_id,
  							purchaseReturnDetail.batch_no,
  							purchaseReturnDetail.eanserialno,
  							purchaseReturnDetail.storeserialno); 	
 				});
 			//For  Account Receivable 
-			accountReceivableService.insertAccountReceivable(PurchaseReturnHdr.supplier_id,PurchaseReturnHdr.company_id,
+			/*accountReceivableService.insertAccountReceivable(PurchaseReturnHdr.supplier_id,PurchaseReturnHdr.company_id,
 			PurchaseReturnHdr.store_id,new Date(),null,PurchaseReturnHdr.invoice_no,PurchaseReturnHdr.invoice_date,
 			PurchaseReturnHdr.invoice_amount,PurchaseReturnHdr.invoice_amount,'Purchase Deleted - Ref No :'+PurchaseReturnHdr.invoice_no,
-			PurchaseReturnHdr.last_updated_dt,PurchaseReturnHdr.last_updated_by);			
+			PurchaseReturnHdr.last_updated_dt,PurchaseReturnHdr.last_updated_by);	*/		
 			
 			callback(header);
 		} else{

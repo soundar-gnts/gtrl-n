@@ -188,8 +188,14 @@ exports.saveTransferDetails = function(slid, trnsferhdr, transferDetails, callba
 					}
 					log.info(fileName + ' >> saveTransferDetails >> '
 							+ appMsg.SAVEMESSAGE);
-					response.message = appMsg.SAVEMESSAGE;
-					response.status = true;
+					var stocktransfer = {
+							transfer_id : data.transfer_id,
+							transfer_refno : data.transfer_refno
+					}
+					
+					response.message 	= appMsg.SAVEMESSAGE;
+					response.data  		= stocktransfer;
+					response.status 	= true;
 					callback(response);
 				}).error(
 				function(err) {

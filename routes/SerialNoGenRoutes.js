@@ -28,7 +28,7 @@ module.exports = function(app, server) {
 		var storeid			= req.param("storeid");
 		var refkey			= req.param("refkey");
 		var status			= req.param("status");
-		var autogenyn=req.param("autogenyn");
+		var autogenyn		= req.param("autogenyn");
 		if(slnoid!=null){
 			condition ="slno_id="+slnoid;
 		}
@@ -60,9 +60,9 @@ module.exports = function(app, server) {
 				condition=condition+" and status='"+status+"'";
 			}
 		}
-		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
+		/*if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
 			attr=['prefix_key','prefix_cncat','suffix_key','suffix_cncat','curr_seqno'];
-		}
+		}*/
 		slnoGenService.getSlnoGenDetails(condition,attr,function(result){
 			res.send(result);
 		});
