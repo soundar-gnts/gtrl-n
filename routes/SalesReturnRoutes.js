@@ -33,7 +33,7 @@ module.exports = function(app, server){
 	//Purchase Return Details	
 	//app.post('/getpurchasereturndtl', getPurchaseReturnDtl);
 	
-	//Get Purchase Return Header List
+	//Get Sales Return Header List
 	function getSalesReturnHdrList(req, res){
 		
 		var selectedAttributes 	= "";
@@ -76,7 +76,7 @@ module.exports = function(app, server){
 		});
 	}
 	
-	// Get Purchse Return Details List
+	// Get Sales Return Details List
 	function getSalesReturnDtlList(req, res){
 		
 		var selectedAttributes 	= "";

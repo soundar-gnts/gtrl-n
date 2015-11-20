@@ -90,8 +90,7 @@ exports.getStocktransferDtl = function(condition,callback) {
 
 
 // To Save/Update StockTransferHdr and  Detail
-exports.saveTransferDetails = function(slid, trnsferhdr, transferDetails,
-		callback) {
+exports.saveTransferDetails = function(slid, trnsferhdr, transferDetails, callback) {
 
 	var response = {
 		status 	: Boolean,
@@ -158,12 +157,17 @@ exports.saveTransferDetails = function(slid, trnsferhdr, transferDetails,
 
 					}
 
-					log.info(fileName + ' >> saveTransferDetails >> '
-							+ appMsg.UPDATEMESSAGE);
-					response.message = appMsg.UPDATEMESSAGE;
-					response.status = true;
+					log.info(fileName + ' >> saveTransferDetails >> ' + appMsg.UPDATEMESSAGE);
+					//Return Tranfer ID and Tranfer Ref_No 
+					var stocktransfer = {
+							transfer_id : trnsferhdr.transfer_id,
+							transfer_refno : trnsferhdr.transfer_refno
+					}
+					response.message 	= appMsg.UPDATEMESSAGE;
+					response.data  		= stocktransfer;
+					response.status 	= true;
 					callback(response);
-
+					
 				}).error(
 				function(err) {
 					log.info(fileName + ' >> saveTransferDetails >> '

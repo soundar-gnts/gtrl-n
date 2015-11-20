@@ -84,7 +84,7 @@ module.exports = function(app, server){
 		}
 		
 		if(companyId != null){
-			condition = "company_id="+companyId;
+			condition = "m_supplier.company_id="+companyId;
 		}
 		
 		if(supId!=null){
@@ -98,10 +98,10 @@ module.exports = function(app, server){
 		
 		if(status!=null){
 			if(condition === ""){
-				condition = "status='"+status+"'";
+				condition = "m_supplier.status='"+status+"'";
 			}
 			else{
-				condition = condition+" and status='"+status+"'";
+				condition = condition+" and m_supplier.status='"+status+"'";
 			}
 		}
 		

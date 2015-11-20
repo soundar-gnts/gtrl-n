@@ -166,7 +166,8 @@ function saveTransferDetails(req, res){
 	var detailsLength 		= 0;
 	
 	for(var i = 0; i < req.param('stocktranslist').length; i++){
-		var transferdtl = {	transfer_dtlid 			: req.param('stocktranslist')[i].transferdtlid,
+		var transferdtl = {
+							transfer_dtlid 			: req.param('stocktranslist')[i].transferdtlid,
 							transfer_id 			: req.param("transferid"),
 							product_id 				: req.param('stocktranslist')[i].productid,
 							transfer_qty            : req.param('stocktranslist')[i].transferqty,
@@ -181,7 +182,7 @@ function saveTransferDetails(req, res){
 							tax_value				: req.param('stocktranslist')[i].taxvalue,
 							remarks					: req.param('stocktranslist')[i].remarks,
 							status					: req.param('stocktranslist')[i].status,
-		 			}
+		 				}
 		 	transferDetails.push(transferdtl);
 		 }
 	

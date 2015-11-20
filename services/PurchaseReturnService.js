@@ -197,7 +197,7 @@ var saveOrUpdatePurchaseReturn = function(slid, PurchaseReturnHdr, purchaseRetur
 			message : String,
 			data	: String
 	}
-	
+	 
 	saveOrUpdatePurchaseReturnHeader(PurchaseReturnHdr, function(header){
 		//if true data inserted/updated successfully else error
 		if(header.status){			
@@ -221,24 +221,24 @@ var saveOrUpdatePurchaseReturn = function(slid, PurchaseReturnHdr, purchaseRetur
 					});
 					// Update Ledger Details  
 					 stockLedgerService.insertStockLedger(
- 							purchaseReturnDetail[i].product_id,
+ 							purchaseReturnDetail.product_id,
  							purchaseReturnDetail.company_id,
  							purchaseReturnDetail.store_id,
  							purchaseReturnDetail.batch_no,
- 							purchaseReturnDetail[i].invoice_qty,
+ 							purchaseReturnDetail.invoice_qty,
  							0,
- 							purchaseReturnDetail[i].uom_id,
+ 							purchaseReturnDetail.uom_id,
  							purchaseReturnDetail.invoice_no,
  							purchaseReturnDetail.invoice_date,"Purchase Goods -Invoice Number : "+purchaseReturnDetail.invoice_no+'-'+purchaseReturnDetail.action_remarks);
  					//To Insert Row in product Serail Codes
  					productSerialCodesService.insertProductSerialCodes(
  							purchaseReturnDetail.company_id,
  							purchaseReturnDetail.purchase_id,
- 							purchaseReturnDetail[i].product_id,
+ 							purchaseReturnDetail.product_id,
  							purchaseReturnDetail.store_id,
  							purchaseReturnDetail.batch_no,
- 							purchaseReturnDetail[i].eanserialno,
- 							purchaseReturnDetail[i].storeserialno); 	
+ 							purchaseReturnDetail.eanserialno,
+ 							purchaseReturnDetail.storeserialno); 	
 				});
 			//For  Account Receivable 
 			accountReceivableService.insertAccountReceivable(PurchaseReturnHdr.supplier_id,PurchaseReturnHdr.company_id,

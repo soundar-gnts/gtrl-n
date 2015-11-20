@@ -587,6 +587,8 @@ var SalesDeliveryDetailsFn = function(condition, selectedAttributes, callback){
 	
 }
 
+//Sales Return 
+
 
 module.exports = {
 		getSales							: getSales,
