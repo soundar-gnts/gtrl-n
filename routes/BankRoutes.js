@@ -52,7 +52,7 @@ module.exports = function(app, server){
 		}
 		if(bankName!=null){
 			if(conditionQuery === ""){
-				conditionQuery="bank_name='"+bankName+"'";
+				conditionQuery="bank_name like '%"+bankName+"%'";
 			}else {
 				conditionQuery=conditionQuery+" and bank_name like '%"+bankName+"%'";
 			}
@@ -60,7 +60,7 @@ module.exports = function(app, server){
 		}
 		if(bankCode!=null){
 			if(conditionQuery === ""){
-				conditionQuery="bank_code='"+bankCode+"'";
+				conditionQuery="bank_code like '%"+bankCode+"%'";
 			}else {
 				conditionQuery=conditionQuery+" and bank_code like '%"+bankCode+"%'";
 			}
@@ -124,7 +124,7 @@ module.exports = function(app, server){
 		}
 		if(branchName!=null){
 			if(conditionQuery === ""){
-				conditionQuery="branch_name='"+branchName+"'";
+				conditionQuery="branch_name like '%"+branchName+"%'";
 			}else {
 				conditionQuery=conditionQuery+" and branch_name like '%"+branchName+"%'";
 			}
@@ -132,7 +132,7 @@ module.exports = function(app, server){
 		}
 		if(branchCode!=null){
 			if(conditionQuery === ""){
-				conditionQuery="branch_code='"+branchCode+"'";
+				conditionQuery="branch_code like '%"+branchCode+"%'";
 			}else {
 				conditionQuery=conditionQuery+" and branch_code like '%"+branchCode+"%'";
 			}
