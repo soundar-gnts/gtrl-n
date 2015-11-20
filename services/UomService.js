@@ -69,14 +69,14 @@ exports.getUom = function(condition, selectedAttributes, callback) {
 							+ appMsg.LISTNOTFOUNDMESSAGE);
 					response.message 	= appMsg.LISTNOTFOUNDMESSAGE;
 					response.status 	= false;
-					response.data 		= "";
+					response.data 		= uoms;
 					callback(response);
 				} else {
 					log.info(fileName + '.getUom - About ' + uoms.length
 							+ ' results.');
 					response.status 	= true;
 					response.message 	= 'About ' + uoms.length + ' results.';
-					response.data		= "";
+					response.data		= uoms;
 					callback(response);
 				}
 			}).error(function(err) {

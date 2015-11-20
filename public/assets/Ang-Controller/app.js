@@ -148,7 +148,7 @@ app.config(function($routeProvider,RESOURCES) {
             templateUrl : RESOURCES.M_PRODUCTS_URL+'serialNumGenerate.html',
             controller  : 'serialNumGenerateList'
         })
-        .when('/UOM', {
+        .when('/uom', {
             templateUrl : RESOURCES.M_PRODUCTS_URL+'UOM.html',
             controller  : 'UOMList'
         })

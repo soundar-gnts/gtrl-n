@@ -1,189 +1,238 @@
 <div class="panel panel-inverse">
-    <div class="panel-heading">
-        <div class="panel-heading-btn">
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
-        </div>
-        <h4 class="panel-title">Tax</h4>
-    </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-3 pull-right">
-                <a href="tax#modal-addEdit-tax" data-toggle="modal" class="btn btn-md btn-success  pull-right ">Add New</a>
-            </div>
-        </div>
-        <div class="col-md-12 col-xs-12">
+	<div class="panel-heading">
+		<div class="panel-heading-btn">
+			<a href="javascript:;"
+				class="btn btn-xs btn-icon btn-circle btn-default"
+				data-click="panel-expand"><i class="fa fa-expand"></i></a> <a
+				href="javascript:;"
+				class="btn btn-xs btn-icon btn-circle btn-success"
+				data-click="panel-reload"><i class="fa fa-repeat"></i></a> <a
+				href="javascript:;"
+				class="btn btn-xs btn-icon btn-circle btn-warning"
+				data-click="panel-collapse"><i class="fa fa-minus"></i></a> <a
+				href="javascript:;"
+				class="btn btn-xs btn-icon btn-circle btn-danger"
+				data-click="panel-remove"><i class="fa fa-times"></i></a>
+		</div>
+		<h4 class="panel-title">Tax</h4>
+	</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-sm-3 pull-right">
+				<a href="tax#modal-addEdit-tax" data-toggle="modal"
+					class="btn btn-md btn-success  pull-right ">Add New</a>
+			</div>
+		</div>
+		<div class="col-md-12 col-xs-12">
 
-            <div class="row">
-                <div class="col-md-3">
-                    <label>Tax Name:</label> <input class="form-control input-md" id="taxsrhid" name="srchtax" placeholder="Tax Name" type="text">
-                </div>
+			<div class="row">
+				<div class="col-md-3">
+					<label>Tax Name:</label> <input class="form-control input-md"
+						id="taxsrhid" name="srchtax" placeholder="Tax Name" type="text">
+				</div>
 
-                <div class="col-xs-3">
-                    <label for="srch_country_name">State Name:</label>
-                    <!--<input id="srch_country_name" name="srch_country_name" type="text" class="form-control" placeholder="Country Name">-->
-                    <select  on-change="" placeholder="Select State" class="form-control" chosen options="AllActiveStateList" ng-model="city.stateid"  ng-options="states.state_id as states.state_name for states in AllActiveStateList">
+				<div class="col-xs-3">
+					<label for="srch_country_name">State Name:</label>
+					<!--<input id="srch_country_name" name="srch_country_name" type="text" class="form-control" placeholder="Country Name">-->
+					<select on-change="" placeholder="Select State"
+						class="form-control" chosen options="AllActiveStateList"
+						ng-model="city.stateid"
+						ng-options="states.state_id as states.state_name for states in AllActiveStateList">
 
-                    </select>
-                </div>
-
-
-                <div class="col-xs-3">
-                    <label for="srch_country_status">Status:</label>
-                    <select id="srchstatusid" name="srchstatus" class="form-control">
-                        <option value="">Select</option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                    </select>
-
-                </div>
-
-                <div class="col-md-3">
-
-                    <a class="btn btn-danger pull-right" style="margin-top: 20px; margin-right: 5px;" id="srchid" onclick="reload();"> Reset </a> 
-                    <a class="btn btn-primary pull-right" style="margin-top: 20px; margin-right: 5px;" id="srchid" onclick="taxsrhlst();"> Search </a>
-                </div>
-            </div>
-
-        </div>   
-        <div class="col-md-12 clearfix"></div>
-        <div class="table-responsive" style="clear:both;">
-            <table class="table table-striped table-bordered">
+					</select>
+				</div>
 
 
-                <thead>
-                    <tr>
-                    <td>ID</td>
-                    <td>Tax Name</td>
-                    <td>State</td>
-                    <td>Service Chr.</td>
-                    <td>Status</td>
-                    <td>Last Up.Dt</td>
-                    <td>Last Up.By</td>
-                    <td>Options</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="taxlist in TaxList| orderBy:'tax_name' | startFrom:(currentPage - 1) * entryLimit | limitTo:entryLimit  ">
-                    <td>{{taxlist.tax_id}}</td>
-                    <td>{{taxlist.tax_name}}</td>
-                    <td>{{taxlist.state_id}}</td>
-                    <td>{{taxlist.surcharge}}</td>
-                    <td>{{taxlist.status}}</td>
-                    <td>{{taxlist.last_updated_dt| date:'dd-mm-yyyy H:mm' }}</td>
-                    <td>{{taxlist.last_updated_by}}</td>
-                    <td>
-                        <a href="tax#modal-addEdit-tax" data-toggle="modal" ng-click="EditManufacturProcess(manufacturer.manufg_id)" class="btn btn-sm btn-info">Edit</a>
-                    </td>
-                    </tr>
-                </tbody>
+				<div class="col-xs-3">
+					<label for="srch_country_status">Status:</label> <select
+						id="srchstatusid" name="srchstatus" class="form-control">
+						<option value="">Select</option>
+						<option value="Active">Active</option>
+						<option value="Inactive">Inactive</option>
+					</select>
 
-            </table>
+				</div>
 
-            <div class="pull-right">                                
-                <pagination page="currentPage" max-size="noOfPages" total-items="totalItems" items-per-page="entryLimit"></pagination>
-            </div>
-        </div>
-    </div>
+				<div class="col-md-3">
+
+					<a class="btn btn-danger pull-right"
+						style="margin-top: 20px; margin-right: 5px;" id="srchid"
+						onclick="reload();"> Reset </a> <a
+						class="btn btn-primary pull-right"
+						style="margin-top: 20px; margin-right: 5px;" id="srchid"
+						onclick="taxsrhlst();"> Search </a>
+				</div>
+			</div>
+
+		</div>
+		<div class="col-md-12 clearfix"></div>
+		<div class="table-responsive" style="clear: both;">
+			<table class="table table-striped table-bordered">
+
+
+				<thead>
+					<tr>
+						<td>ID</td>
+						<td>Tax Name</td>
+						<td>State</td>
+						<td>Service Chr.</td>
+						<td>Status</td>
+						<td>Updated On</td>
+						<td>Updated By</td>
+						<td>Options</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr
+						ng-repeat="taxlist in TaxList| orderBy:'tax_name' | startFrom:(currentPage - 1) * entryLimit | limitTo:entryLimit  ">
+						<td>{{taxlist.tax_id}}</td>
+						<td>{{taxlist.tax_name}}</td>
+						<td>{{taxlist.state_id}}</td>
+						<td>{{taxlist.surcharge}}</td>
+						<td>{{taxlist.status}}</td>
+						<td>{{taxlist.last_updated_dt| date:'dd-mm-yyyy H:mm' }}</td>
+						<td>{{taxlist.last_updated_by}}</td>
+						<td><a href="tax#modal-addEdit-tax" data-toggle="modal"
+							ng-click="EditManufacturProcess(manufacturer.manufg_id)"
+							class="btn btn-sm btn-info">Edit</a></td>
+					</tr>
+				</tbody>
+
+			</table>
+
+			<div class="pull-right">
+				<pagination page="currentPage" max-size="noOfPages"
+					total-items="totalItems" items-per-page="entryLimit"></pagination>
+			</div>
+		</div>
+	</div>
 
 </div>
 <!-- model box start -->
 <div class="modal fade custom-model" id="modal-addEdit-tax">
-    <div class="modal-dialog panel-model-width">
-        <div class="modal-content">
-            <div class="modal-header">
-                <a  data-dismiss="modal" aria-hidden="true" href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></a>
-                <h4 class="modal-title">Add/Modify Tax Details</h4>
-            </div>
-            <div class="modal-body">
-                <form novalidate="novalidate" action="#" id="taxvalidate" method="post">
-                    <div class="col-md-12">
+	<div class="modal-dialog panel-model-width">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a data-dismiss="modal" aria-hidden="true" href="javascript:;"
+					class="btn btn-xs btn-icon btn-circle btn-danger close"
+					data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></a>
+				<h4 class="modal-title">Add/Modify Tax Details</h4>
+			</div>
+			<div class="modal-body">
+				<form novalidate="novalidate" action="#" id="taxvalidate"
+					method="post">
+					<div class="col-md-12">
 
-                        <div class="form-group col-md-3">
-                            <label>Tax Name</label>
-                            <input ng-model="tax.taxid" class="form-control input-md" placeholder="Tax Name" id="taxnameid" name="taxnamevalid" type="text">
-                        </div>
-                        <div class="" id="erroralertid"></div>
-                        <div class="form-group col-md-3">
-                            <label>Tax On MRP</label> 
-                            <input ng-model="tax.taxonmrp" class="form-control input-md" placeholder="Tax On MRP" id="taxonmrpid" name="taxonmrpvalid" type="text">
-                        </div>
-
-
-                        <div class="form-group col-md-3">
-                            <label>State Name</label>
-                            <select id="addstatenameid" name="addstatenamevld"  on-change="" placeholder="Select State" class="form-control" chosen options="AllActiveStateList" ng-model="tax.stateid"  ng-options="states.state_id as states.state_name for states in AllActiveStateList">
-
-                            </select>
-
-                        </div>
+						<div class="form-group col-md-3">
+							<label>Tax Name</label> <input ng-model="tax.taxid"
+								class="form-control input-md" placeholder="Tax Name"
+								id="taxnameid" name="taxnamevalid" type="text">
+						</div>
+						<div class="" id="erroralertid"></div>
+						<div class="form-group col-md-3">
+							<label>Tax On MRP</label> <input ng-model="tax.taxonmrp"
+								class="form-control input-md" placeholder="Tax On MRP"
+								id="taxonmrpid" name="taxonmrpvalid" type="text">
+						</div>
 
 
+						<div class="form-group col-md-3">
+							<label>State Name</label> <select id="addstatenameid"
+								name="addstatenamevld" on-change="" placeholder="Select State"
+								class="form-control" chosen options="AllActiveStateList"
+								ng-model="tax.stateid"
+								ng-options="states.state_id as states.state_name for states in AllActiveStateList">
 
-                        <div class="form-group col-md-3">
-                            <label>Tax Symbol</label> <input ng-model="tax.taxsymbol" class="form-control input-md" placeholder="Tax Symbol" id="taxsymbolid" name="taxsymbolvalid" type="text">
-                        </div>
+							</select>
 
-                        <div class="form-group col-md-3">
-                            <label> Service Tax </label> <input ng-model="tax.servicetaxid" class="form-control input-md" placeholder="Service Tax" id="servicetaxid" name="servicetaxvalid" type="text">
-                        </div>
-
-                        <div class="form-group col-md-3">
-                            <label> CST </label> <input ng-model="tax.cstid" class="form-control input-md" placeholder="CST" id="cstid" name="cstvalid" type="text">
-                        </div>
-
-                        <div class="form-group col-md-3">
-                            <label> MRP Inclusive </label> <input ng-model="tax.mrpid" class="form-control input-md" placeholder="MRP Inclusive" id="mrpid" name="mrpvalid" type="text">
-                        </div>
-
-                        <div class="form-group col-md-3">
-                            <label> LST </label> 
-                            <input ng-model="tax.lstid" class="form-control input-md" placeholder="LST" id="lstid" name="lstvalid" type="text">
-                        </div>
-
-                        <div class="form-group col-md-3">
-                            <label>For Sale </label>
-                            <div class="radio">
-                                <label><input id="forsaleidyes" name="forsaleradio" value="Y" type="radio">Yes</label>
-                            </div>
-                            <div class="radio">
-                                <label><input id="forsaleidno" name="forsaleradio" value="N" type="radio">No</label>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label>For Purchase </label>
-                            <div class="radio">
-                                <label><input id="forpurchseidyes" name="forpurchseradio" value="Y" type="radio">Yes</label>
-                            </div>
-                            <div class="radio">
-                                <label><input id="forpurchseidno" name="forpurchseradio" value="N" type="radio">No</label>
-                            </div>
-                        </div>
-
-
-                        <div class="form-group col-md-3">
-                            <label>Surcharge </label> <input class="form-control input-md" placeholder="Surcharge" id="surchargeid" name="surchargevalid" type="text">
-                        </div>
+						</div>
 
 
 
-                        <div class="form-group col-md-3">
-                            <label>Status</label> 
-                            <select class="form-control input-md" id="statusid" name="statusvalid">
+						<div class="form-group col-md-3">
+							<label>Tax Symbol</label> <input ng-model="tax.taxsymbol"
+								class="form-control input-md" placeholder="Tax Symbol"
+								id="taxsymbolid" name="taxsymbolvalid" type="text">
+						</div>
 
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="">Select</option>
-                            </select>
-                        </div>
+						<div class="form-group col-md-3">
+							<label> Service Tax </label> <input ng-model="tax.servicetaxid"
+								class="form-control input-md" placeholder="Service Tax"
+								id="servicetaxid" name="servicetaxvalid" type="text">
+						</div>
 
-                    </div>
-                    <div class="modal-footer clearfix" id="sveclsetaxbtn">
-                        <button type="button" id="addtaxclsbtn" onclick="closefn();" class="btn btn-danger pull-right" data-dismiss="modal"> <i class="fa fa-times"></i> Close</button>
-                        <button type="submit" class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-save"></i> Save  </button></div>
-                    <!-- <div class="modal-footer clearfix">
+						<div class="form-group col-md-3">
+							<label> CST </label> <input ng-model="tax.cstid"
+								class="form-control input-md" placeholder="CST" id="cstid"
+								name="cstvalid" type="text">
+						</div>
+
+						<div class="form-group col-md-3">
+							<label> MRP Inclusive </label> <input ng-model="tax.mrpid"
+								class="form-control input-md" placeholder="MRP Inclusive"
+								id="mrpid" name="mrpvalid" type="text">
+						</div>
+
+						<div class="form-group col-md-3">
+							<label> LST </label> <input ng-model="tax.lstid"
+								class="form-control input-md" placeholder="LST" id="lstid"
+								name="lstvalid" type="text">
+						</div>
+
+						<div class="form-group col-md-3">
+							<label>For Sale </label>
+							<div class="radio">
+								<label><input id="forsaleidyes" name="forsaleradio"
+									value="Y" type="radio">Yes</label>
+							</div>
+							<div class="radio">
+								<label><input id="forsaleidno" name="forsaleradio"
+									value="N" type="radio">No</label>
+							</div>
+						</div>
+						<div class="form-group col-md-3">
+							<label>For Purchase </label>
+							<div class="radio">
+								<label><input id="forpurchseidyes"
+									name="forpurchseradio" value="Y" type="radio">Yes</label>
+							</div>
+							<div class="radio">
+								<label><input id="forpurchseidno" name="forpurchseradio"
+									value="N" type="radio">No</label>
+							</div>
+						</div>
+
+
+						<div class="form-group col-md-3">
+							<label>Surcharge </label> <input class="form-control input-md"
+								placeholder="Surcharge" id="surchargeid" name="surchargevalid"
+								type="text">
+						</div>
+
+
+
+						<div class="form-group col-md-3">
+							<label>Status</label> <select class="form-control input-md"
+								id="statusid" name="statusvalid">
+
+								<option value="Active">Active</option>
+								<option value="Inactive">Inactive</option>
+								<option value="">Select</option>
+							</select>
+						</div>
+
+					</div>
+					<div class="modal-footer clearfix" id="sveclsetaxbtn">
+						<button type="button" id="addtaxclsbtn" onclick="closefn();"
+							class="btn btn-danger pull-right" data-dismiss="modal">
+							<i class="fa fa-times"></i> Close
+						</button>
+						<button type="submit" class="btn btn-primary pull-right"
+							style="margin-right: 5px;">
+							<i class="fa fa-save"></i> Save
+						</button>
+					</div>
+					<!-- <div class="modal-footer clearfix">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">
                                     <i class="fa fa-times"></i> Close
                             </button>
@@ -191,10 +240,10 @@
                                     <i class="fa fa-save"></i> Save
                             </button>
                     </div> -->
-                </form>
-            </div>
+				</form>
+			</div>
 
-        </div>
-    </div>
-</div>		
-<!-- #modal-dialog -->	
+		</div>
+	</div>
+</div>
+<!-- #modal-dialog -->

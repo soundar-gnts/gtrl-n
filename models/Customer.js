@@ -17,6 +17,8 @@
 
 var model 				= require('../config/sequelize.js');
 var dataTypes 			= require('sequelize');
+var state				= require('../models/State.js');
+var city				= require('../models/City.js');
 var Customer 			= model.define('m_customer', {
 	
 	cust_id			: {
@@ -55,4 +57,6 @@ var Customer 			= model.define('m_customer', {
 	 freezeTableName	: true,
 	tableName			: 'm_customer'
 });
+Customer.belongsTo(state, {foreignKey : 'state_id'});
+Customer.belongsTo(city, {foreignKey : 'city_id'});
 module.exports 			= Customer;

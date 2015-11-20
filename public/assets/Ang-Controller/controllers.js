@@ -1284,7 +1284,7 @@ app.controller("UOMList", function ($filter, $scope, $http, $rootScope, filterFi
 
     $scope.InitLoad = function () {
         contentBlock.start();
-        $http.post(RESOURCES.DOMAIN + 'getuomdetails?isfulllist=').success(function (res) {
+        $http.post(RESOURCES.DOMAIN + 'getuomdetails?isfulllist=y').success(function (res) {
             //var data=res.data;
             $scope.UOMList = res.data;
             //console.log($scope.StoreRegionList);
@@ -1304,7 +1304,22 @@ app.controller("UOMList", function ($filter, $scope, $http, $rootScope, filterFi
         });
         contentBlock.stop();
     };
-
+    $scope.EditUOMProcess = function (uomid) {
+    	$scope.resetform();
+        $http.post(RESOURCES.DOMAIN + 'getuomdetails?uomid=' + uomid + '&isfulllist=y').success(function (res) {
+            $scope.form = {};
+            uomlist = {};
+            uomlist = res.data;
+            $scope.form.uomname = uomlist[0].uom_name;
+            $scope.form.uomstatus = uomlist[0].status;
+          
+        });
+    };
+    $scope.resetform = function () {
+        $("#uomform")[0].reset();
+    };
+    
+    
     $scope.InitLoad();
 });
 // end UOM

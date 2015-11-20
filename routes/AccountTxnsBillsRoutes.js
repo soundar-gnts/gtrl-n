@@ -74,9 +74,9 @@ module.exports = function(app, server) {
 		}
 		if(status!=null){
 			if(condition === ""){
-				condition="status='"+status+"'";
+				condition="t_account_txns_bills.status='"+status+"'";
 			}else {
-				condition=condition+" and status='"+status+"'";
+				condition=condition+" and t_account_txns_bills.status='"+status+"'";
 			}
 		}
 		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){

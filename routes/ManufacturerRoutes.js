@@ -74,17 +74,17 @@ module.exports = function(app, server){
 			}
 		if(companyId!=null){
 			if(conditionQuery === ""){
-				conditionQuery ="company_id="+companyId;
+				conditionQuery ="m_manufacturer.company_id="+companyId;
 			}else {
-				conditionQuery=conditionQuery+" and company_id="+companyId;
+				conditionQuery=conditionQuery+" and m_manufacturer.company_id="+companyId;
 			}	
 		}
 		
 		if(status!=null){
 			if(conditionQuery === ""){
-				conditionQuery="status='"+status+"'";
+				conditionQuery="m_manufacturer.status='"+status+"'";
 			}else {
-				conditionQuery=conditionQuery+" and status='"+status+"'";
+				conditionQuery=conditionQuery+" and m_manufacturer.status='"+status+"'";
 			}
 		}
 		if(manufgName!=null){

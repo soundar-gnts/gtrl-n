@@ -14,9 +14,11 @@
  * 
  * 
  */
-var customerService = require('../services/CustomerService.js');
+var customerService 	= require('../services/CustomerService.js');
 var customerTypeService = require('../services/CustomerTypeService.js');
 var custAgeGroupService = require('../services/CustAgeGroupService.js');
+var state				= require('../models/State.js');
+var city				= require('../models/City.js');
 
 
 module.exports = function(app, server) {
@@ -151,6 +153,7 @@ module.exports = function(app, server) {
 		var gender			=req.param("gender");
 		var mobileno		=req.param("mobileno");
 		var status			=req.param("status");
+				
 		if(custid!=null){
 			condition ="cust_id="+custid;
 		}
@@ -214,7 +217,7 @@ module.exports = function(app, server) {
 			attr=['cust_id','cust_code','cus_last_name','cus_first_name'];
 		}
 		
-		customerService.getCustomerDetails(condition,attr, function(result){
+		customerService.getCustomerDetails(condition,attr,function(result){
 			res.send(result);
 		});
 	}
@@ -256,24 +259,31 @@ module.exports = function(app, server) {
 	//For get customer details based on user param
 	function getCustomerDetails(req, res){
 		var selectedAttributes 			= "";
-		var condition 		= "";
-		var custid			=req.param("custid");
-		var companyid		=req.param("companyid");
-		var custcode		=req.param("custcode");
-		var custgroupid		=req.param("custgroupid");
-		var agegroupid		=req.param("agegroupid");
-		var cusfirstname	=req.param("cusfirstname");
-		var gender			=req.param("gender");
-		var mobileno		=req.param("mobileno");
-		var status			=req.param("status");
+		var condition 			= "";
+		var custid				=req.param("custid");
+		var companyid			=req.param("companyid");
+		var custcode			=req.param("custcode");
+		var custgroupid			=req.param("custgroupid");
+		var agegroupid			=req.param("agegroupid");
+		var cusfirstname		=req.param("cusfirstname");
+		var gender				=req.param("gender");
+		var mobileno			=req.param("mobileno");
+		var status				=req.param("status");
+		var fetchAssociation 	= "";
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : state, attributes : ['state_name']},
+			                    {model : city, attributes : ['city_name']}];
+		}
+		
 		if(custid!=null){
 			condition ="cust_id="+custid;
 		}
 		if(companyid!=null){
 			if(condition === ""){
-				condition="company_id='"+companyid+"'";
+				condition="m_customer.company_id='"+companyid+"'";
 			}else {
-				condition=condition+" and company_id='"+companyid+"'";
+				condition=condition+" and m_customer.company_id='"+companyid+"'";
 			}
 		}
 		if(custcode!=null){
@@ -320,15 +330,15 @@ module.exports = function(app, server) {
 		}
 		if(status!=null){
 			if(condition === ""){
-				condition="status='"+status+"'";
+				condition="m_customer.status='"+status+"'";
 			}else {
-				condition=condition+" and status='"+status+"'";
+				condition=condition+" and m_customer.status='"+status+"'";
 			}
 		}
 		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
 			selectedAttributes=['cust_id','cust_code','cus_last_name','cus_first_name'];
 		}
-		customerService.getCustomerDetails(condition, selectedAttributes, function(response){
+		customerService.getCustomerDetails(condition, selectedAttributes,fetchAssociation, function(response){
 			res.send(response);
 		});
 	}

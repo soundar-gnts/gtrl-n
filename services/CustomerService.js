@@ -23,9 +23,10 @@ var response 	= {
 var appmsg		= require('../config/Message.js');
 
 // To get Customer List based on user param
-exports.getCustomerDetails = function(condition,attr,callback) {
+exports.getCustomerDetails = function(condition,attr,fetchAssociation,callback) {
 	
-	customer.findAll({where : [condition],attributes: attr}).then(function(result) {
+	console.log('fetchAssociation-->'+fetchAssociation);
+	customer.findAll({where : [condition],include	: fetchAssociation,attributes: attr}).then(function(result) {
 		if(result.length === 0){
 			log.info(appmsg.LISTNOTFOUNDMESSAGE);
 			response.message = appmsg.LISTNOTFOUNDMESSAGE;

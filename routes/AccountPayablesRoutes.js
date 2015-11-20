@@ -47,9 +47,9 @@ module.exports = function(app, server) {
 		}
 		if(companyid!=null){
 			if(condition === ""){
-				condition="company_id='"+companyid+"'";
+				condition="t_account_payables.company_id='"+companyid+"'";
 			}else {
-				condition=condition+" and company_id='"+companyid+"'";
+				condition=condition+" and t_account_payables.company_id='"+companyid+"'";
 			}
 		}
 		if(storeid!=null){
@@ -75,9 +75,9 @@ module.exports = function(app, server) {
 		}
 		if(status!=null){
 			if(condition === ""){
-				condition="status='"+status+"'";
+				condition="t_account_payables.status='"+status+"'";
 			}else {
-				condition=condition+" and status='"+status+"'";
+				condition=condition+" and t_account_payables.status='"+status+"'";
 			}
 		}
 		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
