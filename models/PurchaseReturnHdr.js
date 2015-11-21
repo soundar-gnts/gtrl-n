@@ -18,7 +18,7 @@
 var model 				= require('../config/sequelize.js');
 var dataTypes			= require('sequelize');
 var purchaseReturnDtl	= require('../models/PurchaseReturnDtl.js');
-
+var supplier			= require('../models/Supplier.js');
 var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 
 	return_id : {
@@ -34,12 +34,12 @@ var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 	return_date 		: dataTypes.DATE,
 	store_id 			: dataTypes.INTEGER,
 	supplier_id 		: dataTypes.INTEGER,
-	amount_payble 		: dataTypes.DOUBLE,
-	outstanding_amount 	: dataTypes.DOUBLE,
+	amount_payble 		: dataTypes.INTEGER,
+	outstanding_amount 	: dataTypes.INTEGER,
 	return_type 		: dataTypes.STRING,
 	payment_mode 		: dataTypes.STRING,
-	discount_prcnt 		: dataTypes.DOUBLE,
-	discount_value 		: dataTypes.DOUBLE,
+	discount_prcnt 		: dataTypes.INTEGER,
+	discount_value 		: dataTypes.INTEGER,
 	return_reason 		: dataTypes.STRING,
 	cancel_remark 		: dataTypes.STRING,
 	status		   		: dataTypes.STRING,
@@ -52,5 +52,6 @@ var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 	freezeTableName  : true,
 	tableName		 : 't_purchase_return_hdr'
 });
+purchaseReturnHdr.belongsTo(supplier, 	{foreignKey: 'supplier_id'});
 purchaseReturnHdr.hasMany(purchaseReturnDtl, {foreignKey: 'return_id'});
 module.exports = purchaseReturnHdr;

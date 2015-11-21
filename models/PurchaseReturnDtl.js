@@ -29,13 +29,13 @@ var purchaseReturnDtl	= model.define('t_purchase_return_dtl', {
 	product_id 			: dataTypes.INTEGER,
 	return_qty 			: dataTypes.INTEGER,
 	uom_id 				: dataTypes.INTEGER,
-	rate 				: dataTypes.DOUBLE ,
-	basic_value 		: dataTypes.DOUBLE ,	
-	discount_prcnt 		: dataTypes.DOUBLE,
-	discount_value 		: dataTypes.DOUBLE,
+	rate 				: dataTypes.INTEGER ,
+	basic_value 		: dataTypes.INTEGER ,	
+	discount_prcnt 		: dataTypes.INTEGER,
+	discount_value 		: dataTypes.INTEGER,
 	tax_id 				: dataTypes.INTEGER,
-	tax_prnct 			: dataTypes.DOUBLE,
-	tax_value 			: dataTypes.DOUBLE,
+	tax_prnct 			: dataTypes.INTEGER,
+	tax_value 			: dataTypes.INTEGER,
 
 }, {
 	

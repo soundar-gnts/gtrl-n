@@ -108,11 +108,16 @@ var saveOrUpdatePurchaseReturnHeader = function(returnHdr, callback){
 			status	: Boolean,
 			message : String,
 			data	: String
-	}
+	};
 	//if purchase order id exist then update otherwise create poheader table 
+	console.log('returnHdr.return_id,--->'+returnHdr.return_id);
+	console.log('returnHdr.retrun_ref_no,--->'+returnHdr.retrun_ref_no);
+	
+	
 	if(returnHdr.return_id != null){
 		purchaseReturnHdr.upsert(returnHdr)
 		.then(function(data){
+			
 			log.info(APPMSG.POEDITSUCCESS);
 			response.message 	= APPMSG.PURCHASERETURNEDITSUCCESS;
 			response.data  		= returnHdr.return_id;
@@ -146,48 +151,36 @@ var saveOrUpdatePurchaseReturnHeader = function(returnHdr, callback){
 	}
 }
 
-var saveOrUpdatePurchaseReturnDetails = function(purchaseReturnDtl_res, callback) {
+var saveOrUpdatePurchaseReturnDetails = function(returndtls, callback) {
 
 	log.info(fileName+'.saveOrUpdatePurchaseReturnDetails');
 	var response = {
 			status	: Boolean,
 			message : String,
 			data	: String
-	}
-	//if purchase details id exist then update otherwise create poDetail table 
-	if(purchaseReturnDtl_res.return_dtlid != null){
-		purchaseReturnDtl.upsert(purchaseReturnDtl_res)
-		.then(function(data){
-			log.info(APPMSG.PODETAILEDITSUCCESS);
-			response.message	= APPMSG.PURCHASERETURNDETAILEDITSUCCESS;
-			response.data  		= purchaseReturnDtl_res.return_dtlid;
-			response.status 	= true;
-			callback(response);
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= APPMSG.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			callback(response);
-		});
-	} else{
-		purchaseReturnDtl.create(purchaseReturnDtl_res)
-		.then(function(data){
-			log.info(APPMSG.PODETAILSAVESUCCESS);
-			response.message	= APPMSG.PURCHASERETURNDETAILSAVESUCCESS;
-			response.data  		= data.return_dtlid;
-			response.status 	= true;
-			callback(response);
-		})
-		.error(function(err){
-			log.error(err);
-			response.status  	= false;
-			response.message 	= APPMSG.INTERNALERRORMESSAGE;
-			response.data  		= err;
-			callback(response);
-		});
-	}
+	};
+	console.log('returndtls  >> '+returndtls);
+	
+
+	purchaseReturnDtl.upsert(returndtls)
+	.then(function(data){
+		console.log('returndtls .data  >> '+data);
+		
+		log.info(APPMSG.PODETAILEDITSUCCESS);
+		response.message	= APPMSG.PURCHASERETURNDETAILEDITSUCCESS;
+		response.data  		= returndtls.return_dtlid;
+		response.status 	= true;
+		callback(response);
+	})
+	.error(function(err){
+		console.log('returndtls .err  >> '+err);
+		log.error(err);
+		response.status  	= false;
+		response.message 	= APPMSG.INTERNALERRORMESSAGE;
+		response.data  		= err;
+		callback(response);
+	});
+
 }
 
 var saveOrUpdatePurchaseReturn = function(slid, PurchaseReturnHdr, purchaseReturnDetails, purchaseReturnDeleteDetailsIds,callback){
@@ -200,52 +193,33 @@ var saveOrUpdatePurchaseReturn = function(slid, PurchaseReturnHdr, purchaseRetur
 	 
 	saveOrUpdatePurchaseReturnHeader(PurchaseReturnHdr, function(header){
 		//if true data inserted/updated successfully else error
+		
+		console.log('header--->'+header);
+		
 		if(header.status){			
 			//if slid exist, serial number generated, so need to update slnoGen table 
-			if(slid != null)
-				slnogenService.updateSequenceNo(slid, PurchaseReturnHdr.last_updated_dt, PurchaseReturnHdr.last_updated_by);
+			if(slid != null){
+			slnogenService.updateSequenceNo(slid, PurchaseReturnHdr.last_updated_dt, PurchaseReturnHdr.last_updated_by);
+			}
 			console.log('header.status : '+header.status);
-			//if delete details id exist need to hard delete in poDetail Table
-			if(purchaseReturnDeleteDetailsIds != null)
-				purchaseReturnDeleteDetailsIds.forEach(function(prDelDetail){
-					deletePoDetails("return_dtlid='"+prDelDetail.return_dtlid+"'", function(result){
-						log.info(result);
+						
+			purchaseReturnDetails.forEach(function(returndtl){
+				
+					console.log('header.data > : '+header.data);
+					
+					returndtl.return_id = header.data;
+					console.log('header.data.purchasereturn.return_id > : '+header.data);
+					saveOrUpdatePurchaseReturnDetails(returndtl, function(result){
+						console.log('result >> '+result);
 					});
+					
 				});
-			//if purchase details exist need to add/update in poDetail Table
-			if(purchaseReturnDetails != null)
-				purchaseReturnDetails.forEach(function(purchaseReturnDetail){
-					purchaseReturnDetail.return_id = header.data;
-					saveOrUpdatePurchaseReturnDetails(purchaseReturnDetail, function(result){
-						console.log(result);
-					});
-					// Update Ledger Details  
-					 stockLedgerService.insertStockLedger(
- 							purchaseReturnDetail.product_id,
- 							PurchaseReturnHdr.company_id,
- 							PurchaseReturnHdr.store_id,
- 							purchaseReturnDetail.batch_no,
- 							purchaseReturnDetail.invoice_qty,
- 							0,
- 							purchaseReturnDetail.uom_id,
- 							purchaseReturnDetail.invoice_no,
- 							purchaseReturnDetail.invoice_date,"Purchase Goods -Invoice Number : "+purchaseReturnDetail.invoice_no+'-'+purchaseReturnDetail.action_remarks);
- 					//To Insert Row in product Serail Codes
- 					productSerialCodesService.insertProductSerialCodes(
- 							PurchaseReturnHdr.company_id,
- 							PurchaseReturnHdr.purchase_id,
- 							purchaseReturnDetail.product_id,
- 							PurchaseReturnHdr.store_id,
- 							purchaseReturnDetail.batch_no,
- 							purchaseReturnDetail.eanserialno,
- 							purchaseReturnDetail.storeserialno); 	
-				});
-			//For  Account Receivable 
-			/*accountReceivableService.insertAccountReceivable(PurchaseReturnHdr.supplier_id,PurchaseReturnHdr.company_id,
-			PurchaseReturnHdr.store_id,new Date(),null,PurchaseReturnHdr.invoice_no,PurchaseReturnHdr.invoice_date,
-			PurchaseReturnHdr.invoice_amount,PurchaseReturnHdr.invoice_amount,'Purchase Deleted - Ref No :'+PurchaseReturnHdr.invoice_no,
-			PurchaseReturnHdr.last_updated_dt,PurchaseReturnHdr.last_updated_by);	*/		
-			
+				
+			var purchasereturn = {
+					return_id 		: header.data,
+					retrun_ref_no 	: PurchaseReturnHdr.retrun_ref_no
+			};
+			header.data =purchasereturn;
 			callback(header);
 		} else{
 			console.log('header.status'+header.status);

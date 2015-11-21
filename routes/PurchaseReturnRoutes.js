@@ -16,7 +16,7 @@
  */
 
 var CONSTANT					= require('../config/Constants.js');
-
+var supplier					= require('../models/Supplier.js');
 var purchaseReturnService		= require('../services/PurchaseReturnService.js');
 var purchasereturndtlservice	= require('../services/PurchaseReturnDtlService.js');
 var purchasereturndetail		= require('../models/PurchaseReturnDtl.js');
@@ -46,7 +46,7 @@ module.exports = function(app, server){
 		var return_ref_no		= req.param('returnRefNo');
 		
 		if(req.param('fetchassociation')=='y'){
-			fetchAssociation = [{model: purchasereturndetail}];
+			fetchAssociation = [{model: purchasereturndetail},{model : supplier, attributes : ['supplier_code']}];
 		}
 		
 		if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
@@ -54,7 +54,7 @@ module.exports = function(app, server){
 		}
 		
 		if(return_id != null){
-			condition = "return_id="+return_id;
+			condition = "t_purchase_return_hdr.return_id="+return_id;
 		}
 		
 		if(po_id!=null){
@@ -68,10 +68,10 @@ module.exports = function(app, server){
 		
 		if(status!=null){
 			if(condition === ""){
-				condition = "status='"+status+"'";
+				condition = "t_purchase_return_hdr.status='"+status+"'";
 			}		
 			else{
-				condition = condition+" and status='"+status+"'";
+				condition = condition+" and t_purchase_return_hdr.status='"+status+"'";
 			}
 		}	
 		
@@ -169,16 +169,8 @@ module.exports = function(app, server){
 				purchaseReturnDetails.push(purchaseReturnDetail);
 			}); 
 		
-//			purchaseReturnService.saveOrUpdatePurchaseReturn(PurchaseReturnHdr, purchaseReturnDetails, function(response){
-//			res.send(response);
-//			});
-		if(req.param('purchasereturndeletedetails') != null)
-			req.param('purchasereturndeletedetails').forEach(function(prDeleteDetails){
-				var purchasereturnDeleteDetailsId = {
-						return_dtlid	: prDeleteDetails.returndtlid,
-					}
-					purchaseReturnDeleteDetailsIds.push(purchasereturnDeleteDetailsId);
-			});
+		console.log("req.param('status')>>"+req.param('status'));
+		console.log("req.param('retrunrefno')>>"+req.param('retrunrefno'));
 		
 		if(req.param('status') == CONSTANT.STATUSPENDING && req.param('retrunrefno') == null){
 			var slNoCondition = {
@@ -187,7 +179,7 @@ module.exports = function(app, server){
 					autogen_yn 			: 'Y',
 					status 				: 'Active'
 			}
-			slnogenService.getSlnoValu(slNoCondition, function(sl){
+			slnogenService.getSlnoValue(slNoCondition, function(sl){
 				
 				PurchaseReturnHdr.retrun_ref_no = sl.sno;
 				console.log(sl.sno);
