@@ -141,4 +141,34 @@ exports.saveBankDetails = function(bankobj, bankbranchlist, callback) {
 
 }
 
+//To Save Branch List
+
+exports.saveBranchDetails = function(branchobj,callback){	
+	bankBranch.upsert(branchobj)
+			.then(function(data){
+				if(data){
+					log.info(fileName+'.saveBranchDetails - '+appMsg.SAVEMESSAGE);
+					response.message = appMsg.SAVEMESSAGE;
+					response.status  = true;
+					response.data 	 = "";
+					callback(response);
+				}
+				else{
+					log.info(fileName+'.saveBranchDetails - '+appMsg.UPDATEMESSAGE);
+					response.message = appMsg.UPDATEMESSAGE;
+					response.status  = true;
+					response.data 	 = "";
+					callback(response);
+				}
+				
+				
+			}).error(function(err){
+					log.info(fileName+'.saveBranchDetails - '+appMsg.INTERNALERRORMESSAGE);
+					log.error(err);
+					response.status  	= false;
+					response.message 	= appMsg.INTERNALERRORMESSAGE;
+					response.data  		= err;
+					callback(response);
+			});
+	};
 

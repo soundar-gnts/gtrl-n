@@ -21,6 +21,7 @@ module.exports = function(app, server){
 	app.post('/getbankdetails', getBankDetails);
 	app.post('/getbankbranchdetails', getBankBranchDetails);
 	app.post('/savebankdetails', saveBankDetails);
+	app.post('/savebranchdetails', saveBranchDetails);
 	
 	// To Get Bank full based on user param
 	function getBankDetails(req, res){
@@ -220,4 +221,30 @@ module.exports = function(app, server){
 		});
 	}
 	
+	//To Save Branch Name
+	
+	function saveBranchDetails(req, res){
+		var branchobj={		
+				bank_id      	:req.param("bankid"),
+				branch_id  		:req.param("branchid"),
+				branch_code		:req.param("branchcode"),
+				branch_name 	:req.param("branchname"), 
+				company_id 		:req.param("companyid"),
+				ifsc_code 		:req.param("ifsccode"),
+				address 		:req.param("address"),
+				pincode 	   	:req.param("pincode"),
+				landline_no		:req.param("landlineno"), 
+				fax_no 	   		:req.param("faxno"),
+				email_id 		:req.param("emailid"), 
+				contact_person 	:req.param("contactperson"),
+				contact_no 	  	:req.param("contactno"),
+				state_id  		:req.param("stateid"), 
+				city_id 		:req.param("cityid"),
+				last_updated_dt	:req.param("updateddate"),
+				last_updated_by	:req.param("updatedby")
+			}
+		bankservice.saveBranchDetails(branchobj, function(response){
+			res.send(response);
+		});
+	}; 
 }

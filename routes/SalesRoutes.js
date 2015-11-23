@@ -33,8 +33,7 @@ module.exports = function(app, server){
 	app.post('/savesalesdeliverydetails',		saveOrUpdateSalesDeliveryDetails);
 	
 	//For get sales list based on user param
-	function getSales(req, res){
-		
+	function getSales(req, res){		
 		var fetchAssociation 	= "";
 		var selectedAttributes 	= "";
 		var condition 			= "";
@@ -102,7 +101,7 @@ module.exports = function(app, server){
 			}
 		}
 			
-		salesService.getSalesFn(condition, fetchAssociation, selectedAttributes, function(response){
+		salesService.getSales(condition, fetchAssociation, selectedAttributes, function(response){
 			res.send(response);
 		});
 			
