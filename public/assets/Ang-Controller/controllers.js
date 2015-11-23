@@ -1,39 +1,40 @@
 //login screen
 //states start
 app.controller("LoginScreen", function ($scope, $http, $location, authentication, toastr, blockUI, RESOURCES) {
-   
-    //$("#header").hide();
-   // $("#sidebar").hide();
-  //  $(".sidebar-bg").hide();
-    
-     $scope.login = function() {
-         console.log($scope.form);
-         $http.post(RESOURCES.DOMAIN + 'login?loginid=' + $scope.form.username+"&loginpwd="+$scope.form.password+"&companyid=1").success(function (res) {
-              if (res.status == true) {
-      console.log('successful')
-      authentication.isAuthenticated = true;
-      authentication.user = res.data;
-      $location.url("/dashboard");
-    } else {
-      $scope.loginError = "Invalid username/password combination";
-      console.log('Login failed..');
+
+    $("#header").hide();
+    $("#sidebar").hide();
+    $(".sidebar-bg").hide();
+
+    $scope.login = function () {
+        console.log($scope.form);
+        $http.post(RESOURCES.DOMAIN + 'login?loginid=' + $scope.form.username + "&loginpwd=" + $scope.form.password + "&companyid=1").success(function (res) {
+            if (res.status == true) {
+                console.log('successful')
+                authentication.isAuthenticated = true;
+                authentication.user = res.data;
+                $location.url("/dashboard");
+            } else {
+                $scope.loginError = "Invalid username/password combination";
+                console.log('Login failed..');
+            }
+            ;
+        });
+
     };
-         });
-   
-  };
-  
+
 });
 app.controller("Dashboard", function ($scope, $http, $location, authentication, toastr, blockUI, RESOURCES) {
-   
+    $scope.user = {};
     $("#header").show();
     $("#sidebar").show();
     $(".sidebar-bg").show();
-    $scope.user = authentication.user.user_name;
-    
-  
+    $scope.user = authentication.user;
+    console.log($scope.user.user_name);
+
 });
 //states start
-app.controller("StateList", function ($filter, $scope,authentication, $http, $rootScope, filterFilter, toastr, blockUI, RESOURCES) {
+app.controller("StateList", function ($filter, $scope, authentication, $http, $rootScope, filterFilter, toastr, blockUI, RESOURCES) {
     //App.init();
     $scope.user = authentication.user.name;
     var contentBlock = blockUI.instances.get('contentBlock');
@@ -753,19 +754,19 @@ app.controller("BankList", function ($filter, $scope, $http, $rootScope, filterF
 //$scope.ActiveStateList={};	
     var contentBlock = blockUI.instances.get('contentBlock');
     contentBlock.stop();
-$scope.search={};
+    $scope.search = {};
     $scope.InitLoad = function () {
         contentBlock.start();
-        condition="";
-        if(($scope.search.bankname !="")&&($scope.search.bankname !=null))
+        condition = "";
+        if (($scope.search.bankname != "") && ($scope.search.bankname != null))
         {
-            condition ="&bankname="+$scope.search.bankname;
+            condition = "&bankname=" + $scope.search.bankname;
         }
-        if(($scope.search.status !="")&&($scope.search.status !=null))
+        if (($scope.search.status != "") && ($scope.search.status != null))
         {
-            condition ="&status="+$scope.search.status;
+            condition = "&status=" + $scope.search.status;
         }
-        $http.post(RESOURCES.DOMAIN + 'getbankdetails?isfulllist='+condition).success(function (res) {
+        $http.post(RESOURCES.DOMAIN + 'getbankdetails?isfulllist=' + condition).success(function (res) {
             //var data=res.data;
             $scope.BankList = res.data;
             //console.log($scope.StoreRegionList);
@@ -790,7 +791,7 @@ $scope.search={};
         bankid_string = "";
         if (($scope.form.bankid != "") && ($scope.form.bankid != null) && ($scope.form.bankid != "undefined"))
         {
-              bankid_string += "&bankid=" + $scope.form.bankid;
+            bankid_string += "&bankid=" + $scope.form.bankid;
         }
         var dataString = "?bankcode=" + $scope.form.bankcode + "&bankname=" + $scope.form.bankname + "&status=" + $scope.form.status
                 + "&lastupdatedby=Soundar" + bankid_string;
@@ -821,14 +822,14 @@ $scope.search={};
         $scope.resetForm();
         $scope.form = {};
         contentBlock.start();
-        
+
         $http.post(RESOURCES.DOMAIN + 'getbankdetails?bankid=' + id + "&isfulllist=").success(function (res) {
             //$scope.CompanyList=res.data;
 
             $scope.form.bankid = res.data[0].bank_id;
             $scope.form.bankname = res.data[0].bank_name;
             $scope.form.bankcode = res.data[0].bank_code;
-             $scope.form.status = res.data[0].status;
+            $scope.form.status = res.data[0].status;
 
         });
         contentBlock.stop();
@@ -842,30 +843,30 @@ app.controller("BankBranchList", function ($filter, $scope, $http, $rootScope, f
 //$scope.ActiveStateList={};	
     var contentBlock = blockUI.instances.get('contentBlock');
     contentBlock.stop();
-    $scope.search={};
-        
-           
+    $scope.search = {};
+    $scope.form = {};
+
     $scope.InitLoad = function () {
         contentBlock.start();
-         condition="";
-        if(($scope.search.bankid !="")&&($scope.search.bankid !=null))
+        condition = "";
+        if (($scope.search.bankid != "") && ($scope.search.bankid != null))
         {
-            condition ="&bankid="+$scope.search.bankid;
+            condition = "&bankid=" + $scope.search.bankid;
         }
-        if(($scope.search.branchname !="")&&($scope.search.branchname !=null))
+        if (($scope.search.branchname != "") && ($scope.search.branchname != null))
         {
-            condition ="&branchname="+$scope.search.branchname;
+            condition = "&branchname=" + $scope.search.branchname;
         }
-        if(($scope.search.branchcode !="")&&($scope.search.branchcode !=null))
+        if (($scope.search.branchcode != "") && ($scope.search.branchcode != null))
         {
-            condition ="&branchcode="+$scope.search.branchcode;
+            condition = "&branchcode=" + $scope.search.branchcode;
         }
-        if(($scope.search.status !="")&&($scope.search.status !=null))
+        if (($scope.search.status != "") && ($scope.search.status != null))
         {
-            condition ="&status="+$scope.search.status;
+            condition = "&status=" + $scope.search.status;
         }
         console.log(condition);
-        $http.post(RESOURCES.DOMAIN + 'getbankbranchdetails?isfulllist='+condition).success(function (res) {
+        $http.post(RESOURCES.DOMAIN + 'getbankbranchdetails?isfulllist=' + condition).success(function (res) {
             //var data=res.data;
             $scope.BankBranchList = res.data;
             //console.log($scope.StoreRegionList);
@@ -885,21 +886,40 @@ app.controller("BankBranchList", function ($filter, $scope, $http, $rootScope, f
         });
         contentBlock.stop();
     };
-     $scope.EditProcess = function (id) {
+    $scope.EditProcess = function (id) {
         $scope.resetForm();
         $scope.form = {};
         contentBlock.start();
-        
-        $http.post(RESOURCES.DOMAIN + 'getbankbranchdetails?bankid=' + id + "&isfulllist=").success(function (res) {
-            //$scope.CompanyList=res.data;
-
-            $scope.form.bankid = res.data[0].bank_id;
-            $scope.form.bankname = res.data[0].bank_name;
-            $scope.form.bankcode = res.data[0].bank_code;
-             $scope.form.status = res.data[0].status;
+        $http.post(RESOURCES.DOMAIN + 'getbankdetails?status=Active&isfulllist').success(function (bankres) {
+            //var data=res.data;
+            
+                $scope.form.bankid = res.data[0].bank_id;
+                $scope.form.bankname = res.data[0].bank_name;
+                $scope.form.bankcode = res.data[0].bank_code;
+                $scope.form.status = res.data[0].status;
 
         });
+
         contentBlock.stop();
+    };
+    $scope.SaveUpdateProcess = function (id) {
+
+        contentBlock.start();
+dataString = "?bankid=" + bankres.bank_id + "&bankcode=" + bankres.bank_code + "&bank_name=" + bankres.bank_name;
+            $http.post(RESOURCES.DOMAIN + 'getbankbranchdetails?bankid=' + id + "&isfulllist=").success(function (res) {
+                //$scope.CompanyList=res.data;
+
+                $scope.form.bankid = res.data[0].bank_id;
+                $scope.form.bankname = res.data[0].bank_name;
+                $scope.form.bankcode = res.data[0].bank_code;
+                $scope.form.status = res.data[0].status;
+
+            });
+        contentBlock.stop();
+    };
+    $scope.resetForm = function ()
+    {
+        $("#branchForm")[0].reset();
     };
     //load active banks
     $scope.LoadActiveBanks = function () {
@@ -908,9 +928,27 @@ app.controller("BankBranchList", function ($filter, $scope, $http, $rootScope, f
             $scope.ActiveBankList = res.data;
         });
     };
+    //load active state
+    $scope.LoadActiveStates = function () {
+        $http.post(RESOURCES.DOMAIN + 'getstatelist?status=Active').success(function (res) {
+            $scope.AllActiveStateList = res.data;
+            console.log(res.data);
+        });
+    };
+    $scope.LoadActiveCities = function () {
+        $scope.AllActiveCityList = {};
+        if (($scope.form.stateid != "") || ($scope.form.stateid != null))
+        {
+            $http.post(RESOURCES.DOMAIN + 'getcitylist?status=Active&stateid=' + $scope.form.stateid).success(function (res) {
+                $scope.AllActiveCityList = res.data;
+                console.log($scope.AllActiveCityList);
+            });
+        }
+    };
     $scope.LoadActiveBanks();
+    $scope.LoadActiveStates();
     $scope.InitLoad();
-   });
+});
 // end bank Branch
 
 //start Card Type
@@ -941,7 +979,58 @@ app.controller("CardTypeList", function ($filter, $scope, $http, $rootScope, fil
         });
         contentBlock.stop();
     };
+    $scope.EditProcess = function (id) {
+        $scope.resetForm();
+        $scope.form = {};
+        contentBlock.start();
+        $http.post(RESOURCES.DOMAIN + 'getcardtypelist?card_type_id=' + id + '&isfulllist=').success(function (res) {
+            
+            $scope.form.carttypeid = res.data[0].card_type_id;
+            $scope.form.carttype = res.data[0].card_type;
+            $scope.form.servicecharge = res.data[0].service_charge;
+            $scope.form.status = res.data[0].status;
 
+        });
+
+        contentBlock.stop();
+    };
+    $scope.SaveUpdateProcess = function () {
+
+        //$scope.form = {};
+        contentBlock.start();
+        upString = "";
+        if (($scope.form.carttypeid != "") && ($scope.form.carttypeid != null))
+        {
+            upString = "&cardtypeid=" + $scope.form.carttypeid;
+        }
+        dataString = 'saveorupdatecardtype?companyid=' + RESOURCES.COMPANY_ID + '&cardtype=' +
+                $scope.form.carttype + "&servicecharge=" + $scope.form.servicecharge
+                + "&status=" + $scope.form.status + upString + "&lastupdatedby" + $filter('date')(new Date(), 'yyyy-MM-dd')
+                + "&updatedby=" + RESOURCES.UPDATED_BY;
+        console.log(dataString);
+        $http.post(RESOURCES.DOMAIN + dataString).success(function (res) {
+            //$scope.CompanyList=res.data;
+            $scope.form = {};
+            $scope.resetForm();
+            if (res.status)
+            {
+                $('#modal-addEdit-CardType').modal('hide');
+                toastr.success(res.message, 'Success', {closeButton: true, positionClass: 'toastr-top-center'});
+
+            }
+            else
+            {
+                toastr.error(res.message, 'Failed');
+            }
+            $scope.InitLoad();
+
+        });
+        contentBlock.stop();
+    };
+    $scope.resetForm = function ()
+    {
+        $("#cardtypeForm")[0].reset();
+    };
     $scope.InitLoad();
 });
 // end Card Type
@@ -974,7 +1063,56 @@ app.controller("PaymentTypeList", function ($filter, $scope, $http, $rootScope, 
         });
         contentBlock.stop();
     };
+    $scope.SaveUpdateProcess = function () {
 
+        //$scope.form = {};
+        contentBlock.start();
+        upString = "";
+        if (($scope.form.pymttypeid != "") && ($scope.form.pymttypeid != null))
+        {
+            upString = "&pymttypeid=" + $scope.form.pymttypeid;
+        }
+        dataString = 'savepaymenttypedetails?companyid=' + RESOURCES.COMPANY_ID + '&pymttypename=' +
+                $scope.form.pymttypename 
+                + "&status=" + $scope.form.status + upString + "&lastupdatedby" + $filter('date')(new Date(), 'yyyy-MM-dd')
+                + "&updatedby=" + RESOURCES.UPDATED_BY;
+        console.log(dataString);
+        $http.post(RESOURCES.DOMAIN + dataString).success(function (res) {
+            //$scope.CompanyList=res.data;
+            $scope.form = {};
+            $scope.resetForm();
+            if (res.status)
+            {
+                $('#modal-addEdit-paymentType').modal('hide');
+                toastr.success(res.message, 'Success', {closeButton: true, positionClass: 'toastr-top-center'});
+
+            }
+            else
+            {
+                toastr.error(res.message, 'Failed');
+            }
+            $scope.InitLoad();
+
+        });
+        contentBlock.stop();
+    };
+     $scope.EditProcess = function (paymentType) {
+        $scope.resetForm();
+        $scope.form = {};
+        contentBlock.start();
+            
+            $scope.form.pymttypeid = paymentType.pymt_type_id;
+            $scope.form.pymttypename = paymentType.pymt_type_name;
+            $scope.form.status = paymentType.status;
+
+        
+
+        contentBlock.stop();
+    };
+    $scope.resetForm = function ()
+    {
+        $("#cardtypeForm")[0].reset();
+    };
     $scope.InitLoad();
 });
 // end Card Type
@@ -1034,7 +1172,7 @@ app.controller("AccountTypeList", function ($filter, $scope, $http, $rootScope, 
 
         }
 
-        var dataString = "?companyid=1&accounttype=" + $scope.form.account_type + "&status=" + $scope.form.status + "&lastupdatedby=Soundar&lastupdateddt="
+        var dataString = "?companyid="+RESOURCES.COMPANY_ID+"&accounttype=" + $scope.form.account_type + "&status=" + $scope.form.status + "&lastupdatedby=Soundar&lastupdateddt="
                 + $filter('date')(new Date(), 'yyyy-MM-dd') + Id_string;
         console.log(dataString);
         $http.post(RESOURCES.DOMAIN + 'saveaccounttype' + dataString).success(function (res) {
@@ -1119,7 +1257,7 @@ app.controller("TransactionTypeList", function ($filter, $scope, $http, $rootSco
 
         }
 
-        var dataString = "?companyid=1&transtypename=" + $scope.form.transtypename+ "&crdr=" + $scope.form.crdr  + "&status=" + $scope.form.status + "&lastupdatedby=Soundar&lastupdateddt="
+        var dataString = "?companyid="+RESOURCES.COMPANY_ID+"&transtypename=" + $scope.form.transtypename + "&crdr=" + $scope.form.crdr + "&status=" + $scope.form.status + "&lastupdatedby=Soundar&lastupdateddt="
                 + $filter('date')(new Date(), 'yyyy-MM-dd') + Id_string;
         console.log(dataString);
         $http.post(RESOURCES.DOMAIN + 'savetxnstype' + dataString).success(function (res) {
@@ -1171,6 +1309,7 @@ app.controller("VoucherList", function ($filter, $scope, $http, $rootScope, filt
         contentBlock.start();
         $http.post(RESOURCES.DOMAIN + 'getvoucherlist?isfulllist=').success(function (res) {
             //var data=res.data;
+            console.log(res.data);
             $scope.VoucherList = res.data;
             //console.log($scope.StoreRegionList);
             // pagination controls
@@ -1189,13 +1328,92 @@ app.controller("VoucherList", function ($filter, $scope, $http, $rootScope, filt
         });
         contentBlock.stop();
     };
+    $scope.SaveUpdateProcess = function () {
+
+        //var statename=$scope.
+
+        console.log($scope.form);
+        var Id_string = "";
+        if (($scope.form.voucherid != "") && ($scope.form.voucherid != null))
+        {
+            Id_string = "&voucherid=" + $scope.form.voucherid;
+
+        }
+
+        var dataString = "?companyid="+RESOURCES.COMPANY_ID+"&vouchercode=" + $scope.form.vouchercode
+                + "&discountlevel=" + $scope.form.dicountLevel + "&discountvalue=" + $scope.form.dicountValue
+                + "&prodcatid=" + $scope.form.productType + "&minbillvalue=" + $scope.form.minbillVal
+                + "&regionid=" + $scope.form.StoreRegion 
+                + "&status=" + $scope.form.status + "&lastupdatedby="+ RESOURCES.UPDATED_BY+"&lastupdateddt="
+                + $filter('date')(new Date(), 'yyyy-MM-dd') + Id_string;
+        console.log(dataString);
+        $http.post(RESOURCES.DOMAIN + 'saveorupdatevoucher' + dataString).success(function (res) {
+            //console.log(res);
+            $scope.InitLoad();
+            if (res.status)
+            {
+
+                toastr.success(res.message, 'Success', {closeButton: true, positionClass: 'toastr-top-center'});
+
+            }
+            else
+            {
+                toastr.error(res.message, 'Failed');
+            }
+            $('#modal-addEdit-voucher').modal('hide');
+            $scope.resetForm();
+            $scope.form = {};
+        });
+
+    };
+    $scope.LoadActiveProductType= function () {
+        $http.post(RESOURCES.DOMAIN + 'getproductcategorydetails?status=Active').success(function (res) {
+            $scope.AllActiveProductType = res.data;
+            
+        });
+    };
     $scope.LoadActiveVoucherType = function () {
         $http.post(RESOURCES.DOMAIN + 'getvouchertypelist?status=Active').success(function (res) {
             //var data=res.data;
             $scope.AllActiveVoucherType = res.data;
-            console.log($scope.AllActiveVoucherType);
+            //console.log(res.data);
         });
     };
+    $scope.LoadActiveStoreRegion = function () {
+        $http.post(RESOURCES.DOMAIN + 'getstoreregionlist?status=Active').success(function (res) {
+            //var data=res.data;
+            $scope.AllActiveRegion = res.data;
+            
+        });
+    };
+    $scope.EditProcess = function (id) {
+        $scope.resetForm();
+
+        $scope.form = {};
+        contentBlock.start();
+        $http.post(RESOURCES.DOMAIN + 'getvoucherlist?isfulllist=&voucherid='+id).success(function (res) {
+            //$scope.CompanyList=res.data;
+           console.log(res.data);
+            $scope.form.productType = res.data[0].prod_cat_id;
+            $scope.form.voucherid = res.data[0].voucher_id;
+            $scope.form.voucherType = res.data[0].voucher_type_id;
+            $scope.form.vouchercode = res.data[0].voucher_code;
+            $scope.form.minbillVal = res.data[0].min_bill_value;
+            $scope.form.exprDate = res.data[0].exp_date;
+            $scope.form.StoreRegion = res.data[0].region_id;
+            $scope.form.discount_level = res.data[0].dicountLevel;
+            $scope.form.dicountValue = res.data[0].discount_value;
+            $scope.form.status = res.data[0].status;
+            
+        });
+        contentBlock.stop();
+    };
+    $scope.resetForm = function ()
+    {
+        $("#voucherForm")[0].reset();
+    };
+    $scope.LoadActiveStoreRegion();
+    $scope.LoadActiveProductType();
     $scope.LoadActiveVoucherType();
     $scope.InitLoad();
 });
@@ -1397,21 +1615,21 @@ app.controller("UOMList", function ($filter, $scope, $http, $rootScope, filterFi
         contentBlock.stop();
     };
     $scope.EditUOMProcess = function (uomid) {
-    	$scope.resetform();
+        $scope.resetform();
         $http.post(RESOURCES.DOMAIN + 'getuomdetails?uomid=' + uomid + '&isfulllist=y').success(function (res) {
             $scope.form = {};
             uomlist = {};
             uomlist = res.data;
             $scope.form.uomname = uomlist[0].uom_name;
             $scope.form.uomstatus = uomlist[0].status;
-          
+
         });
     };
     $scope.resetform = function () {
         $("#uomform")[0].reset();
     };
-    
-    
+
+
     $scope.InitLoad();
 });
 // end UOM

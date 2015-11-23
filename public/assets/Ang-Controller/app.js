@@ -28,7 +28,9 @@ var cmsAppFirstRun = function ($templateCache, $templateRequest, $rootScope) {
     M_CUSTOMER_URL :  'pages/customer/',
     M_ACCOUNTS_URL :  'pages/accounts/',
     M_PRODUCTS_URL :  'pages/products/',
-    M_USERS_URL    :  'pages/users/'
+    M_USERS_URL    :  'pages/users/',
+    COMPANY_ID     : '1',
+    UPDATED_BY     : 'Soundar'
   }
 })());
 // app constant end 

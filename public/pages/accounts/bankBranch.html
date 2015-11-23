@@ -20,8 +20,8 @@
         <div class="col-md-12 col-xs-12">
             <div class="row">
                 <div class="col-sm-3 pull-right">
-                    <a href="cities#modal-Addcity" data-toggle="modal"
-                       class="btn btn-md btn-success  pull-right ">Add New</a>
+                    <a href="bankbranch#modal-addEdit-BankBranch" data-toggle="modal"
+                       class="btn btn-md btn-success  pull-right " ng-click="resetForm()">Add New</a>
                 </div>
             </div>
             <div class="row">
@@ -101,7 +101,7 @@
                     <td>{{bankbranchlist.last_updated_dt| date:'dd-mm-yyyy H:mm'
                         }}</td>
                     <td>{{bankbranchlist.last_updated_by}}</td>
-                    <td><a href="company#modal-AddState" data-toggle="modal"
+                    <td><a href="bankbranch#modal-addEdit-BankBranch" data-toggle="modal"
                            ng-click="EditProcess(bankbranchlist.branch_id)"
                            class="btn btn-sm btn-info">Edit</a></td>
                     </tr>
@@ -118,3 +118,158 @@
 
 </div>
 
+<!-- model box start -->
+<div class="modal fade custom-model" id="modal-addEdit-BankBranch">
+    <div class="modal-dialog panel-model-width">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a data-dismiss="modal" aria-hidden="true" href="javascript:;"
+                   class="btn btn-xs btn-icon btn-circle btn-danger close"
+                   data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></a>
+                <h4 class="modal-title">Add/Modify Branch Details</h4>
+            </div>
+            <div class="modal-body">
+                <form novalidate="novalidate" id="branchForm"
+                      ng-submit="SaveUpdateProcess()">
+                    <div class="col-md-12">
+                        <h4 class="form-title">BankBranch Details</h4>
+                        <div class="box-footer"></div>
+                        <div class="col-md-4">
+
+
+                            <div class="form-group">
+                                <label>Bank Name</label>
+                                
+                                <select on-change="" placeholder="Select Bank"
+                                class="form-control" chosen options="ActiveBankList"
+                                ng-model="form.bankid"
+                                ng-options="bank.bank_id as bank.bank_name for bank in ActiveBankList">
+                                    <option value="">Select</option>
+                                </select>
+                            </div>
+                            <div class="" id="erroralertid"></div>
+
+                            <div class="form-group">
+                                <label>Branch code</label> 
+                                <input ng-model="form.brandid" class="form-control input-md" placeholder="Branch Code" id="bnkbrchcodeid" name="bnkbrchcodevald" type="text">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Branch Name</label> <input ng-model="form.branchname" class="form-control input-md" placeholder="Branch Name" id="brchnameid" name="brchnamevald" type="text">
+                            </div>
+                            <div class="" id="erroralertid"></div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea ng-model="form.address"  class="form-control input-md" type="text" id="bnkbrchaddrid" name="bnkbrchaddrvald"></textarea>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="form-group">
+                                <label>IFSC Code</label> 
+                                <input  ng-model="form.ifsccode" class="form-control input-md" placeholder="IFSC Code" id="bnkbrchifscid" name="bnkbrchifscvld" type="text">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Pin Code</label> 
+                                <input  ng-model="form.pincode" class="form-control input-md" placeholder="Pin Code" id="bnkbrchpinid" name="bnkbrchpinvald" maxlength="6" type="text">
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label>State Name</label>  
+                                <select ng-change="LoadActiveCities()" placeholder="Select State"
+                                class="form-control"  options="AllActiveStateList"
+                                ng-model="form.stateid"
+                                ng-options="states.state_id as states.state_name for states in AllActiveStateList">
+                                    <option value="">Select</option>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>City Name</label> 
+                               
+                                <select  placeholder="Select City"
+                                class="form-control"  options="AllActiveCityList"
+                                ng-model="form.cityid"
+                                ng-options="city.city_id as city.city_name for city in AllActiveCityList">
+                                   
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Landline No</label>
+                                <input ng-model="form.landline" class="form-control input-md" placeholder="Landline No" id="bnkbrchlandlineid" name="bnkbrchlndlinevald" minlength="10" maxlength="13" type="text">
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="form-group">
+                                <label>Fax No</label>
+                                <input ng-model="form.faxno"  class="form-control input-md" placeholder="Fax No" id="bnkbrchfaxnoid" name="bnkbrchfaxnovald" maxlength="15" type="text">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email ID</label>
+                                <input ng-model="form.emailid" class="form-control input-md" placeholder="Email ID" id="bnkbrchemailid" name="bnkbrchemailvald" type="text">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Contact Person</label> 
+                                <input ng-model="form.contactperson" class="form-control input-md" placeholder="Contact Person" id="bnkbrchcntpersnid" name="bnkbrchcntpersnvald" type="text">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Contact No</label>
+                                <input ng-model="form.contactnumber"  class="form-control input-md" placeholder="Contact No" id="bnkbrchcntnoid" name="bnkbrchcntnovald" minlength="10" maxlength="13" type="text">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Status</label> 
+                                <select ng-model="form.status"  class="form-control input-md" id="bnkbrchstsid" name="bnkbrchstsvald">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    
+                                </select>
+                            </div>
+
+
+
+
+                        </div>
+
+                       
+                    </div>
+                    <div class="clearfix" id="sveclsetaxbtn">
+                        <button type="button" id="addtaxclsbtn" onclick="closefn();"
+                                class="btn btn-danger pull-right" data-dismiss="modal">
+                            <i class="fa fa-times"></i> Close
+                        </button>
+                        <button type="submit" class="btn btn-primary pull-right"
+                                style="margin-right: 5px;">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                    </div>
+                    <!-- <div class="modal-footer clearfix">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+                <i class="fa fa-times"></i> Close
+        </button>
+        <button type="submit" class="btn btn-primary pull-left">
+                <i class="fa fa-save"></i> Save
+        </button>
+</div> -->
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- #modal-dialog -->
