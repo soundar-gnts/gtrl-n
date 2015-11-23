@@ -1,14 +1,41 @@
 //login screen
 //states start
-app.controller("LoginScreen", function ($filter, $scope, $http, $rootScope, filterFilter, toastr, blockUI, RESOURCES) {
-    alert("hi");
-    $("#header").hide();
-    $("#sidebar").hide();
-    $("#sidebar-bg").hide();
+app.controller("LoginScreen", function ($scope, $http, $location, authentication, toastr, blockUI, RESOURCES) {
+   
+    //$("#header").hide();
+   // $("#sidebar").hide();
+  //  $(".sidebar-bg").hide();
+    
+     $scope.login = function() {
+         console.log($scope.form);
+         $http.post(RESOURCES.DOMAIN + 'login?loginid=' + $scope.form.username+"&loginpwd="+$scope.form.password+"&companyid=1").success(function (res) {
+              if (res.status == true) {
+      console.log('successful')
+      authentication.isAuthenticated = true;
+      authentication.user = res.data;
+      $location.url("/dashboard");
+    } else {
+      $scope.loginError = "Invalid username/password combination";
+      console.log('Login failed..');
+    };
+         });
+   
+  };
+  
+});
+app.controller("Dashboard", function ($scope, $http, $location, authentication, toastr, blockUI, RESOURCES) {
+   
+    $("#header").show();
+    $("#sidebar").show();
+    $(".sidebar-bg").show();
+    $scope.user = authentication.user.user_name;
+    
+  
 });
 //states start
-app.controller("StateList", function ($filter, $scope, $http, $rootScope, filterFilter, toastr, blockUI, RESOURCES) {
+app.controller("StateList", function ($filter, $scope,authentication, $http, $rootScope, filterFilter, toastr, blockUI, RESOURCES) {
     //App.init();
+    $scope.user = authentication.user.name;
     var contentBlock = blockUI.instances.get('contentBlock');
     contentBlock.stop();
     $scope.search = {};
@@ -726,10 +753,19 @@ app.controller("BankList", function ($filter, $scope, $http, $rootScope, filterF
 //$scope.ActiveStateList={};	
     var contentBlock = blockUI.instances.get('contentBlock');
     contentBlock.stop();
-
+$scope.search={};
     $scope.InitLoad = function () {
         contentBlock.start();
-        $http.post(RESOURCES.DOMAIN + 'getbankdetails?isfulllist=').success(function (res) {
+        condition="";
+        if(($scope.search.bankname !="")&&($scope.search.bankname !=null))
+        {
+            condition ="&bankname="+$scope.search.bankname;
+        }
+        if(($scope.search.status !="")&&($scope.search.status !=null))
+        {
+            condition ="&status="+$scope.search.status;
+        }
+        $http.post(RESOURCES.DOMAIN + 'getbankdetails?isfulllist='+condition).success(function (res) {
             //var data=res.data;
             $scope.BankList = res.data;
             //console.log($scope.StoreRegionList);
@@ -750,11 +786,11 @@ app.controller("BankList", function ($filter, $scope, $http, $rootScope, filterF
         contentBlock.stop();
     };
     $scope.saveUpdate = function () {
-        $scope.form = {};
+        //$scope.form = {};
         bankid_string = "";
-        if (($scope.form.bankid == "") || ($scope.form.bankid == null))
+        if (($scope.form.bankid != "") && ($scope.form.bankid != null) && ($scope.form.bankid != "undefined"))
         {
-            bankid_string += "&bankid=" + $scope.form.bankid;
+              bankid_string += "&bankid=" + $scope.form.bankid;
         }
         var dataString = "?bankcode=" + $scope.form.bankcode + "&bankname=" + $scope.form.bankname + "&status=" + $scope.form.status
                 + "&lastupdatedby=Soundar" + bankid_string;
@@ -777,6 +813,26 @@ app.controller("BankList", function ($filter, $scope, $http, $rootScope, filterF
         });
 
     };
+    $scope.resetForm = function ()
+    {
+        $("#saveupdateform")[0].reset();
+    };
+    $scope.EditProcess = function (id) {
+        $scope.resetForm();
+        $scope.form = {};
+        contentBlock.start();
+        
+        $http.post(RESOURCES.DOMAIN + 'getbankdetails?bankid=' + id + "&isfulllist=").success(function (res) {
+            //$scope.CompanyList=res.data;
+
+            $scope.form.bankid = res.data[0].bank_id;
+            $scope.form.bankname = res.data[0].bank_name;
+            $scope.form.bankcode = res.data[0].bank_code;
+             $scope.form.status = res.data[0].status;
+
+        });
+        contentBlock.stop();
+    };
     $scope.InitLoad();
 });
 // end bank
@@ -786,10 +842,30 @@ app.controller("BankBranchList", function ($filter, $scope, $http, $rootScope, f
 //$scope.ActiveStateList={};	
     var contentBlock = blockUI.instances.get('contentBlock');
     contentBlock.stop();
-
+    $scope.search={};
+        
+           
     $scope.InitLoad = function () {
         contentBlock.start();
-        $http.post(RESOURCES.DOMAIN + 'getbankbranchdetails?isfulllist=').success(function (res) {
+         condition="";
+        if(($scope.search.bankid !="")&&($scope.search.bankid !=null))
+        {
+            condition ="&bankid="+$scope.search.bankid;
+        }
+        if(($scope.search.branchname !="")&&($scope.search.branchname !=null))
+        {
+            condition ="&branchname="+$scope.search.branchname;
+        }
+        if(($scope.search.branchcode !="")&&($scope.search.branchcode !=null))
+        {
+            condition ="&branchcode="+$scope.search.branchcode;
+        }
+        if(($scope.search.status !="")&&($scope.search.status !=null))
+        {
+            condition ="&status="+$scope.search.status;
+        }
+        console.log(condition);
+        $http.post(RESOURCES.DOMAIN + 'getbankbranchdetails?isfulllist='+condition).success(function (res) {
             //var data=res.data;
             $scope.BankBranchList = res.data;
             //console.log($scope.StoreRegionList);
@@ -809,6 +885,22 @@ app.controller("BankBranchList", function ($filter, $scope, $http, $rootScope, f
         });
         contentBlock.stop();
     };
+     $scope.EditProcess = function (id) {
+        $scope.resetForm();
+        $scope.form = {};
+        contentBlock.start();
+        
+        $http.post(RESOURCES.DOMAIN + 'getbankbranchdetails?bankid=' + id + "&isfulllist=").success(function (res) {
+            //$scope.CompanyList=res.data;
+
+            $scope.form.bankid = res.data[0].bank_id;
+            $scope.form.bankname = res.data[0].bank_name;
+            $scope.form.bankcode = res.data[0].bank_code;
+             $scope.form.status = res.data[0].status;
+
+        });
+        contentBlock.stop();
+    };
     //load active banks
     $scope.LoadActiveBanks = function () {
         $http.post(RESOURCES.DOMAIN + 'getbankdetails?status=Active').success(function (res) {
@@ -818,7 +910,7 @@ app.controller("BankBranchList", function ($filter, $scope, $http, $rootScope, f
     };
     $scope.LoadActiveBanks();
     $scope.InitLoad();
-});
+   });
 // end bank Branch
 
 //start Card Type

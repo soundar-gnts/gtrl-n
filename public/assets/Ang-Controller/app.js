@@ -44,10 +44,18 @@ app.config(function($routeProvider,RESOURCES) {
         //})
         
         // route for the about page
-        //.when('/', {
-       //     templateUrl : RESOURCES.M_BASE_URL+'login.html',
-       //     controller  : 'LoginScreen'
-      //  })
+        .when('/', {
+            templateUrl : RESOURCES.M_BASE_URL+'login.html',
+            controller  : 'LoginScreen'
+        })
+        .when('/login', {
+            templateUrl : RESOURCES.M_BASE_URL+'login.html',
+            controller  : 'LoginScreen'
+        })
+        .when('/dashboard', {
+            templateUrl : RESOURCES.M_BASE_URL+'dashboard.html',
+            controller  : 'Dashboard'
+        })
         
         // route for the about page
         .when('/states', {
@@ -174,3 +182,12 @@ app.config(function($routeProvider,RESOURCES) {
         });
         
 });
+
+//app.run(function (authentication, $rootScope, $location) {
+//    $rootScope.$on('$routeChangeStart', function (evt) {
+//        if (!authentication.isAuthenticated) {
+//            $location.url("/login");
+//        }
+//        evt.preventDefault();
+//    });
+//})

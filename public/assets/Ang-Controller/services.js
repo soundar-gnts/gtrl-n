@@ -45,3 +45,10 @@ app.factory('Utils', function() {
   
   return service;
 });
+
+app.factory('authentication', function() {
+  return {
+    isAuthenticated: false,
+    user: null
+  }
+});

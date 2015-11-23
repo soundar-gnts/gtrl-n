@@ -28,23 +28,24 @@
                 <!-- end login-header -->
                 <!-- begin login-content -->
                 <div class="login-content">
-                    <form   class="margin-bottom-0" ng-submit="login()" >
+                    <form   class="margin-bottom-0 ng-scope ng-pristine ng-valid" ng-submit="login()" >
                         <div class="form-group m-b-15">
-                            <input type="text" class="form-control input-lg" placeholder="Email Address" />
+                            <input ng-model="form.username" type="text" class="form-control input-lg ng-pristine ng-valid" placeholder="Email Address" />
+                            <input ng-model="form.companyid" type="hidden" value="1" />
                         </div>
                         <div class="form-group m-b-15">
-                            <input type="text" class="form-control input-lg" placeholder="Password" />
+                            <input name="password" type="text" ng-model="form.password" class="form-control input-lg ng-pristine ng-valid" placeholder="Password" />
                         </div>
-                        <div class="form-group m-b-15">
-                            <input name="token" type="text" ng-model="token" class="form-control input-lg" placeholder="Password" />
-                        </div>
+                        <br/>
+                    {{loginError}}  {{loggedUser}}
+                    <br/><br/>
                         <div class="checkbox m-b-30">
                             <label>
                                 <input type="checkbox" /> Remember Me
                             </label>
                         </div>
                         <div class="login-buttons">
-                            <button type="submit" class="btn btn-success btn-block btn-lg">Sign me in</button>
+                            <button ng-click="login()" type="submit" class="btn btn-success btn-block btn-lg">Sign me in</button>
                         </div>
                         <!--<div class="m-t-20 m-b-40 p-b-40">
                             Not a member yet? Click <a href="register_v3.html" class="text-success">here</a> to register.

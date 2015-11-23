@@ -20,7 +20,7 @@
 		<div class="col-md-12 col-xs-12">
 			<div class="row">
 				<div class="col-sm-3 pull-right">
-					<a href="bank#modal-addEdit-bank" data-toggle="modal"
+                                    <a ng-click="resetForm()" href="bank#modal-addEdit-bank" data-toggle="modal"
 						class="btn btn-md btn-success  pull-right ">Add New</a>
 				</div>
 			</div>
@@ -32,14 +32,15 @@
                                         <label> Bank Code: </label> <input class="form-control input-md"
                                                 type="text" placeholder="Bank Code" id="srchbnkid" name="srchbnkvld">
                                 </div>
-                -->
+                                --><form ng-submit="InitLoad()">
 				<div class="col-xs-3">
-					<label> Bank Name: </label> <input class="form-control input-md"
+					<label> Bank Name: </label> <input ng-model="search.bankname" class="form-control input-md"
 						placeholder="Bank Name" id="srchbnknameid" name="srchbnknameid"
 						type="text">
 				</div>
 				<div class="col-xs-3">
-					<label for="srch_country_status">Status:</label> <select
+					<label for="srch_country_status">Status:</label>
+                                        <select ng-model="search.status"
 						id="srchbnkstatus" name="srchbnkstatus" class="form-control">
 						<option value="Select">Select</option>
 						<option value="Active">Active</option>
@@ -54,8 +55,9 @@
 						onclick="reload();"> Reset </a> <a
 						class="btn btn-primary pull-right"
 						style="margin-top: 24px; margin-right: 5px;" id="srchid"
-						onclick="bnksrhlst();"> Search </a>
+                                                ng-click="InitLoad();"> Search </a>
 				</div>
+                                </form>
 			</div>
 
 
@@ -86,7 +88,7 @@
 						<td>{{banklist.last_updated_dt| date:'dd-mm-yyyy H:mm' }}</td>
 						<td>{{banklist.last_updated_by}}</td>
 						<td><a href="bank#modal-addEdit-bank" data-toggle="modal"
-							ng-click="EditStateProcess(statelist)"
+							ng-click="EditProcess(banklist.bank_id)"
 							class="btn btn-sm btn-info">Edit</a></td>
 					</tr>
 				</tbody>
