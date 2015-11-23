@@ -30,6 +30,7 @@ var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 
 	company_id 			: dataTypes.INTEGER,
 	po_id 				: dataTypes.INTEGER,
+	purchase_id			: dataTypes.INTEGER,
 	retrun_ref_no 		: dataTypes.STRING,
 	return_date 		: dataTypes.DATE,
 	store_id 			: dataTypes.INTEGER,
@@ -40,6 +41,7 @@ var purchaseReturnHdr 	= model.define('t_purchase_return_hdr', {
 	payment_mode 		: dataTypes.STRING,
 	discount_prcnt 		: dataTypes.INTEGER,
 	discount_value 		: dataTypes.INTEGER,
+	tax_value 			: dataTypes.INTEGER,
 	return_reason 		: dataTypes.STRING,
 	cancel_remark 		: dataTypes.STRING,
 	status		   		: dataTypes.STRING,

@@ -68,7 +68,6 @@
 						<td>ID</td>
 						<td>Code</td>
 						<td>Address</td>
-						<td>company_id</td>
 						<td>Mobile</td>
 						<td>Email</td>
 						<td>Status</td>
@@ -83,7 +82,6 @@
 						<td>{{customerobj.cust_id}}</td>
 						<td>{{customerobj.cust_code}}</td>
 						<td>{{customerobj.address}}</td>
-						<td><p>{{customerobj.company_id}}</p></td>
 						<td>{{customerobj.mobile_no}}</td>
 						<td>{{customerobj.email_id}}</td>
 						<td>{{customerobj.status}}</td>
@@ -249,6 +247,30 @@
 						</div>
 
 						<div class="form-group col-md-3">
+							<label>Group Name</label> <select id="custgroupid"
+								name="custgroupidValid" on-change="" placeholder="Select Group"
+								class="form-control" chosen options="AllActiveCustomerGroupList"
+								ng-model="form.custgroupid"
+								ng-options="customergrouplist.cust_group_id as customergrouplist.cust_group_name for customergrouplist 
+								 in AllActiveCustomerGroupList">
+
+							</select>
+
+						</div>
+
+						<div class="form-group col-md-3">
+							<label>Age Group Name</label> <select id="agegroupid"
+								name="agegroupidValid" on-change="" placeholder="Select Age Group"
+								class="form-control" chosen options="AllActiveAgeGroupList"
+								ng-model="form.custgroupid"
+								ng-options="agegrouplist.age_group_id as agegrouplist.age_group_id for agegrouplist 
+								 in AllActiveAgeGroupList">
+
+							</select>
+
+						</div>
+
+						<div class="form-group col-md-3">
 							<label>Status</label> <select class="form-control input-md"
 								id="statusid" name="statusvalid">
 
@@ -264,7 +286,7 @@
 							class="btn btn-danger pull-right" data-dismiss="modal">
 							<i class="fa fa-times"></i> Close
 						</button>
-						<button type="submit" class="btn btn-primary pull-right"
+						<button type="submit" class="btn btn-primary pull-right" onclick="saveCustomerDetails();"
 							style="margin-right: 5px;">
 							<i class="fa fa-save"></i> Save
 						</button>
@@ -279,10 +301,10 @@
 <!-- #modal-dialog -->
 
 <script>
-    $(document).ready(function(){
-        $('#expirydate').datepicker({
-        todayHighlight: true,
-        autoclose: true
-    });
-    });
+	$(document).ready(function() {
+		$('#expirydate').datepicker({
+			todayHighlight : true,
+			autoclose : true
+		});
+	});
 </script>

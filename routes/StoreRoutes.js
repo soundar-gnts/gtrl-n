@@ -15,7 +15,9 @@
  * 
  */
 
-var storeService= require('../services/StoreService.js');
+var storeService		= require('../services/StoreService.js');
+var state				= require('../models/State.js');
+var city				= require('../models/City.js');
 
 module.exports = function(app, server){
 	
@@ -43,6 +45,12 @@ module.exports = function(app, server){
 		var stkRecvRegionId		= req.param('stkrecvregionid');
 		var stkRecvStoreId		= req.param('stkrecvstoreid');
 		var status				= req.param("status");
+		var fetchAssociation	= "";
+		
+		if(req.param('fetchassociation')=='y'){
+			fetchAssociation = [{model : state, attributes : ['state_name']},
+			                    {model : city, attributes : ['city_name']}];
+		}
 		
 		if(companyId!=null){
 			conditionQuery ="company_id="+companyId;
@@ -133,7 +141,7 @@ module.exports = function(app, server){
 		if(req.param('isfulllist')==null||req.param('isfulllist').toUpperCase()=='P'){
 			attr=['store_id','store_code','store_name','city_id','state_id','warehouse_id'];
 		}
-		storeService.getStoreList(conditionQuery,attr,function(result){
+		storeService.getStoreList(conditionQuery,attr,fetchAssociation,function(result){
 			res.send(result);
 		});
 	}

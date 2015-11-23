@@ -17,15 +17,18 @@
 
 var model 				= require('../config/sequelize.js');
 var dataTypes 			= require('sequelize');
+var product				= require('../models/Product.js');
+var purchasedtl 		= require('../models/PurchaseDtl.js');
 var purchaseReturnDtl	= model.define('t_purchase_return_dtl', {
 
 	return_dtlid : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 	
-	return_id			: dataTypes.INTEGER,	
+	return_id			: dataTypes.INTEGER,
+	purchase_dtlid		: dataTypes.INTEGER,
 	product_id 			: dataTypes.INTEGER,
 	return_qty 			: dataTypes.INTEGER,
 	uom_id 				: dataTypes.INTEGER,
@@ -39,8 +42,9 @@ var purchaseReturnDtl	= model.define('t_purchase_return_dtl', {
 
 }, {
 	
-	freezeTableName : true,
-	tableName : 't_purchase_return_dtl'
+	freezeTableName 	: true,
+	tableName 			: 't_purchase_return_dtl'
 });
-
+purchaseReturnDtl.belongsTo(product, 	{foreignKey: 'product_id'});
+purchaseReturnDtl.belongsTo(purchasedtl, 	{foreignKey: 'purchase_dtlid'});
 module.exports = purchaseReturnDtl;

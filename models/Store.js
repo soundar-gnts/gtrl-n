@@ -15,9 +15,11 @@
  * 
  */
 
-var model 		= require('../config/sequelize.js');
-var dataTypes 	= require('sequelize');
-var store 		= model.define('m_store', {
+var model 				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var state				= require('../models/State.js');
+var city				= require('../models/City.js');
+var store 				= model.define('m_store', {
 
 	store_id : {
 		type 			: dataTypes.INTEGER,
@@ -69,4 +71,6 @@ var store 		= model.define('m_store', {
 	freezeTableName : true,
 	tableName 		: 'm_store'
 });
+store.belongsTo(state, {foreignKey : 'state_id'});
+store.belongsTo(city, {foreignKey : 'city_id'});
 module.exports = store;

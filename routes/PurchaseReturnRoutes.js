@@ -21,6 +21,9 @@ var purchaseReturnService		= require('../services/PurchaseReturnService.js');
 var purchasereturndtlservice	= require('../services/PurchaseReturnDtlService.js');
 var purchasereturndetail		= require('../models/PurchaseReturnDtl.js');
 var slnogenService 				= require('../services/SlnoGenService.js');
+var product						= require('../models/Product.js');
+var purchasedtl 				= require('../models/PurchaseDtl.js');
+
 module.exports = function(app, server){
 	 
 	//Purchase Return Header		
@@ -43,10 +46,13 @@ module.exports = function(app, server){
 		var fetchAssociation 	= "";
 		var return_id 			= req.param('returnid');
 		var po_id 				= req.param('poid');
-		var return_ref_no		= req.param('returnRefNo');
+		var purchaseid 			= req.param('purchaseid');
+		var return_ref_no		= req.param('returnrefno');
 		
 		if(req.param('fetchassociation')=='y'){
-			fetchAssociation = [{model: purchasereturndetail},{model : supplier, attributes : ['supplier_code']}];
+			fetchAssociation = [{model : purchasereturndetail, include : [{model : product, attributes : ['prod_code', 'prod_name']},
+			                                                              {model : purchasedtl, attributes : ['invoice_qty']}]},
+			                    {model : supplier, attributes : ['supplier_code']}];
 		}
 		
 		if(req.param('isfulllist') == null || req.param('isfulllist').toUpperCase() == 'P'){
@@ -63,6 +69,14 @@ module.exports = function(app, server){
 			}		
 			else{
 				condition = condition+" and po_id='"+po_id+"'";
+			}
+		}
+		if(purchaseid!=null){
+			if(condition === ""){
+				condition = "t_purchase_return_hdr.purchase_id='"+purchaseid+"'";
+			}		
+			else{
+				condition = condition+" and t_purchase_return_hdr.purchase_id='"+purchaseid+"'";
 			}
 		}
 		
@@ -131,6 +145,7 @@ module.exports = function(app, server){
 				return_id			: req.param('returnid'),
 				company_id			: req.param('companyid'),
 				po_id 				: req.param('poid'),
+				purchase_id 		: req.param('purchaseid'),
 				retrun_ref_no 		: req.param('retrunrefno'),
 				return_date 		: req.param('returndate'),
 				store_id 			: req.param('storeid'),
@@ -141,6 +156,7 @@ module.exports = function(app, server){
 				payment_mode 		: req.param('paymentmode'),
 				discount_prcnt 		: req.param('discountprcnt'),
 				discount_value 		: req.param('discountvalue'),
+				tax_value			: req.param('taxvalue'),
 				return_reason 		: req.param('returnreason'),
 				cancel_remark 		: req.param('cancelremark'),
 				status		   		: req.param('status'),
@@ -154,6 +170,7 @@ module.exports = function(app, server){
 				var purchaseReturnDetail = {
 						return_dtlid		: purchassaveupt.returndtlid,
 						return_id			: req.param('returnid'),
+						purchase_dtlid		: purchassaveupt.purchasedtlid,
 						company_id 			: purchassaveupt.companyid,
 						product_id 			: purchassaveupt.productid,
 						return_qty 			: purchassaveupt.returnqty,

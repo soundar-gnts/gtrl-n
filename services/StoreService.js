@@ -27,9 +27,9 @@ var response 		 = {
 						};
 
 	//Store list based on user param
-	exports.getStoreList = function(conditionQuery,attr,callback) {
+	exports.getStoreList = function(conditionQuery,attr,fetchAssociation,callback) {
 		
-		store.findAll({where : [conditionQuery],order: [['last_updated_dt', 'DESC']],attributes: attr})
+		store.findAll({where : [conditionQuery],include : fetchAssociation,order: [['last_updated_dt', 'DESC']],attributes: attr})
 		.then(function(storelist){
 			if(storelist.length === 0){
 				

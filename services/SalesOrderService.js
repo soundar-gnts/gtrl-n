@@ -279,7 +279,7 @@ var saveOrUpdateSalesOrder = function(slid, salesOrder, salesDetails, salesDelet
 						console.log('salesDetail.order_value : '+salesDetail.order_value);
 						var taxCondition					= "tax_id='"+proDetails.data[0].sell_tax_id+"'";
 						console.log('proDetails.data.sell_tax_id : '+proDetails.data[0].sell_tax_id);
-						taxService.getTax(taxCondition, '', function(taxDetails){
+						taxService.getTax(taxCondition, '','', function(taxDetails){
 							console.log('taxDetails');
 							salesDetail.tax_ptcnt		= taxDetails.data[0].cst;
 							console.log('salesDetail.tax_ptcnt : '+salesDetail.tax_ptcnt);
