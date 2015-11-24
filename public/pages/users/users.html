@@ -1,422 +1,328 @@
 <div class="panel panel-inverse" id="gridPanel">
-	<div class="panel-heading">
-		<div class="panel-heading-btn">
-			<a href="javascript:;"
-				class="btn btn-xs btn-icon btn-circle btn-default"
-				data-click="panel-expand"><i class="fa fa-expand"></i></a> <a
-				href="javascript:;"
-				class="btn btn-xs btn-icon btn-circle btn-success"
-				data-click="panel-reload"><i class="fa fa-repeat"></i></a> <a
-				href="javascript:;"
-				class="btn btn-xs btn-icon btn-circle btn-warning"
-				data-click="panel-collapse"><i class="fa fa-minus"></i></a> <a
-				href="javascript:;"
-				class="btn btn-xs btn-icon btn-circle btn-danger"
-				data-click="panel-remove"><i class="fa fa-times"></i></a>
-		</div>
-		<h4 class="panel-title">Users</h4>
-	</div>
-	<div class="panel-body">
-		<div class="row">
-			<div class="col-sm-3 pull-right">
-				<button ng-click="openPanel()" value="Add New"
-					class="btn btn-md btn-success pull-right ">Add New</button>
-			</div>
-		</div>
-		<div class="col-md-12 col-xs-12">
+    <div class="panel-heading">
+        <div class="panel-heading-btn">
+            <a href="javascript:;"
+               class="btn btn-xs btn-icon btn-circle btn-default"
+               data-click="panel-expand"><i class="fa fa-expand"></i></a> <a
+                href="javascript:;"
+                class="btn btn-xs btn-icon btn-circle btn-success"
+                data-click="panel-reload"><i class="fa fa-repeat"></i></a> <a
+                href="javascript:;"
+                class="btn btn-xs btn-icon btn-circle btn-warning"
+                data-click="panel-collapse"><i class="fa fa-minus"></i></a> <a
+                href="javascript:;"
+                class="btn btn-xs btn-icon btn-circle btn-danger"
+                data-click="panel-remove"><i class="fa fa-times"></i></a>
+        </div>
+        <h4 class="panel-title">Users</h4>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-3 pull-right">
+                <a href="users#addeditModel" data-toggle="modal"
+                   ng-click="resetForm()" class="btn btn-md btn-success  pull-right ">Add New</a>
+            </div>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <form id="searchForm">
+            <div class="row">
 
-			<div class="row">
+                <div class="col-xs-3">
+                    <label> User Name: </label> <input class="form-control input-md"
+                                                       placeholder="User Name" id="srchusrnameid" name="srchusrname"
+                                                       type="text">
+                </div>
 
-				<div class="col-xs-3">
-					<label> User Name: </label> <input class="form-control input-md"
-						placeholder="User Name" id="srchusrnameid" name="srchusrname"
-						type="text">
-				</div>
+                <div class="col-xs-3">
+                    <label for="srch_country_status">Status:</label> <select
+                        id="srchusrstatusid" name="srchusrstatus" class="form-control">
+                        <option value="Select">Select</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-3">
 
-				<div class="col-xs-3">
-					<label for="srch_country_status">Status:</label> <select
-						id="srchusrstatusid" name="srchusrstatus" class="form-control">
-						<option value="Select">Select</option>
-						<option value="Active">Active</option>
-						<option value="Inactive">Inactive</option>
-					</select>
-				</div>
-				<div class="col-md-3"></div>
-				<div class="col-md-3">
-
-					<a class="btn btn-danger pull-right"
-						style="margin-top: 20px; margin-right: 5px;" id="srchid"
-						onclick="reload();"> Reset </a> <a
-						class="btn btn-primary pull-right"
-						style="margin-top: 20px; margin-right: 5px;" id="srchid"
-						onclick="usersrhlst();"> Search </a>
-				</div>
-			</div>
-
-		</div>
-		<div class="col-md-12 clearfix"></div>
-		<div class="table-responsive" style="clear: both;">
-			<table class="table table-striped table-bordered">
+                    <a class="btn btn-danger pull-right"
+                       style="margin-top: 20px; margin-right: 5px;" id="srchid"
+                       onclick="reload();"> Reset </a> <a
+                       class="btn btn-primary pull-right"
+                       style="margin-top: 20px; margin-right: 5px;" id="srchid"
+                       onclick="usersrhlst();"> Search </a>
+                </div>
+                
+            </div>
+            </form>
+        </div>
+        <div class="col-md-12 clearfix"></div>
+        <div class="table-responsive" style="clear: both;">
+            <table class="table table-striped table-bordered">
 
 
-				<thead>
-					<tr>
-						<td>Ref.ID</td>
-						<td>User Name</td>
-						<td>User ID</td>
-						<td>Group Name</td>
-						<td>Status</td>
-						<td>Updated On</td>
-						<td>Updated By</td>
-						<td>Options</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr
-						ng-repeat="userlist in UsersList | orderBy:'user_name' | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit  ">
-						<td>{{userlist.user_id}}</td>
-						<td>{{userlist.user_name}}</td>
-						<td>{{userlist.login_id}}</td>
-						<td>{{userlist.group_id}}</td>
-						<td>{{userlist.status}}</td>
-						<td>{{userlist.last_updated_dt | date:'dd-mm-yyyy H:mm' }}</td>
-						<td>{{userlist.last_updated_by}}</td>
-						<td><a href="tax#modal-addEdit-tax" data-toggle="modal"
-							ng-click="EditManufacturProcess(manufacturer.manufg_id)"
-							class="btn btn-sm btn-info">Edit</a></td>
-					</tr>
-				</tbody>
+                <thead>
+                    <tr>
+                        <td>Ref.ID</td>
+                        <td>User Name</td>
+                        <td>User ID</td>
+                        <td>Group Name</td>
+                        <td>Status</td>
+                        <td>Updated On</td>
+                        <td>Updated By</td>
+                        <td>Options</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        ng-repeat="userlist in UsersList| orderBy:'user_name' | startFrom:(currentPage - 1) * entryLimit | limitTo:entryLimit  ">
+                        <td>{{userlist.user_id}}</td>
+                        <td>{{userlist.user_name}}</td>
+                        <td>{{userlist.login_id}}</td>
+                        <td>{{userlist.group_id}}</td>
+                        <td>{{userlist.status}}</td>
+                        <td>{{userlist.last_updated_dt| date:'dd-mm-yyyy H:mm' }}</td>
+                        <td>{{userlist.last_updated_by}}</td>
+                        <td><a href="users#addeditModel" data-toggle="modal"
+                               ng-click="EditManufacturProcess(manufacturer.manufg_id)"
+                               class="btn btn-sm btn-info">Edit</a></td>
+                    </tr>
+                </tbody>
 
-			</table>
+            </table>
 
-			<div class="pull-right">
-				<pagination page="currentPage" max-size="noOfPages"
-					total-items="totalItems" items-per-page="entryLimit"></pagination>
-			</div>
-		</div>
-	</div>
+            <div class="pull-right">
+                <pagination page="currentPage" max-size="noOfPages"
+                            total-items="totalItems" items-per-page="entryLimit"></pagination>
+            </div>
+        </div>
+    </div>
 
 </div>
-
-<div class="panel panel-inverse" id="addEditPanel"
-	style="display: none;">
-	<div class="panel-heading">
-		<div class="panel-heading-btn">
-			<a href="javascript:;"
-				class="btn btn-xs btn-icon btn-circle btn-default"
-				data-click="panel-expand"><i class="fa fa-expand"></i></a> <a
-				href="javascript:;"
-				class="btn btn-xs btn-icon btn-circle btn-success"
-				data-click="panel-reload"><i class="fa fa-repeat"></i></a> <a
-				href="javascript:;"
-				class="btn btn-xs btn-icon btn-circle btn-warning"
-				data-click="panel-collapse"><i class="fa fa-minus"></i></a> <a
-				href="javascript:;"
-				class="btn btn-xs btn-icon btn-circle btn-danger"
-				data-click="panel-remove"><i class="fa fa-times"></i></a>
-		</div>
-		<h4 class="panel-title">Users</h4>
-	</div>
-	<div class="panel-body">
-		<form novalidate="novalidate" action="#" method="post"
-			id="userlistbndid">
-			<!-- select -->
-
-			<div class="col-md-12">
-				<h4 class="form-title">User Details</h4>
-
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Login ID</label> <input class="form-control input-md"
-							placeholder="Login ID" id="usrlogid" name="usrlogvld" type="text">
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>User Name</label> <input class="form-control input-md"
-							placeholder="User Name" id="usrnameid" name="usrnamevld"
-							type="text">
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Login Password</label> <input class="form-control input-md"
-							placeholder="Login Password" id="usrlogpwdid" name="usrlogpwdvld"
-							type="password">
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Access Card Number</label> <input
-							class="form-control input-md" placeholder="Access Card Number"
-							id="usraccscrdnoid" name="usraccscrdnovld" type="text">
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Group Name</label> <select class="form-control input-md"
-							id="usrgrpnameid" name="usrgrpnamevld">
-							<option value="">Select GroupName</option>
-
-							<option value="1">Admin</option>
-
-							<option value="2">Employeers</option>
-
-							<option value="3">Admin</option>
-
-							<option value="4">Sales Mananger</option>
-
-							<option value="6">sales</option>
-
-							<option value="7">Sales Executive</option>
-
-							<option value="8">test</option>
-
-							<option value="31">New1</option>
-
-
-						</select>
-
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Edit Units</label> <select class="form-control input-md"
-							id="usrunitsid" name="usrunitsvld">
-							<option value="">Select</option>
-							<option value="Y">Yes</option>
-							<option value="N">No</option>
-						</select>
-					</div>
-				</div>
-
-
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Data Access Level</label> <input
-							class="form-control input-md" placeholder="Data Access Level"
-							id="usrdatalevid" name="usrdatavald" type="text">
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Data Store Name</label> <select
-							class="form-control input-md" id="usrstorenameid"
-							name="usrstorenamevld">
-							<option value="">Select</option>
-
-							<option value="6">LPN</option>
-
-							<option value="5">JPA</option>
-
-							<option value="4">qw</option>
-
-							<option value="1">New Spectrum</option>
-
-						</select>
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Data Region Name</label> <select
-							class="form-control input-md" id="usrdatargnid"
-							name="usrdatargnvld">
-							<option value="">Select</option>
-
-							<option value="19">North - East</option>
-
-							<option value="15">delhi</option>
-
-							<option value="14">CBE</option>
-
-							<option value="13">Coimbatore</option>
-
-							<option value="12">Erode</option>
-
-							<option value="11">regiomtest</option>
-
-							<option value="10">Erode</option>
-
-							<option value="9">asd</option>
-
-							<option value="8">Salem</option>
-
-							<option value="7">regiomtest</option>
-
-							<option value="5">chennai</option>
-
-							<option value="6">dindigul</option>
-
-							<option value="2">madurai</option>
-
-							<option value="1">T-Nagar</option>
-
-						</select>
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Transaction Access Level</label> <input
-							class="form-control input-md"
-							placeholder="Transaction Access Level" id="usrtransaccid"
-							name="usrtransaccvld" type="text">
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Transaction Store Name</label> <select
-							class="form-control input-md" id="trnstorenameid"
-							name="trnstorenamevld">
-							<option value="">Select</option>
-
-							<option value="6">LPN</option>
-
-							<option value="5">JPA</option>
-
-							<option value="4">qw</option>
-
-							<option value="1">New Spectrum</option>
-
-						</select>
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Transaction Region Name</label> <select
-							class="form-control input-md" id="trnsrgnnameid"
-							name="trnsrgnnamevld">
-							<option value="">Select</option>
-
-							<option value="19">North - East</option>
-
-							<option value="15">delhi</option>
-
-							<option value="14">CBE</option>
-
-							<option value="13">Coimbatore</option>
-
-							<option value="12">Erode</option>
-
-							<option value="11">regiomtest</option>
-
-							<option value="10">Erode</option>
-
-							<option value="9">asd</option>
-
-							<option value="8">Salem</option>
-
-							<option value="7">regiomtest</option>
-
-							<option value="5">chennai</option>
-
-							<option value="6">dindigul</option>
-
-							<option value="2">madurai</option>
-
-							<option value="1">T-Nagar</option>
-
-						</select>
-					</div>
-				</div>
-
-
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Credit Bill</label> <select class="form-control input-md"
-							id="usrcrdtbillid" name="usrcrdtbillvld">
-							<option value="">Select</option>
-							<option value="Y">Yes</option>
-							<option value="N">No</option>
-						</select>
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Employee Name</label> <select class="form-control input-md"
-							id="employeeid" name="employeevld">
-
-							<option value="">Select Employee</option>
-
-							<option value="1">joelglindan</option>
-
-							<option value="2">saravanakumaran</option>
-
-							<option value="3">SaravananKaliappan</option>
-
-							<option value="91">saravanakumaran</option>
-
-						</select>
-
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Discount Percentage </label> <input
-							class="form-control input-md" placeholder="Discount Percentage"
-							id="usrdiscntprcntid" name="usrdiscntprcntvld" type="text">
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Edit Price</label>
-
-						<div class="radio">
-
-							<label><input name="genderradio" value="Y" checked=""
-								type="radio">Yes</label> <label><input
-								name="genderradio" value="N" type="radio">No</label>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-md-12"></div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Edit Tax</label> <select class="form-control input-md"
-							id="usrtaxid" name="usrtaxvld">
-							<option value="">Select</option>
-							<option value="Y">Yes</option>
-							<option value="N">No</option>
-						</select>
-					</div>
-
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-						<label>Status</label> <select class="form-control input-md"
-							id="usrstatusid" name="usrstatusvld">
-							<option value="Active">Active</option>
-							<option value="Inactive">Inactive</option>
-							<option value="">Select</option>
-						</select>
-					</div>
-				</div>
-
-
-
-				<div class="col-md-12 clearfix"></div>
-				<div class="col-md-12">
-					<button ng-click="closePanel()" type="button"
-						class="btn btn-danger pull-right" onclick="clsuseraddfn();"
-						data-dismiss="modal">
-						<i class="fa fa-times"></i> Close
-					</button>
-					<button type="submit" class="btn btn-primary pull-right"
-						style="margin-right: 5px;">
-
-						<i class="fa fa-save"></i> Save
-					</button>
-				</div>
-				<!-- <div class="col-md-12 col-xs-12"></div>
-                    <div class="form-group pull-right">
-                            <button class="btn btn-primary "
-                                    onclick="alert('Save Successfully')">Save</button>
-                            <button class="btn btn-danger"
-                                    onclick="alert('Are You Sure?')">Cancel</button>
-                    </div> -->
-			</div>
-		</form>
-	</div>
-
+<!-- model box start -->
+<div class="modal fade custom-model" id="addeditModel">
+    <div class="modal-dialog panel-model-width">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a data-dismiss="modal" aria-hidden="true" href="javascript:;"
+                   class="btn btn-xs btn-icon btn-circle btn-danger close"
+                   data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></a>
+                <h4 class="modal-title">Add/Modify Users</h4>
+            </div>
+            <div class="modal-body">
+                <form id="addEditForm" ng-submit="saveUpdate()">
+                    <!-- select -->
+
+                    <div class="col-md-12">
+                        <input type="hidden" ng-model="form.custid" />
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Login ID</label> <input 
+                                   ng-model="form.loginid" class="form-control input-md" placeholder="Login ID" id="usrlogid" name="usrlogvld" type="text">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>First Name</label> <input ng-model="form.firstname" class="form-control input-md"
+                                                                placeholder="First Name" id="usrnameid" name="usrnamevld"
+                                                                type="text">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Last Name</label> <input ng-model="form.lastname" class="form-control input-md"
+                                                                placeholder="Last Name" id="usrnameid" name="usrnamevld"
+                                                                type="text">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Login Password</label> <input ng-model="form.loginpwd" class="form-control input-md"
+                                                                     placeholder="Login Password" id="usrlogpwdid" name="usrlogpwdvld"
+                                                                     type="password">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Access Card Number</label> <input ng-model="form.accesscardno"
+                                    class="form-control input-md" placeholder="Access Card Number"
+                                    id="usraccscrdnoid" name="usraccscrdnovld" type="text">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Group Name</label> 
+                                <select class="form-control input-md" ng-model="form.groupid"  options="AllActiveusergroup" 
+                                        ng-options="group.group_id as group.group_name for group in AllActiveusergroup"
+                                        id="usrgrpnameid" name="usrgrpnamevld">
+                                    <option value="">Select GroupName</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Edit Units</label> <select ng-model="form.editunitsyn" class="form-control input-md"
+                                                                  id="usrunitsid" name="usrunitsvld">
+                                    <option value="">Select</option>
+                                    <option value="Y">Yes</option>
+                                    <option value="N">No</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Data Access Level</label> <input ng-model="form.dataaccesslvl"
+                                    class="form-control input-md" placeholder="Data Access Level"
+                                    id="usrdatalevid" name="usrdatavald" type="text">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Data Store Name</label>
+                                <select ng-model="form.datastoreid" class="form-control input-md"  options="AllActivestorelist" 
+                                        ng-options="store.store_id as store.store_name for store in AllActivestorelist"
+                                       >
+                                    <option value="">Select Store</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Data Region Name</label> 
+                                 <select ng-model="form.dataregionid" class="form-control input-md"  options="AllActiveregionlist" 
+                                        ng-options="region.region_id as region.region_name for region in AllActiveregionlist"
+                                       >
+                                    <option value="">Select Region</option>
+                                </select>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Transaction Access Level</label> <input ng-model="form.txnaccesslvl"
+                                    class="form-control input-md"
+                                    placeholder="Transaction Access Level" id="usrtransaccid"
+                                    name="usrtransaccvld" type="text">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Transaction Store Name</label>
+                                <select ng-model="form.txnstoreid" class="form-control input-md"  options="AllActivestorelist" 
+                                        ng-options="store.store_id as store.store_name for store in AllActivestorelist"
+                                       >
+                                    <option value="">Select Store</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Transaction Region Name</label> 
+                                <select ng-model="form.txnregionid" class="form-control input-md"  options="AllActiveregionlist" 
+                                        ng-options="region.region_id as region.region_name for region in AllActiveregionlist"
+                                       >
+                                    <option value="">Select Region</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Credit Bill</label> <select ng-model="form.creditbillyn" class="form-control input-md"
+                                                                   id="usrcrdtbillid" name="usrcrdtbillvld">
+                                    <option value="">Select</option>
+                                    <option value="Y">Yes</option>
+                                    <option value="N">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Employee Name</label>
+                                <select ng-model="form.employeeid" class="form-control input-md"  options="AllActiveEmplist" 
+                                        ng-options="emp.employee_id as emp.first_name for emp in AllActiveEmplist"
+                                       >
+                                    <option value="">Select Region</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Discount Percentage </label> <input ng-model="form.discountprcnt"
+                                    class="form-control input-md" placeholder="Discount Percentage"
+                                    id="usrdiscntprcntid" name="usrdiscntprcntvld" type="text">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Edit Price</label>
+
+                                <div class="radio">
+
+                                    <label><input ng-model="form.editpriceyn" name="genderradio" value="Y" checked=""
+                                                  type="radio">Yes</label> 
+                                    <label><input ng-model="form.editpriceyn" name="genderradio" value="N" type="radio">No</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12"></div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Edit Tax</label> <select class="form-control input-md" ng-model="form.edittaxyn"
+                                                                id="usrtaxid" name="usrtaxvld">
+                                    <option value="">Select</option>
+                                    <option value="Y">Yes</option>
+                                    <option value="N">No</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Status</label> <select class="form-control input-md" ng-model="form.status"
+                                                              id="usrstatusid" name="usrstatusvld">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="">Select</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+
+
+                        <!-- <div class="col-md-12 col-xs-12"></div>
+            <div class="form-group pull-right">
+                    <button class="btn btn-primary "
+                            onclick="alert('Save Successfully')">Save</button>
+                    <button class="btn btn-danger"
+                            onclick="alert('Are You Sure?')">Cancel</button>
+            </div> -->
+                    </div>
+
+                    <div class=" clearfix">
+                        <button ng-click="closePanel()" type="button"
+                                class="btn btn-danger pull-right" onclick="clsuseraddfn();"
+                                data-dismiss="modal">
+                            <i class="fa fa-times"></i> Close
+                        </button>
+                        <button type="submit" class="btn btn-primary pull-right"
+                                style="margin-right: 5px;">
+
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
 </div>
+<!-- #modal-dialog -->
+
 

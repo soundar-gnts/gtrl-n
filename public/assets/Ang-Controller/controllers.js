@@ -654,14 +654,29 @@ app.controller("SupplierAccountTypeList", function ($filter, $scope, $http, $roo
 
 //start customer
 app.controller("CustomerList", function ($filter, $scope, $http, $rootScope, filterFilter, toastr, blockUI, RESOURCES) {
-//$scope.ActiveStateList={};
+    $scope.form = {};
+    $scope.search = {};
     var contentBlock = blockUI.instances.get('contentBlock');
     contentBlock.stop();
     $scope.CustomerList = {};
 
     $scope.InitLoad = function () {
         contentBlock.start();
-        $http.post(RESOURCES.DOMAIN + 'getcustomerdetails?isfulllist=').success(function (res) {
+        s_string = "";
+        if (($scope.search.cusfirstname != "") && ($scope.search.cusfirstname != null) && ($scope.search.cusfirstname != "undefined"))
+        {
+            s_string += "&cusfirstname=" + $scope.search.cusfirstname;
+        }
+        if (($scope.search.custcode != "") && ($scope.search.custcode != null) && ($scope.search.custcode != "undefined"))
+        {
+            s_string += "&custcode=" + $scope.search.custcode;
+        }
+        if (($scope.search.status != "") && ($scope.search.status != null) && ($scope.search.status != "undefined"))
+        {
+            s_string += "&status=" + $scope.search.status;
+        }
+        console.log(s_string);
+        $http.post(RESOURCES.DOMAIN + 'getcustomerdetails?isfulllist=' + s_string).success(function (res) {
             //var data=res.data;
             $scope.CustomerList = res.data;
             //console.log($scope.StoreRegionList);
@@ -681,6 +696,117 @@ app.controller("CustomerList", function ($filter, $scope, $http, $rootScope, fil
         });
         contentBlock.stop();
     };
+
+    $scope.saveUpdate = function () {
+        //$scope.form = {};
+        up_string = "";
+        if (($scope.form.custid != "") && ($scope.form.custid != null) && ($scope.form.custid != "undefined"))
+        {
+            up_string += "&custid=" + $scope.form.custid;
+        }
+        var dataString = "?custcode=" + $scope.form.custcode + "&gender=" + $scope.form.gender + "&credityn=" + $scope.form.credityn
+                + "&tinno=" + $scope.form.tinno + "&expirydate=" + $scope.form.expirydate + "&address=" + $scope.form.address
+                + "&pincode=" + $scope.form.pincode + "&landlineno=" + $scope.form.landlineno + "&mobileno=" + $scope.form.mobileno
+                + "&emailid=" + $scope.form.emailid + "&dob=" + $scope.form.dob + "&annivdate=" + $scope.form.annivdate
+                + "&remarks=" + $scope.form.remarks + "&cusfirstname=" + $scope.form.cusfirstname + "&cuslastname=" + $scope.form.cuslastname
+                + "&companyid=" + RESOURCES.COMPANY_ID + "&agegroupid=" + $scope.form.agegroupid + "&stateid=" + $scope.form.stateid
+                + "&cityid=" + $scope.form.cityid + "&custgroupid=" + $scope.form.custgroupid
+                + "&status=" + $scope.form.status
+                + "&lastupdatedby=" + RESOURCES.UPDATED_BY + "&lastupdateddt=" + $filter('date')(new Date(), 'yyyy-MM-dd')
+                + up_string;
+        console.log(dataString);
+        $http.post(RESOURCES.DOMAIN + 'savecustomer' + dataString).success(function (res) {
+            //console.log(res);
+
+            if (res.status)
+            {
+                $scope.resetForm();
+                $('#modal-addCustomer').modal('hide');
+                toastr.success(res.message, 'Success', {closeButton: true, positionClass: 'toastr-top-center'});
+
+            }
+            else
+            {
+                toastr.error(res.message, 'Failed');
+            }
+            $scope.InitLoad();
+        });
+
+    };
+    $scope.EditProcess = function (id) {
+        $scope.resetForm();
+        $scope.form = {};
+        contentBlock.start();
+
+        $http.post(RESOURCES.DOMAIN + 'getcustomerdetails?isfulllist=&custid=' + id).success(function (res) {
+            //$scope.CompanyList=res.data;
+
+            $scope.form.custid = res.data[0].cust_id;
+            $scope.form.custcode = res.data[0].cust_code;
+            $scope.form.gender = res.data[0].gender;
+            $scope.form.custgroupid = res.data[0].cust_group_id;
+            $scope.form.agegroupid = res.data[0].age_group_id;
+            $scope.form.credityn = res.data[0].credit_yn;
+            $scope.form.tinno = res.data[0].tin_no;
+            $scope.form.expirydate = $filter('date')(res.data[0].expiry_date, 'MM/dd/yyyy');
+            $scope.form.address = res.data[0].address;
+            $scope.form.pincode = res.data[0].pincode;
+            $scope.form.stateid = res.data[0].state_id;
+            $scope.form.cityid = res.data[0].city_id;
+            $scope.form.landlineno = res.data[0].landline_no;
+            $scope.form.mobileno = res.data[0].mobile_no;
+            $scope.form.emailid = res.data[0].email_id;
+            $scope.form.dob = $filter('date')(res.data[0].dob, 'MM/dd/yyyy');
+            $scope.form.annivdate = $filter('date')(res.data[0].anniv_date, 'MM/dd/yyyy');
+            $scope.form.remarks = res.data[0].remarks;
+            $scope.form.status = res.data[0].status;
+            $scope.form.cusfirstname = res.data[0].cus_first_name;
+            $scope.form.cuslastname = res.data[0].cus_last_name;
+
+        });
+        contentBlock.stop();
+    };
+    $scope.resetForm = function ()
+    {
+        $("#addcustomerform")[0].reset();
+    };
+    $scope.resetSearch = function ()
+    {
+        $("#searchForm")[0].reset();
+        $scope.InitLoad();
+    };
+    //load active state
+    $scope.LoadActiveStates = function () {
+        $http.post(RESOURCES.DOMAIN + 'getstatelist?status=Active').success(function (res) {
+            $scope.AllActiveStateList = res.data;
+            console.log(res.data);
+        });
+    };
+    $scope.LoadActiveCities = function () {
+        $scope.AllActiveCityList = {};
+        if (($scope.form.stateid != "") || ($scope.form.stateid != null))
+        {
+            $http.post(RESOURCES.DOMAIN + 'getcitylist?status=Active&stateid=' + $scope.form.stateid).success(function (res) {
+                $scope.AllActiveCityList = res.data;
+                console.log($scope.AllActiveCityList);
+            });
+        }
+    };
+    $scope.LoadActiveCustomerType = function () {
+        $http.post(RESOURCES.DOMAIN + 'getcustomertypedetails?status=Active').success(function (res) {
+            $scope.AllActiveCustomerGroupList = res.data;
+            console.log(res.data);
+        });
+    };
+    $scope.LoadActiveAgeGroup = function () {
+        $http.post(RESOURCES.DOMAIN + 'getcustagegroupdetails?status=Active').success(function (res) {
+            $scope.AllActiveAgeGroupList = res.data;
+            console.log(res.data);
+        });
+    };
+    $scope.LoadActiveAgeGroup();
+    $scope.LoadActiveCustomerType();
+    $scope.LoadActiveStates();
     $scope.InitLoad();
 });
 // end customer
@@ -688,12 +814,23 @@ app.controller("CustomerList", function ($filter, $scope, $http, $rootScope, fil
 //start customerType
 app.controller("CustomerTypeList", function ($filter, $scope, $http, $rootScope, filterFilter, toastr, blockUI, RESOURCES) {
 //$scope.ActiveStateList={};	
+    $scope.form = {};
+    $scope.search = {};
     var contentBlock = blockUI.instances.get('contentBlock');
     contentBlock.stop();
 
     $scope.InitLoad = function () {
         contentBlock.start();
-        $http.post(RESOURCES.DOMAIN + 'getcustomertypedetails?isfulllist=').success(function (res) {
+        s_string = "";
+        if (($scope.search.custgroupname != "") && ($scope.search.custgroupname != null) && ($scope.search.custgroupname != "undefined"))
+        {
+            s_string += "&custgroupname=" + $scope.search.custgroupname;
+        }
+        if (($scope.search.status != "") && ($scope.search.status != null) && ($scope.search.status != "undefined"))
+        {
+            s_string += "&status=" + $scope.search.status;
+        }
+        $http.post(RESOURCES.DOMAIN + 'getcustomertypedetails?isfulllist=' + s_string).success(function (res) {
             //var data=res.data;
             $scope.CustomerTypeList = res.data;
             //console.log($scope.StoreRegionList);
@@ -712,6 +849,57 @@ app.controller("CustomerTypeList", function ($filter, $scope, $http, $rootScope,
 
         });
         contentBlock.stop();
+    };
+    $scope.EditProcess = function (id) {
+        $scope.resetForm();
+        $scope.form = {};
+        contentBlock.start();
+
+        $http.post(RESOURCES.DOMAIN + 'getcustomertypedetails?isfulllist=&custgroupid=' + id).success(function (res) {
+            $scope.form.custgroupid = res.data[0].cust_group_id;
+            $scope.form.custgroupname = res.data[0].cust_group_name;
+            $scope.form.discountyn = res.data[0].discount_yn;
+            $scope.form.status = res.data[0].status;
+        });
+    };
+    $scope.saveUpdate = function () {
+        //$scope.form = {};
+        up_string = "";
+        if (($scope.form.custgroupid != "") && ($scope.form.custgroupid != null) && ($scope.form.custgroupid != "undefined"))
+        {
+            up_string += "&custgroupid=" + $scope.form.custgroupid;
+        }
+        var dataString = "?custgroupname=" + $scope.form.custgroupname + "&discountyn=" + $scope.form.discountyn
+                + "&status=" + $scope.form.status + "&companyid=" + RESOURCES.COMPANY_ID
+                + "&lastupdatedby=" + RESOURCES.UPDATED_BY + "&lastupdateddt=" + $filter('date')(new Date(), 'yyyy-MM-dd')
+                + up_string;
+        console.log(dataString);
+        $http.post(RESOURCES.DOMAIN + 'savecustomertype' + dataString).success(function (res) {
+            //console.log(res);
+
+            if (res.status)
+            {
+                $scope.resetForm();
+                $('#addeditModel').modal('hide');
+                toastr.success(res.message, 'Success', {closeButton: true, positionClass: 'toastr-top-center'});
+
+            }
+            else
+            {
+                toastr.error(res.message, 'Failed');
+            }
+            $scope.InitLoad();
+        });
+
+    };
+    $scope.resetForm = function ()
+    {
+        $("#addEditForm")[0].reset();
+    };
+    $scope.resetSearch = function ()
+    {
+        $("#searchForm")[0].reset();
+        $scope.InitLoad();
     };
     $scope.InitLoad();
 });
@@ -744,6 +932,57 @@ app.controller("customerAgeGroupList", function ($filter, $scope, $http, $rootSc
 
         });
         contentBlock.stop();
+    };
+    $scope.EditProcess = function (id) {
+        $scope.resetForm();
+        $scope.form = {};
+        contentBlock.start();
+
+        $http.post(RESOURCES.DOMAIN + 'getcustagegroupdetails?isfulllist=&agegroupid=' + id).success(function (res) {
+            $scope.form.agegroupid = res.data[0].age_group_id;
+            $scope.form.agegroupname = res.data[0].age_group_name;
+            $scope.form.discountyn = res.data[0].discount_yn;
+            $scope.form.status = res.data[0].status;
+        });
+    };
+    $scope.saveUpdate = function () {
+        //$scope.form = {};
+        up_string = "";
+        if (($scope.form.agegroupid != "") && ($scope.form.agegroupid != null) && ($scope.form.agegroupid != "undefined"))
+        {
+            up_string += "&agegroupid=" + $scope.form.agegroupid;
+        }
+        var dataString = "?agegroupname=" + $scope.form.agegroupname + "&discountyn=" + $scope.form.discountyn
+                + "&status=" + $scope.form.status + "&companyid=" + RESOURCES.COMPANY_ID
+                + "&lastupdatedby=" + RESOURCES.UPDATED_BY + "&lastupdateddt=" + $filter('date')(new Date(), 'yyyy-MM-dd')
+                + up_string;
+        console.log(dataString);
+        $http.post(RESOURCES.DOMAIN + 'savecustagegroup' + dataString).success(function (res) {
+            //console.log(res);
+
+            if (res.status)
+            {
+                $scope.resetForm();
+                $('#addeditModel').modal('hide');
+                toastr.success(res.message, 'Success', {closeButton: true, positionClass: 'toastr-top-center'});
+
+            }
+            else
+            {
+                toastr.error(res.message, 'Failed');
+            }
+            $scope.InitLoad();
+        });
+
+    };
+    $scope.resetForm = function ()
+    {
+        $("#addEditForm")[0].reset();
+    };
+    $scope.resetSearch = function ()
+    {
+        $("#searchForm")[0].reset();
+        $scope.InitLoad();
     };
     $scope.InitLoad();
 });
@@ -794,7 +1033,7 @@ app.controller("BankList", function ($filter, $scope, $http, $rootScope, filterF
             bankid_string += "&bankid=" + $scope.form.bankid;
         }
         var dataString = "?bankcode=" + $scope.form.bankcode + "&bankname=" + $scope.form.bankname + "&status=" + $scope.form.status
-                + "&lastupdatedby=Soundar" + bankid_string;
+                + "&lastupdatedby=Soundar" + "&lastupdateddt=" + $filter('date')(new Date(), 'yyyy-MM-dd') + bankid_string;
         console.log(dataString);
         $http.post(RESOURCES.DOMAIN + 'savebankdetails' + dataString).success(function (res) {
             //console.log(res);
@@ -892,11 +1131,11 @@ app.controller("BankBranchList", function ($filter, $scope, $http, $rootScope, f
         contentBlock.start();
         $http.post(RESOURCES.DOMAIN + 'getbankdetails?status=Active&isfulllist').success(function (bankres) {
             //var data=res.data;
-            
-                $scope.form.bankid = res.data[0].bank_id;
-                $scope.form.bankname = res.data[0].bank_name;
-                $scope.form.bankcode = res.data[0].bank_code;
-                $scope.form.status = res.data[0].status;
+
+            $scope.form.bankid = res.data[0].bank_id;
+            $scope.form.bankname = res.data[0].bank_name;
+            $scope.form.bankcode = res.data[0].bank_code;
+            $scope.form.status = res.data[0].status;
 
         });
 
@@ -905,16 +1144,16 @@ app.controller("BankBranchList", function ($filter, $scope, $http, $rootScope, f
     $scope.SaveUpdateProcess = function (id) {
 
         contentBlock.start();
-dataString = "?bankid=" + bankres.bank_id + "&bankcode=" + bankres.bank_code + "&bank_name=" + bankres.bank_name;
-            $http.post(RESOURCES.DOMAIN + 'getbankbranchdetails?bankid=' + id + "&isfulllist=").success(function (res) {
-                //$scope.CompanyList=res.data;
+        dataString = "?bankid=" + bankres.bank_id + "&bankcode=" + bankres.bank_code + "&bank_name=" + bankres.bank_name;
+        $http.post(RESOURCES.DOMAIN + 'getbankbranchdetails?bankid=' + id + "&isfulllist=").success(function (res) {
+            //$scope.CompanyList=res.data;
 
-                $scope.form.bankid = res.data[0].bank_id;
-                $scope.form.bankname = res.data[0].bank_name;
-                $scope.form.bankcode = res.data[0].bank_code;
-                $scope.form.status = res.data[0].status;
+            $scope.form.bankid = res.data[0].bank_id;
+            $scope.form.bankname = res.data[0].bank_name;
+            $scope.form.bankcode = res.data[0].bank_code;
+            $scope.form.status = res.data[0].status;
 
-            });
+        });
         contentBlock.stop();
     };
     $scope.resetForm = function ()
@@ -984,7 +1223,7 @@ app.controller("CardTypeList", function ($filter, $scope, $http, $rootScope, fil
         $scope.form = {};
         contentBlock.start();
         $http.post(RESOURCES.DOMAIN + 'getcardtypelist?card_type_id=' + id + '&isfulllist=').success(function (res) {
-            
+
             $scope.form.carttypeid = res.data[0].card_type_id;
             $scope.form.carttype = res.data[0].card_type;
             $scope.form.servicecharge = res.data[0].service_charge;
@@ -1005,7 +1244,7 @@ app.controller("CardTypeList", function ($filter, $scope, $http, $rootScope, fil
         }
         dataString = 'saveorupdatecardtype?companyid=' + RESOURCES.COMPANY_ID + '&cardtype=' +
                 $scope.form.carttype + "&servicecharge=" + $scope.form.servicecharge
-                + "&status=" + $scope.form.status + upString + "&lastupdatedby" + $filter('date')(new Date(), 'yyyy-MM-dd')
+                + "&status=" + $scope.form.status + upString + "&lastupdatedby=" + $filter('date')(new Date(), 'yyyy-MM-dd')
                 + "&updatedby=" + RESOURCES.UPDATED_BY;
         console.log(dataString);
         $http.post(RESOURCES.DOMAIN + dataString).success(function (res) {
@@ -1073,8 +1312,8 @@ app.controller("PaymentTypeList", function ($filter, $scope, $http, $rootScope, 
             upString = "&pymttypeid=" + $scope.form.pymttypeid;
         }
         dataString = 'savepaymenttypedetails?companyid=' + RESOURCES.COMPANY_ID + '&pymttypename=' +
-                $scope.form.pymttypename 
-                + "&status=" + $scope.form.status + upString + "&lastupdatedby" + $filter('date')(new Date(), 'yyyy-MM-dd')
+                $scope.form.pymttypename
+                + "&status=" + $scope.form.status + upString + "&lastupdatedby=" + $filter('date')(new Date(), 'yyyy-MM-dd')
                 + "&updatedby=" + RESOURCES.UPDATED_BY;
         console.log(dataString);
         $http.post(RESOURCES.DOMAIN + dataString).success(function (res) {
@@ -1096,16 +1335,16 @@ app.controller("PaymentTypeList", function ($filter, $scope, $http, $rootScope, 
         });
         contentBlock.stop();
     };
-     $scope.EditProcess = function (paymentType) {
+    $scope.EditProcess = function (paymentType) {
         $scope.resetForm();
         $scope.form = {};
         contentBlock.start();
-            
-            $scope.form.pymttypeid = paymentType.pymt_type_id;
-            $scope.form.pymttypename = paymentType.pymt_type_name;
-            $scope.form.status = paymentType.status;
 
-        
+        $scope.form.pymttypeid = paymentType.pymt_type_id;
+        $scope.form.pymttypename = paymentType.pymt_type_name;
+        $scope.form.status = paymentType.status;
+
+
 
         contentBlock.stop();
     };
@@ -1172,7 +1411,7 @@ app.controller("AccountTypeList", function ($filter, $scope, $http, $rootScope, 
 
         }
 
-        var dataString = "?companyid="+RESOURCES.COMPANY_ID+"&accounttype=" + $scope.form.account_type + "&status=" + $scope.form.status + "&lastupdatedby=Soundar&lastupdateddt="
+        var dataString = "?companyid=" + RESOURCES.COMPANY_ID + "&accounttype=" + $scope.form.account_type + "&status=" + $scope.form.status + "&lastupdatedby=Soundar&lastupdateddt="
                 + $filter('date')(new Date(), 'yyyy-MM-dd') + Id_string;
         console.log(dataString);
         $http.post(RESOURCES.DOMAIN + 'saveaccounttype' + dataString).success(function (res) {
@@ -1257,7 +1496,7 @@ app.controller("TransactionTypeList", function ($filter, $scope, $http, $rootSco
 
         }
 
-        var dataString = "?companyid="+RESOURCES.COMPANY_ID+"&transtypename=" + $scope.form.transtypename + "&crdr=" + $scope.form.crdr + "&status=" + $scope.form.status + "&lastupdatedby=Soundar&lastupdateddt="
+        var dataString = "?companyid=" + RESOURCES.COMPANY_ID + "&transtypename=" + $scope.form.transtypename + "&crdr=" + $scope.form.crdr + "&status=" + $scope.form.status + "&lastupdatedby=Soundar&lastupdateddt="
                 + $filter('date')(new Date(), 'yyyy-MM-dd') + Id_string;
         console.log(dataString);
         $http.post(RESOURCES.DOMAIN + 'savetxnstype' + dataString).success(function (res) {
@@ -1340,11 +1579,11 @@ app.controller("VoucherList", function ($filter, $scope, $http, $rootScope, filt
 
         }
 
-        var dataString = "?companyid="+RESOURCES.COMPANY_ID+"&vouchercode=" + $scope.form.vouchercode
+        var dataString = "?companyid=" + RESOURCES.COMPANY_ID + "&vouchercode=" + $scope.form.vouchercode
                 + "&discountlevel=" + $scope.form.dicountLevel + "&discountvalue=" + $scope.form.dicountValue
                 + "&prodcatid=" + $scope.form.productType + "&minbillvalue=" + $scope.form.minbillVal
-                + "&regionid=" + $scope.form.StoreRegion 
-                + "&status=" + $scope.form.status + "&lastupdatedby="+ RESOURCES.UPDATED_BY+"&lastupdateddt="
+                + "&regionid=" + $scope.form.StoreRegion
+                + "&status=" + $scope.form.status + "&lastupdatedby=" + RESOURCES.UPDATED_BY + "&lastupdateddt="
                 + $filter('date')(new Date(), 'yyyy-MM-dd') + Id_string;
         console.log(dataString);
         $http.post(RESOURCES.DOMAIN + 'saveorupdatevoucher' + dataString).success(function (res) {
@@ -1366,10 +1605,10 @@ app.controller("VoucherList", function ($filter, $scope, $http, $rootScope, filt
         });
 
     };
-    $scope.LoadActiveProductType= function () {
+    $scope.LoadActiveProductType = function () {
         $http.post(RESOURCES.DOMAIN + 'getproductcategorydetails?status=Active').success(function (res) {
             $scope.AllActiveProductType = res.data;
-            
+
         });
     };
     $scope.LoadActiveVoucherType = function () {
@@ -1383,7 +1622,7 @@ app.controller("VoucherList", function ($filter, $scope, $http, $rootScope, filt
         $http.post(RESOURCES.DOMAIN + 'getstoreregionlist?status=Active').success(function (res) {
             //var data=res.data;
             $scope.AllActiveRegion = res.data;
-            
+
         });
     };
     $scope.EditProcess = function (id) {
@@ -1391,9 +1630,9 @@ app.controller("VoucherList", function ($filter, $scope, $http, $rootScope, filt
 
         $scope.form = {};
         contentBlock.start();
-        $http.post(RESOURCES.DOMAIN + 'getvoucherlist?isfulllist=&voucherid='+id).success(function (res) {
+        $http.post(RESOURCES.DOMAIN + 'getvoucherlist?isfulllist=&voucherid=' + id).success(function (res) {
             //$scope.CompanyList=res.data;
-           console.log(res.data);
+            console.log(res.data);
             $scope.form.productType = res.data[0].prod_cat_id;
             $scope.form.voucherid = res.data[0].voucher_id;
             $scope.form.voucherType = res.data[0].voucher_type_id;
@@ -1404,7 +1643,7 @@ app.controller("VoucherList", function ($filter, $scope, $http, $rootScope, filt
             $scope.form.discount_level = res.data[0].dicountLevel;
             $scope.form.dicountValue = res.data[0].discount_value;
             $scope.form.status = res.data[0].status;
-            
+
         });
         contentBlock.stop();
     };
@@ -1733,7 +1972,45 @@ app.controller("UsersList", function ($filter, $scope, $http, $rootScope, filter
 //$scope.ActiveStateList={};	
     var contentBlock = blockUI.instances.get('contentBlock');
     contentBlock.stop();
+    $scope.saveUpdate = function () {
+        //$scope.form = {};
+        up_string = "";
+        if (($scope.form.custid != "") && ($scope.form.custid != null) && ($scope.form.custid != "undefined"))
+        {
+            up_string += "&custid=" + $scope.form.custid;
+        }
+        var dataString = "?loginid=" + $scope.form.loginid + "&firstname=" + $scope.form.firstname
+        + "&lastname=" + $scope.form.lastname+ "&loginpwd=" + $scope.form.loginpwd
+        + "&accesscardno=" + $scope.form.accesscardno+ "&groupid=" + $scope.form.groupid
+        + "&editunitsyn=" + $scope.form.editunitsyn + "&dataaccesslvl=" + $scope.form.dataaccesslvl
+        + "&datastoreid=" + $scope.form.datastoreid+ "&dataregionid=" + $scope.form.dataregionid
+        + "&txnaccesslvl=" + $scope.form.txnaccesslvl + "&txnstoreid=" + $scope.form.txnstoreid
+        + "&txnregionid=" + $scope.form.txnregionid + "&creditbillyn=" + $scope.form.creditbillyn
+        + "&employeeid=" + $scope.form.employeeid + "&discountprcnt=" + $scope.form.discountprcnt
+        + "&editpriceyn=" + $scope.form.editpriceyn + "&edittaxyn=" + $scope.form.edittaxyn
+        + "&status=" + $scope.form.status + "&companyid=" + RESOURCES.COMPANY_ID
+        + "&lastupdateddt=" + $filter('date')(new Date(), 'yyyy-MM-dd')
+        + "&mode=web"
+                + up_string;
+        console.log(dataString);
+        $http.post(RESOURCES.DOMAIN + 'signup' + dataString).success(function (res) {
+            console.log(res);
 
+            if (res.status)
+            {
+                $scope.resetForm();
+                $('#addeditModel').modal('hide');
+                toastr.success(res.message, 'Success', {closeButton: true, positionClass: 'toastr-top-center'});
+
+            }
+            else
+            {
+                toastr.error(res.message, 'Failed');
+            }
+            $scope.InitLoad();
+        });
+
+    };
     $scope.InitLoad = function () {
         contentBlock.start();
         $http.post(RESOURCES.DOMAIN + 'getuserlist').success(function (res) {
@@ -1756,21 +2033,47 @@ app.controller("UsersList", function ($filter, $scope, $http, $rootScope, filter
         });
         contentBlock.stop();
     };
-    $scope.openPanel = function () {
-        contentBlock.start();
-        $("#gridPanel").hide();
-        $("#addEditPanel").show();
-        contentBlock.stop();
+    //load active user group
+    $scope.LoadActiveusergroup = function () {
+        $http.post(RESOURCES.DOMAIN + 'getusergroupdetails?status=Active').success(function (res) {
+            $scope.AllActiveusergroup = res.data;
+
+        });
     };
-    $scope.closePanel = function () {
-        contentBlock.start();
+    //load active store list
+    $scope.LoadActivestorelist = function () {
+        $http.post(RESOURCES.DOMAIN + 'getstorelist?status=Active').success(function (res) {
+            $scope.AllActivestorelist = res.data;
+
+        });
+    };
+    //load active region list
+    $scope.LoadActiveregionlist = function () {
+        $http.post(RESOURCES.DOMAIN + 'getstoreregionlist?status=Active').success(function (res) {
+            $scope.AllActiveregionlist = res.data;
+            console.log(res.data);
+        });
+    };
+    //load active region list
+    $scope.LoadActiveEmplist = function () {
+        $http.post(RESOURCES.DOMAIN + 'getemployeedetails?status=Active').success(function (res) {
+            $scope.AllActiveEmplist = res.data;
+            console.log(res.data);
+        });
+    };
+    $scope.resetForm = function ()
+    {
+        $("#addEditForm")[0].reset();
+    };
+    $scope.resetSearch = function ()
+    {
+        $("#searchForm")[0].reset();
         $scope.InitLoad();
-        $("#addEditPanel").hide();
-        $("#gridPanel").show();
-
-        contentBlock.stop();
     };
-
+    $scope.LoadActiveEmplist();
+    $scope.LoadActiveregionlist();
+    $scope.LoadActiveusergroup();
+    $scope.LoadActivestorelist();
     $scope.InitLoad();
 });
 // end USERS
@@ -1803,6 +2106,56 @@ app.controller("UserGroupList", function ($filter, $scope, $http, $rootScope, fi
         });
         contentBlock.stop();
     };
+    $scope.saveUpdate = function () {
+        //$scope.form = {};
+         $scope.accesstree={};
+        up_string = "";
+        if (($scope.form.groupid != "") && ($scope.form.groupid != null) && ($scope.form.groupid != "undefined"))
+        {
+            up_string += "&groupid=" + $scope.form.groupid;
+        }
+       // $scope.accesstree = angular.copy($scope.form.accesstree);
+        //console.log($scope.accesstree);
+        var dataString = "?groupname=" + $scope.form.groupname 
+                + "&status=" + $scope.form.status+ "&companyid=" + RESOURCES.COMPANY_ID
+                + "&lastupdatedby="+ RESOURCES.UPDATED_BY  + "&lastupdateddt=" + $filter('date')(new Date(), 'yyyy-MM-dd')
+                +up_string;
+        console.log(dataString);
+        $http.post(RESOURCES.DOMAIN + 'saveusergroupdetails' + dataString).success(function (res) {
+            //console.log(res);
+
+            if (res.status)
+            {
+                $scope.resetForm();
+                $('#addeditModel').modal('hide');
+                toastr.success(res.message, 'Success', {closeButton: true, positionClass: 'toastr-top-center'});
+
+            }
+            else
+            {
+                toastr.error(res.message, 'Failed');
+            }
+            $scope.InitLoad();
+        });
+
+    };
+    //load active region list
+    $scope.LoadActiveEmplist = function () {
+        $http.post(RESOURCES.DOMAIN + 'getemployeedetails?status=Active').success(function (res) {
+            $scope.AllActiveEmplist = res.data;
+            console.log(res.data);
+        });
+    };
+    $scope.resetForm = function ()
+    {
+        $("#addEditForm")[0].reset();
+    };
+    $scope.resetSearch = function ()
+    {
+        $("#searchForm")[0].reset();
+        $scope.InitLoad();
+    };
+   // $scope.LoadActiveEmplist();
     $scope.InitLoad();
 });
 // end USERS Group

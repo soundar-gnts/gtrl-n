@@ -1,5 +1,5 @@
 
-var app =angular.module('gretail',['ui.bootstrap','ngRoute','toastr','blockUI','angular.chosen']);
+var app =angular.module('gretail',['ui.bootstrap','ngRoute','toastr','blockUI','angular.chosen','checklist-model']);
 //app.constant('URL','http://localhost:2000/');
 //console.log(URL);
 app.value("domain", "http://localhost:2000/");
