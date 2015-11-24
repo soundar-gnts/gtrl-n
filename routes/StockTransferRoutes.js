@@ -19,6 +19,9 @@ var config 					= require('../config/config.js');
 var CONSTANT				= require('../config/Constants.js');
 var slnogenService 			= require('../services/SlnoGenService.js');
 var messagesService 		= require('../services/MessagesService.js');
+var stocktransdtl  			= require('../models/StockTransferDtl.js');
+var product					= require('../models/Product.js');
+var store 		     		= require('../models/Store.js');
 
 module.exports = function(app, server){
 	app.post('/getstocktransferhdr', getStocktransferHdr);
@@ -78,23 +81,29 @@ function getStocktransferDtl(req, res){
 	
 // To get Stock TransferHdr List based on user param
 function getStocktransferHdr(req, res){
-	var condition 		= "";
-	var transferid		= req.param("transferid");
-	var transferrefno	= req.param("transferrefno");
-	var companyid		= req.param("companyid");
-	var fromStoreid		= req.param("fromstoreid");
-	var tostoreid		= req.param("tostoreid");
-	var transferctgry	= req.param("transferctgry");
-	var transferStatus	= req.param("transferstatus");
+	var condition 			= "";
+	var transferid			= req.param("transferid");
+	var transferrefno		= req.param("transferrefno");
+	var companyid			= req.param("companyid");
+	var fromStoreid			= req.param("fromstoreid");
+	var tostoreid			= req.param("tostoreid");
+	var transferctgry		= req.param("transferctgry");
+	var transferStatus		= req.param("transferstatus");
+	var fetchAssociation 	= "";
+	
+	if(req.param('fetchassociation')=='y'){
+		fetchAssociation = [{model : stocktransdtl, include : [{model : product, attributes : ['prod_code', 'prod_name']}]},
+		                    {model : store, attributes : ['store_code','store_name']}];
+	}
 	
 	if(transferid!=null){
-		condition ="transfer_id="+transferid;
+		condition ="t_stock_transfer_hdr.transfer_id="+transferid;
 	}
 	if(companyid!=null){
 		if(condition === ""){
-			condition="company_id='"+companyid+"'";
+			condition="t_stock_transfer_hdr.company_id='"+companyid+"'";
 		}else {
-			condition=condition+" and company_id='"+companyid+"'";
+			condition=condition+" and t_stock_transfer_hdr.company_id='"+companyid+"'";
 		}
 	}
 	if(fromStoreid!=null){
@@ -134,7 +143,7 @@ function getStocktransferHdr(req, res){
 		}
 	}
 	
-	stockTransferService.getStocktransferHdr(condition, function(response){
+	stockTransferService.getStocktransferHdr(condition,fetchAssociation, function(response){
 		res.send(response);
 	});
 }
@@ -166,6 +175,7 @@ function saveTransferDetails(req, res){
 	var transferDetails 	= [];
 	var detailsLength 		= 0;
 	
+	if(req.param('stocktranslist')!=null){
 	for(var i = 0; i < req.param('stocktranslist').length; i++){
 		var transferdtl = {
 							transfer_dtlid 			: req.param('stocktranslist')[i].transferdtlid,
@@ -187,9 +197,10 @@ function saveTransferDetails(req, res){
 		 				}
 		 	transferDetails.push(transferdtl);
 		 }
+	}
 	
 	/*  */
-	if(req.param("autogenyn").toLowerCase() == 'y' && req.param('transferStatus') == CONSTANT.STATUSPENDING && req.param('transferrefno') == null){
+	if(req.param("autogenyn")!=null&&req.param("autogenyn").toLowerCase() == 'y' && req.param('transferStatus') == CONSTANT.STATUSPENDING && req.param('transferrefno') == null){
 		var slNoCondition = {
 				company_id 			: req.param("companyid"),
 				ref_key 			: CONSTANT.TRANSFER_SERIAL_NO,

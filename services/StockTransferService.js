@@ -27,11 +27,12 @@ var response  			= {
 							data	: String
 							};
 var messagesService 	= require('../services/MessagesService.js');
+var slnogenService 		= require('../services/SlnoGenService.js');
 
 // To get Stock TransferHdr List based on user param
-exports.getStocktransferHdr = function(condition,callback) {
+exports.getStocktransferHdr = function(condition,fetchAssociation,callback) {
 	
-	stocktranshdr.findAll({where : [condition],order: [['actioned_dt', 'DESC']]})
+	stocktranshdr.findAll({where : [condition],include : fetchAssociation,order: [['actioned_dt', 'DESC']]})
 	
 	.then(function(result) {
 		if(result.length === 0){
@@ -157,6 +158,12 @@ exports.saveTransferDetails = function(slid, trnsferhdr, transferDetails, callba
 
 					}
 
+
+					//if slid exist, serial number generated, so need to update slnoGen table 
+					if(slid != null){
+					slnogenService.updateSequenceNo(slid, trnsferhdr.actioned_dt, trnsferhdr.actioned_by);
+					}
+					
 					log.info(fileName + ' >> saveTransferDetails >> ' + appMsg.UPDATEMESSAGE);
 					//Return Tranfer ID and Tranfer Ref_No 
 					var stocktransfer = {
@@ -191,6 +198,11 @@ exports.saveTransferDetails = function(slid, trnsferhdr, transferDetails, callba
 					var stocktransfer = {
 							transfer_id : data.transfer_id,
 							transfer_refno : data.transfer_refno
+					}
+					
+					//if slid exist, serial number generated, so need to update slnoGen table 
+					if(slid != null){
+					slnogenService.updateSequenceNo(slid, trnsferhdr.actioned_dt, trnsferhdr.actioned_by);
 					}
 					
 					response.message 	= appMsg.SAVEMESSAGE;

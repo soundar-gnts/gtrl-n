@@ -15,8 +15,9 @@
  * 
  */
 
-var model 			 = require('../config/sequelize.js');
-var dataTypes 		 = require('sequelize');
+var model 			 		= require('../config/sequelize.js');
+var dataTypes 		 		= require('sequelize');
+var product					= require('../models/Product.js');
 var stockTransferDtl = model.define('t_stock_transfer_dtl', {	
 
 	transfer_dtlid : {
@@ -48,4 +49,5 @@ var stockTransferDtl = model.define('t_stock_transfer_dtl', {
 	freezeTableName 	: true,
 	tableName 			: 't_stock_transfer_dtl'
 });
-module.exports = stockTransferDtl;
+stockTransferDtl.belongsTo(product, 	{foreignKey: 'product_id'});
+module.exports 			= stockTransferDtl;

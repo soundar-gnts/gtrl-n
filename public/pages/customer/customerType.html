@@ -19,42 +19,46 @@
 	<div class="panel-body">
 		<div class="row">
 			<div class="col-sm-3 pull-right">
-				<a href="tax#modal-addEdit-tax" data-toggle="modal"
-					class="btn btn-md btn-success  pull-right ">Add New</a>
+				<a href="customerType#addeditModel" data-toggle="modal"
+					ng-click="resetForm()" class="btn btn-md btn-success  pull-right ">Add
+					New</a>
 			</div>
 		</div>
 		<div class="col-md-12 col-xs-12">
+			<form ng-submit="InitLoad()" id="searchForm">
+				<div class="row">
 
-			<div class="row">
+					<div class="col-xs-3">
+						<label>Customer Type:</label> <input
+							ng-model="search.custgroupname" class="form-control input-md"
+							placeholder="Customer Type" id="srchcgnameid" name="srchcgname"
+							type="text">
+					</div>
 
-				<div class="col-xs-3">
-					<label>Customer Type:</label> <input class="form-control input-md"
-						placeholder="Customer Group Name" id="srchcgnameid"
-						name="srchcgname" type="text">
+
+					<div class="col-xs-3">
+						<label for="srch_country_status">Status:</label> <select
+							ng-model="search.status" id="srchstatusid" name="srchstatus"
+							class="form-control">
+							<option value="Select">Select</option>
+							<option value="Active">Active</option>
+							<option value="Inactive">Inactive</option>
+						</select>
+
+					</div>
+					<div class="col-xs-3"></div>
+					<div class="col-md-3">
+
+
+						<button ng-click="resetSearch();" type="button"
+							class="btn btn-danger pull-right" data-dismiss="modal"
+							style="margin-top: 24px; margin-right: 5px;">Reset</button>
+						<button ng-click="InitLoad()" type="submit"
+							class="btn btn-primary pull-right"
+							style="margin-top: 24px; margin-right: 5px;">Search</button>
+					</div>
 				</div>
-
-
-				<div class="col-xs-3">
-					<label for="srch_country_status">Status:</label> <select
-						id="srchstatusid" name="srchstatus" class="form-control">
-						<option value="Select">Select</option>
-						<option value="Active">Active</option>
-						<option value="Inactive">Inactive</option>
-					</select>
-
-				</div>
-				<div class="col-xs-3"></div>
-				<div class="col-md-3">
-
-					<a class="btn btn-danger pull-right"
-						style="margin-top: 24px; margin-right: 5px;" id="srchid"
-						onclick="reload();"> Reset </a> <a
-						class="btn btn-primary pull-right"
-						style="margin-top: 24px; margin-right: 5px;" id="srchid"
-						onclick="custypesrhlst();"> Search </a>
-				</div>
-			</div>
-
+			</form>
 
 
 		</div>
@@ -66,7 +70,7 @@
 				<thead>
 					<tr>
 						<td>Ref.ID</td>
-						<td>Group Name</td>
+						<td>Customer Type</td>
 						<td>Discount</td>
 						<td>Status</td>
 						<td>Updated On</td>
@@ -76,17 +80,15 @@
 				</thead>
 				<tbody>
 					<tr
-						ng-repeat="customertype in CustomerTypeList | orderBy:'cust_group_name' | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit  ">
+						ng-repeat="customertype in CustomerTypeList| orderBy:'cust_group_name' | startFrom:(currentPage - 1) * entryLimit | limitTo:entryLimit  ">
 						<td>{{customertype.cust_group_id}}</td>
 						<td>{{customertype.cust_group_name}}</td>
 						<td>{{customertype.discount_yn}}</td>
 						<td>{{customertype.status}}</td>
-						<td>{{customertype.last_updated_dt | date:'dd-mm-yyyy H:mm'
-							}}</td>
+						<td>{{customertype.last_updated_dt| date:'dd-mm-yyyy H:mm' }}</td>
 						<td>{{customertype.last_updated_by}}</td>
-						<td><a href="company#modal-addCustomertype"
-							data-toggle="modal"
-							ng-click="EditCustomertypeProcess(customertype)"
+						<td><a href="customerType#addeditModel" data-toggle="modal"
+							ng-click="EditProcess(customertype.cust_group_id)"
 							class="btn btn-sm btn-info">Edit</a></td>
 					</tr>
 				</tbody>
@@ -104,7 +106,7 @@
 
 
 <!-- model box start -->
-<div class="modal fade custom-model" id="modal-addCustomertype">
+<div class="modal fade custom-model" id="addeditModel">
 	<div class="modal-dialog panel-model-width">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -114,46 +116,46 @@
 				<h4 class="modal-title">Add/Modify Customer Type Details</h4>
 			</div>
 			<div class="modal-body">
-				<form novalidate="novalidate" action="#" id="taxvalidate"
-					method="post">
+				<form id="addEditForm" ng-submit="saveUpdate()">
 					<div class="col-md-12">
-
+						<input type="hidden" ng-model="form.custgroupid" />
 						<div class="form-group col-md-3">
-							<label>Age Group Name</label> <input ng-model="form.agegroupname"
-								class="form-control input-md" placeholder="First Name"
+							<label>Customer Type</label> <input ng-model="form.custgroupname"
+								class="form-control input-md" placeholder="Customer Type"
 								id="agegroupname" name="agegroupnameValid" type="text">
 						</div>
 
+
 						<div class="form-group col-md-3">
-							<label>Discount Y/N? </label>
-							<div class="radio">
-								<label><input id="discount_y" name="discount_yn"
-									value="Y" type="radio">Yes</label>
-							</div>
-							<div class="radio">
-								<label><input id="discount_n" name="discount_yn"
-									value="N" type="radio">No</label>
+							<label class="col-md-12 control-label">Discount Y/N?</label>
+							<div class="col-md-8">
+								<label class="radio-inline"> <input
+									ng-model="form.discountyn" id="credit_y" name="credit_yn"
+									value="Y" checked="" type="radio"> Yes
+								</label> <label class="radio-inline"> <input
+									ng-model="form.discountyn" id="credit_n" name="credit_yn"
+									value="N" type="radio"> No
+								</label>
 							</div>
 						</div>
-
 						<div class="form-group col-md-3">
-							<label>Status</label> <select class="form-control input-md"
-								id="statusid" name="statusvalid">
-
+							<label>Status</label> <select ng-model="form.status"
+								class="form-control input-md" id="statusid" name="statusvalid">
+								<option value="">Select</option>
 								<option value="Active">Active</option>
 								<option value="Inactive">Inactive</option>
-								<option value="">Select</option>
+
 							</select>
 						</div>
 
 					</div>
-					<div class="modal-footer clearfix" id="sveclsetaxbtn">
+					<div class=" clearfix" id="sveclsetaxbtn">
 						<button type="button" id="addtaxclsbtn" onclick="closefn();"
 							class="btn btn-danger pull-right" data-dismiss="modal">
 							<i class="fa fa-times"></i> Close
 						</button>
 						<button type="submit" class="btn btn-primary pull-right"
-							onclick="saveCustomerDetails();" style="margin-right: 5px;">
+							style="margin-right: 5px;">
 							<i class="fa fa-save"></i> Save
 						</button>
 					</div>

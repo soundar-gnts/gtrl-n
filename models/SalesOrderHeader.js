@@ -14,21 +14,21 @@
  * 
  */
 
-var model		= require('../config/sequelize.js');
-var dataTypes	= require('sequelize');
-var soDetail	= require('../models/SalesOrderDetail.js');
+var model				= require('../config/sequelize.js');
+var dataTypes			= require('sequelize');
+var soDetail			= require('../models/SalesOrderDetail.js');
 
-var soHeader = model.define('t_salesorder_hdr', {
+var soHeader 			= model.define('t_salesorder_hdr', {
 
-	salesorder_id : {
-		type : dataTypes.INTEGER,
-		primaryKey : true,
-		autoIncrement : true
+	salesorder_id 		: {
+		type 			: dataTypes.INTEGER,
+		primaryKey 		: true,
+		autoIncrement 	: true
 	},
 	
 	customer_id			: dataTypes.INTEGER,
-	total_tax			: dataTypes.DOUBLE,
-	Order_value			: dataTypes.DOUBLE,
+	total_tax			: dataTypes.INTEGER,
+	Order_value			: dataTypes.INTEGER,
 	total_qty			: dataTypes.INTEGER,
 	delivery_type		: dataTypes.STRING,
 	delivery_remark		: dataTypes.STRING,
@@ -50,10 +50,10 @@ var soHeader = model.define('t_salesorder_hdr', {
 	order_date			: dataTypes.DATE
 
 }, {
-	timestamps : false,
-	freezeTableName : true,
-	tableName : 't_salesorder_hdr'
+	timestamps 			: false,
+	freezeTableName 	: true,
+	tableName 			: 't_salesorder_hdr'
 });
 
 soHeader.hasMany(soDetail, {foreignKey: 'salesorder_id'});
-module.exports = soHeader;
+module.exports 			= soHeader;

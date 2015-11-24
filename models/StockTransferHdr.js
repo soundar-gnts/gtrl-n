@@ -15,9 +15,11 @@
  * 
  */
 
-var model			 = require('../config/sequelize.js');
-var dataTypes 		 = require('sequelize');
-var stockTransferHdr = model.define('t_stock_transfer_hdr', {	
+var model				= require('../config/sequelize.js');
+var dataTypes 			= require('sequelize');
+var store 		     	= require('../models/Store.js');
+var stocktransdtl  		= require('../models/StockTransferDtl.js');
+var stockTransferHdr 	= model.define('t_stock_transfer_hdr', {	
 
 	  transfer_id : {
 		  
@@ -48,4 +50,6 @@ var stockTransferHdr = model.define('t_stock_transfer_hdr', {
 	freezeTableName 	: true,
 	tableName		    : 't_stock_transfer_hdr'
 });
-module.exports = stockTransferHdr;
+stockTransferHdr.belongsTo(store, 	{foreignKey: 'to_store_id'});
+stockTransferHdr.hasMany(stocktransdtl, 	{foreignKey: 'transfer_id'});
+module.exports 			= stockTransferHdr;

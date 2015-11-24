@@ -24,37 +24,43 @@
 			</div>
 		</div>
 		<div class="col-md-12 col-xs-12">
+			<form ng-submit="InitLoad()" id="searchForm">
+				<div class="row">
 
-			<div class="row">
+					<div class="col-xs-3">
+						<label>Customer Name:</label> <input
+							ng-model="search.cusfirstname" class="form-control input-md"
+							placeholder="Customer Name" type="text">
+					</div>
+					<div class="col-xs-3">
+						<label>Customer Code:</label> <input ng-model="search.custcode"
+							class="form-control input-md" placeholder="Customer Name"
+							type="text">
+					</div>
 
-				<div class="col-xs-3">
-					<label>Customer Name:</label> <input class="form-control input-md"
-						placeholder="Customer Name" id="srchcgnameid" name="srchcgname"
-						type="text">
+					<div class="col-xs-3">
+						<label for="srch_country_status">Status:</label> <select
+							ng-model="search.status" id="srchstatusid" name="srchstatus"
+							class="form-control">
+							<option value="Select">Select</option>
+							<option value="Active">Active</option>
+							<option value="Inactive">Inactive</option>
+						</select>
+
+					</div>
+					<div class="col-xs-3"></div>
+					<div class="col-md-3">
+
+
+						<button ng-click="resetSearch();" type="button"
+							class="btn btn-danger pull-right" data-dismiss="modal"
+							style="margin-top: 24px; margin-right: 5px;">Reset</button>
+						<button ng-click="InitLoad()" type="submit"
+							class="btn btn-primary pull-right"
+							style="margin-top: 24px; margin-right: 5px;">Search</button>
+					</div>
 				</div>
-
-
-				<div class="col-xs-3">
-					<label for="srch_country_status">Status:</label> <select
-						id="srchstatusid" name="srchstatus" class="form-control">
-						<option value="Select">Select</option>
-						<option value="Active">Active</option>
-						<option value="Inactive">Inactive</option>
-					</select>
-
-				</div>
-				<div class="col-xs-3"></div>
-				<div class="col-md-3">
-
-					<a class="btn btn-danger pull-right"
-						style="margin-top: 24px; margin-right: 5px;" id="srchid"
-						onclick="reload();"> Reset </a> <a
-						class="btn btn-primary pull-right"
-						style="margin-top: 24px; margin-right: 5px;" id="srchid"
-						onclick="custypesrhlst();"> Search </a>
-				</div>
-			</div>
-
+			</form>
 
 
 		</div>
@@ -67,7 +73,7 @@
 					<tr>
 						<td>ID</td>
 						<td>Code</td>
-						<td>Address</td>
+						<td>Name</td>
 						<td>Mobile</td>
 						<td>Email</td>
 						<td>Status</td>
@@ -78,17 +84,17 @@
 				</thead>
 				<tbody>
 					<tr
-						ng-repeat="customerobj in CustomerList | orderBy:'cust_id' | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit  ">
+						ng-repeat="customerobj in CustomerList| orderBy:'cust_id' | startFrom:(currentPage - 1) * entryLimit | limitTo:entryLimit  ">
 						<td>{{customerobj.cust_id}}</td>
 						<td>{{customerobj.cust_code}}</td>
-						<td>{{customerobj.address}}</td>
+						<td>{{customerobj.cus_first_name}}</td>
 						<td>{{customerobj.mobile_no}}</td>
 						<td>{{customerobj.email_id}}</td>
 						<td>{{customerobj.status}}</td>
-						<td>{{customerobj.last_updated_dt | date:'dd-mm-yyyy H:mm' }}</td>
+						<td>{{customerobj.last_updated_dt| date:'dd-mm-yyyy H:mm' }}</td>
 						<td>{{customerobj.last_updated_by}}</td>
 						<td><a href="customer#modal-addCustomer" data-toggle="modal"
-							ng-click="EditCustomerProcess(customerobj)"
+							ng-click="EditProcess(customerobj.cust_id)"
 							class="btn btn-sm btn-info">Edit</a></td>
 					</tr>
 				</tbody>
@@ -115,10 +121,9 @@
 				<h4 class="modal-title">Add/Modify Customer Details</h4>
 			</div>
 			<div class="modal-body">
-				<form novalidate="novalidate" action="#" id="taxvalidate"
-					method="post">
+				<form id="addcustomerform" ng-submit="saveUpdate()">
 					<div class="col-md-12">
-
+						<input type="hidden" ng-model="form.custid" />
 						<div class="form-group col-md-3">
 							<label>First Name</label> <input ng-model="form.cusfirstname"
 								class="form-control input-md" placeholder="First Name"
@@ -133,32 +138,33 @@
 
 						<div class="" id="erroralertid"></div>
 						<div class="form-group col-md-3">
-							<label>Customer Code</label> <input ng-model="tax.taxonmrp"
+							<label>Customer Code</label> <input ng-model="form.custcode"
 								class="form-control input-md" placeholder="Tax On MRP"
 								id="taxonmrpid" name="taxonmrpvalid" type="text">
 						</div>
 
 						<div class="form-group col-md-3">
-							<label>Gender</label> <select class="form-control input-md"
-								id="gender" name="genderValid">
+							<label>Gender</label> <select ng-model="form.gender"
+								class="form-control input-md" id="gender" name="genderValid">
 								<option value="M">Male</option>
 								<option value="F">Female</option>
 								<option value="T">Transgender</option>
 							</select>
 						</div>
 
+
 						<div class="form-group col-md-3">
-							<label>Credit Y/N? </label>
-							<div class="radio">
-								<label><input id="credit_y" name="credit_yn" value="Y"
-									type="radio">Yes</label>
-							</div>
-							<div class="radio">
-								<label><input id="credit_n" name="credit_yn" value="N"
-									type="radio">No</label>
+							<label class="col-md-12 control-label">Credit Y/N?</label>
+							<div class="col-md-8">
+								<label class="radio-inline"> <input
+									ng-model="form.credityn" id="credit_y" name="credit_yn"
+									value="Y" checked="" type="radio"> Yes
+								</label> <label class="radio-inline"> <input
+									ng-model="form.credityn" id="credit_n" name="credit_yn"
+									value="N" type="radio"> No
+								</label>
 							</div>
 						</div>
-
 						<div class="form-group col-md-3">
 							<label>TIN Number</label> <input ng-model="form.tinno"
 								class="form-control input-md" placeholder="TIN Number"
@@ -189,11 +195,6 @@
 								id="landlineno" name="landlinenoValid" type="text">
 						</div>
 
-						<div class="form-group col-md-3">
-							<label>Landline</label> <input ng-model="form.landlineno"
-								class="form-control input-md" placeholder="landline"
-								id="landlineno" name="landlinenoValid" type="text">
-						</div>
 
 						<div class="form-group col-md-3">
 							<label>Mobile</label> <input ng-model="form.mobileno"
@@ -219,64 +220,60 @@
 								id="annivdate" name="annivdateValid" type="text">
 						</div>
 
+
+
+						<div class="form-group col-md-3">
+							<label>State Name</label> <select ng-change="LoadActiveCities()"
+								placeholder="Select State" class="form-control"
+								options="AllActiveStateList" ng-model="form.stateid"
+								ng-options="states.state_id as states.state_name for states in AllActiveStateList">
+								<option value="">Select</option>
+							</select>
+						</div>
+						<div class="form-group col-md-3">
+							<label>City Name</label> <select placeholder="Select City"
+								class="form-control" options="AllActiveCityList"
+								ng-model="form.cityid"
+								ng-options="city.city_id as city.city_name for city in AllActiveCityList">
+
+							</select>
+						</div>
+
+						<div class="form-group col-md-3">
+							<label>Customer Type Name</label> <select id="custgroupid"
+								name="custgroupidValid" on-change="" placeholder="Select Group"
+								class="form-control" chosen options="AllActiveCustomerGroupList"
+								ng-model="form.custgroupid"
+								ng-options="customergrouplist.cust_group_id as customergrouplist.cust_group_name for customergrouplist 
+                                                                      in AllActiveCustomerGroupList">
+
+							</select>
+
+						</div>
+						<div class="form-group col-md-3">
+							<label>Age Group Name</label> <select id="agegroupid"
+								name="agegroupidValid" on-change=""
+								placeholder="Select Age Group" class="form-control" chosen
+								options="AllActiveAgeGroupList" ng-model="form.agegroupid"
+								ng-options="agegrouplist.age_group_id as agegrouplist.age_group_id for agegrouplist 
+                                                                  in AllActiveAgeGroupList">
+
+							</select>
+
+						</div>
+
 						<div class="form-group col-md-3">
 							<label>Remarks</label> <input ng-model="form.remarks"
 								class="form-control input-md" placeholder="remarks" id="remarks"
 								name="remarksValid" type="text">
 						</div>
-
 						<div class="form-group col-md-3">
-							<label>State Name</label> <select id="stateid"
-								name="stateidValid" on-change="" placeholder="Select State"
-								class="form-control" chosen options="AllActiveStateList"
-								ng-model="tax.stateid"
-								ng-options="states.state_id as states.state_name for states in AllActiveStateList">
-
-							</select>
-
-						</div>
-
-						<div class="form-group col-md-3">
-							<label>City Name</label> <select id="cityid" name="cityidValid"
-								on-change="" placeholder="Select City" class="form-control"
-								chosen options="AllActiveCityList" ng-model="form.cityid"
-								ng-options="city.city_id as city.city_name for cities in AllActiveCityList">
-
-							</select>
-
-						</div>
-
-						<div class="form-group col-md-3">
-							<label>Group Name</label> <select id="custgroupid"
-								name="custgroupidValid" on-change="" placeholder="Select Group"
-								class="form-control" chosen options="AllActiveCustomerGroupList"
-								ng-model="form.custgroupid"
-								ng-options="customergrouplist.cust_group_id as customergrouplist.cust_group_name for customergrouplist 
-								 in AllActiveCustomerGroupList">
-
-							</select>
-
-						</div>
-
-						<div class="form-group col-md-3">
-							<label>Age Group Name</label> <select id="agegroupid"
-								name="agegroupidValid" on-change="" placeholder="Select Age Group"
-								class="form-control" chosen options="AllActiveAgeGroupList"
-								ng-model="form.custgroupid"
-								ng-options="agegrouplist.age_group_id as agegrouplist.age_group_id for agegrouplist 
-								 in AllActiveAgeGroupList">
-
-							</select>
-
-						</div>
-
-						<div class="form-group col-md-3">
-							<label>Status</label> <select class="form-control input-md"
-								id="statusid" name="statusvalid">
-
+							<label>Status</label> <select ng-model="form.status"
+								class="form-control input-md" id="statusid" name="statusvalid">
+								<option value="">Select</option>
 								<option value="Active">Active</option>
 								<option value="Inactive">Inactive</option>
-								<option value="">Select</option>
+
 							</select>
 						</div>
 
@@ -286,7 +283,7 @@
 							class="btn btn-danger pull-right" data-dismiss="modal">
 							<i class="fa fa-times"></i> Close
 						</button>
-						<button type="submit" class="btn btn-primary pull-right" onclick="saveCustomerDetails();"
+						<button type="submit" class="btn btn-primary pull-right"
 							style="margin-right: 5px;">
 							<i class="fa fa-save"></i> Save
 						</button>
@@ -304,7 +301,18 @@
 	$(document).ready(function() {
 		$('#expirydate').datepicker({
 			todayHighlight : true,
+			autoclose : true,
+			startDate : '+1d',
+		});
+		$('#annivdate').datepicker({
+			todayHighlight : true,
 			autoclose : true
+
+		});
+		$('#dob').datepicker({
+			todayHighlight : true,
+			autoclose : true,
+			endDate : '-216m'
 		});
 	});
 </script>

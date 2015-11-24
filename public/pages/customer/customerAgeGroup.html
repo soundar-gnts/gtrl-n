@@ -19,8 +19,9 @@
 	<div class="panel-body">
 		<div class="row">
 			<div class="col-sm-3 pull-right">
-				<a href="tax#modal-addCustomeragegroup" data-toggle="modal"
-					class="btn btn-md btn-success  pull-right ">Add New</a>
+				<a href="customerAgeGroup#addeditModel" data-toggle="modal"
+					ng-click="resetForm()" class="btn btn-md btn-success  pull-right ">Add
+					New</a>
 			</div>
 		</div>
 		<div class="col-md-12 col-xs-12">
@@ -76,17 +77,17 @@
 				</thead>
 				<tbody>
 					<tr
-						ng-repeat="customeragegroup in CustomerAgeGroupList | orderBy:'cust_group_name' | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit  ">
+						ng-repeat="customeragegroup in CustomerAgeGroupList| orderBy:'cust_group_name' | startFrom:(currentPage - 1) * entryLimit | limitTo:entryLimit  ">
 						<td>{{customeragegroup.age_group_id}}</td>
 						<td>{{customeragegroup.age_group_name}}</td>
 						<td>{{customeragegroup.discount_yn}}</td>
 						<td>{{customeragegroup.status}}</td>
-						<td>{{customeragegroup.last_updated_dt | date:'dd-mm-yyyy
+						<td>{{customeragegroup.last_updated_dt| date:'dd-mm-yyyy
 							H:mm' }}</td>
 						<td>{{customeragegroup.last_updated_by}}</td>
-						<td><a href="company#modal-addCustomeragegroup"
+						<td><a href="customerAgeGroup#addeditModel"
 							data-toggle="modal"
-							ng-click="EditCustomeragrgroupProcess(customeragegroup)"
+							ng-click="EditProcess(customeragegroup.age_group_id)"
 							class="btn btn-sm btn-info">Edit</a></td>
 					</tr>
 				</tbody>
@@ -104,7 +105,7 @@
 
 
 <!-- model box start -->
-<div class="modal fade custom-model" id="modal-addCustomeragegroup">
+<div class="modal fade custom-model" id="addeditModel">
 	<div class="modal-dialog panel-model-width">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -114,35 +115,35 @@
 				<h4 class="modal-title">Add/Modify Customer Age Group Details</h4>
 			</div>
 			<div class="modal-body">
-				<form novalidate="novalidate" action="#" id="taxvalidate"
-					method="post">
+				<form id="addEditForm" ng-submit="saveUpdate()">
 					<div class="col-md-12">
-
+						<input type="hidden" ng-model="form.agegroupid" />
 						<div class="form-group col-md-3">
 							<label>Age Group Name</label> <input ng-model="form.agegroupname"
 								class="form-control input-md" placeholder="First Name"
 								id="agegroupname" name="agegroupnameValid" type="text">
 						</div>
 
+
 						<div class="form-group col-md-3">
-							<label>Discount Y/N? </label>
-							<div class="radio">
-								<label><input id="discount_y" name="discount_yn"
-									value="Y" type="radio">Yes</label>
-							</div>
-							<div class="radio">
-								<label><input id="discount_n" name="discount_yn"
-									value="N" type="radio">No</label>
+							<label class="col-md-12 control-label">Discount Y/N?</label>
+							<div class="col-md-8">
+								<label class="radio-inline"> <input
+									ng-model="form.discountyn" id="credit_y" name="credit_yn"
+									value="Y" checked="" type="radio"> Yes
+								</label> <label class="radio-inline"> <input
+									ng-model="form.discountyn" id="credit_n" name="credit_yn"
+									value="N" type="radio"> No
+								</label>
 							</div>
 						</div>
-
 						<div class="form-group col-md-3">
-							<label>Status</label> <select class="form-control input-md"
-								id="statusid" name="statusvalid">
-
+							<label>Status</label> <select ng-model="form.status"
+								class="form-control input-md" id="statusid" name="statusvalid">
+								<option value="">Select</option>
 								<option value="Active">Active</option>
 								<option value="Inactive">Inactive</option>
-								<option value="">Select</option>
+
 							</select>
 						</div>
 
@@ -153,7 +154,7 @@
 							<i class="fa fa-times"></i> Close
 						</button>
 						<button type="submit" class="btn btn-primary pull-right"
-							onclick="saveCustomerDetails();" style="margin-right: 5px;">
+							style="margin-right: 5px;">
 							<i class="fa fa-save"></i> Save
 						</button>
 					</div>
