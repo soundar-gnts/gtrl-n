@@ -20,8 +20,9 @@
 		<div class="col-md-12 col-xs-12">
 			<div class="row">
 				<div class="col-sm-3 pull-right">
-                                    <a ng-click="resetForm()" href="bank#modal-addEdit-bank" data-toggle="modal"
-						class="btn btn-md btn-success  pull-right ">Add New</a>
+					<a ng-click="resetForm()" href="bank#modal-addEdit-bank"
+						data-toggle="modal" class="btn btn-md btn-success  pull-right ">Add
+						New</a>
 				</div>
 			</div>
 			<div class="row">
@@ -32,32 +33,33 @@
                                         <label> Bank Code: </label> <input class="form-control input-md"
                                                 type="text" placeholder="Bank Code" id="srchbnkid" name="srchbnkvld">
                                 </div>
-                                --><form ng-submit="InitLoad()">
-				<div class="col-xs-3">
-					<label> Bank Name: </label> <input ng-model="search.bankname" class="form-control input-md"
-						placeholder="Bank Name" id="srchbnknameid" name="srchbnknameid"
-						type="text">
-				</div>
-				<div class="col-xs-3">
-					<label for="srch_country_status">Status:</label>
-                                        <select ng-model="search.status"
-						id="srchbnkstatus" name="srchbnkstatus" class="form-control">
-						<option value="Select">Select</option>
-						<option value="Active">Active</option>
-						<option value="Inactive">Inactive</option>
-					</select>
-				</div>
-				<div class="col-md-3"></div>
-				<div class="col-md-3">
+                                -->
+				<form ng-submit="InitLoad()">
+					<div class="col-xs-3">
+						<label> Bank Name: </label> <input ng-model="search.bankname"
+							class="form-control input-md" placeholder="Bank Name"
+							id="srchbnknameid" name="srchbnknameid" type="text">
+					</div>
+					<div class="col-xs-3">
+						<label for="srch_country_status">Status:</label> <select
+							ng-model="search.status" id="srchbnkstatus" name="srchbnkstatus"
+							class="form-control">
+							<option value="Select">Select</option>
+							<option value="Active">Active</option>
+							<option value="Inactive">Inactive</option>
+						</select>
+					</div>
+					<div class="col-md-3"></div>
+					<div class="col-md-3">
 
-					<a class="btn btn-danger pull-right"
-						style="margin-top: 24px; margin-right: 5px;" id="srchid"
-						onclick="reload();"> Reset </a> <a
-						class="btn btn-primary pull-right"
-						style="margin-top: 24px; margin-right: 5px;" id="srchid"
-                                                ng-click="InitLoad();"> Search </a>
-				</div>
-                                </form>
+						<a class="btn btn-danger pull-right"
+							style="margin-top: 24px; margin-right: 5px;" id="srchid"
+							onclick="reload();"> Reset </a> <a
+							class="btn btn-primary pull-right"
+							style="margin-top: 24px; margin-right: 5px;" id="srchid"
+							ng-click="InitLoad();"> Search </a>
+					</div>
+				</form>
 			</div>
 
 
@@ -70,7 +72,7 @@
 				<thead>
 					<tr>
 						<td>ID</td>
-						<td>Group Name</td>
+						<td>Bank Name</td>
 						<td>Bank Code</td>
 						<td>Status</td>
 						<td>Updated On</td>
