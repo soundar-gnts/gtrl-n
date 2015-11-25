@@ -324,5 +324,37 @@ module.exports = function(app, server){
 		});
 	}
 	
+	//Create Sales Return - Retail POS - Status was billed 
+	function saveOrUpdateSalesDeliveryDetails(req, res){
+		var salesDeliveryDetail = {
+				delivery_dtlid		: req.param('deliverydtlid'),
+				sale_id				: req.param('saleid'),
+				cust_id				: req.param('custid'),
+				customer_name		: req.param('customername'),
+				delivery_address	: req.param('deliveryaddress'),
+				city_id				: req.param('cityid'),
+				landmark			: req.param('landmark'),
+				mobile_no			: req.param('mobileno'),
+				plan_delivery_dt	: req.param('plandeliverydt'),
+				plan_delivery_time	: req.param('plandeliverytime'),
+				deli_employee_id	: req.param('deliemployeeid'),
+				exp_delivery_dt		: req.param('expdeliverydt'),
+				exp_delivery_time	: req.param('expdeliverytime'),
+				act_delivery_dt		: req.param('actdeliverydt'),
+				act_delivery_time	: req.param('actdeliverytime'),
+				receiver_name		: req.param('receivername'),
+				receiver_phone		: req.param('receiverphone'),
+				receiver_signature	: req.param('receiversignature'),
+				status				: req.param('status'),
+				undeliver_reason	: req.param('undeliverreason'),
+				remarks				: req.param('remarks'),
+				post_code			: req.param('postcode'),
+				salesorder_id		: req.param('salesorderid')
+		}
+		
+		salesService.saveOrUpdateSalesDeliveryDetailsFn(salesDeliveryDetail, function(response){
+			res.send(response)
+		});
+	}
 	
 }
